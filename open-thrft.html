@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#111111" />
+    <title>ThrfT TOP</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        font-family: Arial, Helvetica, sans-serif;
+        color: #f5f4f0;
+        background: #111;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        min-width: 320px;
+        min-height: 100vh;
+        margin: 0;
+        background: #111;
+      }
+
+      .app {
+        position: relative;
+        display: flex;
+        width: min(100%, 430px);
+        min-height: 100vh;
+        margin: 0 auto;
+        padding: 24px 30px 80px;
+        flex-direction: column;
+        border-right: 1px solid #292929;
+        border-left: 1px solid #292929;
+        background: #111;
+      }
+
+      h1 {
+        margin: 0;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 19px;
+        font-weight: 700;
+        text-align: center;
+      }
+
+      .brands {
+        display: grid;
+        flex: 1;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-rows: repeat(6, minmax(56px, 1fr));
+        align-items: center;
+        justify-items: center;
+        column-gap: 28px;
+        padding: 12px 0;
+      }
+
+      .brand {
+        display: grid;
+        width: 100%;
+        min-height: 48px;
+        padding: 4px;
+        place-items: center;
+        border: 0;
+        border-radius: 2px;
+        background: transparent;
+        color: #f5f4f0;
+        cursor: pointer;
+        transition: background 150ms ease, transform 150ms ease;
+      }
+
+      .brand:hover {
+        background: #202020;
+        transform: scale(1.04);
+      }
+
+      .brand:focus-visible,
+      .nav-item:focus-visible {
+        outline: 2px solid #eee;
+        outline-offset: 3px;
+      }
+
+      .mark {
+        display: flex;
+        max-width: 100%;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
+        text-align: center;
+      }
+
+      .circle {
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        background: #f0efe9;
+        color: #1b1b1b;
+      }
+
+      .mcm {
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 18px;
+        font-weight: 700;
+        letter-spacing: -2px;
+      }
+
+      .nike svg {
+        width: 62px;
+        height: 37px;
+        fill: currentColor;
+      }
+
+      .adidas {
+        gap: 4px;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: -1px;
+      }
+
+      .adidas svg {
+        width: 27px;
+        height: 28px;
+        fill: currentColor;
+      }
+
+      .lv {
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 21px;
+        font-weight: 700;
+        letter-spacing: -3px;
+      }
+
+      .gap {
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 24px;
+        letter-spacing: 3px;
+      }
+
+      .chanel {
+        display: grid;
+        justify-items: center;
+        gap: 3px;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 19px;
+        font-weight: 700;
+      }
+
+      .chanel small {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 7px;
+        letter-spacing: 1px;
+      }
+
+      .puma {
+        font-size: 19px;
+        font-style: italic;
+        font-weight: 700;
+      }
+
+      .northface {
+        display: grid;
+        align-content: center;
+        font-size: 8px;
+        font-weight: 700;
+        line-height: 1.1;
+      }
+
+      .gucci {
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 21px;
+      }
+
+      .prada {
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 19px;
+        font-weight: 700;
+        letter-spacing: 4px;
+      }
+
+      .guess {
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: 1px;
+      }
+
+      .playboy {
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 20px;
+        font-style: italic;
+        font-weight: 700;
+      }
+
+      .stores {
+        min-height: 78px;
+        display: grid;
+        place-items: center;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 16px;
+        font-weight: 700;
+      }
+
+      .bottom-nav {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        display: flex;
+        height: 62px;
+        padding: 6px 9px 8px;
+        justify-content: space-around;
+        border-top: 1px solid #292929;
+        background: #111;
+      }
+
+      .nav-item {
+        display: grid;
+        min-width: 48px;
+        padding: 2px 5px;
+        align-content: center;
+        justify-items: center;
+        gap: 4px;
+        border: 0;
+        background: transparent;
+        color: #e4e3df;
+        cursor: pointer;
+      }
+
+      .nav-item svg {
+        width: 17px;
+        height: 17px;
+        fill: none;
+        stroke: currentColor;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 1.8;
+      }
+
+      .nav-item span {
+        font-size: 8px;
+      }
+
+      .notice {
+        position: absolute;
+        right: 12px;
+        bottom: 70px;
+        left: 12px;
+        padding: 10px;
+        border: 1px solid #444;
+        background: #222;
+        font-size: 11px;
+        text-align: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 150ms ease;
+      }
+
+      .notice.visible {
+        opacity: 1;
+      }
+
+      @media (max-height: 720px) {
+        .app {
+          min-height: 720px;
+        }
+
+        .brands {
+          grid-template-rows: repeat(6, minmax(48px, 1fr));
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          scroll-behavior: auto !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="app">
+      <header>
+        <h1>ThrfT TOP</h1>
+      </header>
+
+      <section class="brands" aria-label="Popular brands">
+        <button class="brand" type="button" aria-label="MCM" data-brand="MCM">
+          <span class="mark circle mcm" aria-hidden="true">MCM</span>
+        </button>
+        <button class="brand" type="button" aria-label="Nike" data-brand="Nike">
+          <span class="mark nike" aria-hidden="true">
+            <svg viewBox="0 0 64 38"><path d="M3 24.5 58 3 24 30c-7 5-17 3-21-5.5Z" /></svg>
+          </span>
+        </button>
+        <button class="brand" type="button" aria-label="adidas" data-brand="adidas">
+          <span class="mark adidas" aria-hidden="true">
+            <svg viewBox="0 0 32 28">
+              <path d="M14 3 18 1l13 22h-7L12 4ZM7 10l4-2 9 15h-7L5 11ZM1 17l4-2 5 8H3Z" />
+            </svg>
+            <span>adidas</span>
+          </span>
+        </button>
+        <button class="brand" type="button" aria-label="Louis Vuitton" data-brand="Louis Vuitton">
+          <span class="mark circle lv" aria-hidden="true">LV</span>
+        </button>
+        <button class="brand" type="button" aria-label="GAP" data-brand="GAP">
+          <span class="mark circle gap" aria-hidden="true">GAP</span>
+        </button>
+        <button class="brand" type="button" aria-label="Chanel" data-brand="Chanel">
+          <span class="mark chanel" aria-hidden="true"><span>CC</span><small>CHANEL</small></span>
+        </button>
+        <button class="brand" type="button" aria-label="PUMA" data-brand="PUMA">
+          <span class="mark puma" aria-hidden="true">PUMA</span>
+        </button>
+        <button class="brand" type="button" aria-label="The North Face" data-brand="The North Face">
+          <span class="mark circle northface" aria-hidden="true">THE<br />NORTH<br />FACE</span>
+        </button>
+        <button class="brand" type="button" aria-label="GUCCI" data-brand="GUCCI">
+          <span class="mark circle gucci" aria-hidden="true">GG</span>
+        </button>
+        <button class="brand" type="button" aria-label="PRADA" data-brand="PRADA">
+          <span class="mark prada" aria-hidden="true">PRADA</span>
+        </button>
+        <button class="brand" type="button" aria-label="GUESS" data-brand="GUESS">
+          <span class="mark guess" aria-hidden="true">GUESS</span>
+        </button>
+        <button class="brand" type="button" aria-label="Playboy" data-brand="Playboy">
+          <span class="mark circle playboy" aria-hidden="true">P</span>
+        </button>
+      </section>
+
+      <section class="stores" aria-live="polite">
+        <h2 id="stores-heading">ThrfT stores</h2>
+      </section>
+
+      <nav class="bottom-nav" aria-label="Main navigation">
+        <button class="nav-item" type="button" data-page="Start" aria-label="Start">
+          <svg viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1V10Z" /></svg>
+          <span>Start</span>
+        </button>
+        <button class="nav-item" type="button" data-page="Cart" aria-label="Cart">
+          <svg viewBox="0 0 24 24"><path d="M4 8h16l-1 12H5L4 8Z" /><path d="M9 8V6a3 3 0 0 1 6 0v2" /></svg>
+          <span>Cart</span>
+        </button>
+        <button class="nav-item" type="button" data-page="Sell" aria-label="Sell">
+          <svg viewBox="0 0 24 24"><path d="M12 4v16M4 12h16" /></svg>
+          <span>Sell</span>
+        </button>
+        <button class="nav-item" type="button" data-page="Inbox" aria-label="Inbox">
+          <svg viewBox="0 0 24 24"><path d="M4 5h16v14H4z" /><path d="m4 7 8 6 8-6" /></svg>
+          <span>Inbox</span>
+        </button>
+        <button class="nav-item" type="button" data-page="Profile" aria-label="Profile">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5" /><path d="M4.5 21a7.5 7.5 0 0 1 15 0" /></svg>
+          <span>Profile</span>
+        </button>
+      </nav>
+      <div class="notice" id="notice" role="status" aria-live="polite"></div>
+    </main>
+
+    <script>
+      const notice = document.querySelector("#notice");
+      const storesHeading = document.querySelector("#stores-heading");
+      let noticeTimer;
+
+      function showNotice(message) {
+        notice.textContent = message;
+        notice.classList.add("visible");
+        window.clearTimeout(noticeTimer);
+        noticeTimer = window.setTimeout(() => notice.classList.remove("visible"), 2000);
+      }
+
+      document.querySelectorAll(".brand").forEach((button) => {
+        button.addEventListener("click", () => {
+          const brand = button.dataset.brand;
+          storesHeading.textContent = `${brand} stores`;
+          showNotice(`Browsing pre-loved ${brand} finds`);
+        });
+      });
+
+      document.querySelectorAll(".nav-item").forEach((button) => {
+        button.addEventListener("click", () => {
+          const page = button.dataset.page;
+          if (page === "Start") {
+            storesHeading.textContent = "ThrfT stores";
+            showNotice("Welcome to ThrfT");
+          } else {
+            showNotice(`${page} is coming soon`);
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
