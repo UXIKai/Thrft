@@ -3,100 +3,33 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta
-      name="description"
-      content="Discover one-of-a-kind secondhand finds from the brands you love."
-    />
-    <meta name="theme-color" content="#101319" />
-    <title>ThrfT — Find your next favorite</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <meta name="description" content="Discover pre-loved finds from the brands you love on ThrfT." />
+    <meta name="theme-color" content="#111111" />
+    <title>ThrfT — ThrfT TOP</title>
     <link rel="stylesheet" href="styles.css" />
     <script src="app.js" defer></script>
   </head>
   <body>
-    <main class="app-shell">
+    <main class="app-shell" id="home">
       <header class="topbar">
-        <a class="wordmark" href="#home" aria-label="ThrfT home">ThrfT<span>.</span></a>
-        <p class="location"><span class="status-dot"></span> GOOD FINDS, SECOND LIFE</p>
-        <button class="icon-button bag-button" type="button" aria-label="Open your bag">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M5 8h14l1 13H4L5 8Z" />
-            <path d="M9 9V6a3 3 0 0 1 6 0v3" />
-          </svg>
-          <span class="bag-count" aria-label="0 items">0</span>
-        </button>
+        <h1>ThrfT TOP</h1>
       </header>
 
-      <section class="welcome" id="home">
-        <div class="welcome-copy">
-          <p class="eyebrow">A LITTLE LESS NEW</p>
-          <h1>Find your<br /><em>next favorite.</em></h1>
-          <p class="intro">Pre-loved pieces, picked with care. Give great things another go.</p>
-        </div>
-        <div class="welcome-art" aria-hidden="true">
-          <span class="sun"></span>
-          <span class="art-letter">T</span>
-          <span class="art-caption">GOOD<br />AGAIN</span>
-        </div>
-      </section>
+      <section class="brand-grid" id="brand-grid" aria-label="Popular brands"></section>
 
-      <section class="browse-section" aria-labelledby="top-heading">
-        <div class="section-heading">
-          <div>
-            <p class="eyebrow">THE LABELS YOU LOVE</p>
-            <h2 id="top-heading">ThrfT top</h2>
-          </div>
-          <button class="text-button" id="view-all" type="button">View all <span>↗</span></button>
-        </div>
-
-        <label class="search-box">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <circle cx="10.8" cy="10.8" r="6.8" />
-            <path d="m16 16 4.5 4.5" />
-          </svg>
-          <input id="brand-search" type="search" placeholder="Search brands or stores" autocomplete="off" />
-          <kbd>/</kbd>
-        </label>
-
-        <div class="filter-row" role="group" aria-label="Filter brands">
-          <button class="filter-chip is-active" type="button" data-category="All">All</button>
-          <button class="filter-chip" type="button" data-category="Streetwear">Streetwear</button>
-          <button class="filter-chip" type="button" data-category="Designer">Designer</button>
-          <button class="filter-chip" type="button" data-category="Everyday">Everyday</button>
-        </div>
-
-        <div class="brand-grid" id="brand-grid" aria-live="polite"></div>
-        <p class="empty-state" id="empty-state" hidden>No labels found. Try another search.</p>
-      </section>
-
-      <section class="stores-section" id="stores" aria-labelledby="stores-heading">
-        <div class="stores-copy">
-          <div>
-            <p class="eyebrow">GOOD THINGS LIVE ON</p>
-            <h2 id="stores-heading">ThrfT stores</h2>
-          </div>
-          <p id="store-description">Independent closets. Exceptional finds. All in one place.</p>
-        </div>
-        <button class="store-link" id="explore-stores" type="button">
-          <span class="store-mark">T.</span>
-          <span class="store-link-copy"><strong>Explore the stores</strong><small>Find something with a story</small></span>
-          <span class="arrow">↗</span>
-        </button>
+      <section class="stores-section" id="stores" aria-label="Stores">
+        <h2 id="stores-heading">ThrfT stores</h2>
+        <p id="store-description" aria-live="polite"></p>
       </section>
 
       <nav class="bottom-nav" aria-label="Main navigation">
-        <button class="nav-item is-current" type="button" data-page="Discover" aria-current="page">
+        <button class="nav-item is-current" type="button" data-page="Start" aria-current="page">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1V10Z" /></svg>
-          <span>Discover</span>
+          <span>Start</span>
         </button>
-        <button class="nav-item" type="button" data-page="Search">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8" /><path d="m16 16 4.5 4.5" /></svg>
-          <span>Search</span>
+        <button class="nav-item" type="button" data-page="Cart">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h16l-1 12H5L4 8Z" /><path d="M9 8V6a3 3 0 0 1 6 0v2" /></svg>
+          <span>Cart</span>
         </button>
         <button class="nav-item" type="button" data-page="Sell">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v16M4 12h16" /></svg>
