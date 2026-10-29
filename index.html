@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Discover pre-loved finds from the brands you love on ThrfT." />
+    <meta name="theme-color" content="#111111" />
+    <title>ThrfT — ThrfT TOP</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <main class="app-shell" id="home">
+      <header class="topbar">
+        <h1>ThrfT TOP</h1>
+      </header>
+
+      <section class="brand-grid" id="brand-grid" aria-label="Popular brands"></section>
+
+      <section class="stores-section" id="stores" aria-label="Stores">
+        <h2 id="stores-heading">ThrfT stores</h2>
+        <p id="store-description" aria-live="polite"></p>
+      </section>
+
+      <nav class="bottom-nav" aria-label="Main navigation">
+        <button class="nav-item is-current" type="button" data-page="Start" aria-current="page">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1V10Z" /></svg>
+          <span>Start</span>
+        </button>
+        <button class="nav-item" type="button" data-page="Cart">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h16l-1 12H5L4 8Z" /><path d="M9 8V6a3 3 0 0 1 6 0v2" /></svg>
+          <span>Cart</span>
+        </button>
+        <button class="nav-item" type="button" data-page="Sell">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v16M4 12h16" /></svg>
+          <span>Sell</span>
+        </button>
+        <button class="nav-item" type="button" data-page="Inbox">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v14H4z" /><path d="m4 7 8 6 8-6" /></svg>
+          <span>Inbox</span>
+        </button>
+        <button class="nav-item" type="button" data-page="Profile">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5" /><path d="M4.5 21a7.5 7.5 0 0 1 15 0" /></svg>
+          <span>Profile</span>
+        </button>
+      </nav>
+      <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    </main>
+  </body>
+</html>
