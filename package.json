@@ -1,0 +1,30 @@
+{
+  "name": "thrft-home-dna",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host",
+    "server": "node server/index.js",
+    "backend": "node ../../backend/server.js",
+    "dev:all": "node server/index.js & node ../../backend/server.js & vite --host",
+    "build": "vite build",
+    "preview": "vite preview --host",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:migrate": "prisma migrate dev"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.19.3",
+    "@supabase/server": "^1.9.2",
+    "@supabase/supabase-js": "^2.49.1",
+    "qrcode": "^1.5.4",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "prisma": "^6.19.3",
+    "vite": "^6.0.0"
+  }
+}
