@@ -1,0 +1,655 @@
+.brand-globe {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.brand-globe.is-dock {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+}
+
+.brand-globe-scrim {
+  position: absolute;
+  inset: 0;
+  border: none;
+  background: rgba(0, 0, 0, 0.42);
+  cursor: pointer;
+}
+
+.brand-globe.is-blend .brand-globe-scrim {
+  /* Soft blur so ring words stay readable over home content. */
+  background: rgba(8, 8, 8, 0.2);
+  backdrop-filter: blur(22px) saturate(1.12);
+  -webkit-backdrop-filter: blur(22px) saturate(1.12);
+}
+
+.brand-globe-panel {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  padding: 14px 12px calc(16px + env(safe-area-inset-bottom, 0px));
+  border-radius: 22px 22px 0 0;
+  border: 1px solid var(--glass-border, rgba(150, 150, 150, 0.22));
+  border-bottom: none;
+  background: var(--glass-clear-tint, rgba(28, 28, 28, 0.55));
+  backdrop-filter: blur(16px) saturate(1.35);
+  -webkit-backdrop-filter: blur(16px) saturate(1.35);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.brand-globe-panel.is-dock {
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
+  will-change: transform, opacity;
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-globe.is-very-dense .brand-globe-panel.is-dock {
+  width: 100%;
+  overflow: visible;
+}
+
+.brand-globe.is-dock.is-enter .brand-globe-panel.is-dock {
+  animation: brand-globe-emerge 0.48s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.brand-globe.is-dock.is-open .brand-globe-panel.is-dock {
+  transform: translate(0, 0) scale(1);
+  opacity: 1;
+}
+
+.brand-globe.is-dock.is-exit .brand-globe-panel.is-dock {
+  animation: brand-globe-suck 0.42s cubic-bezier(0.55, 0.05, 0.8, 0.35) both;
+}
+
+.brand-globe.is-dock.is-enter .brand-globe-scrim {
+  animation: brand-globe-scrim-in 0.3s ease both;
+}
+
+.brand-globe.is-dock.is-exit .brand-globe-scrim {
+  animation: brand-globe-scrim-out 0.36s ease both;
+}
+
+@keyframes brand-globe-emerge {
+  from {
+    opacity: 0;
+    transform: translate(var(--globe-dx, 0px), var(--globe-dy, 120px))
+      scale(0.08);
+  }
+  to {
+    opacity: 1;
+    transform: translate(0, 0) scale(1);
+  }
+}
+
+@keyframes brand-globe-suck {
+  from {
+    opacity: 1;
+    transform: translate(0, 0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translate(var(--globe-dx, 0px), var(--globe-dy, 120px))
+      scale(0.06);
+  }
+}
+
+@keyframes brand-globe-scrim-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes brand-globe-scrim-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.brand-globe-head {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  min-height: 28px;
+}
+
+.brand-globe-title {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.brand-globe-close {
+  position: absolute;
+  right: 2px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 1.35rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.brand-globe-stage {
+  position: relative;
+  width: 100%;
+  /* Whole page is the canvas — no boxed stage that eats words at the edge. */
+  height: min(560px, calc(100dvh - 210px));
+  margin: 0 auto;
+  touch-action: none;
+  cursor: grab;
+  user-select: none;
+  overflow: visible;
+  border-radius: 0;
+  background: transparent;
+}
+
+.brand-globe-stage.is-brushing,
+.brand-globe-stage.is-rotating {
+  cursor: grabbing;
+}
+
+.brand-globe-stage.is-rotating .brand-globe-label {
+  transition: none;
+}
+
+.brand-globe-panel.is-dock .brand-globe-stage {
+  flex: 1 1 auto;
+  width: 100%;
+  height: auto;
+  min-height: calc(100dvh - 120px);
+  max-height: none;
+  overflow: visible;
+}
+
+.brand-globe.is-very-dense .brand-globe-panel.is-dock .brand-globe-stage {
+  min-height: calc(100dvh - 120px);
+  overflow: visible;
+}
+
+/* Group members — keep the orbit close to the seat, not page-wide. */
+.brand-globe.is-compact .brand-globe-panel.is-dock .brand-globe-stage {
+  min-height: calc(100dvh - 120px);
+}
+
+.brand-globe.is-compact .brand-globe-label {
+  font-size: 0.82rem;
+  letter-spacing: 0.02em;
+  /* Keep carousel names crisp and readable around the orb */
+  text-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.65),
+    0 2px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* Invisible globe — no disc, no ring lines, no logos. Depth comes from the words. */
+.brand-globe-earth {
+  display: none;
+}
+
+/* Select circle — empty middle seat for the brand being chosen. */
+.brand-globe-center-hole {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(118px, 32vw);
+  height: min(118px, 32vw);
+  transform: translate(-50%, -50%) scale(1);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 1;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(0, 0, 0, 0.2) 0%,
+    rgba(0, 0, 0, 0.06) 58%,
+    transparent 74%
+  );
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.12),
+    0 10px 22px rgba(0, 0, 0, 0.28);
+  transition:
+    transform 0.16s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.16s ease,
+    background 0.16s ease;
+}
+
+.brand-globe-stage.is-choosing .brand-globe-center-hole {
+  transform: translate(-50%, -50%) scale(0.9) translateY(4px);
+  background: radial-gradient(
+    circle at 50% 42%,
+    rgba(0, 0, 0, 0.38) 0%,
+    rgba(0, 0, 0, 0.14) 58%,
+    transparent 78%
+  );
+  box-shadow:
+    inset 0 10px 22px rgba(0, 0, 0, 0.55),
+    inset 0 -2px 6px rgba(255, 255, 255, 0.06),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.brand-globe-stage.is-popping .brand-globe-center-hole {
+  animation: brand-globe-seat-pop 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.brand-globe-field {
+  position: absolute;
+  /* Oversized so corner / off-screen brands stay in the flat canvas while panning. */
+  inset: -40%;
+  z-index: 2;
+  pointer-events: none;
+  overflow: visible;
+  /* Soft clear only the select circle — no page-edge mask that eats words. */
+  -webkit-mask-image: radial-gradient(
+    circle at 50% 50%,
+    transparent 0,
+    transparent min(62px, 17vw),
+    #000 calc(min(76px, 20.5vw))
+  );
+  mask-image: radial-gradient(
+    circle at 50% 50%,
+    transparent 0,
+    transparent min(62px, 17vw),
+    #000 calc(min(76px, 20.5vw))
+  );
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+}
+
+.brand-globe-label {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin: 0;
+  padding: 6px 5px;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: rgba(255, 255, 255, 0.94);
+  font-family: var(--font-sans);
+  font-size: 0.84rem;
+  font-weight: 400;
+  letter-spacing: 0.012em;
+  line-height: 1.15;
+  white-space: nowrap;
+  cursor: default;
+  text-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.55),
+    0 2px 14px rgba(0, 0, 0, 0.45);
+  transform-origin: center center;
+  pointer-events: none;
+  transition:
+    opacity 0.28s ease,
+    color 0.16s ease;
+}
+
+.brand-globe.is-dense .brand-globe-label {
+  font-size: 0.78rem;
+  padding: 4px 3px;
+  letter-spacing: 0.01em;
+}
+
+.brand-globe.is-very-dense .brand-globe-label {
+  font-size: 0.56rem;
+  padding: 1px 0;
+  letter-spacing: 0;
+  /* Full names only — never clip mid-word. */
+  max-width: none;
+  overflow: visible;
+  text-overflow: clip;
+}
+
+.brand-globe.is-very-dense .brand-globe-label.is-long {
+  font-size: 0.48rem;
+  letter-spacing: -0.01em;
+}
+
+/* Full-width search; back / + are chip containers inside the bar */
+.brand-globe-search-row {
+  display: flex;
+  align-items: center;
+  justify-content: stretch;
+  width: 100%;
+  margin: 10px 0 0;
+  padding: 0 16px;
+  box-sizing: border-box;
+}
+
+.brand-globe-panel.is-dock .brand-globe-search-row {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(6px + env(safe-area-inset-bottom, 0px));
+  transform: none;
+  z-index: 6;
+  margin: 0;
+  pointer-events: auto;
+}
+
+/* Back / + sit in the bar as plain icons — no chip containers */
+.brand-globe-dock-back,
+.brand-globe-dock-plus {
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  box-sizing: border-box;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: #fff;
+  cursor: pointer;
+}
+
+.brand-globe-search-confirm.dock-chip {
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  box-sizing: border-box;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  padding: 0;
+  border-radius: 12px;
+  border: 1px solid var(--glass-border, rgba(150, 150, 150, 0.22));
+  background: var(--glass-clear-tint, rgba(36, 36, 36, 0.1));
+  backdrop-filter: blur(var(--glass-blur, 3px)) saturate(var(--glass-sat, 1.55));
+  -webkit-backdrop-filter: blur(var(--glass-blur, 3px))
+    saturate(var(--glass-sat, 1.55));
+  box-shadow: var(--glass-depth);
+  color: #fff;
+  cursor: pointer;
+}
+
+.brand-globe-dock-ico {
+  width: 18px;
+  height: 18px;
+}
+
+.brand-globe-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
+  height: 48px;
+  margin: 0;
+  padding: 6px;
+  box-sizing: border-box;
+  border-radius: 16px;
+  background: var(--glass-clear-tint, rgba(36, 36, 36, 0.04));
+  backdrop-filter: blur(var(--glass-blur, 3px)) saturate(var(--glass-sat, 1.55));
+  -webkit-backdrop-filter: blur(var(--glass-blur, 3px))
+    saturate(var(--glass-sat, 1.55));
+  box-shadow: var(--glass-depth);
+  border: 1px solid var(--glass-border, rgba(150, 150, 150, 0.18));
+}
+
+.brand-globe-search-input {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: #fff;
+  caret-color: #fff;
+  font-family: inherit;
+  font-size: 0.86rem;
+  outline: none;
+  box-sizing: border-box;
+  color-scheme: dark;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.brand-globe-search-input::placeholder {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.brand-globe-search-input::-webkit-search-cancel-button,
+.brand-globe-search-input::-webkit-search-decoration {
+  -webkit-appearance: none;
+  appearance: none;
+  display: none;
+}
+
+.brand-globe-search-input:-webkit-autofill,
+.brand-globe-search-input:-webkit-autofill:hover,
+.brand-globe-search-input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #fff;
+  caret-color: #fff;
+  box-shadow: 0 0 0 1000px rgba(var(--app-color-rgb, 36, 36, 36), 0.42) inset;
+  transition: background-color 99999s ease-out;
+}
+
+.brand-globe-search-confirm:disabled {
+  opacity: 0.38;
+  cursor: default;
+}
+
+.brand-globe-check-ico {
+  width: 20px;
+  height: 20px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.brand-globe-label.is-long {
+  font-size: 0.78rem;
+  letter-spacing: 0.004em;
+}
+
+.brand-globe.is-dense .brand-globe-label.is-long {
+  font-size: 0.7rem;
+  letter-spacing: 0;
+}
+
+
+
+.brand-globe-label-text {
+  display: inline-block;
+  max-width: none;
+  overflow: visible;
+  text-overflow: clip;
+  white-space: nowrap;
+  transform-origin: center center;
+  transition: transform 0.16s ease;
+}
+
+.brand-globe-label.is-near .brand-globe-label-text {
+  transform: scale(1.08);
+}
+
+.brand-globe-label.is-focus,
+.brand-globe-label.is-in-seat {
+  opacity: 0 !important;
+  pointer-events: none;
+}
+
+.brand-globe-label.is-active:not(.is-focus) {
+  color: #fff;
+}
+
+.brand-globe-label:hover:not(.is-focus) {
+  color: #fff;
+}
+
+/* Center seat — display + hold-to-choose control (full circle hit target). */
+.brand-globe-focus {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 60;
+  width: min(118px, 32vw);
+  height: min(118px, 32vw);
+  margin: 0;
+  padding: 12px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: #fff;
+  font-family: var(--font-sans);
+  font-size: 1.55rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  line-height: 1.12;
+  white-space: normal;
+  cursor: grab;
+  display: grid;
+  place-items: center;
+  transform: translate(-50%, -50%) scale(1) translateY(0);
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.4);
+  pointer-events: auto;
+  touch-action: none;
+  user-select: none;
+  overflow: hidden;
+  transition:
+    transform 0.16s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.16s ease;
+  will-change: transform;
+}
+
+/* Pressed in — 3D sunk seat while holding. */
+.brand-globe-focus.is-choosing {
+  cursor: grabbing;
+  transform: translate(-50%, -50%) scale(0.88) translateY(5px);
+  filter: brightness(0.9);
+  transition-duration: 0.1s;
+}
+
+/* Release spring — pops back up past rest, then settles. */
+.brand-globe-focus.is-popping {
+  animation: brand-globe-seat-pop 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes brand-globe-seat-pop {
+  0% {
+    transform: translate(-50%, -50%) scale(0.88) translateY(5px);
+    filter: brightness(0.9);
+  }
+  55% {
+    transform: translate(-50%, -50%) scale(1.07) translateY(-3px);
+    filter: brightness(1.08);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1) translateY(0);
+    filter: brightness(1);
+  }
+}
+
+.brand-globe-focus.is-scrolling .brand-globe-focus-text {
+  animation: none;
+  opacity: 1;
+}
+
+.brand-globe-focus-text {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: max-content;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  overflow: visible;
+  text-align: center;
+  white-space: nowrap;
+  transform-origin: center center;
+  animation: brand-globe-focus-in 0.22s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.brand-globe-focus-text.is-stacked {
+  gap: 0.02em;
+}
+
+.brand-globe-focus-line {
+  display: block;
+  white-space: nowrap;
+}
+
+@keyframes brand-globe-focus-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.brand-globe-stage.is-brushing .brand-globe-focus-text,
+.brand-globe-stage.is-choosing .brand-globe-focus-text {
+  animation-duration: 0.12s;
+}
+
+.brand-globe-stage.is-choosing {
+  cursor: grabbing;
+}
+
+.brand-globe-focus.is-active {
+  filter: brightness(1.08);
+}
+
+.brand-globe-label:focus-visible,
+.brand-globe-focus:focus-visible {
+  outline: 1px solid rgba(255, 255, 255, 0.4);
+  outline-offset: 4px;
+}
+
+.brand-globe-stage:hover {
+  cursor: grab;
+}

@@ -1,0 +1,232 @@
+.auth-screen {
+  position: absolute;
+  inset: 0;
+  z-index: 70;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  background: transparent;
+  pointer-events: auto;
+  color: #f4f4f2;
+}
+
+.auth-top {
+  flex: 0 0 auto;
+  display: grid;
+  grid-template-columns: 40px 1fr 40px;
+  align-items: center;
+  min-height: 56px;
+  padding: 10px 12px 6px;
+}
+
+.auth-top.is-brand-only {
+  padding-top: 28px;
+}
+
+.auth-back {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: #fff;
+}
+
+.auth-back-ico {
+  width: 22px;
+  height: 22px;
+}
+
+.auth-top-spacer {
+  width: 40px;
+  height: 40px;
+}
+
+.auth-brand {
+  margin: 0;
+  text-align: center;
+  font-family: var(--font-sans);
+  font-size: clamp(1.85rem, 6vw, 2.35rem);
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+}
+
+.auth-brand span {
+  font-size: 0.45em;
+  vertical-align: 0.2em;
+  margin-left: 0.05em;
+}
+
+.auth-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  gap: 10px;
+  width: min(100%, 280px);
+  margin: 0 auto;
+  padding: 16px 24px calc(28px + env(safe-area-inset-bottom, 0px));
+}
+
+.auth-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 9px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--glass-border, rgba(168, 168, 168, 0.2));
+  background: var(--glass-tint, rgba(36, 36, 36, 0.12));
+  box-sizing: border-box;
+}
+
+.auth-field-label {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.48);
+}
+
+.auth-field-input {
+  width: 100%;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  color: #fff;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.25;
+  outline: none;
+}
+
+.auth-field-input::placeholder {
+  color: rgba(255, 255, 255, 0.28);
+}
+
+.auth-cta {
+  width: 100%;
+  min-height: 42px;
+  margin-top: 2px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: var(--glass-tint-active, rgba(36, 36, 36, 0.2));
+  color: #fff;
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.auth-cta:hover,
+.auth-cta:focus-visible {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.32);
+  outline: none;
+}
+
+/* Apple then Google under the CTA */
+.auth-social {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 0;
+}
+
+.auth-social-btn {
+  width: 100%;
+  height: 42px;
+  min-height: 42px;
+  aspect-ratio: auto;
+  border-radius: 12px;
+  border: 1px solid var(--glass-border, rgba(150, 150, 150, 0.2));
+  background: var(--glass-tint, rgba(36, 36, 36, 0.12));
+  color: #fff;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  cursor: pointer;
+  transition: filter 0.2s ease, background 0.2s ease;
+}
+
+.auth-social-btn:hover,
+.auth-social-btn:focus-visible {
+  filter: brightness(1.15);
+  outline: none;
+}
+
+.auth-logo {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+
+.auth-choice {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.auth-choice-btn {
+  min-height: 42px;
+  border-radius: 12px;
+  border: 1px solid var(--glass-border, rgba(168, 168, 168, 0.2));
+  background: var(--glass-tint, rgba(36, 36, 36, 0.12));
+  color: #fff;
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.auth-choice-btn:hover,
+.auth-choice-btn:focus-visible {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.28);
+  outline: none;
+}
+
+.auth-switch-link {
+  align-self: center;
+  margin-top: 6px;
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.65);
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.auth-error {
+  margin: 0;
+  text-align: center;
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: rgba(255, 170, 160, 0.92);
+}
+
+.auth-cta:disabled,
+.auth-social-btn:disabled,
+.auth-field-input:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}

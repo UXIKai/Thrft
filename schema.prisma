@@ -1,0 +1,139 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// Marketplace seller / shopper account (email or OAuth).
+model Account {
+  id           Int      @id @default(autoincrement())
+  email        String   @unique
+  displayName  String   @default("") @map("display_name")
+  passwordHash String   @default("") @map("password_hash")
+  provider     String   @default("email")
+  providerSub  String   @default("") @map("provider_sub")
+  avatarUrl    String   @default("") @map("avatar_url")
+  username     String   @default("")
+  bio          String   @default("")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  sessions Session[]
+  products Product[]
+  profile  UserProfile?
+
+  @@unique([provider, providerSub])
+  @@index([username])
+  @@map("accounts")
+}
+
+model Session {
+  token     String   @id
+  accountId Int      @map("account_id")
+  account   Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  createdAt DateTime @map("created_at")
+  expiresAt DateTime @map("expires_at")
+
+  @@index([accountId])
+  @@map("sessions")
+}
+
+/// Per-account settings / profile payload (replaces singleton SQLite row).
+model UserProfile {
+  id                  Int      @id @default(autoincrement())
+  accountId           Int?     @unique @map("account_id")
+  account             Account? @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  email               String   @default("")
+  displayName         String   @default("") @map("display_name")
+  joined              String   @default("")
+  updatedAt           DateTime @updatedAt @map("updated_at")
+  identityStatus      String   @default("unverified") @map("identity_status")
+  identityProvider    String   @default("") @map("identity_provider")
+  identityRef         String   @default("") @map("identity_ref")
+  legalName           String   @default("") @map("legal_name")
+  profileLinks        Json     @default("[]") @map("profile_links")
+  suppliers           Json     @default("[]")
+  avatarUrl           String   @default("") @map("avatar_url")
+  identityEmail       String   @default("") @map("identity_email")
+  identityScope       String   @default("") @map("identity_scope")
+  identityVerifiedAt  String   @default("") @map("identity_verified_at")
+  identityGroups      Json     @default("[]") @map("identity_groups")
+  clothingSizes       Json     @default("{}") @map("clothing_sizes")
+  favoredBrands       Json     @default("[]") @map("favored_brands")
+  brandSizes          Json     @default("{}") @map("brand_sizes")
+  shippingAddress     String   @default("") @map("shipping_address")
+  authProvider        String   @default("") @map("auth_provider")
+  connections         Json     @default("{}")
+
+  @@map("user_profiles")
+}
+
+model Product {
+  id          String   @id
+  accountId   Int      @map("account_id")
+  account     Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  title       String
+  brand       String   @default("")
+  category    String   @default("")
+  price       String   @default("")
+  condition   String   @default("")
+  description String   @default("")
+  segment     String   @default("store")
+  status      String   @default("active")
+  photoUrl    String   @default("") @map("photo_url")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@index([accountId])
+  @@index([status])
+  @@map("products")
+}
+
+model SavedItem {
+  id        String   @id
+  payload   Json
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("saved_items")
+}
+
+model AppKv {
+  key   String @id
+  value String
+
+  @@map("app_kv")
+}
+
+model InterestEvent {
+  id           String   @id
+  accountKey   String   @map("account_key")
+  kind         String
+  productId    String   @default("") @map("product_id")
+  brandId      String   @default("") @map("brand_id")
+  clothingType String   @default("") @map("clothing_type")
+  query        String   @default("")
+  weight       Float    @default(1)
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@index([accountKey])
+  @@index([kind])
+  @@map("interest_events")
+}
+
+model CheckoutOrder {
+  id          String   @id
+  accountKey  String   @default("") @map("account_key")
+  productId   String   @default("") @map("product_id")
+  title       String   @default("")
+  amountTotal Int      @default(0) @map("amount_total")
+  currency    String   @default("usd")
+  status      String   @default("open")
+  mode        String   @default("live")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("checkout_orders")
+}

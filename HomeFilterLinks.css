@@ -1,0 +1,45 @@
+.home-filter-links {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: clamp(2.4rem, 12vw, 4.2rem);
+  width: 100%;
+  margin: 6px auto 14px;
+  padding: 0 18px;
+}
+
+.home-filter-link {
+  margin: 0;
+  padding: 6px 2px;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: rgba(255, 255, 255, 0.62);
+  font-family: var(--font-sans);
+  font-size: 1.05rem;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 0.16s ease, opacity 0.16s ease;
+}
+
+.home-filter-link.is-set {
+  color: #fff;
+  font-weight: 700;
+}
+
+.home-filter-link:hover,
+.home-filter-link:focus-visible {
+  color: #fff;
+  outline: none;
+}
+
+.home-filter-link:focus-visible {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}

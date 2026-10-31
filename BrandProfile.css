@@ -1,0 +1,59 @@
+.brand-profile-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+  padding: 28px 16px;
+}
+
+.brand-profile-mark {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-sans);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #0a0a0a;
+  background: #fff;
+}
+
+.brand-profile-cat {
+  margin: 0;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.brand-profile-empty {
+  margin: 0 0 12px;
+  padding: 0 4px;
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.brand-profile-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.brand-profile-row {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px;
+  border-radius: 14px;
+  border: 1px solid var(--glass-border, rgba(150, 150, 150, 0.2));
+  background: var(--glass-clear-tint, rgba(36, 36, 36, 0.04));
+  color: #fff;
+  text-align: left;
+  font-size: 0.85rem;
+}

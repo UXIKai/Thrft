@@ -1,0 +1,656 @@
+.create-listing {
+  position: relative;
+  z-index: 1;
+  padding: 12px 16px 36px;
+  color: #f4f4f2;
+  background: transparent;
+  overflow: hidden;
+}
+
+.create-listing.is-adding {
+  z-index: 80;
+}
+
+.create-listing.is-adding .listing-wheels-row {
+  position: relative;
+  z-index: 3;
+}
+
+/* Keep create chrome under the blur scrim — popup stays sharp on top. */
+.create-listing.is-adding > :not(.listing-add-scrim):not(.listing-wheels-row) {
+  pointer-events: none;
+}
+
+.listing-segment {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.listing-seg-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 12px;
+  border-radius: 22px;
+  border: 1px solid var(--glass-border, rgba(168, 168, 168, 0.14));
+  background: var(--glass-clear-tint, rgba(36, 36, 36, 0.04));
+  backdrop-filter: blur(var(--glass-clear-blur, 2px)) saturate(var(--glass-sat, 1.55))
+    brightness(var(--glass-clear-bright, 0.97));
+  -webkit-backdrop-filter: blur(var(--glass-clear-blur, 2px))
+    saturate(var(--glass-sat, 1.55)) brightness(var(--glass-clear-bright, 0.97));
+  box-shadow: var(--glass-clear-depth);
+  color: rgba(244, 244, 242, 0.72);
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    filter 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.listing-seg-btn:hover,
+.listing-seg-btn:focus-visible {
+  color: #fff;
+  filter: brightness(1.35);
+  outline: none;
+}
+
+.listing-seg-btn.is-active {
+  background: var(--glass-clear-tint-active, rgba(255, 255, 255, 0.06));
+  color: #fff;
+  box-shadow: var(--glass-clear-depth);
+  filter: brightness(1.2);
+}
+
+.listing-seg-icon,
+.listing-action-icon {
+  width: 22px;
+  height: 22px;
+  flex: 0 0 auto;
+  display: block;
+}
+
+.listing-photo-drop {
+  width: 100%;
+  min-height: 168px;
+  margin-bottom: 18px;
+  padding: 24px 16px;
+  border-radius: 24px;
+  border: 1.5px dashed rgba(255, 255, 255, 0.22);
+  background: var(--glass-clear-tint, rgba(36, 36, 36, 0.04));
+  backdrop-filter: blur(var(--glass-clear-blur, 2px)) saturate(var(--glass-sat, 1.55))
+    brightness(var(--glass-clear-bright, 0.97));
+  -webkit-backdrop-filter: blur(var(--glass-clear-blur, 2px))
+    saturate(var(--glass-sat, 1.55)) brightness(var(--glass-clear-bright, 0.97));
+  box-shadow: var(--glass-clear-depth);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #fff;
+  text-align: center;
+  transition: filter 0.2s ease, border-color 0.2s ease;
+}
+
+.listing-photo-drop:hover,
+.listing-photo-drop:focus-visible {
+  filter: brightness(1.35);
+  outline: none;
+}
+
+.listing-photo-icon {
+  width: 34px;
+  height: 34px;
+  opacity: 0.92;
+}
+
+.listing-wheels-row {
+  position: relative;
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  margin: 2px 0 12px;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.listing-wheels-row.is-adding {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+}
+
+.listing-wheels-row .listing-wheels,
+.listing-wheels-row .listing-add-sheet {
+  width: 100%;
+  min-width: 0;
+}
+
+/* Fields only — same width/size as Price; Brand/Type stay in .listing-wheels. */
+.listing-add-sheet {
+  position: relative;
+  z-index: 32;
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
+}
+
+.listing-add-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: rgba(6, 6, 6, 0.28);
+  backdrop-filter: blur(28px) saturate(1.1);
+  -webkit-backdrop-filter: blur(28px) saturate(1.1);
+  cursor: pointer;
+}
+
+.listing-add-card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 100%;
+  padding: 0;
+  border-radius: 0;
+  border: none;
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+}
+
+.listing-add-field {
+  margin-bottom: 14px;
+}
+
+/* Static kind label for the locked add page (not a switcher) */
+.listing-add-kind {
+  width: 100%;
+  min-height: 52px;
+  margin: 0 0 10px;
+  padding: 12px 14px;
+  box-sizing: border-box;
+  border-radius: 22px;
+  border: 1px solid var(--glass-border, rgba(168, 168, 168, 0.14));
+  background: var(--glass-clear-tint-active, rgba(255, 255, 255, 0.06));
+  backdrop-filter: blur(var(--glass-clear-blur, 2px)) saturate(var(--glass-sat, 1.55))
+    brightness(var(--glass-clear-bright, 0.97));
+  -webkit-backdrop-filter: blur(var(--glass-clear-blur, 2px))
+    saturate(var(--glass-sat, 1.55)) brightness(var(--glass-clear-bright, 0.97));
+  box-shadow: var(--glass-clear-depth);
+  color: #fff;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-align: center;
+  filter: brightness(1.15);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Inset input lives inside .listing-box — inherits Price footprint. */
+.listing-add-input {
+  width: 100%;
+}
+
+/* Match .listing-box (Price) exactly — same size, radius, glass. */
+.listing-add-save {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 52px;
+  min-height: 52px;
+  max-height: 52px;
+  margin: 0 0 14px;
+  padding: 0 18px;
+  box-sizing: border-box;
+  border-radius: 22px;
+  border: 1px solid var(--glass-border, rgba(168, 168, 168, 0.14));
+  background: var(--glass-clear-tint, rgba(36, 36, 36, 0.04));
+  backdrop-filter: blur(var(--glass-clear-blur, 2px)) saturate(var(--glass-sat, 1.55))
+    brightness(var(--glass-clear-bright, 0.97));
+  -webkit-backdrop-filter: blur(var(--glass-clear-blur, 2px))
+    saturate(var(--glass-sat, 1.55)) brightness(var(--glass-clear-bright, 0.97));
+  box-shadow: var(--glass-clear-depth);
+  color: #fff;
+  font-family: var(--font-sans);
+  font-size: 1.2rem;
+  font-weight: 500;
+  line-height: 1;
+  cursor: pointer;
+  transition: filter 0.2s ease, border-color 0.2s ease;
+}
+
+.listing-add-save:hover,
+.listing-add-save:focus-visible {
+  filter: brightness(1.12);
+  border-color: rgba(255, 255, 255, 0.22);
+  outline: none;
+}
+
+.listing-title-field,
+.listing-price-field {
+  width: 100%;
+  margin-bottom: 14px;
+  box-sizing: border-box;
+}
+
+.listing-scan-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.listing-scanner-btn {
+  width: 100%;
+  min-height: 168px;
+  margin-bottom: 18px;
+  padding: 24px 16px;
+  border-radius: 24px;
+  border: 1.5px dashed rgba(255, 255, 255, 0.22);
+  background: var(--glass-clear-tint, rgba(36, 36, 36, 0.04));
+  backdrop-filter: blur(var(--glass-clear-blur, 2px)) saturate(var(--glass-sat, 1.55))
+    brightness(var(--glass-clear-bright, 0.97));
+  -webkit-backdrop-filter: blur(var(--glass-clear-blur, 2px))
+    saturate(var(--glass-sat, 1.55)) brightness(var(--glass-clear-bright, 0.97));
+  box-shadow: var(--glass-clear-depth);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #fff;
+  text-align: center;
+  transition: filter 0.2s ease, border-color 0.2s ease;
+}
+
+.listing-scanner-btn:hover,
+.listing-scanner-btn:focus-visible {
+  filter: brightness(1.35);
+  outline: none;
+}
+
+.listing-scanner-btn.has-preview {
+  padding: 12px;
+  border-style: solid;
+  background:
+    linear-gradient(45deg, rgba(255, 255, 255, 0.06) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(255, 255, 255, 0.06) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, rgba(255, 255, 255, 0.06) 75%),
+    linear-gradient(-45deg, transparent 75%, rgba(255, 255, 255, 0.06) 75%);
+  background-size: 16px 16px;
+  background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+}
+
+.listing-scanner-icon {
+  width: 36px;
+  height: 36px;
+  opacity: 0.92;
+}
+
+.listing-scanner-label {
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.listing-scanner-sub {
+  max-width: 260px;
+  font-family: var(--font-sans);
+  font-size: 0.66rem;
+  line-height: 1.35;
+  color: rgba(244, 244, 242, 0.45);
+}
+
+.listing-scanner-preview {
+  max-width: 100%;
+  max-height: 200px;
+  object-fit: contain;
+  display: block;
+}
+
+.listing-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-bottom: 14px;
+}
+
+.listing-box {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  gap: 0;
+  width: 100%;
+  min-height: 52px;
+  padding: 16px 18px;
+  border-radius: 22px;
+  border: 1px solid var(--glass-border, rgba(168, 168, 168, 0.14));
+  background: var(--glass-clear-tint, rgba(36, 36, 36, 0.04));
+  backdrop-filter: blur(var(--glass-clear-blur, 2px)) saturate(var(--glass-sat, 1.55))
+    brightness(var(--glass-clear-bright, 0.97));
+  -webkit-backdrop-filter: blur(var(--glass-clear-blur, 2px))
+    saturate(var(--glass-sat, 1.55)) brightness(var(--glass-clear-bright, 0.97));
+  box-shadow: var(--glass-clear-depth);
+  transition:
+    filter 0.2s ease,
+    border-color 0.2s ease,
+    border-radius 0.2s ease,
+    background 0.2s ease;
+  box-sizing: border-box;
+}
+
+.listing-box:hover {
+  filter: brightness(1.12);
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+.listing-box:focus-within {
+  filter: brightness(1.14);
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+.listing-label {
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  color: rgba(244, 244, 242, 0.42);
+  pointer-events: none;
+  transition:
+    opacity 0.16s ease,
+    transform 0.16s ease,
+    visibility 0.16s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.listing-box:focus-within .listing-label,
+.listing-box.is-filled .listing-label,
+.listing-box:has(input:not(:placeholder-shown)) .listing-label,
+.listing-box:has(textarea:not(:placeholder-shown)) .listing-label {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-50%) translateY(-4px);
+}
+
+.listing-box:has(.listing-textarea) .listing-label {
+  top: 18px;
+  transform: none;
+}
+
+.listing-box:has(.listing-textarea):focus-within .listing-label,
+.listing-box:has(.listing-textarea).is-filled .listing-label,
+.listing-box:has(textarea:not(:placeholder-shown)) .listing-label {
+  transform: translateY(-4px);
+}
+
+.listing-input {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 14px;
+  border-radius: 22px;
+  border: 1px solid var(--glass-border, rgba(168, 168, 168, 0.14));
+  background: var(--glass-clear-tint, rgba(36, 36, 36, 0.04));
+  backdrop-filter: blur(var(--glass-clear-blur, 2px)) saturate(var(--glass-sat, 1.55))
+    brightness(var(--glass-clear-bright, 0.97));
+  -webkit-backdrop-filter: blur(var(--glass-clear-blur, 2px))
+    saturate(var(--glass-sat, 1.55)) brightness(var(--glass-clear-bright, 0.97));
+  box-shadow: var(--glass-clear-depth);
+  color: #fff;
+  font-family: var(--font-sans);
+  font-size: 0.92rem;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  transition: filter 0.2s ease, border-color 0.2s ease;
+}
+
+.listing-input.is-inset {
+  position: relative;
+  z-index: 1;
+  min-height: 1.25em;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
+}
+
+.listing-input.is-inset:hover,
+.listing-input.is-inset:focus {
+  filter: none;
+  border-color: transparent;
+}
+
+.listing-input::placeholder {
+  color: transparent;
+}
+
+.listing-input:hover {
+  filter: brightness(1.12);
+}
+
+.listing-input:focus {
+  border-color: rgba(255, 255, 255, 0.28);
+  filter: brightness(1.14);
+}
+
+.listing-wheels {
+  position: relative;
+  z-index: 4;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  /* Flush with Title/Price edges; gap keeps Brand and Type apart. */
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  border: none;
+  background: transparent;
+  box-shadow: none;
+}
+
+.listing-wheel-col-type {
+  position: relative;
+}
+
+.listing-globe-trigger {
+  width: 100%;
+  min-height: 52px;
+  margin: 0;
+  padding: 12px 14px;
+  border: 1px solid var(--glass-border, rgba(168, 168, 168, 0.14));
+  border-radius: 22px;
+  background: var(--glass-clear-tint, rgba(36, 36, 36, 0.04));
+  backdrop-filter: blur(var(--glass-clear-blur, 2px)) saturate(var(--glass-sat, 1.55))
+    brightness(var(--glass-clear-bright, 0.97));
+  -webkit-backdrop-filter: blur(var(--glass-clear-blur, 2px))
+    saturate(var(--glass-sat, 1.55)) brightness(var(--glass-clear-bright, 0.97));
+  box-shadow: var(--glass-clear-depth);
+  color: #fff;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-align: center;
+  cursor: pointer;
+  transition: filter 0.2s ease;
+}
+
+.listing-globe-trigger:hover,
+.listing-globe-trigger:focus-visible {
+  filter: brightness(1.28);
+  outline: none;
+}
+
+.listing-wheel-col {
+  position: relative;
+  z-index: 4;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
+}
+
+.listing-orbit-label {
+  display: none;
+  margin: 0 0 2px;
+  padding: 0 8px;
+  font-family: var(--font-sans);
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-align: center;
+  color: rgba(244, 244, 242, 0.45);
+}
+
+.create-listing .listing-orbit.type-strip-wrap {
+  padding: 0;
+}
+
+.create-listing .listing-orbit .type-strip-side {
+  min-height: 48px;
+}
+
+.listing-conditions {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.listing-condition {
+  min-height: 40px;
+  padding: 8px 6px;
+  border-radius: 999px;
+  border: 1px solid var(--glass-border, rgba(168, 168, 168, 0.14));
+  background: var(--glass-clear-tint, rgba(36, 36, 36, 0.04));
+  backdrop-filter: blur(var(--glass-clear-blur, 2px)) saturate(var(--glass-sat, 1.55))
+    brightness(var(--glass-clear-bright, 0.97));
+  -webkit-backdrop-filter: blur(var(--glass-clear-blur, 2px))
+    saturate(var(--glass-sat, 1.55)) brightness(var(--glass-clear-bright, 0.97));
+  box-shadow: var(--glass-clear-depth);
+  color: rgba(244, 244, 242, 0.75);
+  font-family: var(--font-sans);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  transition: filter 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+.listing-condition:hover,
+.listing-condition:focus-visible {
+  filter: brightness(1.35);
+  outline: none;
+}
+
+.listing-condition.is-active {
+  background: var(--glass-clear-tint-active, rgba(255, 255, 255, 0.06));
+  color: #fff;
+  filter: brightness(1.2);
+}
+
+.listing-textarea {
+  min-height: 110px;
+  resize: none;
+  line-height: 1.4;
+  padding-top: 2px;
+}
+
+.listing-box:has(.listing-textarea) {
+  min-height: 132px;
+  padding-top: 18px;
+  align-items: stretch;
+  justify-content: flex-start;
+}
+
+.listing-post {
+  width: 100%;
+  min-height: 52px;
+  margin: 8px 0 10px;
+  border: 1px solid var(--glass-border, rgba(168, 168, 168, 0.14));
+  border-radius: 22px;
+  display: grid;
+  place-items: center;
+  background: var(--glass-tint, rgba(36, 36, 36, 0.06));
+  backdrop-filter: blur(var(--glass-blur, 3px)) saturate(var(--glass-sat, 1.55))
+    brightness(var(--glass-bright, 0.98));
+  -webkit-backdrop-filter: blur(var(--glass-blur, 3px)) saturate(var(--glass-sat, 1.55))
+    brightness(var(--glass-bright, 0.98));
+  box-shadow: var(--glass-depth);
+  color: #fff;
+  transition: filter 0.2s ease, background 0.2s ease, transform 0.15s ease;
+}
+
+/* Closet: room for title bar between wheels and + */
+.listing-post.is-closet {
+  margin-top: 14px;
+}
+
+.listing-post:hover,
+.listing-post:focus-visible {
+  filter: brightness(1.4);
+  outline: none;
+}
+
+.listing-post:active {
+  transform: scale(0.985);
+}
+
+.listing-posted-note {
+  margin: 0 0 14px;
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  color: rgba(244, 244, 242, 0.5);
+  letter-spacing: 0.02em;
+}
+
+@media (max-width: 360px) {
+  .listing-conditions {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
