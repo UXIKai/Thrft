@@ -1,6 +1,7 @@
 :root {
   --font-sans: "SF Pro Text", "SF Pro Display", "SF Pro", -apple-system,
     BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --font-logo: "Playfair Display", Playfair, Georgia, "Times New Roman", serif;
 }
 
 *,

@@ -47,9 +47,10 @@
 .auth-brand {
   margin: 0;
   text-align: center;
-  font-family: var(--font-sans);
+  font-family: var(--font-logo);
   font-size: clamp(1.85rem, 6vw, 2.35rem);
-  font-weight: 700;
+  font-weight: 400;
+  font-synthesis: none;
   color: #fff;
   letter-spacing: 0.02em;
   line-height: 1.1;
