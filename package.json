@@ -8,7 +8,7 @@
     "server": "node server/index.js",
     "backend": "node ../../backend/server.js",
     "dev:all": "node server/index.js & node ../../backend/server.js & vite --host",
-    "build": "vite build",
+    "build": "vite build && node scripts/stage-vercel-output.mjs",
     "preview": "vite preview --host",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
