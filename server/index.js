@@ -14,19 +14,19 @@ import {
   deleteProduct,
   findAccountByUsername,
   updateAccount,
-} from './db.js'
-import { applyConnectAction, CONNECT_PROVIDERS } from './connect.js'
+} from '../db.js'
+import { applyConnectAction, CONNECT_PROVIDERS } from '../connect.js'
 import {
   accountKeyFromSession,
   recordInterest,
   buildForYouFeed,
-} from './forYou.js'
+} from '../forYou.js'
 import {
   getStripeCheckoutConfig,
   createCheckoutSession,
   getCheckoutSession,
   retrieveLiveCheckout,
-} from './stripeCheckout.js'
+} from '../stripeCheckout.js'
 import {
   getIdmeConfig,
   createAuthorizeRequest,
@@ -34,7 +34,7 @@ import {
   exchangeCodeForToken,
   fetchAttributes,
   attributesToProfilePatch,
-} from './idme.js'
+} from '../idme.js'
 import {
   getAuthConfig,
   signupWithEmail,
@@ -51,8 +51,8 @@ import {
   completeAppleQrSession,
   cancelAppleQrSession,
   bearerToken,
-} from './auth.js'
-import { assertDatabase } from './prisma.js'
+} from '../auth.js'
+import { assertDatabase } from '../prisma.js'
 
 const PORT = Number(process.env.THRFT_API_PORT || 8787)
 
