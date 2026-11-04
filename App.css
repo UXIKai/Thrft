@@ -83,6 +83,37 @@
   contain: layout;
 }
 
+/* Home: product rows run edge to edge; everything else stays in the centered column */
+.app-column.is-home-wide {
+  width: 100%;
+}
+
+.app-column.is-home-wide .home-scroll > *:not(.product-feed) {
+  width: 100%;
+  max-width: 560px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.app-column.is-home-wide .brand-row-head {
+  padding-left: max(16px, calc((100% - 560px) / 2 + 16px));
+  padding-right: 16px;
+}
+
+.app-column.is-home-wide .tab-bar {
+  left: 50%;
+  right: auto;
+  width: min(420px, calc(100% - 20px));
+  transform: translateX(-50%);
+}
+
+@media (min-width: 720px) {
+  .brand-row .product-box {
+    width: clamp(118px, 10vw, 176px);
+    height: calc(clamp(118px, 10vw, 176px) * 1.2034);
+  }
+}
+
 /* Book / Settings overlays: hide underlay so atmosphere stays the backdrop */
 .stage.is-overlay-open .home-scroll,
 .stage.is-overlay-open .tab-bar {

@@ -177,7 +177,7 @@ export default function App() {
     const el = columnRef.current
     if (!el) return undefined
     const ro = new ResizeObserver(([entry]) => {
-      setStageW(entry.contentRect.width)
+      setStageW(Math.min(entry.contentRect.width, 560))
     })
     ro.observe(el)
     return () => ro.disconnect()
@@ -444,7 +444,10 @@ export default function App() {
         <span className="atmosphere-bloom atmosphere-bloom-d" />
       </div>
 
-      <div className="app-column" ref={columnRef}>
+      <div
+        className={`app-column${tab === 'home' && signedIn ? ' is-home-wide' : ''}`}
+        ref={columnRef}
+      >
       {signedIn && (
         <>
       <div
