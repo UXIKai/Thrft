@@ -479,6 +479,35 @@ export default function SavedScreen({
 
   return (
     <section className="saved-screen" aria-label="Liked">
+      <div
+        className="saved-mode-switch"
+        role="tablist"
+        aria-label="Favorites view"
+      >
+        <button
+          type="button"
+          role="tab"
+          aria-selected={showBrands}
+          aria-label="Brands"
+          title="Brands"
+          className={`saved-mode-btn${showBrands ? ' is-active' : ''}`}
+          onClick={() => setMode('brands')}
+        >
+          <TrademarkIcon />
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={showItems}
+          aria-label="Clothing items"
+          title="Clothing items"
+          className={`saved-mode-btn${showItems ? ' is-active' : ''}`}
+          onClick={() => setMode('items')}
+        >
+          <ShirtIcon />
+        </button>
+      </div>
+
       <div className="saved-list-toolbar" ref={editMenuRef}>
         <div className={`saved-edit-row${editMenuOpen ? ' is-open' : ''}`}>
           {editMenuOpen ? (
@@ -567,35 +596,6 @@ export default function SavedScreen({
             </div>
           ) : null}
         </div>
-      </div>
-
-      <div
-        className="saved-mode-switch"
-        role="tablist"
-        aria-label="Favorites view"
-      >
-        <button
-          type="button"
-          role="tab"
-          aria-selected={showBrands}
-          aria-label="Brands"
-          title="Brands"
-          className={`saved-mode-btn${showBrands ? ' is-active' : ''}`}
-          onClick={() => setMode('brands')}
-        >
-          <TrademarkIcon />
-        </button>
-        <button
-          type="button"
-          role="tab"
-          aria-selected={showItems}
-          aria-label="Clothing items"
-          title="Clothing items"
-          className={`saved-mode-btn${showItems ? ' is-active' : ''}`}
-          onClick={() => setMode('items')}
-        >
-          <ShirtIcon />
-        </button>
       </div>
 
       <div className="saved-grid">

@@ -2248,6 +2248,34 @@ export default function ChatScreen({
         className={`chat-section chat-pins-section${pinsMode ? ` is-mode-${pinsMode}` : ''}`}
         aria-label="Pinned"
       >
+        <div className="chat-pinned-grid">
+          {pinnedCells.map((cell) =>
+            cell.empty ? (
+              <div key={cell.id} className="chat-pin-slot is-empty" aria-hidden>
+                <span className="chat-pin-slot-dash">—</span>
+              </div>
+            ) : (
+              <button
+                key={cell.id}
+                type="button"
+                className={`chat-pin-slot${
+                  pinSelectedIds.includes(cell.id) ? ' is-selected' : ''
+                }`}
+                aria-pressed={
+                  pinsMode === 'select'
+                    ? pinSelectedIds.includes(cell.id)
+                    : undefined
+                }
+                onClick={() => onPinnedSlotClick(cell)}
+              >
+                <span className="chat-pin-avatar" aria-hidden>
+                  {cell.initials}
+                </span>
+                <span className="chat-pin-name">{cell.title}</span>
+              </button>
+            ),
+          )}
+        </div>
         <div className="chat-list-toolbar" ref={pinsMenuRef}>
           <div className={`chat-pins-edit${pinsMenuOpen ? ' is-open' : ''}`}>
             {pinsMenuOpen ? (
@@ -2338,34 +2366,6 @@ export default function ChatScreen({
               </div>
             ) : null}
           </div>
-        </div>
-        <div className="chat-pinned-grid">
-          {pinnedCells.map((cell) =>
-            cell.empty ? (
-              <div key={cell.id} className="chat-pin-slot is-empty" aria-hidden>
-                <span className="chat-pin-slot-dash">—</span>
-              </div>
-            ) : (
-              <button
-                key={cell.id}
-                type="button"
-                className={`chat-pin-slot${
-                  pinSelectedIds.includes(cell.id) ? ' is-selected' : ''
-                }`}
-                aria-pressed={
-                  pinsMode === 'select'
-                    ? pinSelectedIds.includes(cell.id)
-                    : undefined
-                }
-                onClick={() => onPinnedSlotClick(cell)}
-              >
-                <span className="chat-pin-avatar" aria-hidden>
-                  {cell.initials}
-                </span>
-                <span className="chat-pin-name">{cell.title}</span>
-              </button>
-            ),
-          )}
         </div>
       </section>
 
