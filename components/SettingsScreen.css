@@ -1765,3 +1765,27 @@
     margin-left: 4px;
   }
 }
+
+/* Desktop: keep content in a centered, comfortably narrow column */
+@media (min-width: 720px) {
+  .settings-screen {
+    left: 50%;
+    right: auto;
+    width: min(520px, 100%);
+    transform: translateX(-50%);
+  }
+
+  .settings-top,
+  .settings-scroll > * {
+    width: 100%;
+    max-width: 440px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .settings-scroll {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
