@@ -1801,3 +1801,9 @@
     max-width: none;
   }
 }
+
+@media (min-width: 720px) {
+  .settings-screen {
+    width: max(360px, 33.333vw);
+  }
+}
