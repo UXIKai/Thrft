@@ -45,6 +45,24 @@
   mask-image: linear-gradient(180deg, #000 0%, #000 62%, transparent 100%);
 }
 
+/* Wide screens: fade the lens sideways so the column edge never shows */
+@media (min-width: 720px) {
+  .glass-overlay-top::before,
+  .settings-top::before,
+  .profile-top::before,
+  .auth-top::before,
+  .chat-thread-top::before {
+    -webkit-mask-image:
+      linear-gradient(180deg, #000 0%, #000 62%, transparent 100%),
+      linear-gradient(90deg, transparent 0, #000 18%, #000 82%, transparent 100%);
+    -webkit-mask-composite: source-in;
+    mask-image:
+      linear-gradient(180deg, #000 0%, #000 62%, transparent 100%),
+      linear-gradient(90deg, transparent 0, #000 18%, #000 82%, transparent 100%);
+    mask-composite: intersect;
+  }
+}
+
 .glass-overlay-top::after,
 .settings-top::after,
 .profile-top::after,

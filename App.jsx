@@ -164,6 +164,7 @@ export default function App() {
   const { items: cartItems, count: bagCount, addItem, replaceItems, empty } =
     useBag()
   const stageRef = useRef(null)
+  const columnRef = useRef(null)
   const scrollRef = useRef(null)
   const hideTabBar = tab === 'chat' || tab === 'saved'
 
@@ -173,7 +174,7 @@ export default function App() {
   )
 
   useEffect(() => {
-    const el = stageRef.current
+    const el = columnRef.current
     if (!el) return undefined
     const ro = new ResizeObserver(([entry]) => {
       setStageW(entry.contentRect.width)
@@ -443,6 +444,7 @@ export default function App() {
         <span className="atmosphere-bloom atmosphere-bloom-d" />
       </div>
 
+      <div className="app-column" ref={columnRef}>
       {signedIn && (
         <>
       <div
@@ -681,6 +683,7 @@ export default function App() {
           }
         />
       )}
+      </div>
     </div>
   )
 }
