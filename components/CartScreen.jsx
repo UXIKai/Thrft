@@ -82,38 +82,32 @@ export default function CartScreen({
         {items.length === 0 ? (
           <p className="cart-empty">Your bag is empty</p>
         ) : (
-          <ul className="cart-list">
-            {items.map((item) => (
-              <li key={item.id} className="cart-line">
-                <button
-                  type="button"
-                  className="cart-line-main"
-                  onClick={() => onOpenProduct?.(item)}
-                >
-                  <span className="cart-line-title">
-                    {item.title}
-                    {item.qty > 1 ? ` ×${item.qty}` : ''}
-                  </span>
-                  <span className="cart-line-meta">
-                    {[item.brandName, item.price].filter(Boolean).join(' · ')}
-                  </span>
-                </button>
-                <button
-                  type="button"
-                  className="cart-line-remove"
-                  aria-label={`Remove ${item.title}`}
-                  onClick={() => remove(item.id)}
-                  disabled={busy}
-                >
-                  Remove
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
-
-        {items.length > 0 ? (
-          <div className="cart-footer">
+          <div className="cart-checkout">
+            <ul className="cart-list">
+              {items.map((item) => (
+                <li key={item.id} className="cart-line">
+                  <button
+                    type="button"
+                    className="cart-line-main"
+                    onClick={() => onOpenProduct?.(item)}
+                  >
+                    <span className="cart-line-title">
+                      {item.title}
+                      {item.qty > 1 ? ` ×${item.qty}` : ''}
+                    </span>
+                  </button>
+                  <button
+                    type="button"
+                    className="cart-line-remove"
+                    aria-label={`Remove ${item.title}`}
+                    onClick={() => remove(item.id)}
+                    disabled={busy}
+                  >
+                    Remove
+                  </button>
+                </li>
+              ))}
+            </ul>
             <div className="cart-pay-block">
               <p className="cart-total">
                 <span>Total</span>
@@ -134,7 +128,7 @@ export default function CartScreen({
               </p>
             ) : null}
           </div>
-        ) : null}
+        )}
       </div>
 
       <div className="cart-bottom-dock">

@@ -1,11 +1,17 @@
 .cart-screen .glass-overlay-body.cart-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   padding-top: 12px;
-  padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px));
+  padding-bottom: 12px;
 }
 
 .cart-body {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
   gap: 0;
 }
 
@@ -47,30 +53,39 @@
 }
 
 .cart-empty {
-  margin: 48px 0 0;
+  margin: 0;
   text-align: center;
   font-size: 0.92rem;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.45);
 }
 
+.cart-checkout {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 18px;
+  width: max-content;
+  min-width: min(20vw, 100%);
+  max-width: 100%;
+}
+
 .cart-list {
   list-style: none;
   margin: 0;
   padding: 0;
+  width: 100%;
+  max-width: 100%;
 }
 
 .cart-line {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 12px;
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  padding: 14px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.cart-line:first-child {
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  gap: 20px;
+  width: 100%;
+  padding: 6px 0;
+  border: none;
 }
 
 .cart-line-main {
@@ -78,6 +93,7 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 4px;
+  min-width: 0;
   margin: 0;
   padding: 0;
   border: none;
@@ -92,6 +108,7 @@
   font-size: 1rem;
   font-weight: 700;
   line-height: 1.25;
+  white-space: nowrap;
 }
 
 .cart-line-meta {
@@ -101,6 +118,7 @@
 }
 
 .cart-line-remove {
+  flex: 0 0 auto;
   border: none;
   background: transparent;
   padding: 6px 0;
@@ -120,8 +138,8 @@
 }
 
 .cart-footer {
-  margin-top: auto;
-  padding-top: 22px;
+  margin-top: 0;
+  padding-top: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -133,7 +151,7 @@
   flex-direction: column;
   align-items: center;
   gap: 10px;
-  width: max(20vw, max-content);
+  width: 100%;
   max-width: 100%;
 }
 
@@ -142,7 +160,7 @@
   justify-content: space-between;
   align-items: baseline;
   gap: 16px;
-  width: max(20vw, 100%);
+  width: 100%;
   min-width: max-content;
   margin: 0;
   font-size: 0.95rem;
