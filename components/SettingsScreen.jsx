@@ -14,8 +14,10 @@ import {
   readCustomColorHex,
   readBarTransparency,
   readPalette,
+  rememberRecentColor,
   resetPalette,
   setPaletteSlot,
+  readRecentColors,
 } from '../appAppearance.js'
 import {
   initialsFromName,
@@ -630,6 +632,7 @@ export default function SettingsScreen({
   const wheelTargetRef = useRef('app')
   const paletteSlotRef = useRef(0)
   const [wheelHsv, setWheelHsv] = useState(() => hexToHsv(readCustomColorHex()))
+  const [recentColors, setRecentColors] = useState(() => readRecentColors())
   const wheelPadRef = useRef(null)
   const draggingWheel = useRef(false)
   const [idmeOpen, setIdmeOpen] = useState(false)
@@ -647,6 +650,8 @@ export default function SettingsScreen({
   const identityStatus = userProfile?.identityStatus || 'unverified'
   const identityRef = userProfile?.identityRef || ''
   const wheelHex = hsvToHex(wheelHsv.h, wheelHsv.s, wheelHsv.v)
+  const wheelHexRef = useRef(wheelHex)
+  wheelHexRef.current = wheelHex
 
   useEffect(() => {
     if (!idmeOpen) return undefined
@@ -880,12 +885,25 @@ export default function SettingsScreen({
     }
   }
 
+  function rememberColor(hex) {
+    if (!hex || hex === 'transparent') return
+    setRecentColors(rememberRecentColor(hex))
+  }
+
+  function rememberPaletteId(id) {
+    if (!id || id === 'none' || id === 'custom') return
+    const color = getPaletteColors().find((c) => c.id === id)
+    if (color?.swatch) rememberColor(color.swatch)
+  }
+
   function chooseAppColor(id) {
     setAppColor(applyAppColor(id))
+    rememberPaletteId(id)
   }
 
   function chooseBgColor(id) {
     setBgColor(applyBgColor(id))
+    rememberPaletteId(id)
   }
 
   function refreshPalette() {
@@ -949,6 +967,7 @@ export default function SettingsScreen({
       pickFromPad(e.clientX, e.clientY)
     }
     function onUp() {
+      if (draggingWheel.current) rememberColor(wheelHexRef.current)
       draggingWheel.current = false
     }
     window.addEventListener('pointermove', onMove)
@@ -1041,6 +1060,7 @@ export default function SettingsScreen({
                       )
                     })}
                   </div>
+                  <span className="settings-color-side-spacer" aria-hidden />
                 </div>
                 <div
                   className="settings-glass-slider"
@@ -1929,6 +1949,7 @@ export default function SettingsScreen({
                     return next
                   })
                 }}
+                onPointerUp={() => rememberColor(wheelHexRef.current)}
               />
             </label>
 
@@ -1937,7 +1958,42 @@ export default function SettingsScreen({
               <span className="settings-wheel-hex">{wheelHex}</span>
             </div>
 
-            <button type="button" className="glass-cta" onClick={() => setWheelOpen(false)}>
+            <div className="settings-recent" aria-label="Recent colors">
+              <p className="settings-recent-caption">Recent</p>
+              <div className="settings-recent-row" role="listbox" aria-label="8 most recent colors">
+                {Array.from({ length: 8 }, (_, i) => {
+                  const hex = recentColors[i]
+                  const selected = Boolean(hex) && hex === wheelHex
+                  return (
+                    <button
+                      key={hex || `recent-empty-${i}`}
+                      type="button"
+                      role="option"
+                      aria-selected={selected}
+                      className={`settings-recent-swatch${hex ? '' : ' is-empty'}${selected ? ' is-selected' : ''}`}
+                      style={hex ? { background: hex } : undefined}
+                      disabled={!hex}
+                      aria-label={hex ? `Recent color ${hex}` : 'Empty recent color'}
+                      onClick={() => {
+                        if (!hex) return
+                        setWheelHsv(hexToHsv(hex))
+                        applyWheelHex(hex)
+                        rememberColor(hex)
+                      }}
+                    />
+                  )
+                })}
+              </div>
+            </div>
+
+            <button
+              type="button"
+              className="glass-cta"
+              onClick={() => {
+                rememberColor(wheelHex)
+                setWheelOpen(false)
+              }}
+            >
               Done
             </button>
           </div>

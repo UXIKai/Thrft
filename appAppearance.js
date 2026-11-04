@@ -29,6 +29,8 @@ export const BG_EFFECT_COUNT = 3
 /** Editable swatch palette: 1 none + 11 replaceable colors (shared by both rows). */
 export const PALETTE_KEY = 'thrft-swatch-palette-v1'
 export const PALETTE_SIZE = 11
+export const RECENT_COLORS_KEY = 'thrft-recent-colors-v1'
+export const RECENT_COLOR_COUNT = 8
 export const DEFAULT_PALETTE_HEXES = [
   '#1e3a5f', // navy
   '#1f4d3a', // forest
@@ -169,6 +171,44 @@ export function readPalette() {
   paletteHexes = [...DEFAULT_PALETTE_HEXES]
   rebuildColorMaps()
   return getPaletteHexes()
+}
+
+export function readRecentColors() {
+  try {
+    const raw = localStorage.getItem(RECENT_COLORS_KEY)
+    if (!raw) return []
+    const parsed = JSON.parse(raw)
+    if (!Array.isArray(parsed)) return []
+    const next = []
+    for (const hex of parsed) {
+      const rgb = hexToRgb(hex)
+      if (!rgb) continue
+      const normalized = `#${String(hex).replace(/^#/, '').toLowerCase()}`
+      if (!next.includes(normalized)) next.push(normalized)
+      if (next.length === RECENT_COLOR_COUNT) break
+    }
+    return next
+  } catch {
+    return []
+  }
+}
+
+/** Newest first. Drops duplicates and keeps the last 8 choices. */
+export function rememberRecentColor(hex) {
+  const rgb = hexToRgb(hex)
+  const prev = readRecentColors()
+  if (!rgb) return prev
+  const normalized = `#${String(hex).replace(/^#/, '').toLowerCase()}`
+  const next = [normalized, ...prev.filter((c) => c !== normalized)].slice(
+    0,
+    RECENT_COLOR_COUNT,
+  )
+  try {
+    localStorage.setItem(RECENT_COLORS_KEY, JSON.stringify(next))
+  } catch {
+    /* ignore */
+  }
+  return next
 }
 
 export function resetPalette() {
