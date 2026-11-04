@@ -425,6 +425,10 @@
   border: 1px solid var(--glass-border, rgba(150, 150, 150, 0.18));
 }
 
+.brand-globe.is-compact .brand-globe-search {
+  border-radius: 999px;
+}
+
 .brand-globe-search-input {
   flex: 1;
   min-width: 0;
