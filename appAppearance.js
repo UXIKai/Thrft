@@ -279,15 +279,19 @@ export function applyGlassTokens() {
   const rim = hasColor ? liftRgb(frostBase, 0.4) : [255, 255, 255]
   const sheen = hasColor ? liftRgb(frostBase, 0.62) : [255, 255, 255]
 
-  // Linear with the thumb. Opaque = a plate of the swatch. Clear = a thin film of it.
-  const clearTint = lerp(0.07, hasColor ? 0.66 : 0.38, opaque)
-  const clearTintActive = lerp(0.12, hasColor ? 0.76 : 0.5, opaque)
-  const tint = lerp(0.1, hasColor ? 0.74 : 0.46, opaque)
-  const tintActive = lerp(0.16, hasColor ? 0.84 : 0.58, opaque)
-  const border = lerp(0.55, 0.22, opaque)
+  // A chosen swatch stays in the glass at every slider position.
+  // Opaque is a denser plate of that same color. Clear is the same container,
+  // just more see-through — the hue does not wash out.
+  // "None" is the only state with no color, and Clear can go fully colorless.
+  const clearTint = hasColor ? lerp(0.52, 0.72, opaque) : lerp(0, 0.34, opaque)
+  const clearTintActive = hasColor ? lerp(0.6, 0.8, opaque) : lerp(0, 0.46, opaque)
+  const tint = hasColor ? lerp(0.58, 0.82, opaque) : lerp(0, 0.42, opaque)
+  const tintActive = hasColor ? lerp(0.66, 0.9, opaque) : lerp(0, 0.54, opaque)
+  const border = hasColor ? lerp(0.72, 0.55, opaque) : lerp(0.22, 0.16, opaque)
 
-  const blur = lerp(0, 20, opaque)
-  const clearBlur = lerp(0, 16, opaque)
+  // Same glass container either way — clarity changes, the object does not disappear.
+  const blur = hasColor ? lerp(8, 18, opaque) : lerp(0, 16, opaque)
+  const clearBlur = hasColor ? lerp(6, 14, opaque) : lerp(0, 12, opaque)
   const sat = lerp(1.2, 1.05, opaque)
   const bright = 1
   const clearBright = 1
@@ -341,10 +345,13 @@ export function applyGlassTokens() {
   )
 
   // Panels use the same container color, only denser — never a black plate.
-  root.style.setProperty('--app-panel', rgba(base, lerp(0.22, 0.88, opaque)))
+  root.style.setProperty(
+    '--app-panel',
+    rgba(base, hasColor ? lerp(0.58, 0.88, opaque) : lerp(0, 0.72, opaque)),
+  )
   root.style.setProperty(
     '--app-scrim',
-    rgba(base, lerp(0.08, 0.4, opaque)),
+    rgba(base, hasColor ? lerp(0.28, 0.42, opaque) : lerp(0, 0.36, opaque)),
   )
   root.style.setProperty('--app-scrim-blur', '8px')
 

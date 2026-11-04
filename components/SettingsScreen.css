@@ -671,7 +671,7 @@
   background: linear-gradient(
     90deg,
     var(--slider-ink) 0%,
-    rgb(from var(--slider-ink) r g b / 0.16) 100%
+    rgb(from var(--slider-ink) r g b / 0.78) 100%
   );
   box-shadow:
     inset 0 0 0 1px rgba(255, 255, 255, 0.55),
@@ -686,7 +686,7 @@
   background: linear-gradient(
     90deg,
     var(--slider-ink) 0%,
-    rgb(from var(--slider-ink) r g b / 0.16) 100%
+    rgb(from var(--slider-ink) r g b / 0.78) 100%
   );
   box-shadow:
     inset 0 0 0 1px rgba(255, 255, 255, 0.55),
@@ -696,23 +696,26 @@
 .settings-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: var(--thumb);
-  height: var(--thumb);
-  margin-top: calc((var(--track-h) - var(--thumb)) / 2);
+  box-sizing: border-box;
+  width: 22px;
+  height: 22px;
+  /* Track is 8px and top-aligned in the input; center a 22px thumb on it. */
+  margin-top: -7px;
   border-radius: 50%;
   background: var(--slider-ink);
   border: 2px solid #fff;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
   cursor: pointer;
 }
 
 .settings-slider::-moz-range-thumb {
-  width: var(--thumb);
-  height: var(--thumb);
+  box-sizing: border-box;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   background: var(--slider-ink);
   border: 2px solid #fff;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
   cursor: pointer;
 }
 
