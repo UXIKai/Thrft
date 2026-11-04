@@ -1127,7 +1127,10 @@ export default function SettingsScreen({
                 applyBarTransparency(next)
               }}
               aria-label="Display from Opaque to Clear"
-              style={{ '--pct': `${barTransparency}%` }}
+              style={{
+                '--pct': `${barTransparency}%`,
+                '--pull': barTransparency / 100,
+              }}
             />
             <div className="settings-slider-ends">
               <span>Opaque</span>

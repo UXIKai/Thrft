@@ -30,11 +30,9 @@
   min-height: 48px;
   margin: 0 calc(-1 * var(--pf-pad-x));
   padding: 10px var(--pf-pad-x) 12px;
-  /* Seamless with atmosphere — no dark bar / border highlight */
+  /* Title stays sharp; the Apple lens is the ::before in GlassOverlay.css */
   background: transparent;
   border: none;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
 }
 
 .profile-title {

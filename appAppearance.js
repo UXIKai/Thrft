@@ -261,63 +261,42 @@ function rgba(rgb, a) {
  * Recompute all glass CSS vars from current color + slider.
  *
  * Slider label: Opaque (0) → Clear (100).
- * Opaque = frosted charcoal plates.
- * Clear = water / crystal glass — see-through, bright rim, wet sheen (not gray stain).
+ * Opaque = frosted glass plate. Clear = see-through crystal.
+ * Linear with the thumb so pulling toward Clear actually clears the glass.
  */
 export function applyGlassTokens() {
   const percent = clampPct(currentGlassPct)
   const clear = percent / 100
   const opaque = 1 - clear
-  // Ease harder into the water look near Clear so mid-slider still has body
-  const water = clear * clear
   const color = resolveColor(currentColorId)
   const hasColor = color.id !== 'none'
 
-  // Opaque = dense hue frost. Clear = translucent film of the same swatch so
-  // nav / pins / chat rows / info boxes all clearly read as Containers.
-  const frostBase = hasColor ? color.rgb : [36, 36, 36]
-  // Barely lift at Clear — washed pastels made Containers look "broken".
-  const waterBase = hasColor ? liftRgb(color.rgb, 0.06) : [255, 255, 255]
-  const base = [
-    Math.round(lerp(frostBase[0], waterBase[0], water)),
-    Math.round(lerp(frostBase[1], waterBase[1], water)),
-    Math.round(lerp(frostBase[2], waterBase[2], water)),
-  ]
-  const frostRim = hasColor ? liftRgb(frostBase, 0.12) : [150, 150, 150]
-  const waterRim = hasColor ? liftRgb(color.rgb, 0.28) : [255, 255, 255]
-  const rim = [
-    Math.round(lerp(frostRim[0], waterRim[0], water)),
-    Math.round(lerp(frostRim[1], waterRim[1], water)),
-    Math.round(lerp(frostRim[2], waterRim[2], water)),
-  ]
-  const frostSheen = hasColor ? liftRgb(frostBase, 0.4) : [170, 170, 170]
-  const waterSheen = hasColor ? liftRgb(color.rgb, 0.55) : [255, 255, 255]
-  const sheen = [
-    Math.round(lerp(frostSheen[0], waterSheen[0], water)),
-    Math.round(lerp(frostSheen[1], waterSheen[1], water)),
-    Math.round(lerp(frostSheen[2], waterSheen[2], water)),
-  ]
+  // Hue tints the film. It must not keep a solid stain once the thumb is toward Clear.
+  const frostBase = hasColor ? color.rgb : [28, 28, 30]
+  const waterBase = hasColor ? liftRgb(color.rgb, 0.28) : [255, 255, 255]
+  const base = frostBase.map((channel, i) => Math.round(lerp(channel, waterBase[i], clear)))
+  const frostRim = hasColor ? liftRgb(frostBase, 0.16) : [150, 150, 150]
+  const waterRim = hasColor ? liftRgb(color.rgb, 0.62) : [255, 255, 255]
+  const rim = frostRim.map((channel, i) => Math.round(lerp(channel, waterRim[i], clear)))
+  const sheen = hasColor ? liftRgb(color.rgb, 0.7) : [255, 255, 255]
 
-  // Strong enough at Clear that pinned boxes / tab bar / chat rows obviously change.
-  const clearTint = lerp(hasColor ? 0.34 : 0.004, hasColor ? 0.5 : 0.34, opaque)
-  const clearTintActive = lerp(hasColor ? 0.46 : 0.018, hasColor ? 0.58 : 0.42, opaque)
-  const tint = lerp(hasColor ? 0.36 : 0.01, hasColor ? 0.52 : 0.38, opaque)
-  const tintActive = lerp(hasColor ? 0.48 : 0.028, hasColor ? 0.62 : 0.48, opaque)
-  const border = lerp(hasColor ? 0.88 : 0.4, hasColor ? 0.28 : 0.1, opaque)
+  // 1:1 with the pull. Clear is a thin film, not a leftover frost.
+  const clearTint = lerp(0.028, hasColor ? 0.62 : 0.72, opaque)
+  const clearTintActive = lerp(0.06, hasColor ? 0.72 : 0.8, opaque)
+  const tint = lerp(0.04, hasColor ? 0.68 : 0.76, opaque)
+  const tintActive = lerp(0.08, hasColor ? 0.78 : 0.84, opaque)
+  const border = lerp(0.62, 0.18, opaque)
 
-  // Soft lens blur for refraction; stay light at Clear so the wash reads through
-  const blur = lerp(1.6, 14, opaque)
-  const clearBlur = lerp(1.25, 11, opaque)
-  const sat = lerp(1.78, 1.04, opaque)
-  const bright = lerp(1.08, 0.9, opaque)
-  const clearBright = lerp(1.1, 0.9, opaque)
-  // Keep Clear specular as a thin wet lip — high opacity full-pane washes gray
-  const specular = lerp(0.38, 0.06, opaque)
-  const depthAlpha = lerp(0.1, 0.38, opaque)
-  const insetHi = lerp(0.7, 0.06, opaque)
-  const insetLo = lerp(0.16, 0.03, opaque)
-  // soft-light milks gray on dark; screen gives a wet white glint at Clear
-  const specularBlend = water > 0.45 ? 'screen' : 'soft-light'
+  const blur = lerp(2, 22, opaque)
+  const clearBlur = lerp(1.4, 18, opaque)
+  const sat = lerp(1.75, 1.08, opaque)
+  const bright = lerp(1.12, 0.88, opaque)
+  const clearBright = lerp(1.16, 0.9, opaque)
+  const specular = lerp(0.22, 0.1, opaque)
+  const depthAlpha = lerp(0.06, 0.42, opaque)
+  const insetHi = lerp(0.85, 0.1, opaque)
+  const insetLo = lerp(0.22, 0.04, opaque)
+  const specularBlend = clear > 0.35 ? 'screen' : 'soft-light'
 
   const root = document.documentElement
   root.dataset.appColor = color.id
@@ -341,7 +320,7 @@ export function applyGlassTokens() {
   root.style.setProperty('--glass-specular-blend', specularBlend)
   root.style.setProperty(
     '--glass-specular',
-    `linear-gradient(125deg, ${rgba(sheen, lerp(0.5, 0.14, opaque))} 0%, ${rgba(sheen, lerp(0.1, 0.03, opaque))} 16%, transparent 36%)`,
+    `linear-gradient(125deg, ${rgba(sheen, lerp(0.55, 0.16, opaque))} 0%, ${rgba(sheen, lerp(0.08, 0.04, opaque))} 12%, transparent 28%)`,
   )
   root.style.setProperty(
     '--glass-clear-specular',

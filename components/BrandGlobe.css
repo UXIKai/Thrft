@@ -170,7 +170,7 @@
   position: relative;
   width: 100%;
   /* Whole page is the canvas — no boxed stage that eats words at the edge. */
-  height: min(560px, calc(100dvh - 210px));
+  height: min(560px, calc(var(--app-height, 100dvh) - 210px));
   margin: 0 auto;
   touch-action: none;
   cursor: grab;
@@ -193,19 +193,19 @@
   flex: 1 1 auto;
   width: 100%;
   height: auto;
-  min-height: calc(100dvh - 120px);
+  min-height: calc(var(--app-height, 100dvh) - 120px);
   max-height: none;
   overflow: visible;
 }
 
 .brand-globe.is-very-dense .brand-globe-panel.is-dock .brand-globe-stage {
-  min-height: calc(100dvh - 120px);
+  min-height: calc(var(--app-height, 100dvh) - 120px);
   overflow: visible;
 }
 
 /* Group members — keep the orbit close to the seat, not page-wide. */
 .brand-globe.is-compact .brand-globe-panel.is-dock .brand-globe-stage {
-  min-height: calc(100dvh - 120px);
+  min-height: calc(var(--app-height, 100dvh) - 120px);
 }
 
 .brand-globe.is-compact .brand-globe-label {

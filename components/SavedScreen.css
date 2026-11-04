@@ -1,9 +1,20 @@
 .saved-screen {
   position: relative;
   z-index: 1;
-  min-height: 100%;
-  padding: 8px 16px 120px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  max-height: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+  padding: max(8px, env(safe-area-inset-top, 0px)) 16px 0;
   color: #f4f4f2;
+}
+
+.saved-list-toolbar,
+.saved-mode-switch {
+  flex: 0 0 auto;
 }
 
 .saved-list-toolbar {
@@ -348,10 +359,17 @@
 
 .saved-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
   gap: 28px 18px;
+  flex: 1 1 auto;
+  min-height: 0;
   margin-top: 16px;
   align-items: start;
+  align-content: start;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  padding-bottom: 88px;
 }
 
 /* No box — picture floats on the atmosphere with the name under it. */
@@ -435,13 +453,13 @@
   position: absolute;
   left: 0;
   right: 0;
-  bottom: calc(6px + env(safe-area-inset-bottom, 0px));
+  bottom: 0;
   z-index: 80; /* above brand globe so + can suck it closed */
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: stretch;
-  padding: 0 16px;
+  padding: 8px 16px calc(8px + env(safe-area-inset-bottom, 0px));
   box-sizing: border-box;
 }
 

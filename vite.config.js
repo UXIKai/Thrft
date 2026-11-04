@@ -21,7 +21,7 @@ export default defineConfig({
         target: 'http://127.0.0.1:8790',
         changeOrigin: true,
       },
-      '/api': {
+      '/api/': {
         target: 'http://127.0.0.1:8787',
         changeOrigin: true,
       },
@@ -39,7 +39,7 @@ export default defineConfig({
         target: 'http://127.0.0.1:8790',
         changeOrigin: true,
       },
-      '/api': {
+      '/api/': {
         target: 'http://127.0.0.1:8787',
         changeOrigin: true,
       },

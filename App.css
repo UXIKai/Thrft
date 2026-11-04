@@ -58,9 +58,10 @@
 .stage {
   position: relative;
   width: 100%;
-  max-width: 430px;
+  max-width: none;
   height: 100%;
-  min-height: 100dvh;
+  min-height: 0;
+  max-height: 100%;
   margin: 0 auto;
   overflow: hidden;
   background: var(--void);
@@ -107,12 +108,17 @@
   background: transparent;
   scrollbar-width: none;
   -ms-overflow-style: none;
+  /* Clear the notch without a dead band — atmosphere shows through */
+  padding-top: env(safe-area-inset-top, 0px);
   padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px));
   box-sizing: border-box;
 }
 
 .home-scroll.is-chat-thread {
-  padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  /* Chat / Liked own their docks; don't inset the scrollport or the bar floats */
+  padding-top: 0;
+  padding-bottom: 0;
+  overflow: hidden;
 }
 
 .home-scroll::-webkit-scrollbar {
@@ -998,12 +1004,7 @@
   border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.28));
   outline: none;
   box-shadow: var(--glass-depth, 0 8px 24px rgba(0, 0, 0, 0.28));
-  /* Prefer Containers tint; keep a readable floor so Clear@100 still shows panes */
-  background: color-mix(
-    in srgb,
-    var(--glass-tint, rgba(36, 36, 36, 0.45)) 70%,
-    rgba(28, 28, 30, 0.72)
-  );
+  background: var(--glass-tint, rgba(255, 255, 255, 0.04));
   backdrop-filter: blur(var(--glass-blur, 3px)) saturate(var(--glass-sat, 1.55))
     brightness(var(--glass-bright, 1));
   -webkit-backdrop-filter: blur(var(--glass-blur, 3px)) saturate(var(--glass-sat, 1.55))
@@ -1034,11 +1035,7 @@
 /* Same glass for every product — no color stain */
 .product-box.tone-charcoal,
 .product-box.tone-olive {
-  background: color-mix(
-    in srgb,
-    var(--glass-tint, rgba(36, 36, 36, 0.45)) 70%,
-    rgba(28, 28, 30, 0.72)
-  );
+  background: var(--glass-tint, rgba(255, 255, 255, 0.04));
 }
 
 .product-code {
@@ -1144,12 +1141,13 @@
   bottom: 8px;
 }
 
-/* Bottom tabs: floating clear liquid-glass capsule over the B/W/gray wash */
+/* Bottom tabs: Apple navigation-bar lens — content scrolls under a clear capsule */
 .tab-bar {
   position: absolute;
   z-index: 4;
   left: 10px;
   right: 10px;
+  width: auto;
   bottom: calc(8px + env(safe-area-inset-bottom, 0px));
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -1157,14 +1155,32 @@
   gap: 4px;
   padding: 6px;
   border-radius: 28px;
-  border: 1px solid var(--glass-border);
+  border: 0.5px solid rgba(255, 255, 255, 0.46);
   overflow: hidden;
-  background: var(--glass-clear-tint);
-  backdrop-filter: blur(var(--glass-clear-blur)) saturate(var(--glass-sat))
-    brightness(var(--glass-clear-bright));
-  -webkit-backdrop-filter: blur(var(--glass-clear-blur)) saturate(var(--glass-sat))
-    brightness(var(--glass-clear-bright));
-  box-shadow: var(--glass-clear-depth);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.16), transparent 42%),
+    var(--glass-clear-tint);
+  backdrop-filter: blur(22px) saturate(1.9) brightness(1.06);
+  -webkit-backdrop-filter: blur(22px) saturate(1.9) brightness(1.06);
+  box-shadow:
+    0 14px 36px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.78),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.14),
+    inset 0 0 0 0.5px rgba(255, 255, 255, 0.16);
+}
+
+.tab-bar::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.62), transparent 34%);
+  mix-blend-mode: screen;
+  opacity: 0.55;
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 48%);
+  mask-image: linear-gradient(180deg, #000 0%, transparent 48%);
 }
 
 .tab-bar::after {
@@ -1175,8 +1191,15 @@
   border-radius: inherit;
   pointer-events: none;
   background: var(--glass-clear-specular);
-  mix-blend-mode: var(--glass-specular-blend, soft-light);
-  opacity: var(--glass-specular-opacity, 0.32);
+  mix-blend-mode: screen;
+  opacity: 0.42;
+}
+
+@media (min-width: 720px) {
+  .tab-bar {
+    grid-template-columns: repeat(5, minmax(72px, 112px));
+    justify-content: center;
+  }
 }
 
 .tab-item {
@@ -1202,7 +1225,17 @@
 
 .tab-item.is-active {
   color: #fff;
-  background: var(--glass-clear-tint-active);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.28),
+    rgba(255, 255, 255, 0.08)
+  );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.1),
+    0 6px 16px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(12px) saturate(1.6) brightness(1.08);
+  -webkit-backdrop-filter: blur(12px) saturate(1.6) brightness(1.08);
 }
 
 .tab-item:active {
@@ -1308,7 +1341,6 @@
       brightness(var(--glass-bright)) url('#lg-refract');
   }
 
-  .tab-bar,
   .product-box,
   .glass-pane,
   .tab-placeholder {

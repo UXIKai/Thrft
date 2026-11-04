@@ -12,12 +12,62 @@
 }
 
 .glass-overlay-top {
+  position: relative;
   flex: 0 0 auto;
   display: grid;
   grid-template-columns: 40px 1fr 40px;
   align-items: center;
   min-height: 52px;
   padding: 4px 8px 8px;
+  background: transparent;
+}
+
+/* Apple nav bar: lens sits behind the title and dissolves into the page */
+.glass-overlay-top::before,
+.settings-top::before,
+.profile-top::before,
+.auth-top::before,
+.chat-thread-top::before {
+  content: '';
+  position: absolute;
+  z-index: 0;
+  left: 0;
+  right: 0;
+  top: -8px;
+  bottom: -22px;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.04) 46%, transparent),
+    var(--glass-clear-tint, rgba(255, 255, 255, 0.04));
+  backdrop-filter: blur(22px) saturate(1.85) brightness(1.06);
+  -webkit-backdrop-filter: blur(22px) saturate(1.85) brightness(1.06);
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 62%, transparent 100%);
+  mask-image: linear-gradient(180deg, #000 0%, #000 62%, transparent 100%);
+}
+
+.glass-overlay-top::after,
+.settings-top::after,
+.profile-top::after,
+.auth-top::after,
+.chat-thread-top::after {
+  content: '';
+  position: absolute;
+  z-index: 2;
+  left: 18px;
+  right: 18px;
+  top: 0;
+  height: 1px;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.72), transparent);
+}
+
+.glass-overlay-top > *,
+.settings-top > *,
+.profile-top > *,
+.auth-top > *,
+.chat-thread-top > * {
+  position: relative;
+  z-index: 1;
 }
 
 .glass-overlay-back,
@@ -26,10 +76,13 @@
   height: 40px;
   display: grid;
   place-items: center;
-  border: none;
+  border: 0.5px solid rgba(255, 255, 255, 0.4);
   border-radius: 50%;
-  background: transparent;
+  background: rgba(255, 255, 255, 0.1);
   color: #fff;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(12px) saturate(1.6);
+  -webkit-backdrop-filter: blur(12px) saturate(1.6);
 }
 
 .glass-overlay-title {
