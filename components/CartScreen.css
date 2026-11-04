@@ -144,9 +144,15 @@
 }
 
 .cart-pay {
-  width: 100%;
+  box-sizing: border-box;
+  width: 20vw;
+  max-width: 20vw;
+  align-self: center;
+  margin-inline: auto;
   min-height: 46px;
   border-radius: 12px;
+  padding: 0 8px;
+  text-align: center;
   border: 1px solid rgba(255, 255, 255, 0.22);
   background: rgba(36, 36, 36, 0.28);
   color: #fff;
