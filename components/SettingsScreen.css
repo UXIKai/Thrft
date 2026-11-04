@@ -1789,3 +1789,15 @@
     align-items: stretch;
   }
 }
+
+/* Desktop: panel fills the middle third of the screen */
+@media (min-width: 720px) {
+  .settings-screen {
+    width: max(360px, 33.333%);
+  }
+
+  .settings-top,
+  .settings-scroll > * {
+    max-width: none;
+  }
+}
