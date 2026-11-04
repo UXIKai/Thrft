@@ -124,16 +124,30 @@
   padding-top: 22px;
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 12px;
+}
+
+.cart-pay-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: max(20vw, max-content);
+  max-width: 100%;
 }
 
 .cart-total {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
+  gap: 16px;
+  width: max(20vw, 100%);
+  min-width: max-content;
   margin: 0;
   font-size: 0.95rem;
   font-weight: 700;
+  white-space: nowrap;
 }
 
 .cart-total span {
@@ -146,9 +160,9 @@
 .cart-pay {
   box-sizing: border-box;
   width: 20vw;
-  max-width: 20vw;
+  max-width: 100%;
   align-self: center;
-  margin-inline: auto;
+  margin-inline: 0;
   min-height: 46px;
   border-radius: 12px;
   padding: 0 8px;

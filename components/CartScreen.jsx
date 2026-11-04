@@ -114,18 +114,20 @@ export default function CartScreen({
 
         {items.length > 0 ? (
           <div className="cart-footer">
-            <p className="cart-total">
-              <span>Total</span>
-              <strong>{totalLabel}</strong>
-            </p>
-            <button
-              type="button"
-              className="cart-pay"
-              disabled={busy}
-              onClick={pay}
-            >
-              {busy ? '…' : 'Pay'}
-            </button>
+            <div className="cart-pay-block">
+              <p className="cart-total">
+                <span>Total</span>
+                <strong>{totalLabel}</strong>
+              </p>
+              <button
+                type="button"
+                className="cart-pay"
+                disabled={busy}
+                onClick={pay}
+              >
+                {busy ? '…' : 'Pay'}
+              </button>
+            </div>
             {error ? (
               <p className="cart-error" role="alert">
                 {error}
