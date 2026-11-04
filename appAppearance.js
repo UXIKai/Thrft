@@ -281,21 +281,24 @@ export function applyGlassTokens() {
   const sheen = hasColor ? liftRgb(color.rgb, 0.7) : [255, 255, 255]
 
   // 1:1 with the pull. Clear is a thin film, not a leftover frost.
-  const clearTint = lerp(0.028, hasColor ? 0.62 : 0.72, opaque)
-  const clearTintActive = lerp(0.06, hasColor ? 0.72 : 0.8, opaque)
-  const tint = lerp(0.04, hasColor ? 0.68 : 0.76, opaque)
-  const tintActive = lerp(0.08, hasColor ? 0.78 : 0.84, opaque)
-  const border = lerp(0.62, 0.18, opaque)
+  // Ease so the film thins steadily; at 100% Clear it is genuinely transparent
+  // (no tint, no blur, no brightness/saturation shift) — only rim + specular remain.
+  const eased = opaque * opaque * (3 - 2 * opaque)
+  const clearTint = lerp(0, hasColor ? 0.62 : 0.72, eased)
+  const clearTintActive = lerp(0.04, hasColor ? 0.72 : 0.8, eased)
+  const tint = lerp(0, hasColor ? 0.68 : 0.76, eased)
+  const tintActive = lerp(0.05, hasColor ? 0.78 : 0.84, eased)
+  const border = lerp(0.5, 0.18, opaque)
 
-  const blur = lerp(2, 22, opaque)
-  const clearBlur = lerp(1.4, 18, opaque)
-  const sat = lerp(1.75, 1.08, opaque)
-  const bright = lerp(1.12, 0.88, opaque)
-  const clearBright = lerp(1.16, 0.9, opaque)
+  const blur = lerp(0, 22, eased)
+  const clearBlur = lerp(0, 18, eased)
+  const sat = lerp(1, 1.08, opaque)
+  const bright = lerp(1, 0.88, opaque)
+  const clearBright = lerp(1, 0.9, opaque)
   const specular = lerp(0.22, 0.1, opaque)
-  const depthAlpha = lerp(0.06, 0.42, opaque)
-  const insetHi = lerp(0.85, 0.1, opaque)
-  const insetLo = lerp(0.22, 0.04, opaque)
+  const depthAlpha = lerp(0, 0.42, eased)
+  const insetHi = lerp(0.7, 0.1, opaque)
+  const insetLo = lerp(0.2, 0.04, opaque)
   const specularBlend = clear > 0.35 ? 'screen' : 'soft-light'
 
   const root = document.documentElement
