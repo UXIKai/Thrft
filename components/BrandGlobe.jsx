@@ -70,6 +70,13 @@ function chipHeightPx(dense, veryDense) {
   return veryDense ? 14 : dense ? 17 : 19
 }
 
+/** Largest orbit radius whose labels stay fully inside the stage, including 3/9 o'clock. */
+function safeOrbitRadius(stageW, stageH, maxChipW, maxChipH, pad = 14) {
+  const horiz = stageW / 2 - maxChipW / 2 - pad
+  const vert = stageH / 2 - maxChipH / 2 - pad
+  return Math.max(24, Math.min(horiz, vert))
+}
+
 function chipArc(w, rPx) {
   return (
     2 * Math.atan((w * 0.5) / Math.max(28, rPx)) +
@@ -243,7 +250,7 @@ function applyRunningBond(byRing) {
  */
 function packCarouselOrbit(
   brands,
-  { dense = false, veryDense = false, seatPx = 56, fillR = 160 } = {},
+  { dense = false, veryDense = false, seatPx = 56, fillR = 160, safeR = Infinity } = {},
 ) {
   const n = brands.length
   if (n < 1) return { slots: [], maxR: fillR }
@@ -263,7 +270,8 @@ function packCarouselOrbit(
   const ringStep = Math.max(h + 22, 34)
   // Cap how many labels share a ring so Type lists don't crush into each other.
   const maxPerRing = Math.max(6, Math.min(10, Math.ceil(Math.sqrt(n) * 1.9)))
-  const maxRCap = Math.max(fillR * 2.1, minClearR + ringStep * 4)
+  const hardR = Number.isFinite(safeR) ? safeR : Infinity
+  const maxRCap = Math.min(hardR, Math.max(fillR * 2.1, minClearR + ringStep * 4))
 
   function minRadiusForSlice(slice) {
     const m = slice.length
@@ -318,7 +326,7 @@ function packCarouselOrbit(
     }
 
     const slice = ordered.slice(cursor, cursor + bestTake)
-    const rPx = Math.max(baseR, bestR)
+    const rPx = Math.min(hardR, Math.max(baseR, bestR))
     groups.push({ slice, rPx })
     outerR = rPx
     cursor += slice.length
@@ -343,7 +351,7 @@ function packCarouselOrbit(
         index: slice[i].index,
         lon,
         _baseLon: lon,
-        r: rPx * scale,
+        r: Math.min(hardR, rPx * scale),
         ring: r,
         w: slice[i].w,
         h: slice[i].h,
@@ -378,6 +386,7 @@ function packCircleLanes(
     compact = false,
     /** Small lists (Type) stay near the seat; grow only as items are added. */
     snug = false,
+    safeR = Infinity,
   } = {},
 ) {
   const n = brands.length
@@ -385,7 +394,7 @@ function packCircleLanes(
 
   // Group members + Type — carousel around the center orb (no overlap / seat clip).
   if (compact || snug) {
-    return packCarouselOrbit(brands, { dense, veryDense, seatPx, fillR })
+    return packCarouselOrbit(brands, { dense, veryDense, seatPx, fillR, safeR })
   }
 
   const h = chipHeightPx(dense, veryDense)
@@ -464,8 +473,10 @@ function packCircleLanes(
     if (ringIndex === 1) brickCount = slice.length
   }
 
-  // Brand page stretches to the stage.
-  const scale = outerR > 1 ? Math.max(1, fillR / outerR) : 1
+  // Brand page stretches toward the stage, but never past a fully visible label.
+  const hardR = Number.isFinite(safeR) ? safeR : fillR
+  const targetR = Math.min(fillR, hardR)
+  const scale = outerR > 1 ? Math.max(1, targetR / outerR) : 1
 
   const placed = []
   const byRing = []
@@ -479,7 +490,7 @@ function packCircleLanes(
         index: slice[i].index,
         lon: baseLon,
         _baseLon: baseLon,
-        r: rPx * scale,
+        r: Math.min(hardR, rPx * scale),
         ring: r,
         w: slice[i].w,
         h: slice[i].h,
@@ -571,11 +582,27 @@ export default function BrandGlobe({
     Math.max(44, Math.min(stageSize.w, stageSize.h) * 0.16),
   )
   // Page = stretch to corners; compact / snug = orbit near the seat.
-  const fillR = compact
-    ? Math.min(stageSize.w, stageSize.h) * 0.32
-    : snug
-      ? Math.min(stageSize.w, stageSize.h) * 0.36
-      : Math.hypot(stageSize.w * 0.5, stageSize.h * 0.5) * 0.98
+  // Cap every ring so a name at 3/9 o'clock stays fully on screen while it spins.
+  const safeR = useMemo(() => {
+    let widest = 48
+    for (const brand of brands) {
+      widest = Math.max(widest, chipWidthPx(brand?.label, dense, veryDense))
+    }
+    return safeOrbitRadius(
+      stageSize.w,
+      stageSize.h,
+      widest,
+      chipHeightPx(dense, veryDense),
+    )
+  }, [brands, dense, veryDense, stageSize.w, stageSize.h])
+  const fillR = Math.min(
+    compact
+      ? Math.min(stageSize.w, stageSize.h) * 0.32
+      : snug
+        ? Math.min(stageSize.w, stageSize.h) * 0.36
+        : Math.hypot(stageSize.w * 0.5, stageSize.h * 0.5) * 0.98,
+    safeR,
+  )
 
   const packed = useMemo(
     () =>
@@ -586,8 +613,9 @@ export default function BrandGlobe({
         fillR,
         compact,
         snug,
+        safeR,
       }),
-    [brands, dense, veryDense, seatPx, fillR, compact, snug],
+    [brands, dense, veryDense, seatPx, fillR, compact, snug, safeR],
   )
   const slots = packed.slots
   const maxR = packed.maxR || fillR

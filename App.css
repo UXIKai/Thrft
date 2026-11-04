@@ -103,7 +103,7 @@
 .app-column.is-home-wide .tab-bar {
   left: 50%;
   right: auto;
-  width: min(420px, calc(100% - 20px));
+  width: min(calc(420px + 4in), calc(100% - 20px));
   transform: translateX(-50%);
 }
 
@@ -1193,7 +1193,7 @@
   z-index: 4;
   left: 50%;
   right: auto;
-  width: min(420px, calc(100% - 20px));
+  width: min(calc(420px + 4in), calc(100% - 20px));
   transform: translateX(-50%);
   bottom: calc(8px + env(safe-area-inset-bottom, 0px));
   display: grid;

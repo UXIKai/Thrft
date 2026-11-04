@@ -355,7 +355,7 @@
   left: 50%;
   right: auto;
   bottom: calc(8px + env(safe-area-inset-bottom, 0px));
-  width: min(420px, calc(100vw - 20px));
+  width: min(calc(420px + 4in), calc(100vw - 20px));
   max-width: calc(100% - 20px);
   padding: 0;
   transform: translateX(-50%);

@@ -1735,7 +1735,7 @@ export default function ProfileScreen({
         shipOpen &&
         createPortal(
           <div
-            className="profile-panel"
+            className="profile-panel is-popup"
             role="dialog"
             aria-modal="true"
             aria-label="Ship Tracker"
@@ -1795,7 +1795,7 @@ export default function ProfileScreen({
         activeSocial &&
         createPortal(
           <div
-            className="glass-sheet"
+            className="glass-sheet is-neat"
             role="dialog"
             aria-modal="true"
             aria-label={`${SOCIAL_PLATFORMS.find((p) => p.id === activeSocial)?.label || 'Social'} handle`}
