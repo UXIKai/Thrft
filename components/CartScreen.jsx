@@ -82,54 +82,57 @@ export default function CartScreen({
         {items.length === 0 ? (
           <p className="cart-empty">Your bag is empty</p>
         ) : (
-          <div className="cart-checkout">
-            <ul className="cart-list">
-              {items.map((item) => (
-                <li key={item.id} className="cart-line">
-                  <button
-                    type="button"
-                    className="cart-line-main"
-                    onClick={() => onOpenProduct?.(item)}
-                  >
-                    <span className="cart-line-title">
-                      {item.title}
-                      {item.qty > 1 ? ` ×${item.qty}` : ''}
-                    </span>
-                  </button>
-                  <button
-                    type="button"
-                    className="cart-line-remove"
-                    aria-label={`Remove ${item.title}`}
-                    onClick={() => remove(item.id)}
-                    disabled={busy}
-                  >
-                    Remove
-                  </button>
-                </li>
-              ))}
-            </ul>
-            <div className="cart-pay-block">
-              <p className="cart-total">
-                <span>Total</span>
-                <strong>{totalLabel}</strong>
-              </p>
-              <button
-                type="button"
-                className="cart-pay"
-                disabled={busy}
-                onClick={pay}
-              >
-                {busy ? '…' : 'Pay'}
-              </button>
-            </div>
-            {error ? (
-              <p className="cart-error" role="alert">
-                {error}
-              </p>
-            ) : null}
-          </div>
+          <ul className="cart-list">
+            {items.map((item) => (
+              <li key={item.id} className="cart-line">
+                <button
+                  type="button"
+                  className="cart-line-main"
+                  onClick={() => onOpenProduct?.(item)}
+                >
+                  <span className="cart-line-title">
+                    {item.title}
+                    {item.qty > 1 ? ` ×${item.qty}` : ''}
+                  </span>
+                </button>
+                <button
+                  type="button"
+                  className="cart-line-remove"
+                  aria-label={`Remove ${item.title}`}
+                  onClick={() => remove(item.id)}
+                  disabled={busy}
+                >
+                  Remove
+                </button>
+              </li>
+            ))}
+          </ul>
         )}
       </div>
+
+      {items.length > 0 ? (
+        <div className="cart-pay-dock">
+          <div className="cart-pay-block">
+            <p className="cart-total">
+              <span>Total</span>
+              <strong>{totalLabel}</strong>
+            </p>
+            <button
+              type="button"
+              className="cart-pay"
+              disabled={busy}
+              onClick={pay}
+            >
+              {busy ? '…' : 'Pay'}
+            </button>
+          </div>
+          {error ? (
+            <p className="cart-error" role="alert">
+              {error}
+            </p>
+          ) : null}
+        </div>
+      ) : null}
 
       <div className="cart-bottom-dock">
         <button
