@@ -1734,3 +1734,34 @@
   color: #ffc9c9;
   outline: none;
 }
+
+/* Desktop: present settings as a tidy centered glass panel */
+@media (min-width: 720px) {
+  .settings-screen {
+    inset: 20px 0;
+    border-radius: 28px;
+    border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.14));
+    background: rgba(16, 16, 18, 0.72);
+    backdrop-filter: blur(28px) saturate(1.5);
+    -webkit-backdrop-filter: blur(28px) saturate(1.5);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+    overflow: hidden;
+    --st-pad: 28px;
+  }
+
+  .settings-top {
+    padding: 14px 20px 10px;
+  }
+
+  .settings-scroll {
+    padding-top: 8px;
+  }
+
+  .settings-section {
+    margin-bottom: 26px;
+  }
+
+  .settings-label {
+    margin-left: 4px;
+  }
+}
