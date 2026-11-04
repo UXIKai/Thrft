@@ -271,28 +271,23 @@ export function applyGlassTokens() {
   const color = resolveColor(currentColorId)
   const hasColor = color.id !== 'none'
 
-  // Containers and the Opaque↔Clear slider are the same surface.
-  // The swatch is the color. The slider only changes how solid that color is.
-  // Never shift the hue toward white or black — that made Clear look like a black box.
+  // Colored glass, not a painted plate. The swatch hue stays in the film,
+  // lifted just enough that a dark swatch still reads through the pane.
+  // Alpha stays low so the atmosphere shows through. None is the only colorless state.
   const frostBase = hasColor ? color.rgb : [255, 255, 255]
-  const base = frostBase
-  const rim = hasColor ? liftRgb(frostBase, 0.4) : [255, 255, 255]
-  const sheen = hasColor ? liftRgb(frostBase, 0.62) : [255, 255, 255]
+  const base = hasColor ? liftRgb(frostBase, 0.42) : [255, 255, 255]
+  const rim = hasColor ? liftRgb(frostBase, 0.28) : [255, 255, 255]
+  const sheen = hasColor ? liftRgb(frostBase, 0.7) : [255, 255, 255]
 
-  // A chosen swatch stays in the glass at every slider position.
-  // Opaque is a denser plate of that same color. Clear is the same container,
-  // just more see-through — the hue does not wash out.
-  // "None" is the only state with no color, and Clear can go fully colorless.
-  const clearTint = hasColor ? lerp(0.52, 0.72, opaque) : lerp(0, 0.34, opaque)
-  const clearTintActive = hasColor ? lerp(0.6, 0.8, opaque) : lerp(0, 0.46, opaque)
-  const tint = hasColor ? lerp(0.58, 0.82, opaque) : lerp(0, 0.42, opaque)
-  const tintActive = hasColor ? lerp(0.66, 0.9, opaque) : lerp(0, 0.54, opaque)
-  const border = hasColor ? lerp(0.72, 0.55, opaque) : lerp(0.22, 0.16, opaque)
+  const clearTint = hasColor ? lerp(0.16, 0.34, opaque) : lerp(0, 0.22, opaque)
+  const clearTintActive = hasColor ? lerp(0.22, 0.42, opaque) : lerp(0, 0.3, opaque)
+  const tint = hasColor ? lerp(0.2, 0.4, opaque) : lerp(0, 0.28, opaque)
+  const tintActive = hasColor ? lerp(0.26, 0.48, opaque) : lerp(0, 0.36, opaque)
+  const border = hasColor ? lerp(0.62, 0.42, opaque) : lerp(0.28, 0.16, opaque)
 
-  // Same glass container either way — clarity changes, the object does not disappear.
-  const blur = hasColor ? lerp(8, 18, opaque) : lerp(0, 16, opaque)
-  const clearBlur = hasColor ? lerp(6, 14, opaque) : lerp(0, 12, opaque)
-  const sat = lerp(1.2, 1.05, opaque)
+  const blur = hasColor ? lerp(12, 22, opaque) : lerp(0, 16, opaque)
+  const clearBlur = hasColor ? lerp(10, 18, opaque) : lerp(0, 12, opaque)
+  const sat = lerp(1.7, 1.3, opaque)
   const bright = 1
   const clearBright = 1
   const specular = lerp(0.26, 0.1, opaque)
@@ -347,11 +342,11 @@ export function applyGlassTokens() {
   // Panels use the same container color, only denser — never a black plate.
   root.style.setProperty(
     '--app-panel',
-    rgba(base, hasColor ? lerp(0.58, 0.88, opaque) : lerp(0, 0.72, opaque)),
+    rgba(base, hasColor ? lerp(0.2, 0.4, opaque) : lerp(0, 0.28, opaque)),
   )
   root.style.setProperty(
     '--app-scrim',
-    rgba(base, hasColor ? lerp(0.28, 0.42, opaque) : lerp(0, 0.36, opaque)),
+    rgba(frostBase, hasColor ? lerp(0.12, 0.28, opaque) : lerp(0, 0.24, opaque)),
   )
   root.style.setProperty('--app-scrim-blur', '8px')
 
