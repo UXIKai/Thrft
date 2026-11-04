@@ -1042,6 +1042,31 @@ export default function SettingsScreen({
                     })}
                   </div>
                 </div>
+                <div
+                  className="settings-glass-slider"
+                  style={{ '--pull': barTransparency / 100 }}
+                >
+                  <div className="settings-slider-head is-value-only">
+                    <span className="settings-slider-value">{barTransparency}%</span>
+                  </div>
+                  <input
+                    className="settings-slider"
+                    type="range"
+                    min={0}
+                    max={100}
+                    value={barTransparency}
+                    onChange={(e) => {
+                      const next = Number(e.target.value)
+                      setBarTransparency(next)
+                      applyBarTransparency(next)
+                    }}
+                    aria-label="Container glass from Opaque to Clear"
+                  />
+                  <div className="settings-slider-ends">
+                    <span>Opaque</span>
+                    <span>Clear</span>
+                  </div>
+                </div>
               </div>
 
               <div className="settings-color-group">
@@ -1109,34 +1134,7 @@ export default function SettingsScreen({
             </div>
           </div>
 
-          <div className="settings-divider" aria-hidden />
 
-          <div className="settings-block">
-            <div className="settings-slider-head is-value-only">
-              <span className="settings-slider-value">{barTransparency}%</span>
-            </div>
-            <input
-              className="settings-slider"
-              type="range"
-              min={0}
-              max={100}
-              value={barTransparency}
-              onChange={(e) => {
-                const next = Number(e.target.value)
-                setBarTransparency(next)
-                applyBarTransparency(next)
-              }}
-              aria-label="Display from Opaque to Clear"
-              style={{
-                '--pct': `${barTransparency}%`,
-                '--pull': barTransparency / 100,
-              }}
-            />
-            <div className="settings-slider-ends">
-              <span>Opaque</span>
-              <span>Clear</span>
-            </div>
-          </div>
         </Section>
 
         <section className="settings-section is-icon-tools" aria-label="Shop tools">

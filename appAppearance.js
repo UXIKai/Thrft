@@ -271,34 +271,30 @@ export function applyGlassTokens() {
   const color = resolveColor(currentColorId)
   const hasColor = color.id !== 'none'
 
-  // Hue tints the film. It must not keep a solid stain once the thumb is toward Clear.
-  const frostBase = hasColor ? color.rgb : [28, 28, 30]
-  const waterBase = hasColor ? liftRgb(color.rgb, 0.28) : [255, 255, 255]
-  const base = frostBase.map((channel, i) => Math.round(lerp(channel, waterBase[i], clear)))
-  const frostRim = hasColor ? liftRgb(frostBase, 0.16) : [150, 150, 150]
-  const waterRim = hasColor ? liftRgb(color.rgb, 0.62) : [255, 255, 255]
-  const rim = frostRim.map((channel, i) => Math.round(lerp(channel, waterRim[i], clear)))
-  const sheen = hasColor ? liftRgb(color.rgb, 0.7) : [255, 255, 255]
+  // Containers and the Opaque↔Clear slider are the same surface.
+  // The swatch is the color. The slider only changes how solid that color is.
+  // Never shift the hue toward white or black — that made Clear look like a black box.
+  const frostBase = hasColor ? color.rgb : [255, 255, 255]
+  const base = frostBase
+  const rim = hasColor ? liftRgb(frostBase, 0.4) : [255, 255, 255]
+  const sheen = hasColor ? liftRgb(frostBase, 0.62) : [255, 255, 255]
 
-  // 1:1 with the pull. Clear is a thin film, not a leftover frost.
-  // Ease so the film thins steadily; at 100% Clear it is genuinely transparent
-  // (no tint, no blur, no brightness/saturation shift) — only rim + specular remain.
-  const eased = opaque * opaque * (3 - 2 * opaque)
-  const clearTint = lerp(0, hasColor ? 0.62 : 0.72, eased)
-  const clearTintActive = lerp(0.04, hasColor ? 0.72 : 0.8, eased)
-  const tint = lerp(0, hasColor ? 0.68 : 0.76, eased)
-  const tintActive = lerp(0.05, hasColor ? 0.78 : 0.84, eased)
-  const border = lerp(0.5, 0.18, opaque)
+  // Linear with the thumb. Opaque = a plate of the swatch. Clear = a thin film of it.
+  const clearTint = lerp(0.07, hasColor ? 0.66 : 0.38, opaque)
+  const clearTintActive = lerp(0.12, hasColor ? 0.76 : 0.5, opaque)
+  const tint = lerp(0.1, hasColor ? 0.74 : 0.46, opaque)
+  const tintActive = lerp(0.16, hasColor ? 0.84 : 0.58, opaque)
+  const border = lerp(0.55, 0.22, opaque)
 
-  const blur = lerp(0, 22, eased)
-  const clearBlur = lerp(0, 18, eased)
-  const sat = lerp(1, 1.08, opaque)
-  const bright = lerp(1, 0.88, opaque)
-  const clearBright = lerp(1, 0.9, opaque)
-  const specular = lerp(0.22, 0.1, opaque)
-  const depthAlpha = lerp(0, 0.42, eased)
-  const insetHi = lerp(0.7, 0.1, opaque)
-  const insetLo = lerp(0.2, 0.04, opaque)
+  const blur = lerp(0, 20, opaque)
+  const clearBlur = lerp(0, 16, opaque)
+  const sat = lerp(1.2, 1.05, opaque)
+  const bright = 1
+  const clearBright = 1
+  const specular = lerp(0.26, 0.1, opaque)
+  const depthAlpha = lerp(0.04, 0.34, opaque)
+  const insetHi = lerp(0.72, 0.16, opaque)
+  const insetLo = lerp(0.22, 0.05, opaque)
   const specularBlend = clear > 0.35 ? 'screen' : 'soft-light'
 
   const root = document.documentElement
@@ -344,18 +340,11 @@ export function applyGlassTokens() {
     inset 0 -0.5px 0 ${rgba(sheen, lerp(0.16, 0.02, opaque))}`,
   )
 
-  // Settings / full-screen panels stay dense — use frost hue, not the water film
-  const panelRgb = hasColor
-    ? [
-        Math.round(frostBase[0] * 0.18),
-        Math.round(frostBase[1] * 0.18),
-        Math.round(frostBase[2] * 0.18),
-      ]
-    : [5, 5, 5]
-  root.style.setProperty('--app-panel', rgba(panelRgb, 0.96))
+  // Panels use the same container color, only denser — never a black plate.
+  root.style.setProperty('--app-panel', rgba(base, lerp(0.22, 0.88, opaque)))
   root.style.setProperty(
     '--app-scrim',
-    hasColor ? rgba(frostBase, 0.45) : 'rgba(5, 5, 5, 0.48)',
+    rgba(base, lerp(0.08, 0.4, opaque)),
   )
   root.style.setProperty('--app-scrim-blur', '8px')
 

@@ -616,96 +616,132 @@
   align-self: center;
 }
 
+.settings-glass-slider {
+  --thumb: 22px;
+  position: relative;
+  margin-top: 4px;
+}
+
+.settings-glass-slider .settings-slider-head {
+  position: relative;
+  height: 18px;
+  margin: 0;
+}
+
+.settings-glass-slider .settings-slider-value {
+  position: absolute;
+  top: 0;
+  left: calc(var(--thumb) / 2 + (100% - var(--thumb)) * var(--pull, 1));
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
 .settings-slider-value {
   font-size: 0.78rem;
   font-weight: 700;
+  font-variant-numeric: tabular-nums;
   color: rgba(255, 255, 255, 0.85);
 }
 
+/* Thumb stays centered on the track. Track is the container color,
+   solid on the Opaque side and a thin film of the same color on Clear. */
 .settings-slider {
-  --slider-ink: var(--app-color-swatch, #8c8c8c);
+  --slider-ink: var(--app-color-swatch, #c8c8c8);
+  --track-h: 8px;
+  --thumb: 22px;
   -webkit-appearance: none;
   appearance: none;
+  display: block;
   width: 100%;
-  height: 8px;
-  border: 1px solid color-mix(in srgb, var(--slider-ink) 55%, white);
-  border-radius: 999px;
-  background: linear-gradient(
-    90deg,
-    var(--slider-ink) 0%,
-    color-mix(in srgb, var(--slider-ink) calc(72% - var(--pull, 1) * 64%), transparent)
-      var(--pct, 100%),
-    color-mix(in srgb, var(--slider-ink) 12%, transparent) var(--pct, 100%),
-    color-mix(in srgb, var(--slider-ink) 12%, transparent) 100%
-  );
-  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--slider-ink) 35%, white);
+  height: var(--thumb);
+  margin: 2px 0 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  box-shadow: none;
   outline: none;
+  cursor: pointer;
 }
 
 .settings-slider::-webkit-slider-runnable-track {
-  height: 8px;
-  border: none;
+  height: var(--track-h);
+  border: 0;
   border-radius: 999px;
-  background: transparent;
-}
-
-.settings-slider::-moz-range-track {
-  height: 8px;
-  border: none;
-  border-radius: 999px;
+  background: var(--slider-ink);
   background: linear-gradient(
     90deg,
     var(--slider-ink) 0%,
-    color-mix(in srgb, var(--slider-ink) calc(72% - var(--pull, 1) * 64%), transparent)
-      var(--pct, 100%),
-    color-mix(in srgb, var(--slider-ink) 12%, transparent) var(--pct, 100%),
-    color-mix(in srgb, var(--slider-ink) 12%, transparent) 100%
+    rgb(from var(--slider-ink) r g b / 0.16) 100%
   );
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.55),
+    0 0 0 1px rgba(0, 0, 0, 0.18);
+}
+
+.settings-slider::-moz-range-track {
+  height: var(--track-h);
+  border: 0;
+  border-radius: 999px;
+  background: var(--slider-ink);
+  background: linear-gradient(
+    90deg,
+    var(--slider-ink) 0%,
+    rgb(from var(--slider-ink) r g b / 0.16) 100%
+  );
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.55),
+    0 0 0 1px rgba(0, 0, 0, 0.18);
 }
 
 .settings-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 22px;
-  height: 22px;
+  width: var(--thumb);
+  height: var(--thumb);
+  margin-top: calc((var(--track-h) - var(--thumb)) / 2);
   border-radius: 50%;
-  background: color-mix(
-    in srgb,
-    var(--slider-ink) calc(92% - var(--pull, 1) * 80%),
-    transparent
-  );
-  border: 1px solid color-mix(in srgb, var(--slider-ink) calc(40% + var(--pull, 1) * 50%), white);
-  box-shadow:
-    inset 0 1px 0 color-mix(in srgb, var(--slider-ink) 30%, white),
-    0 2px 8px rgba(0, 0, 0, 0.28);
+  background: var(--slider-ink);
+  border: 2px solid #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
   cursor: pointer;
 }
 
 .settings-slider::-moz-range-thumb {
-  width: 22px;
-  height: 22px;
+  width: var(--thumb);
+  height: var(--thumb);
   border-radius: 50%;
-  background: color-mix(
-    in srgb,
-    var(--slider-ink) calc(92% - var(--pull, 1) * 80%),
-    transparent
-  );
-  border: 1px solid color-mix(in srgb, var(--slider-ink) calc(40% + var(--pull, 1) * 50%), white);
-  box-shadow:
-    inset 0 1px 0 color-mix(in srgb, var(--slider-ink) 30%, white),
-    0 2px 8px rgba(0, 0, 0, 0.28);
+  background: var(--slider-ink);
+  border: 2px solid #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
   cursor: pointer;
 }
 
 .settings-slider-ends {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 8px;
+  position: relative;
+  height: 16px;
+  margin-top: 2px;
   font-size: 0.62rem;
   font-weight: 600;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--st-mute);
+}
+
+.settings-slider-ends span:first-child,
+.settings-slider-ends span:last-child {
+  position: absolute;
+  top: 0;
+  white-space: nowrap;
+}
+
+.settings-slider-ends span:first-child {
+  left: calc(var(--thumb, 22px) / 2);
+  transform: translateX(-50%);
+}
+
+.settings-slider-ends span:last-child {
+  right: calc(var(--thumb, 22px) / 2);
+  transform: translateX(50%);
 }
 
 .settings-row {
