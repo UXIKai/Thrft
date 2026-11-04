@@ -25,6 +25,7 @@
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
+  padding-bottom: calc(84px + env(safe-area-inset-bottom, 0px));
 }
 
 .chat-top {
@@ -677,16 +678,21 @@
 }
 
 .chat-bottom-dock {
-  position: relative;
-  flex: 0 0 auto;
+  position: absolute;
+  left: 50%;
+  right: auto;
+  bottom: calc(8px + env(safe-area-inset-bottom, 0px));
   z-index: 20;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: stretch;
-  margin: 0 -16px;
-  padding: 8px 16px calc(8px + env(safe-area-inset-bottom, 0px));
+  width: min(420px, calc(100vw - 20px));
+  max-width: calc(100% - 20px);
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
+  transform: translateX(-50%);
 }
 
 .chat-bottom-dock.is-sheet-open {
@@ -731,11 +737,11 @@
   flex: 1 1 auto;
   width: 100%;
   min-width: 0;
-  height: 48px;
+  height: 62px;
   box-sizing: border-box;
   margin: 0;
   padding: 6px;
-  border-radius: 16px;
+  border-radius: 28px;
   background: var(--glass-clear-tint, rgba(36, 36, 36, 0.04));
   backdrop-filter: blur(var(--glass-blur, 3px)) saturate(var(--glass-sat, 1.55));
   -webkit-backdrop-filter: blur(var(--glass-blur, 3px)) saturate(var(--glass-sat, 1.55));
@@ -820,7 +826,7 @@
   align-items: flex-end;
   justify-content: center;
   /* Sit low above the bottom + (search hides while sheet is open) */
-  padding: 12px 12px calc(56px + env(safe-area-inset-bottom, 0px));
+  padding: 12px 12px calc(78px + env(safe-area-inset-bottom, 0px));
   background: transparent;
 }
 
@@ -1343,7 +1349,7 @@
   overflow-x: hidden;
   scrollbar-width: none;
   -ms-overflow-style: none;
-  padding-bottom: 8px;
+  padding-bottom: calc(84px + env(safe-area-inset-bottom, 0px));
 }
 
 .chat-thread-scroll::-webkit-scrollbar {
@@ -1427,13 +1433,19 @@
 }
 
 .chat-compose {
-  position: relative;
-  flex: 0 0 auto;
+  position: absolute;
+  left: 50%;
+  right: auto;
+  bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+  z-index: 5;
   display: flex;
   align-items: flex-end;
-  width: 100%;
+  width: min(420px, calc(100vw - 20px));
+  max-width: calc(100% - 20px);
   box-sizing: border-box;
-  padding: 10px 0 calc(12px + env(safe-area-inset-bottom, 0px));
+  margin: 0;
+  padding: 0;
+  transform: translateX(-50%);
 }
 
 .chat-compose-attach {
@@ -1657,12 +1669,15 @@
 
 .chat-liked-dock {
   position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  left: 50%;
+  right: auto;
+  bottom: calc(8px + env(safe-area-inset-bottom, 0px));
   z-index: 2;
-  padding: 0 16px calc(8px + env(safe-area-inset-bottom, 0px));
+  width: min(420px, calc(100vw - 20px));
+  max-width: calc(100% - 20px);
+  padding: 0;
   box-sizing: border-box;
+  transform: translateX(-50%);
 }
 
 .chat-liked-bar {
@@ -1670,10 +1685,10 @@
   align-items: center;
   gap: 6px;
   width: 100%;
-  height: 48px;
+  height: 62px;
   box-sizing: border-box;
   padding: 6px;
-  border-radius: 999px;
+  border-radius: 28px;
   border: 1px solid var(--glass-border, rgba(150, 150, 150, 0.18));
   background: var(--glass-clear-tint, rgba(36, 36, 36, 0.04));
   backdrop-filter: blur(var(--glass-blur, 3px)) saturate(var(--glass-sat, 1.55));
@@ -1740,11 +1755,11 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  min-height: 48px;
-  height: 48px;
+  min-height: 62px;
+  height: 62px;
   box-sizing: border-box;
   padding: 6px;
-  border-radius: 999px;
+  border-radius: 28px;
   border: 1px solid var(--glass-border, rgba(150, 150, 150, 0.18));
   background: var(--glass-clear-tint, rgba(36, 36, 36, 0.04));
   backdrop-filter: blur(var(--glass-blur, 3px)) saturate(var(--glass-sat, 1.55));
@@ -2372,12 +2387,15 @@
 
 .chat-users-dock {
   position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  left: 50%;
+  right: auto;
+  bottom: calc(8px + env(safe-area-inset-bottom, 0px));
   z-index: 2;
-  padding: 0 16px calc(8px + env(safe-area-inset-bottom, 0px));
+  width: min(420px, calc(100vw - 20px));
+  max-width: calc(100% - 20px);
+  padding: 0;
   box-sizing: border-box;
+  transform: translateX(-50%);
 }
 
 .chat-users-bar {
@@ -2385,10 +2403,10 @@
   align-items: center;
   gap: 6px;
   width: 100%;
-  height: 48px;
+  height: 62px;
   box-sizing: border-box;
   padding: 6px;
-  border-radius: 999px;
+  border-radius: 28px;
   border: 1px solid var(--glass-border, rgba(150, 150, 150, 0.18));
   background: var(--glass-clear-tint, rgba(36, 36, 36, 0.04));
   backdrop-filter: blur(var(--glass-blur, 3px)) saturate(var(--glass-sat, 1.55));

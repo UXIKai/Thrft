@@ -2288,7 +2288,6 @@ export default function ChatScreen({
               </button>
             )}
           </div>
-          <h1 className="chat-list-title">messages</h1>
           <div className="chat-filter-wrap" ref={listFilterRef}>
             <button
               type="button"

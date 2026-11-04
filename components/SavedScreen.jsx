@@ -517,7 +517,6 @@ export default function SavedScreen({
             </button>
           )}
         </div>
-        <h1 className="saved-list-title">Liked</h1>
         <div className="saved-filter-wrap" ref={filterRef}>
           <button
             type="button"

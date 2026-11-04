@@ -369,7 +369,7 @@
   overflow: auto;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
-  padding-bottom: 88px;
+  padding-bottom: calc(84px + env(safe-area-inset-bottom, 0px));
 }
 
 /* No box — picture floats on the atmosphere with the name under it. */
@@ -451,16 +451,19 @@
 /* Full-width search bar; back / + are chip containers inside it */
 .saved-search-dock {
   position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  left: 50%;
+  right: auto;
+  bottom: calc(8px + env(safe-area-inset-bottom, 0px));
   z-index: 80; /* above brand globe so + can suck it closed */
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: stretch;
-  padding: 8px 16px calc(8px + env(safe-area-inset-bottom, 0px));
+  width: min(420px, calc(100vw - 20px));
+  max-width: calc(100% - 20px);
+  padding: 0;
   box-sizing: border-box;
+  transform: translateX(-50%);
 }
 
 /* Back / + sit in the bar as plain icons — no chip containers */
@@ -490,11 +493,11 @@
   flex: 1 1 auto;
   width: 100%;
   min-width: 0;
-  height: 48px;
+  height: 62px;
   box-sizing: border-box;
   margin: 0;
   padding: 6px;
-  border-radius: 16px;
+  border-radius: 28px;
   background: var(--glass-clear-tint, rgba(36, 36, 36, 0.04));
   backdrop-filter: blur(var(--glass-blur, 3px)) saturate(var(--glass-sat, 1.55));
   -webkit-backdrop-filter: blur(var(--glass-blur, 3px)) saturate(var(--glass-sat, 1.55));
