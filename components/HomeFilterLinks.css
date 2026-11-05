@@ -45,86 +45,43 @@
 
 .home-search-modal {
   display: flex;
-  flex-direction: column;
-  width: min(440px, 100%);
-  max-height: min(560px, 80vh);
-  padding: 14px;
+  align-items: baseline;
+  justify-content: center;
+  gap: clamp(2rem, 10vw, 3.6rem);
+  width: min(380px, 100%);
+  padding: 28px 24px;
   border-radius: 18px;
   background: rgba(20, 20, 24, 0.96);
   border: 1px solid rgba(255, 255, 255, 0.12);
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-  color: #fff;
   font-family: var(--font-sans);
 }
 
-.home-search-input {
-  width: 100%;
-  box-sizing: border-box;
-  padding: 11px 14px;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  background: rgba(255, 255, 255, 0.08);
-  color: #fff;
-  font: inherit;
-  font-size: 1rem;
-  outline: none;
-}
-
-.home-search-results {
-  margin-top: 10px;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-}
-
-.home-search-heading {
-  margin: 10px 4px 4px;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.5);
-}
-
-.home-search-item {
-  display: block;
-  width: 100%;
-  padding: 9px 8px;
+.home-filter-link {
+  margin: 0;
+  padding: 6px 2px;
   border: none;
-  border-radius: 8px;
+  border-radius: 0;
   background: transparent;
   box-shadow: none;
-  color: rgba(255, 255, 255, 0.85);
-  font: inherit;
-  text-align: left;
+  color: rgba(255, 255, 255, 0.62);
+  font-family: var(--font-sans);
+  font-size: 1.05rem;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  white-space: nowrap;
   cursor: pointer;
+  transition: color 0.16s ease;
 }
 
-.home-search-item:hover,
-.home-search-item:focus-visible {
-  background: rgba(255, 255, 255, 0.1);
+.home-filter-link.is-set {
+  color: #fff;
+  font-weight: 700;
+}
+
+.home-filter-link:hover,
+.home-filter-link:focus-visible {
   color: #fff;
   outline: none;
-}
-
-.home-search-active {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.home-search-chip {
-  padding: 5px 10px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 999px;
-  background: transparent;
-  color: #fff;
-  font: inherit;
-  font-size: 0.85rem;
-  cursor: pointer;
-}
-
-.home-search-empty {
-  margin: 16px 4px;
-  color: rgba(255, 255, 255, 0.55);
-  text-align: center;
 }

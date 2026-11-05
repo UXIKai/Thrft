@@ -459,14 +459,10 @@ export default function App() {
           <>
             <header className="wordmark-wrap">
               <HomeFilterLinks
-                brands={HOME_BRAND_ITEMS}
-                categories={homeCategoryItems}
                 brandLabel={homeBrand?.label || null}
                 categoryLabel={homeCategoryLabel}
-                onPickBrand={handleHomeBrandPick}
-                onPickCategory={handleHomeCategoryPick}
-                onClearBrand={() => setHomeBrand(null)}
-                onClearCategory={() => handleHomeCategoryPick('all')}
+                onOpenBrands={() => openHomePicker('brands')}
+                onOpenCategory={() => openHomePicker('category')}
               />
               <h1 className="wordmark">
                 Thrft<span className="dot" aria-hidden="true">●</span>
