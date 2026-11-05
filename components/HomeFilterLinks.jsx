@@ -32,15 +32,15 @@ export default function HomeFilterLinks({
   useEffect(() => setDraftColor(colorId), [colorId])
 
   const brandItems = useMemo(
-    () => [{ id: '', label: 'All brands' }, ...brands],
+    () => [{ id: '', label: 'All' }, ...brands],
     [brands],
   )
   const colorItems = useMemo(
-    () => [{ id: '', label: 'All colors' }, ...colors],
+    () => [{ id: '', label: 'All' }, ...colors],
     [colors],
   )
   const categoryItems = useMemo(
-    () => [{ id: 'all', label: 'All categories' }, ...categories.filter((c) => c.id !== 'all')],
+    () => [{ id: 'all', label: 'All' }, ...categories.filter((c) => c.id !== 'all')],
     [categories],
   )
 
