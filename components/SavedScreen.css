@@ -457,7 +457,7 @@
   flex-direction: row;
   align-items: center;
   justify-content: stretch;
-  width: min(calc(420px + 4in), calc(100vw - 20px));
+  width: var(--dock-bar-width);
   max-width: calc(100% - 20px);
   padding: 0;
   box-sizing: border-box;

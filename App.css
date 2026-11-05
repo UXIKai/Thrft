@@ -53,6 +53,8 @@
     0 8px 28px rgba(0, 0, 0, 0.07),
     inset 0 1px 0 rgba(255, 255, 255, 0.78),
     inset 0 -0.5px 0 rgba(255, 255, 255, 0.16);
+  /* Chat message bar is the size reference: 560px column minus 20px. */
+  --dock-bar-width: min(540px, calc(100% - 20px));
 }
 
 .stage {
@@ -105,14 +107,14 @@
 .app-column.is-home-wide .tab-bar {
   left: 50%;
   right: auto;
-  width: min(calc(420px + 4in), calc(100% - 20px));
+  width: var(--dock-bar-width);
   transform: translateX(-50%);
 }
 
 /* Chat / saved / globe bars portaled onto the stage — same width as the nav. */
 .stage > .chat-bottom-dock,
 .stage > .saved-search-dock {
-  width: min(calc(420px + 4in), calc(100% - 20px));
+  width: var(--dock-bar-width);
   max-width: none;
 }
 
@@ -1202,7 +1204,7 @@
   z-index: 4;
   left: 50%;
   right: auto;
-  width: min(calc(420px + 4in), calc(100% - 20px));
+  width: var(--dock-bar-width);
   transform: translateX(-50%);
   bottom: calc(8px + env(safe-area-inset-bottom, 0px));
   display: grid;
