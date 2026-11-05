@@ -388,13 +388,14 @@ function Row({
 const HELP_PAGES = {
   started: {
     title: 'Getting Started',
+    intro: 'The bottom bar runs left to right. Selling, money, and account live on those screens.',
     groups: [
       {
-        label: 'Bottom bar',
+        label: 'Tabs',
         sections: [
           {
             heading: 'Home',
-            body: 'Scroll the type wheel to filter. Brand rows show listings. For You suggests pieces from your sizes and favorite brands.',
+            body: 'Scroll the type wheel to filter. Brand rows show listings. For You suggests pieces from your sizes and saved brands. The cart icon opens your bag to review and check out.',
           },
           {
             heading: 'Chat',
@@ -405,28 +406,50 @@ const HELP_PAGES = {
             body: 'Tap + then pick Market or Closet at the top.',
           },
           {
+            heading: 'Saved',
+            body: 'Search a brand, select it, then + to save. Saved brands feed For You on Home. Liked products stay on this tab too.',
+          },
+          {
+            heading: 'Profile',
+            body: 'Photo, name, shipping, and social Links. The book opens Store and Closet. The bank icon opens Money. The gear opens Settings.',
+          },
+        ],
+      },
+      {
+        label: 'Selling',
+        sections: [
+          {
             heading: 'Market',
             body: 'Sell clothes you own. Add photos with the camera, set Brand and Type on the wheels, then price and post.',
           },
           {
             heading: 'Closet',
-            body: 'Scan a piece: photo in, background removed. Set Brand and Type, then save it. No title or description here—browse and Post to Market later from Profile.',
+            body: 'Scan a piece: photo in, background removed. Set Brand and Type, then save it. No title or description here.',
           },
           {
-            heading: 'Favorites',
-            body: 'Search a brand, select it, then + to save. Saved brands feed For You on Home. Liked products stay on this tab too.',
+            heading: 'Store',
+            body: 'On Profile, the book lists Active and Sold. Browse Closet with Brand and Type wheels, then open a piece to Post to Market.',
+          },
+        ],
+      },
+      {
+        label: 'Money',
+        sections: [
+          {
+            heading: 'Bank',
+            body: 'Connect a bank for payouts. Open it from the bank icon on Profile.',
           },
           {
-            heading: 'Profile',
-            body: 'Photo, name, shipping, and social Links (TikTok, X, Instagram, Snapchat, RedNote). The book opens Store (Active/Sold listings) and Closet. Closet browse uses Brand and Type wheels; open a piece to Post to Market.',
+            heading: 'Points',
+            body: 'Fifty cents equals one point. Donate points or move them to Wallet.',
           },
           {
-            heading: 'Money',
-            body: 'On Profile, open the bank icon for Bank, Points, Wallet, and Sales.',
+            heading: 'Wallet',
+            body: 'Withdraw moved points to a linked bank.',
           },
           {
-            heading: 'Bag',
-            body: 'Cart icon on Home. Review items and check out with Stripe.',
+            heading: 'Sales',
+            body: 'Listing earnings, on the same Money screen as Bank, Points, and Wallet.',
           },
         ],
       },
@@ -438,16 +461,12 @@ const HELP_PAGES = {
             body: 'Gear on Profile. App color and glass clarity, clothing sizes (including per-brand sizes), shop email, and shipping address.',
           },
           {
+            heading: 'Give back',
+            body: 'In Settings. Optional Dlaita Group Initiative: a monthly dollar amount or a percent of earnings.',
+          },
+          {
             heading: 'ID.me',
             body: 'Optional identity check for selling or payouts. Thrft only stores that you finished—not your ID photos.',
-          },
-          {
-            heading: 'Give back',
-            body: 'Optional Dlaita Group Initiative: a monthly dollar amount or a percent of earnings.',
-          },
-          {
-            heading: 'Points',
-            body: 'Fifty cents equals one point. Donate points or move them to Wallet, then withdraw to a linked bank.',
           },
           {
             heading: 'Sign in',
@@ -489,9 +508,9 @@ const ASSISTANT_FAQ = [
       'Closet scans a piece with the background removed. Set Brand and Type, save it, then Post to Market later from Profile.',
   },
   {
-    keys: ['favorite', 'favourites', 'liked', 'brands'],
+    keys: ['favorite', 'favourites', 'saved', 'liked', 'brands'],
     answer:
-      'Favorites: search a brand, select it, then + to save. Saved brands feed For You on Home. Liked products stay on that tab too.',
+      'Saved: search a brand, select it, then + to save. Saved brands feed For You on Home. Liked products stay on that tab too.',
   },
   {
     keys: ['profile', 'store', 'active', 'sold', 'book'],
@@ -533,7 +552,7 @@ const ASSISTANT_GREETING =
   'Hi — I’m your Thrft helper. Ask about Home, Chat, Create, Favorites, Profile, Settings, or checkout.'
 
 const ASSISTANT_FALLBACK =
-  'I’m not sure on that yet. Try asking about Home, Create, Closet, Favorites, Store, Settings, or Sign out — or open Getting Started for the full walkthrough.'
+  'I’m not sure on that yet. Try asking about Home, Create, Closet, Saved, Store, Settings, or Sign out — or open Getting Started for the full walkthrough.'
 
 function answerAssistant(question) {
   const q = String(question || '').toLowerCase().trim()
@@ -1707,6 +1726,9 @@ export default function SettingsScreen({
           <div className="glass-overlay-body settings-help-body">
             {helpPage === 'started' ? (
               <article className="settings-started">
+                {HELP_PAGES.started.intro ? (
+                  <p className="settings-started-intro">{HELP_PAGES.started.intro}</p>
+                ) : null}
                 {HELP_PAGES.started.groups.map((group) => (
                   <div key={group.label} className="settings-started-group">
                     <p className="settings-started-group-label">{group.label}</p>
