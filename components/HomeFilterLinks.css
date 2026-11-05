@@ -51,8 +51,8 @@
   justify-content: center;
   gap: clamp(2rem, 10vw, 3.6rem);
   box-sizing: border-box;
-  width: min(668px, 100%);
-  min-height: min(380px, 80vh);
+  width: min(524px, 100%);
+  min-height: min(236px, 80vh);
   align-items: center;
   padding: 28px 24px;
   border-radius: 28px;

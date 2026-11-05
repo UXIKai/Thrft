@@ -19,7 +19,12 @@ export default function HomeFilterLinks({
       if (e.key === 'Escape') setOpen(false)
     }
     document.addEventListener('keydown', onKey)
-    return () => document.removeEventListener('keydown', onKey)
+    const stage = document.querySelector('.stage')
+    stage?.classList.add('is-home-search-open')
+    return () => {
+      document.removeEventListener('keydown', onKey)
+      stage?.classList.remove('is-home-search-open')
+    }
   }, [open])
 
   const pick = (fn) => () => {

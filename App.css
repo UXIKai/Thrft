@@ -147,7 +147,8 @@
 }
 
 /* Home Brands / Category globe: hide the nav until the popup closes. */
-.stage.is-home-picker-open .tab-bar {
+.stage.is-home-picker-open .tab-bar,
+.stage.is-home-search-open .tab-bar {
   opacity: 0;
   pointer-events: none;
   visibility: hidden;
