@@ -16,6 +16,14 @@
   pointer-events: auto;
 }
 
+/* Portaled onto .stage so desktop orbits fill the window, not the 560px column. */
+.brand-globe.is-dock.is-stage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
 .brand-globe-scrim {
   position: absolute;
   inset: 0;
