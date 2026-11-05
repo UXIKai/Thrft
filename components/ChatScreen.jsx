@@ -2637,18 +2637,6 @@ export default function ChatScreen({
             aria-label="Dismiss"
             onClick={closeUsersPicker}
           />
-          <header className="chat-users-picker-top">
-            <button
-              type="button"
-              className="chat-top-btn"
-              aria-label="Back"
-              onClick={closeUsersPicker}
-            >
-              <BackIcon />
-            </button>
-            <span className="chat-users-picker-heading" aria-hidden />
-            <span className="chat-top-spacer" aria-hidden />
-          </header>
           <div className="chat-users-hero" aria-hidden>
             <PeopleIcon />
           </div>
@@ -2699,9 +2687,14 @@ export default function ChatScreen({
           </ul>
           <div className="chat-users-dock">
             <div className="chat-users-bar">
-              <span className="chat-users-search-slot" aria-hidden>
-                <SearchIcon />
-              </span>
+              <button
+                type="button"
+                className="chat-users-back"
+                aria-label="Back"
+                onClick={closeUsersPicker}
+              >
+                <BackIcon />
+              </button>
               <input
                 className="chat-users-search-input"
                 type="text"

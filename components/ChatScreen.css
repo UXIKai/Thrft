@@ -2507,18 +2507,25 @@
   box-shadow: var(--glass-depth);
 }
 
-.chat-users-search-slot {
+.chat-users-back {
   flex: 0 0 auto;
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   display: grid;
   place-items: center;
-  color: rgba(255, 255, 255, 0.85);
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: #fff;
+  cursor: pointer;
 }
 
-.chat-users-search-slot .chat-liked-search-ico {
-  width: 18px;
-  height: 18px;
+.chat-users-back .chat-ico {
+  width: 20px;
+  height: 20px;
 }
 
 .chat-users-search-input {

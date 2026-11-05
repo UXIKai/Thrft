@@ -275,7 +275,6 @@ function socialIcon(id) {
 }
 
 const MONEY_TABS = [
-  { id: 'bank', label: 'Bank', Icon: BankIcon },
   { id: 'points', label: 'Points', Icon: SparkleIcon },
   { id: 'wallet', label: 'Wallet', Icon: WalletIcon },
   { id: 'sales', label: 'Sales', Icon: SalesIcon },
@@ -291,6 +290,28 @@ function BackIcon() {
         strokeLinecap="round"
         strokeLinejoin="round"
         d="M14.5 5.5 8 12l6.5 6.5"
+      />
+    </svg>
+  )
+}
+
+function PersonIcon() {
+  return (
+    <svg className="profile-name-person" viewBox="0 0 24 24" aria-hidden>
+      <circle
+        cx="12"
+        cy="8.2"
+        r="3.1"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.7"
+      />
+      <path
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+        d="M5.2 19.2c.7-3.4 3.2-5.2 6.8-5.2s6.1 1.8 6.8 5.2"
       />
     </svg>
   )
@@ -635,7 +656,7 @@ export default function ProfileScreen({
   const [pointsAction, setPointsAction] = useState(null) // 'donate' | 'cashout' | null
   const [pointsAmount, setPointsAmount] = useState('')
   const [moneyOpen, setMoneyOpen] = useState(false)
-  const [moneyTab, setMoneyTab] = useState('sales') // bank | points | wallet | sales
+  const [moneyTab, setMoneyTab] = useState('sales') // points | wallet | sales
   const [salesStats, setSalesStats] = useState({
     active: null,
     sold: null,
@@ -953,10 +974,18 @@ export default function ProfileScreen({
     }
   }
 
+  function closeLinks() {
+    setAtOpen(false)
+    setMusicSheet(null)
+    setMusicDraft('')
+    setActiveSocial(null)
+    setSocialDraft('')
+    setLinksSheetOpen(false)
+  }
+
   function openSocial(id) {
     setActiveSocial(id)
     setSocialDraft(socialHandles[id] || '')
-    setLinksSheetOpen(true)
   }
 
   async function saveSocialHandle() {
@@ -1399,46 +1428,6 @@ export default function ProfileScreen({
               </div>
 
               <div className="profile-money-detail">
-                {moneyTab === 'bank' && (
-                  <section className="profile-money-section" aria-label="Bank">
-                    {connections.bank?.connected ? (
-                      <>
-                        <div className="profile-credits-card is-half">
-                          <div className="profile-credits-row">
-                            <BankIcon />
-                            <span className="profile-credits-n is-bank">
-                              {connections.bank.bankName || 'Bank'}
-                              {connections.bank.last4
-                                ? ` ···${connections.bank.last4}`
-                                : ''}
-                            </span>
-                          </div>
-                        </div>
-                        <button
-                          type="button"
-                          className="glass-cta is-minimal"
-                          disabled={connectBusy === 'bank'}
-                          onClick={() => handleConnect('bank', 'disconnect')}
-                        >
-                          Disconnect bank
-                        </button>
-                      </>
-                    ) : (
-                      <button
-                        type="button"
-                        className="glass-cta is-icon"
-                        aria-label="Connect bank"
-                        disabled={connectBusy === 'bank'}
-                        onClick={() => handleConnect('bank', 'connect')}
-                      >
-                        <span className="profile-bank-link-ico" aria-hidden>
-                          🔗
-                        </span>
-                      </button>
-                    )}
-                  </section>
-                )}
-
                 {moneyTab === 'points' && (
                   <section className="profile-money-section is-points" aria-label="Points">
                     <div className="profile-credits-card is-half">
@@ -1581,8 +1570,15 @@ export default function ProfileScreen({
       {stageEl &&
         atOpen &&
         createPortal(
+          <div className="profile-links-layer">
+            <button
+              type="button"
+              className="profile-links-scrim"
+              aria-label="Dismiss"
+              onClick={closeLinks}
+            />
           <div
-            className="profile-panel"
+            className="profile-panel profile-links-card"
             role="dialog"
             aria-modal="true"
             aria-label="Links and music"
@@ -1592,7 +1588,7 @@ export default function ProfileScreen({
                 type="button"
                 className="profile-panel-back"
                 aria-label="Back to profile"
-                onClick={() => setAtOpen(false)}
+                onClick={closeLinks}
               >
                 <BackIcon />
               </button>
@@ -1607,8 +1603,9 @@ export default function ProfileScreen({
                 <div className="profile-music-row">
                   <button
                     type="button"
-                    className={`profile-music-btn is-spotify${musicLinks.spotify ? ' has-link' : ''}`}
+                    className={`profile-music-btn is-spotify${musicLinks.spotify ? ' has-link' : ''}${musicSheet === 'spotify' ? ' is-on' : ''}`}
                     aria-label="Spotify"
+                    aria-pressed={musicSheet === 'spotify'}
                     onMouseDown={holdScroll}
                     onClick={() => openMusic('spotify')}
                   >
@@ -1616,14 +1613,36 @@ export default function ProfileScreen({
                   </button>
                   <button
                     type="button"
-                    className={`profile-music-btn is-apple${musicLinks.apple ? ' has-link' : ''}`}
+                    className={`profile-music-btn is-apple${musicLinks.apple ? ' has-link' : ''}${musicSheet === 'apple' ? ' is-on' : ''}`}
                     aria-label="Apple Music"
+                    aria-pressed={musicSheet === 'apple'}
                     onMouseDown={holdScroll}
                     onClick={() => openMusic('apple')}
                   >
                     <AppleMusicIcon />
                   </button>
                 </div>
+                {musicSheet ? (
+                  <div className="profile-link-editor">
+                    <input
+                      ref={musicInputRef}
+                      className="profile-music-input"
+                      type="url"
+                      placeholder="URL"
+                      aria-label="Music link"
+                      value={musicDraft}
+                      onChange={(e) => setMusicDraft(e.target.value)}
+                    />
+                    <button
+                      type="button"
+                      className="profile-music-save"
+                      disabled={!musicPreview}
+                      onClick={saveMusic}
+                    >
+                      Save
+                    </button>
+                  </div>
+                ) : null}
               </section>
 
               <section className="profile-block is-panel-section" aria-labelledby="links-label">
@@ -1652,14 +1671,72 @@ export default function ProfileScreen({
                     )
                   })}
                 </div>
+                {activeSocial ? (
+                  <div className="profile-link-editor">
+                <label className="profile-social-handle-field">
+                  <span className="profile-social-at" aria-hidden>
+                    @
+                  </span>
+                  <input
+                    className="glass-input is-handle"
+                    value={socialDraft}
+                    placeholder="username"
+                    aria-label="Username"
+                    autoCapitalize="none"
+                    autoCorrect="off"
+                    spellCheck={false}
+                    onChange={(e) => setSocialDraft(e.target.value)}
+                  />
+                </label>
+                <button
+                  type="button"
+                  className="profile-music-save"
+                  onClick={saveSocialHandle}
+                >
+                  Save
+                </button>
+                  </div>
+                ) : null}
+              </section>
+
+              <section className="profile-block is-panel-section" aria-label="Bank">
+                <h2 className="profile-label">Bank</h2>
+                {connections.bank?.connected ? (
+                  <div className="profile-link-editor">
+                <p className="profile-bank-linked">
+                  {connections.bank.bankName || 'Bank'}
+                  {connections.bank.last4 ? ` ···${connections.bank.last4}` : ''}
+                </p>
+                <button
+                  type="button"
+                  className="profile-music-save"
+                  disabled={connectBusy === 'bank'}
+                  onClick={() => handleConnect('bank', 'disconnect')}
+                >
+                  Disconnect
+                </button>
+                  </div>
+                ) : (
+                  <button
+                type="button"
+                className="profile-bank-link"
+                aria-label="Connect bank"
+                disabled={connectBusy === 'bank'}
+                onClick={() => handleConnect('bank', 'connect')}
+                  >
+                <BankIcon />
+                  </button>
+                )}
               </section>
             </div>
+          </div>
           </div>,
           stageEl,
         )}
 
       {stageEl &&
         musicSheet &&
+        !atOpen &&
         createPortal(
           <div className="profile-music-sheet" role="dialog" aria-modal="true">
             <button
@@ -1937,35 +2014,34 @@ export default function ProfileScreen({
                   <CloseIcon />
                 </button>
               </div>
-              <label className="glass-field">
-                <span className="glass-field-label">Name</span>
+              <label className="profile-name-field">
+                <span className="profile-name-field-mark" aria-hidden>
+                  <PersonIcon />
+                </span>
                 <input
-                  className="glass-input"
                   value={nameDraft}
-                  placeholder="Display name"
+                  aria-label="Name"
+                  placeholder=""
                   autoCapitalize="words"
                   autoCorrect="off"
                   onChange={(e) => setNameDraft(e.target.value)}
                 />
               </label>
-              <label className="glass-field">
-                <span className="glass-field-label">Username</span>
-                <div className="profile-social-handle-field">
-                  <span className="profile-social-at" aria-hidden>
-                    @
-                  </span>
-                  <input
-                    className="glass-input is-handle"
-                    value={usernameDraft}
-                    placeholder="username"
-                    autoCapitalize="none"
-                    autoCorrect="off"
-                    spellCheck={false}
-                    onChange={(e) =>
-                      setUsernameDraft(e.target.value.replace(/^@+/, ''))
-                    }
-                  />
-                </div>
+              <label className="profile-name-field">
+                <span className="profile-name-field-mark" aria-hidden>
+                  @
+                </span>
+                <input
+                  value={usernameDraft}
+                  aria-label="Username"
+                  placeholder=""
+                  autoCapitalize="none"
+                  autoCorrect="off"
+                  spellCheck={false}
+                  onChange={(e) =>
+                    setUsernameDraft(e.target.value.replace(/^@+/, ''))
+                  }
+                />
               </label>
               <button
                 type="button"

@@ -983,9 +983,9 @@
 
 .profile-money-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
-  width: min(320px, 100%);
+  width: min(420px, 100%);
   margin-bottom: 18px;
 }
 
@@ -1201,6 +1201,54 @@
 }
 
 /* Platform name title removed — icon in the sheet head is enough. */
+
+.profile-name-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  margin-bottom: 14px;
+  padding: 0 14px;
+  border-radius: 14px;
+  border: 1px solid var(--glass-border, rgba(150, 150, 150, 0.2));
+  background: var(--glass-clear-tint, rgba(36, 36, 36, 0.04));
+  backdrop-filter: blur(var(--glass-clear-blur, 1.2px))
+    saturate(var(--glass-sat, 1.4)) brightness(var(--glass-clear-bright, 0.93));
+  -webkit-backdrop-filter: blur(var(--glass-clear-blur, 1.2px))
+    saturate(var(--glass-sat, 1.4)) brightness(var(--glass-clear-bright, 0.93));
+  box-shadow: var(--glass-clear-depth, none);
+}
+
+.profile-name-field-mark {
+  flex: 0 0 auto;
+  width: 22px;
+  display: grid;
+  place-items: center;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 1.05rem;
+  line-height: 1;
+}
+
+.profile-name-person {
+  width: 18px;
+  height: 18px;
+  display: block;
+}
+
+.profile-name-field input {
+  flex: 1;
+  min-width: 0;
+  height: 48px;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #fff;
+  caret-color: #fff;
+  font: inherit;
+  font-size: 0.95rem;
+  outline: none;
+}
 
 .profile-social-handle-field {
   display: flex;
@@ -1862,6 +1910,56 @@
   white-space: nowrap;
 }
 
+.profile-links-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+}
+
+.profile-links-scrim {
+  display: none;
+}
+
+.profile-link-editor {
+  display: grid;
+  gap: 10px;
+  width: 100%;
+  margin-top: 14px;
+}
+
+.profile-bank-link {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 48px;
+  margin: 0 auto;
+  border: 1px solid var(--glass-border, rgba(168, 168, 168, 0.18));
+  border-radius: 14px;
+  background: var(--glass-clear-tint, rgba(36, 36, 36, 0.04));
+  color: #fff;
+  cursor: pointer;
+}
+
+.profile-bank-link svg,
+.profile-bank-linked {
+  width: 22px;
+  height: 22px;
+}
+
+.profile-bank-linked {
+  width: auto;
+  height: auto;
+  margin: 0;
+  text-align: center;
+  font-size: 0.92rem;
+  font-weight: 650;
+  color: #fff;
+}
+
+.profile-music-btn.is-on {
+  filter: brightness(1.2);
+}
+
 .profile-panel {
   /* Portaled onto .stage — full frame, covers tab bar while open */
   position: absolute;
@@ -1873,6 +1971,38 @@
   background: transparent;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
+}
+
+@media (min-width: 720px) {
+  .profile-links-scrim {
+    display: block;
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    border: none;
+    background: rgba(8, 8, 8, 0.18);
+    backdrop-filter: blur(14px) saturate(1.08);
+    -webkit-backdrop-filter: blur(14px) saturate(1.08);
+    cursor: pointer;
+  }
+
+  .profile-panel.profile-links-card {
+    inset: auto;
+    top: 50%;
+    left: 50%;
+    z-index: 1;
+    width: min(460px, calc(100% - 48px));
+    height: auto;
+    max-height: min(72vh, 640px);
+    transform: translate(-50%, -50%);
+    border-radius: 22px;
+    overflow: hidden;
+    border: 1px solid var(--glass-border, rgba(168, 168, 168, 0.22));
+    background: var(--glass-clear-tint, rgba(36, 36, 36, 0.08));
+    backdrop-filter: blur(18px) saturate(1.55);
+    -webkit-backdrop-filter: blur(18px) saturate(1.55);
+    box-shadow: 0 18px 48px rgba(0, 0, 0, 0.22);
+  }
 }
 
 .profile-panel.is-popup {
