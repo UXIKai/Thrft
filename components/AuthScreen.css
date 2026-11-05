@@ -154,9 +154,10 @@
   height: 42px;
   min-height: 42px;
   aspect-ratio: auto;
-  border-radius: 12px;
-  border: 1px solid var(--glass-border, rgba(150, 150, 150, 0.2));
-  background: var(--glass-tint, rgba(36, 36, 36, 0.12));
+  border-radius: 0;
+  border: none;
+  background: transparent;
+  box-shadow: none;
   color: #fff;
   display: grid;
   place-items: center;
