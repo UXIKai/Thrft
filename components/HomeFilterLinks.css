@@ -56,9 +56,9 @@
   margin: 0;
   display: grid;
   place-items: center;
-  border: 0.5px solid rgba(255, 255, 255, 0.46);
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.14);
+  border: none;
+  border-radius: 0;
+  background: transparent;
   box-shadow: none;
   color: #fff;
   cursor: pointer;
@@ -71,7 +71,7 @@
 
 .home-search-done:hover,
 .home-search-done:focus-visible {
-  background: rgba(255, 255, 255, 0.28);
+  filter: brightness(1.25);
   outline: none;
 }
 
