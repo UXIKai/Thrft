@@ -36,5 +36,5 @@ npm run server
 4. ID.me redirects to `/api/idme/callback?code&state`
 5. Server `POST`s `https://api.id.me/oauth/token` with `grant_type=authorization_code`
 6. Server `GET`s `https://api.id.me/api/public/v3/attributes.json` with the access token
-7. Profile is updated (`identityStatus`, `identityRef`/`uuid`, `legalName`, scope, groups)
+7. The signed-in Thrft account is linked (`identityStatus`, `identityRef`/`uuid`, `legalName`, scope, groups). The authorize request must include the session so the callback writes that account, not a shared profile.
 8. User returns to the app with `?idme=verified`

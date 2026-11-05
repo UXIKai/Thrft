@@ -288,17 +288,7 @@ export async function fetchIdmeConfig() {
 }
 
 export async function startIdmeAuthorize() {
-  const res = await fetch('/api/idme/authorize', {
-    headers: { 'Content-Type': 'application/json' },
-  })
-  const data = await res.json().catch(() => ({}))
-  if (!res.ok) {
-    const err = new Error(data.message || data.error || `api ${res.status}`)
-    err.status = res.status
-    err.payload = data
-    throw err
-  }
-  return data
+  return api('/api/idme/authorize')
 }
 
 export async function fetchIdmeStatus() {

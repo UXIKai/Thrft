@@ -96,7 +96,8 @@ function readJson(req) {
 }
 
 async function completeIdmeWithCode(code, state) {
-  if (!consumeState(state)) {
+  const row = consumeState(state)
+  if (!row) {
     const err = new Error('Invalid or expired OAuth state')
     err.code = 'invalid_state'
     throw err
@@ -104,7 +105,7 @@ async function completeIdmeWithCode(code, state) {
   const token = await exchangeCodeForToken(code)
   const attrs = await fetchAttributes(token.access_token)
   const patch = attributesToProfilePatch(attrs, token.scope)
-  return updateProfile(patch)
+  return updateProfile(patch, row.accountId)
 }
 
 const server = http.createServer(async (req, res) => {
@@ -674,7 +675,16 @@ const server = http.createServer(async (req, res) => {
 
     if (req.method === 'GET' && pathname === '/api/idme/authorize') {
       try {
-        const auth = createAuthorizeRequest()
+        const token = bearerToken(req)
+        const session = token ? await sessionFromToken(token) : null
+        if (!session?.account?.id) {
+          send(res, 401, {
+            error: 'auth_required',
+            message: 'Sign in before linking an ID.me account.',
+          })
+          return
+        }
+        const auth = createAuthorizeRequest({ accountId: session.account.id })
         send(res, 200, auth)
       } catch (err) {
         if (err.code === 'idme_not_configured') {

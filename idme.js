@@ -69,7 +69,7 @@ export function getIdmeConfig() {
   }
 }
 
-export function createAuthorizeRequest() {
+export function createAuthorizeRequest({ accountId = null } = {}) {
   const cfg = getIdmeConfig()
   if (!cfg.configured) {
     const err = new Error('ID.me is not configured')
@@ -79,7 +79,11 @@ export function createAuthorizeRequest() {
 
   const state = crypto.randomBytes(24).toString('hex')
   const expiresAt = Date.now() + 10 * 60 * 1000
-  memoryStates.set(state, { expiresAt, createdAt: Date.now() })
+  memoryStates.set(state, {
+    expiresAt,
+    createdAt: Date.now(),
+    accountId: accountId ?? null,
+  })
 
   const params = new URLSearchParams({
     client_id: cfg.clientId || 'MISSING_CLIENT_ID',
@@ -104,12 +108,12 @@ export function createAuthorizeRequest() {
 }
 
 export function consumeState(state) {
-  if (!state) return false
+  if (!state) return null
   const row = memoryStates.get(state)
   memoryStates.delete(state)
-  if (!row) return false
-  if (Date.now() > row.expiresAt) return false
-  return true
+  if (!row) return null
+  if (Date.now() > row.expiresAt) return null
+  return row
 }
 
 async function postForm(url, fields) {

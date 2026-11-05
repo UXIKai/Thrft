@@ -24,6 +24,7 @@ import {
   fetchIdmeConfig,
   startIdmeAuthorize,
 } from '../api.js'
+import StageSlot from './StageSlot.jsx'
 import { LISTING_BRANDS } from '../listingCatalog.js'
 import {
   SIZE_GARMENTS,
@@ -265,53 +266,6 @@ function HelpIcon() {
   )
 }
 
-/** Single person — assistant header mark */
-function PersonIcon() {
-  return (
-    <svg className="settings-assistant-person" viewBox="0 0 24 24" aria-hidden>
-      <circle
-        cx="12"
-        cy="8.2"
-        r="3.1"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.7"
-      />
-      <path
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.7"
-        strokeLinecap="round"
-        d="M5.2 19.2c.7-3.4 3.2-5.2 6.8-5.2s6.1 1.8 6.8 5.2"
-      />
-    </svg>
-  )
-}
-
-function MailIcon() {
-  return (
-    <svg className="settings-row-ico" viewBox="0 0 24 24" aria-hidden>
-      <rect
-        x="3.8"
-        y="6.2"
-        width="16.4"
-        height="11.6"
-        rx="1.6"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-      />
-      <path
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinejoin="round"
-        d="m4.4 7.2 7.6 5.4 7.6-5.4"
-      />
-    </svg>
-  )
-}
-
 function ImageIcon() {
   return (
     <svg className="settings-choose-ico" viewBox="0 0 24 24" aria-hidden>
@@ -479,10 +433,6 @@ const HELP_PAGES = {
   help: {
     title: 'Help',
   },
-  support: {
-    title: 'Support',
-    body: 'Live support is not available yet. Use Getting Started for how each screen works.',
-  },
 }
 
 /** Local FAQ knowledge for the Help assistant (keyword match). */
@@ -546,10 +496,27 @@ const ASSISTANT_FAQ = [
     answer:
       'In Settings under Give Back you can pledge a monthly dollar amount or a percent of earnings to the Dlaita Group Initiative.',
   },
+  {
+    keys: ['order', 'tracking', 'delivery', 'refund', 'support'],
+    answer:
+      'Open the ship tracker from Profile to follow an order. Checkout is the bag icon on Home. Ask another question here and I will walk you through it.',
+  },
 ]
 
-const ASSISTANT_GREETING =
-  'Hi — I’m your Thrft helper. Ask about Home, Chat, Create, Favorites, Profile, Settings, or checkout.'
+const ASSISTANT_ASK = 'What do you need help with?'
+
+const ASSISTANT_PROMPTS = [
+  'How do I sell on Market?',
+  'How does Closet work?',
+  'How do I message someone?',
+  'Where is my bag?',
+  'How do Saved brands work?',
+  'How do payouts and points work?',
+  'How do I verify with ID.me?',
+  'How do I change sizes or shipping?',
+  'How do I sign out?',
+  'I need help with an order',
+]
 
 const ASSISTANT_FALLBACK =
   'I’m not sure on that yet. Try asking about Home, Create, Closet, Saved, Store, Settings, or Sign out — or open Getting Started for the full walkthrough.'
@@ -639,9 +606,7 @@ export default function SettingsScreen({
   const [sheetDraft, setSheetDraft] = useState({})
   const [helpPage, setHelpPage] = useState(null)
   const [assistantDraft, setAssistantDraft] = useState('')
-  const [assistantMessages, setAssistantMessages] = useState(() => [
-    { id: 'greet', role: 'assistant', text: ASSISTANT_GREETING },
-  ])
+  const [assistantMessages, setAssistantMessages] = useState([])
   const assistantListRef = useRef(null)
   const [saveBusy, setSaveBusy] = useState(false)
   const [saveNote, setSaveNote] = useState('')
@@ -668,6 +633,8 @@ export default function SettingsScreen({
   const email = userProfile?.email || ''
   const identityStatus = userProfile?.identityStatus || 'unverified'
   const identityRef = userProfile?.identityRef || ''
+  const identityEmail = userProfile?.identityEmail || ''
+  const legalName = userProfile?.legalName || ''
   const wheelHex = hsvToHex(wheelHsv.h, wheelHsv.s, wheelHsv.v)
   const wheelHexRef = useRef(wheelHex)
   wheelHexRef.current = wheelHex
@@ -696,8 +663,9 @@ export default function SettingsScreen({
       throw new Error('No authorize URL returned')
     } catch (err) {
       setIdmeError(
-        err?.message ||
-          'ID.me is not configured. Add IDME_CLIENT_ID and IDME_CLIENT_SECRET to the API environment.',
+        err?.payload?.error === 'idme_not_configured'
+          ? 'ID.me linking is not connected on this server yet.'
+          : err?.message || 'Could not open ID.me. Try again.',
       )
       setIdmeStep('error')
     } finally {
@@ -754,27 +722,51 @@ export default function SettingsScreen({
 
   function openHelpAssistant() {
     setAssistantDraft('')
-    setAssistantMessages([
-      { id: 'greet', role: 'assistant', text: ASSISTANT_GREETING },
-    ])
+    setAssistantMessages([])
     setHelpPage('help')
   }
 
-  function sendAssistant() {
-    const text = assistantDraft.trim()
-    if (!text) return
+  function askAssistant(text) {
+    const question = String(text || '').trim()
+    if (!question) return
     const userMsg = {
       id: `u-${Date.now()}`,
       role: 'user',
-      text,
+      text: question,
     }
     const reply = {
       id: `a-${Date.now()}`,
       role: 'assistant',
-      text: answerAssistant(text),
+      text: answerAssistant(question),
     }
     setAssistantMessages((prev) => [...prev, userMsg, reply])
     setAssistantDraft('')
+  }
+
+  function sendAssistant() {
+    askAssistant(assistantDraft)
+  }
+
+  async function unlinkIdmeAccount() {
+    setIdBusy(true)
+    setIdmeError('')
+    try {
+      await onSaveProfile?.({
+        identityStatus: 'unverified',
+        identityProvider: '',
+        identityRef: '',
+        legalName: '',
+        identityEmail: '',
+        identityScope: '',
+        identityVerifiedAt: '',
+        identityGroups: [],
+      })
+      setIdmeStep('intro')
+    } catch (err) {
+      setIdmeError(err?.message || 'Could not unlink ID.me')
+    } finally {
+      setIdBusy(false)
+    }
   }
 
   function openSheet(id) {
@@ -1370,9 +1362,7 @@ export default function SettingsScreen({
         <Section label="Help & Support">
           <Row icon={<PlayIcon />} title="Getting Started" onClick={() => setHelpPage('started')} />
           <div className="settings-divider" aria-hidden />
-          <Row icon={<HelpIcon />} title="Help" onClick={openHelpAssistant} />
-          <div className="settings-divider" aria-hidden />
-          <Row icon={<MailIcon />} title="Support" onClick={() => setHelpPage('support')} />
+          <Row icon={<HelpIcon />} title="Help & Support" onClick={openHelpAssistant} />
         </Section>
 
         <p className="settings-footer">ThrfT. v1.0.0</p>
@@ -1637,20 +1627,18 @@ export default function SettingsScreen({
           className="glass-overlay settings-help-page is-assistant"
           role="dialog"
           aria-modal="true"
-          aria-label="Help assistant"
+          aria-label="Help & Support"
         >
           <header className="glass-overlay-top settings-assistant-top">
             <button
               type="button"
-              className="glass-overlay-back"
+              className="glass-overlay-back is-bare"
               aria-label="Back"
               onClick={() => setHelpPage(null)}
             >
               <BackIcon />
             </button>
-            <div className="settings-assistant-mark" aria-hidden>
-              <PersonIcon />
-            </div>
+            <h2 className="glass-overlay-title">Help & Support</h2>
             <span className="glass-overlay-spacer" aria-hidden />
           </header>
           <div
@@ -1659,6 +1647,21 @@ export default function SettingsScreen({
             role="log"
             aria-live="polite"
           >
+            <div className="settings-assistant-bubble is-assistant settings-assistant-opener">
+              <p className="settings-assistant-ask">{ASSISTANT_ASK}</p>
+              <div className="settings-assistant-prompts">
+                {ASSISTANT_PROMPTS.map((question) => (
+                  <button
+                    key={question}
+                    type="button"
+                    className="settings-assistant-prompt"
+                    onClick={() => askAssistant(question)}
+                  >
+                    {question}
+                  </button>
+                ))}
+              </div>
+            </div>
             {assistantMessages.map((msg) => (
               <div
                 key={msg.id}
@@ -1714,7 +1717,7 @@ export default function SettingsScreen({
           <header className="glass-overlay-top">
             <button
               type="button"
-              className="glass-overlay-back"
+              className={`glass-overlay-back${helpPage === 'started' ? ' is-bare' : ''}`}
               aria-label="Back"
               onClick={() => setHelpPage(null)}
             >
@@ -1753,84 +1756,80 @@ export default function SettingsScreen({
       )}
 
       {idmeOpen && (
-        <div className="glass-overlay settings-idme-page" role="dialog" aria-modal="true" aria-label="ID.me verification">
-          <header className="glass-overlay-top">
+        <StageSlot>
+          <div className="settings-idme-popup" role="dialog" aria-modal="true" aria-label="Link ID.me">
             <button
               type="button"
-              className="glass-overlay-back"
-              aria-label="Back"
+              className="settings-idme-scrim"
+              aria-label="Dismiss"
               onClick={() => setIdmeOpen(false)}
-            >
-              <BackIcon />
-            </button>
-            <h2 className="glass-overlay-title">Identity</h2>
-            <span className="glass-overlay-spacer" aria-hidden />
-          </header>
-          <div className="glass-overlay-body">
-            <div className="settings-idme-card glass-pane-card">
+            />
+            <div className="settings-idme-card">
+              <button
+                type="button"
+                className="settings-idme-close"
+                aria-label="Close"
+                onClick={() => setIdmeOpen(false)}
+              >
+                <CloseIcon />
+              </button>
               <div className="settings-idme-brand">
                 <span className="settings-idme-mark" aria-hidden>
                   ID
                 </span>
                 <div>
                   <p className="settings-idme-title">ID.me</p>
+                  <p className="settings-idme-sub">Link your ID.me account</p>
                 </div>
               </div>
+              <p className="settings-idme-copy">
+                Thrft uses ID.me to confirm it is you. We store that the account is linked — not your ID photos.
+              </p>
 
-              {idmeStep === 'intro' && (
+              {identityStatus === 'verified' || idmeStep === 'done' ? (
                 <>
-                  {idmeCfg?.configured ? (
-                    <button
-                      type="button"
-                      className="glass-cta settings-idme-cta"
-                      disabled={idBusy}
-                      onClick={beginIdmeOAuth}
-                    >
-                      {idBusy ? 'Starting…' : 'Continue with ID.me'}
-                    </button>
-                  ) : (
-                    <p className="settings-idme-status">
-                      ID.me is not configured. Add IDME_CLIENT_ID and IDME_CLIENT_SECRET
-                      to the API environment.
+                  <p className="settings-idme-status is-verified">ID.me linked</p>
+                  <p className="settings-idme-copy">
+                    {legalName || identityEmail || 'Your ID.me account is linked to this Thrft account.'}
+                  </p>
+                  {legalName && identityEmail ? (
+                    <p className="settings-idme-sub">{identityEmail}</p>
+                  ) : null}
+                  {identityRef ? (
+                    <p className="settings-idme-code">{identityRef}</p>
+                  ) : null}
+                  <button
+                    type="button"
+                    className="settings-idme-unlink"
+                    disabled={idBusy}
+                    onClick={unlinkIdmeAccount}
+                  >
+                    {idBusy ? 'Unlinking…' : 'Unlink ID.me'}
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    type="button"
+                    className="settings-idme-official"
+                    disabled={idBusy || idmeCfg?.configured === false}
+                    onClick={beginIdmeOAuth}
+                  >
+                    {idBusy || idmeStep === 'connecting' ? 'Opening ID.me…' : 'Verify with ID.me'}
+                  </button>
+                  {idmeCfg?.configured === false ? (
+                    <p className="settings-idme-sub">
+                      ID.me linking is not connected on this server yet.
                     </p>
-                  )}
-                </>
-              )}
-
-              {idmeStep === 'connecting' && (
-                <p className="settings-idme-status" aria-live="polite">
-                  …
-                </p>
-              )}
-
-              {idmeStep === 'error' && (
-                <>
-                  <p className="settings-idme-status">Could not start ID.me</p>
-                  <button
-                    type="button"
-                    className="glass-cta settings-idme-cta"
-                    onClick={() => setIdmeStep('intro')}
-                  >
-                    Back
-                  </button>
-                </>
-              )}
-
-              {idmeStep === 'done' && (
-                <>
-                  <p className="settings-idme-status is-verified">Identity verified</p>
-                  <button
-                    type="button"
-                    className="glass-cta settings-idme-cta"
-                    onClick={() => setIdmeOpen(false)}
-                  >
-                    Done
-                  </button>
+                  ) : null}
+                  {idmeError ? (
+                    <p className="settings-idme-sub" role="alert">{idmeError}</p>
+                  ) : null}
                 </>
               )}
             </div>
           </div>
-        </div>
+        </StageSlot>
       )}
 
       {paletteEditorOpen && (
