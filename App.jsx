@@ -457,7 +457,12 @@ export default function App() {
         {tab === 'home' && (
           <>
             <header className="wordmark-wrap">
-              <span className="wordmark-side" aria-hidden />
+              <HomeFilterLinks
+                brandLabel={homeBrand?.label || null}
+                categoryLabel={homeCategoryLabel}
+                onOpenBrands={() => openHomePicker('brands')}
+                onOpenCategory={() => openHomePicker('category')}
+              />
               <h1 className="wordmark">
                 Thrft<span className="dot" aria-hidden="true">●</span>
               </h1>
@@ -497,12 +502,6 @@ export default function App() {
               </div>
             </section>
 
-            <HomeFilterLinks
-              brandLabel={homeBrand?.label || null}
-              categoryLabel={homeCategoryLabel}
-              onOpenBrands={() => openHomePicker('brands')}
-              onOpenCategory={() => openHomePicker('category')}
-            />
 
             <ProductRows
               onOpenProduct={handleOpenProduct}

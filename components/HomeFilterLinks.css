@@ -1,13 +1,52 @@
-.home-filter-links {
+.home-search {
   position: relative;
-  z-index: 2;
+  justify-self: start;
+}
+
+.home-search-btn {
+  width: 40px;
+  height: 40px;
+  min-height: 40px;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  place-items: center;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+}
+
+.home-search-btn.is-set,
+.home-search-btn:hover,
+.home-search-btn:focus-visible {
+  color: #fff;
+  outline: none;
+}
+
+.home-search-ico {
+  width: 22px;
+  height: 22px;
+  display: block;
+}
+
+.home-search-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 10;
   display: flex;
-  align-items: baseline;
-  justify-content: center;
-  gap: clamp(2.4rem, 12vw, 4.2rem);
-  width: 100%;
-  margin: 6px auto 14px;
-  padding: 0 18px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  min-width: 140px;
+  padding: 8px 14px;
+  border-radius: 14px;
+  background: rgba(20, 20, 24, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(12px);
 }
 
 .home-filter-link {
