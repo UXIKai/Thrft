@@ -365,7 +365,7 @@ const HELP_PAGES = {
           },
           {
             heading: 'Profile',
-            body: 'Photo, name, shipping, and social Links. The book opens Store and Closet. The bank icon opens Money. The gear opens Settings.',
+            body: 'Photo, name, and shipping. The book opens Store and Closet. The gear opens Settings, where the Profile pencil edits account, Money, Music, and Media.',
           },
         ],
       },
@@ -390,8 +390,8 @@ const HELP_PAGES = {
         label: 'Money',
         sections: [
           {
-            heading: 'Bank',
-            body: 'Connect a bank for payouts. Open it from the bank icon on Profile.',
+            heading: 'Payouts',
+            body: 'Payouts use a linked account. Open Money from the Profile pencil in Settings.',
           },
           {
             heading: 'Points',
@@ -403,7 +403,7 @@ const HELP_PAGES = {
           },
           {
             heading: 'Sales',
-            body: 'Listing earnings, on the same Money screen as Bank, Points, and Wallet.',
+            body: 'Listing earnings, next to Points and Wallet on the Money screen.',
           },
         ],
       },
@@ -465,7 +465,7 @@ const ASSISTANT_FAQ = [
   {
     keys: ['profile', 'store', 'active', 'sold', 'book'],
     answer:
-      'Profile holds your photo, shipping, and Links. The book opens Store (Active / Sold listings) and Closet.',
+      'Profile holds your photo and shipping. Edit account, Money, Music, and Media from the Profile pencil in Settings.',
   },
   {
     keys: ['settings', 'gear', 'color', 'size', 'shipping'],
@@ -485,7 +485,7 @@ const ASSISTANT_FAQ = [
   {
     keys: ['money', 'wallet', 'points', 'bank', 'sales'],
     answer:
-      'On Profile, open the bank icon for Bank, Points, Wallet, and Sales. Fifty cents equals one point.',
+      'Open Settings, then the Profile pencil, for account, Money, Music, and Media. Fifty cents equals one point.',
   },
   {
     keys: ['bag', 'cart', 'checkout', 'stripe'],
@@ -585,6 +585,7 @@ export default function SettingsScreen({
   userProfile,
   onSaveProfile,
   onSignOut,
+  onEditProfile,
 }) {
   const [appColor, setAppColor] = useState(() => readAppColor())
   const [customHex, setCustomHex] = useState(() => readCustomColorHex())
@@ -1222,12 +1223,10 @@ export default function SettingsScreen({
 
         <Section label="Account Settings">
           <Row
-            title="Name"
-            meta={displayName}
-            onClick={() => openSheet('displayName')}
+            icon={<PencilIcon />}
+            title="Profile"
+            onClick={onEditProfile}
           />
-          <div className="settings-divider" aria-hidden />
-          <Row title="Password" onClick={() => openSheet('password')} />
         </Section>
 
         <Section label="Store API">

@@ -529,9 +529,14 @@
 }
 
 .settings-pencil-ico {
-  width: 15px;
-  height: 15px;
+  width: 18px;
+  height: 18px;
   display: block;
+}
+
+.settings-row-leading .settings-pencil-ico {
+  width: 18px;
+  height: 18px;
 }
 
 .settings-color-stack {

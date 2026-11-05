@@ -13,7 +13,7 @@ import {
 import { getCustomCategories } from '../customCatalog.js'
 import { LISTING_BRANDS, LISTING_CATEGORIES } from '../listingCatalog.js'
 import { createListing, fetchSellerSalesStats, formatListingPrice } from '../listings.js'
-import { isSupabaseConfigured } from '../supabase.js'
+import { getSupabase, isSupabaseConfigured } from '../supabase.js'
 import OrbitCarousel from './OrbitCarousel.jsx'
 import SettingsScreen from './SettingsScreen.jsx'
 import './GlassOverlay.css'
@@ -154,17 +154,6 @@ function MoneyIcon() {
   )
 }
 
-function BankIcon() {
-  return (
-    <svg className="profile-money-tile-ico" viewBox="0 0 24 24" aria-hidden>
-      <path
-        fill="currentColor"
-        d="M4 10h16v1.4H4V10zm1.2 2.8h2.2V18H5.2v-5.2zm5.7 0h2.2V18h-2.2v-5.2zm5.7 0H19V18h-2.4v-5.2zM3.5 19.2h17v1.3h-17v-1.3zM12 3.4 20.5 8H3.5L12 3.4z"
-      />
-    </svg>
-  )
-}
-
 function SalesIcon() {
   return (
     <svg className="profile-money-tile-ico" viewBox="0 0 24 24" aria-hidden>
@@ -290,6 +279,30 @@ function BackIcon() {
         strokeLinecap="round"
         strokeLinejoin="round"
         d="M14.5 5.5 8 12l6.5 6.5"
+      />
+    </svg>
+  )
+}
+
+function LockIcon() {
+  return (
+    <svg className="profile-name-person" viewBox="0 0 24 24" aria-hidden>
+      <rect
+        x="6"
+        y="11"
+        width="12"
+        height="9"
+        rx="1.6"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.7"
+      />
+      <path
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+        d="M8.5 11V8.2a3.5 3.5 0 0 1 7 0V11"
       />
     </svg>
   )
@@ -651,6 +664,11 @@ export default function ProfileScreen({
   const [photoSheetOpen, setPhotoSheetOpen] = useState(false)
   const [nameSheetOpen, setNameSheetOpen] = useState(false)
   const [nameDraft, setNameDraft] = useState('')
+  const [accountNameDraft, setAccountNameDraft] = useState('')
+  const [accountUsernameDraft, setAccountUsernameDraft] = useState('')
+  const [accountPasswordDraft, setAccountPasswordDraft] = useState('')
+  const [accountEditNote, setAccountEditNote] = useState('')
+  const [accountEditBusy, setAccountEditBusy] = useState(false)
   const [usernameDraft, setUsernameDraft] = useState('')
   const [nameSaving, setNameSaving] = useState(false)
   const [pointsAction, setPointsAction] = useState(null) // 'donate' | 'cashout' | null
@@ -974,6 +992,66 @@ export default function ProfileScreen({
     }
   }
 
+  function openProfileEditor() {
+    setAccountNameDraft(
+      userProfile?.displayName || userProfile?.email?.split('@')[0] || '',
+    )
+    setAccountUsernameDraft(
+      String(account?.username || userProfile?.username || '').replace(/^@+/, ''),
+    )
+    setAccountPasswordDraft('')
+    setAccountEditNote('')
+    setMusicSheet(null)
+    setMusicDraft('')
+    setActiveSocial(null)
+    setSocialDraft('')
+    setAtOpen(true)
+  }
+
+  async function saveAccountEdit() {
+    if (accountEditBusy) return
+    const displayName = accountNameDraft.trim()
+    const username = accountUsernameDraft
+      .trim()
+      .replace(/^@+/, '')
+      .toLowerCase()
+      .replace(/[^a-z0-9._]/g, '')
+    const nextPassword = accountPasswordDraft.trim()
+    if (!displayName && !username && !nextPassword) return
+    if (nextPassword && nextPassword.length < 6) {
+      setAccountEditNote('Password needs at least 6 characters')
+      return
+    }
+    setAccountEditBusy(true)
+    setAccountEditNote('')
+    try {
+      if (displayName || username) {
+        await onSaveProfile?.({
+          ...(displayName ? { displayName } : {}),
+          ...(username ? { username } : {}),
+        })
+      }
+      if (nextPassword) {
+        const supabase = getSupabase()
+        if (!supabase) {
+          setAccountEditNote('Sign in to change your password')
+          return
+        }
+        const { error } = await supabase.auth.updateUser({ password: nextPassword })
+        if (error) {
+          setAccountEditNote(error.message || 'Could not update password')
+          return
+        }
+        setAccountPasswordDraft('')
+      }
+      setAccountEditNote('Saved')
+    } catch (err) {
+      setAccountEditNote(err?.message || 'Could not save')
+    } finally {
+      setAccountEditBusy(false)
+    }
+  }
+
   function closeLinks() {
     setAtOpen(false)
     setMusicSheet(null)
@@ -1145,26 +1223,8 @@ export default function ProfileScreen({
 
       <section
         className="profile-block profile-tools-row"
-        aria-label="Links, money, and shipping"
+        aria-label="Shipping"
       >
-        <button
-          type="button"
-          className="profile-spaces-btn is-compact is-bare"
-          aria-label="Open links and music"
-          onMouseDown={holdScroll}
-          onClick={() => setAtOpen(true)}
-        >
-          <LinkIcon />
-        </button>
-        <button
-          type="button"
-          className="profile-money-btn is-inline"
-          aria-label="Open Money"
-          onMouseDown={holdScroll}
-          onClick={() => openMoney('sales')}
-        >
-          <MoneyIcon />
-        </button>
         <button
           type="button"
           className="profile-suppliers-btn is-compact is-bare"
@@ -1590,7 +1650,7 @@ export default function ProfileScreen({
       {stageEl &&
         atOpen &&
         createPortal(
-          <div className="profile-links-layer">
+          <div className="profile-links-layer is-edit">
             <button
               type="button"
               className="profile-links-scrim"
@@ -1598,24 +1658,166 @@ export default function ProfileScreen({
               onClick={closeLinks}
             />
           <div
-            className="profile-panel profile-links-card"
+            className="profile-panel profile-links-card profile-edit-card"
             role="dialog"
             aria-modal="true"
-            aria-label="Links and music"
+            aria-label="Edit profile"
           >
             <header className="profile-panel-top">
               <button
                 type="button"
                 className="profile-panel-back"
-                aria-label="Back to profile"
+                aria-label="Back"
                 onClick={closeLinks}
               >
                 <BackIcon />
               </button>
-              <h2 className="profile-suppliers-title">Links</h2>
+              <h2 className="profile-suppliers-title">Profile</h2>
               <span className="profile-panel-spacer" aria-hidden />
             </header>
             <div className="profile-panel-body profile-at-body">
+              <section className="profile-block is-panel-section" aria-labelledby="account-edit-label">
+                <h2 id="account-edit-label" className="profile-label">
+                  Account
+                </h2>
+                <label className="profile-name-field">
+                  <span className="profile-name-field-mark" aria-hidden>
+                    <PersonIcon />
+                  </span>
+                  <input
+                    value={accountNameDraft}
+                    aria-label="Name"
+                    autoCapitalize="words"
+                    autoCorrect="off"
+                    onChange={(e) => setAccountNameDraft(e.target.value)}
+                  />
+                </label>
+                <label className="profile-name-field">
+                  <span className="profile-name-field-mark" aria-hidden>
+                    @
+                  </span>
+                  <input
+                    value={accountUsernameDraft}
+                    aria-label="Username"
+                    autoCapitalize="none"
+                    autoCorrect="off"
+                    spellCheck={false}
+                    onChange={(e) =>
+                      setAccountUsernameDraft(e.target.value.replace(/^@+/, ''))
+                    }
+                  />
+                </label>
+                <label className="profile-name-field">
+                  <span className="profile-name-field-mark" aria-hidden>
+                    <LockIcon />
+                  </span>
+                  <input
+                    type="password"
+                    value={accountPasswordDraft}
+                    aria-label="Password"
+                    autoComplete="new-password"
+                    placeholder="New password"
+                    onChange={(e) => setAccountPasswordDraft(e.target.value)}
+                  />
+                </label>
+                <button
+                  type="button"
+                  className="profile-music-save"
+                  disabled={accountEditBusy}
+                  onClick={saveAccountEdit}
+                >
+                  Save
+                </button>
+                {accountEditNote ? (
+                  <p className="profile-sales-note" role="status">
+                    {accountEditNote}
+                  </p>
+                ) : null}
+              </section>
+
+              <section className="profile-block is-panel-section" aria-label="Money">
+                <h2 className="profile-label">Money</h2>
+                <div className="profile-money-grid" role="tablist" aria-label="Money">
+                  {MONEY_TABS.map(({ id, label, Icon }) => (
+                    <button
+                      key={id}
+                      type="button"
+                      role="tab"
+                      aria-selected={moneyTab === id}
+                      className={`profile-money-tile${moneyTab === id ? ' is-active' : ''}`}
+                      onClick={() => selectMoneyTab(id)}
+                    >
+                      {id === 'wallet' ? (
+                        <WalletIcon className="profile-money-tile-ico" />
+                      ) : id === 'points' ? (
+                        <span className="profile-money-tile-ico is-sparkle">
+                          <SparkleIcon />
+                        </span>
+                      ) : (
+                        <Icon />
+                      )}
+                      <span className="profile-money-tile-label">{label}</span>
+                    </button>
+                  ))}
+                </div>
+                <div className="profile-money-detail">
+                  {moneyTab === 'points' && (
+                    <section className="profile-money-section is-points" aria-label="Points">
+                      <div className="profile-credits-card is-half">
+                        <div className="profile-credits-row">
+                          <SparkleIcon />
+                          <span className="profile-credits-n">-</span>
+                        </div>
+                      </div>
+                    </section>
+                  )}
+                  {moneyTab === 'wallet' && (
+                    <section className="profile-money-section" aria-label="Wallet">
+                      <div className="profile-credits-card is-half">
+                        <div className="profile-credits-row">
+                          <WalletIcon />
+                          <span className="profile-credits-n">-</span>
+                        </div>
+                      </div>
+                    </section>
+                  )}
+                  {moneyTab === 'sales' && (
+                    <section className="profile-money-section" aria-label="Sales">
+                      <div className="profile-sales-grid">
+                        {[
+                          [
+                            salesStats.gross == null
+                              ? '…'
+                              : formatListingPrice(salesStats.gross),
+                            'Gross',
+                          ],
+                          [
+                            salesStats.net == null
+                              ? '…'
+                              : formatListingPrice(salesStats.net),
+                            'Net',
+                          ],
+                          [
+                            salesStats.sold == null ? '…' : String(salesStats.sold),
+                            'Sold',
+                          ],
+                          [
+                            salesStats.active == null
+                              ? '…'
+                              : String(salesStats.active),
+                            'Active',
+                          ],
+                        ].map(([value, label]) => (
+                          <div key={label} className="profile-stat-card">
+                            <span className="profile-stat-value">{value}</span>
+                            <span className="profile-stat-label">{label}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </section>
+                  )}
+                </div>
+              </section>
               <section className="profile-block is-panel-section" aria-labelledby="music-label">
                 <h2 id="music-label" className="profile-label">
                   Music
@@ -1667,9 +1869,9 @@ export default function ProfileScreen({
 
               <section className="profile-block is-panel-section" aria-labelledby="links-label">
                 <h2 id="links-label" className="profile-label">
-                  Social
+                  Media
                 </h2>
-                <div className="profile-social-row" role="group" aria-label="Social handles">
+                <div className="profile-social-row" role="group" aria-label="Media handles">
                   {SOCIAL_PLATFORMS.map((platform) => {
                     const filled = Boolean(socialHandles[platform.id])
                     return (
@@ -1719,35 +1921,7 @@ export default function ProfileScreen({
                 ) : null}
               </section>
 
-              <section className="profile-block is-panel-section" aria-label="Bank">
-                <h2 className="profile-label">Bank</h2>
-                {connections.bank?.connected ? (
-                  <div className="profile-link-editor">
-                <p className="profile-bank-linked">
-                  {connections.bank.bankName || 'Bank'}
-                  {connections.bank.last4 ? ` ···${connections.bank.last4}` : ''}
-                </p>
-                <button
-                  type="button"
-                  className="profile-music-save"
-                  disabled={connectBusy === 'bank'}
-                  onClick={() => handleConnect('bank', 'disconnect')}
-                >
-                  Disconnect
-                </button>
-                  </div>
-                ) : (
-                  <button
-                type="button"
-                className="profile-bank-link"
-                aria-label="Connect bank"
-                disabled={connectBusy === 'bank'}
-                onClick={() => handleConnect('bank', 'connect')}
-                  >
-                <BankIcon />
-                  </button>
-                )}
-              </section>
+              
             </div>
           </div>
           </div>,
@@ -1824,6 +1998,7 @@ export default function ProfileScreen({
             userProfile={userProfile}
             onSaveProfile={onSaveProfile}
             onSignOut={onSignOut}
+            onEditProfile={openProfileEditor}
           />,
           stageEl,
         )}
@@ -1895,7 +2070,7 @@ export default function ProfileScreen({
             className="glass-sheet is-neat"
             role="dialog"
             aria-modal="true"
-            aria-label={`${SOCIAL_PLATFORMS.find((p) => p.id === activeSocial)?.label || 'Social'} handle`}
+            aria-label={`${SOCIAL_PLATFORMS.find((p) => p.id === activeSocial)?.label || 'Media'} handle`}
           >
             <button
               type="button"
