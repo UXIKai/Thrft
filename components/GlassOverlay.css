@@ -24,7 +24,6 @@
 
 /* Apple nav bar: lens sits behind the title and dissolves into the page */
 .glass-overlay-top::before,
-.settings-top::before,
 .profile-top::before,
 .auth-top::before,
 .chat-thread-top::before {
@@ -48,7 +47,6 @@
 /* Wide screens: fade the lens sideways so the column edge never shows */
 @media (min-width: 720px) {
   .glass-overlay-top::before,
-  .settings-top::before,
   .profile-top::before,
   .auth-top::before,
   .chat-thread-top::before {
@@ -64,7 +62,6 @@
 }
 
 .glass-overlay-top::after,
-.settings-top::after,
 .profile-top::after,
 .auth-top::after,
 .chat-thread-top::after {

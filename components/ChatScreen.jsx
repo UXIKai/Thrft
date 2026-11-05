@@ -390,28 +390,6 @@ function SendIcon() {
   )
 }
 
-function SearchIcon() {
-  return (
-    <svg className="chat-liked-search-ico" viewBox="0 0 24 24" aria-hidden>
-      <circle
-        cx="10.5"
-        cy="10.5"
-        r="6.2"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.8"
-      />
-      <path
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        d="m15.4 15.4 4.2 4.2"
-      />
-    </svg>
-  )
-}
-
 function LikedHeartIcon({ className = 'chat-liked-hero-ico' }) {
   return (
     <svg className={className} viewBox="0 0 24 24" aria-hidden>
@@ -1775,24 +1753,13 @@ export default function ChatScreen({
         </form>
 
         {likedPickerOpen ? (
+          <StageSlot>
           <div
             className="chat-liked-picker"
             role="dialog"
             aria-modal="true"
             aria-label="Send liked items"
           >
-            <header className="chat-liked-picker-top">
-              <button
-                type="button"
-                className="chat-top-btn"
-                aria-label="Close liked items"
-                onClick={closeLikedPicker}
-              >
-                <BackIcon />
-              </button>
-              <span className="chat-liked-picker-heading" aria-hidden />
-              <span className="chat-top-spacer" aria-hidden />
-            </header>
             <div className="chat-liked-hero" aria-hidden>
               <LikedHeartIcon />
             </div>
@@ -1844,9 +1811,14 @@ export default function ChatScreen({
             </div>
             <div className="chat-liked-dock">
               <div className="chat-liked-bar">
-                <span className="chat-liked-search-slot" aria-hidden>
-                  <SearchIcon />
-                </span>
+                <button
+                  type="button"
+                  className="chat-liked-back"
+                  aria-label="Back"
+                  onClick={closeLikedPicker}
+                >
+                  <BackIcon />
+                </button>
                 <input
                   className="chat-liked-search-input"
                   type="text"
@@ -1872,6 +1844,7 @@ export default function ChatScreen({
               </div>
             </div>
           </div>
+          </StageSlot>
         ) : null}
 
         {contactSheetOpen && !peerProfile && (

@@ -510,6 +510,8 @@
 .settings-palette-block {
   position: relative;
   padding-top: 8px;
+  container-type: inline-size;
+  container-name: palette;
 }
 
 .settings-palette-edit {
@@ -2023,5 +2025,74 @@
 @media (min-width: 720px) {
   .settings-screen {
     width: max(360px, 33.333vw);
+  }
+}
+
+/* Narrow palette (phone, or the desktop settings panel): dots scale into the row. */
+@container palette (max-width: 460px) {
+  .settings-palette-block {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .settings-color-stack {
+    padding-right: 0;
+    gap: 18px;
+  }
+
+  .settings-palette-edit {
+    top: 6px;
+    right: 6px;
+    width: 32px;
+    height: 32px;
+  }
+
+  .settings-color-group:first-child .settings-color-caption {
+    display: flex;
+    align-items: center;
+    min-height: 32px;
+    padding-right: 40px;
+  }
+
+  .settings-color-row {
+    gap: 8px;
+    align-items: center;
+  }
+
+  .settings-color-wheel,
+  .settings-color-wheel-face {
+    width: 34px;
+    height: 34px;
+  }
+
+  .settings-color-side-spacer,
+  .settings-choose.is-color-side {
+    width: 32px;
+    height: 32px;
+  }
+
+  .settings-swatches.is-full-palette {
+    gap: 8px 6px;
+  }
+
+  .settings-swatches.is-full-palette .settings-swatch {
+    width: 100%;
+    min-width: 0;
+    padding: 2px;
+    box-sizing: border-box;
+  }
+
+  .settings-swatches.is-full-palette .settings-swatch-dot {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+    max-width: 28px;
+    max-height: 28px;
+  }
+
+  .settings-swatch.is-selected .settings-swatch-dot {
+    box-shadow: none;
+    outline: 2px solid var(--settings-accent, #3dd68c);
+    outline-offset: 1px;
   }
 }

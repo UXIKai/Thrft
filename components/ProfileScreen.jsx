@@ -138,9 +138,9 @@ function WalletIcon({ className = 'profile-wallet-ico' } = {}) {
   )
 }
 
-function MoneyIcon() {
+function MoneyIcon({ className = 'profile-money-ico' } = {}) {
   return (
-    <svg className="profile-money-ico" viewBox="0 0 24 24" aria-hidden>
+    <svg className={className} viewBox="0 0 24 24" aria-hidden>
       {/* Bank — stroke only, no filled plate */}
       <path
         fill="none"
@@ -1482,7 +1482,23 @@ export default function ProfileScreen({
               <span className="profile-panel-spacer" aria-hidden />
             </header>
             <div className="profile-panel-body profile-money-body">
-              <div className="profile-money-grid" role="tablist" aria-label="Money">
+              <div className="profile-money-grid" role="group" aria-label="Money">
+                <button
+                  type="button"
+                  className={`profile-money-tile is-bank${connections.bank?.connected ? ' is-active' : ''}`}
+                  aria-label={
+                    connections.bank?.connected ? 'Disconnect bank' : 'Connect bank'
+                  }
+                  disabled={connectBusy === 'bank'}
+                  onClick={() =>
+                    handleConnect(
+                      'bank',
+                      connections.bank?.connected ? 'disconnect' : 'connect',
+                    )
+                  }
+                >
+                  <MoneyIcon className="profile-money-tile-ico" />
+                </button>
                 {MONEY_TABS.map(({ id, label, Icon }) => (
                   <button
                     key={id}
@@ -1737,7 +1753,23 @@ export default function ProfileScreen({
 
               <section className="profile-block is-panel-section" aria-label="Money">
                 <h2 className="profile-label">Money</h2>
-                <div className="profile-money-grid" role="tablist" aria-label="Money">
+                <div className="profile-money-grid" role="group" aria-label="Money">
+                  <button
+                    type="button"
+                    className={`profile-money-tile is-bank${connections.bank?.connected ? ' is-active' : ''}`}
+                    aria-label={
+                      connections.bank?.connected ? 'Disconnect bank' : 'Connect bank'
+                    }
+                    disabled={connectBusy === 'bank'}
+                    onClick={() =>
+                      handleConnect(
+                        'bank',
+                        connections.bank?.connected ? 'disconnect' : 'connect',
+                      )
+                    }
+                  >
+                    <MoneyIcon className="profile-money-tile-ico" />
+                  </button>
                   {MONEY_TABS.map(({ id, label, Icon }) => (
                     <button
                       key={id}

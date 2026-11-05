@@ -1789,6 +1789,101 @@
   cursor: default;
 }
 
+.chat-liked-back {
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: #fff;
+  cursor: pointer;
+}
+
+.chat-liked-back .chat-ico {
+  width: 20px;
+  height: 20px;
+}
+
+/* Portaled onto .stage so the liked page fits the window, not the phone column. */
+.stage > .chat-liked-picker {
+  position: absolute;
+  inset: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 70;
+  width: 100%;
+  height: 100%;
+  max-height: none;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  padding: max(8px, env(safe-area-inset-top, 0px)) 0
+    calc(8px + env(safe-area-inset-bottom, 0px));
+  background: rgba(8, 8, 8, 0.18);
+  backdrop-filter: blur(16px) saturate(1.12);
+  -webkit-backdrop-filter: blur(16px) saturate(1.12);
+}
+
+.stage > .chat-liked-picker .chat-liked-hero,
+.stage > .chat-liked-picker .chat-liked-grid {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+}
+
+.stage > .chat-liked-picker .chat-liked-dock {
+  width: min(calc(420px + 4in), calc(100% - 20px));
+  max-width: calc(100% - 20px);
+}
+
+@media (min-width: 720px) {
+  .stage > .chat-liked-picker {
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .stage > .chat-liked-picker .chat-liked-grid {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 8px 36px 120px;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 28px 24px;
+  }
+
+  .stage > .chat-liked-picker .chat-liked-item-media,
+  .stage > .chat-liked-picker .chat-liked-item.is-selected .chat-liked-item-media {
+    border: none;
+    border-radius: 0;
+  }
+
+  .stage > .chat-liked-picker .chat-liked-item.is-selected .chat-liked-item-media {
+    outline: 1px solid rgba(255, 255, 255, 0.85);
+    outline-offset: 3px;
+  }
+
+  .stage > .chat-liked-picker .chat-liked-dock {
+    width: calc(100% - 48px);
+    max-width: none;
+  }
+
+  .stage > .chat-liked-picker .chat-liked-bar {
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    background: transparent;
+  }
+}
+
 .chat-compose-box {
   position: relative;
   flex: 1;
