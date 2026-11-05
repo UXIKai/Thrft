@@ -1047,21 +1047,39 @@
 
 .profile-money-detail {
   display: grid;
-  justify-items: center;
-  width: min(280px, 100%);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  width: min(460px, 100%);
+  justify-items: stretch;
 }
 
 .profile-money-section {
-  width: 100%;
+  width: auto;
+  min-width: 0;
   display: grid;
-  gap: 12px;
-  justify-items: center;
+  gap: 8px;
+  justify-items: stretch;
   text-align: center;
 }
 
+.profile-money-section.is-points {
+  grid-column: 2;
+}
+
+.profile-money-section[aria-label='Wallet'] {
+  grid-column: 3;
+}
+
+.profile-money-section[aria-label='Sales'] {
+  grid-column: 1 / -1;
+}
+
 .profile-money-section .profile-credits-card.is-half {
-  width: min(100%, 220px);
-  margin: 0 auto;
+  width: 100%;
+  min-height: 88px;
+  height: 88px;
+  margin: 0;
+  border-radius: 16px;
 }
 
 .profile-money-section .glass-cta {
@@ -1088,10 +1106,16 @@
 
 .profile-money-section .profile-sales-grid {
   width: 100%;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
 }
 
-.profile-money-section.is-points {
-  width: min(100%, 280px);
+.profile-money-section .profile-stat-card {
+  min-height: 88px;
+  height: 88px;
+  aspect-ratio: auto;
+  border-radius: 16px;
+  box-sizing: border-box;
 }
 
 .profile-money-section.is-points .profile-points-actions {
@@ -2123,8 +2147,7 @@
     width: 100%;
   }
 
-  .profile-edit-card .profile-money-detail,
-  .profile-edit-card .profile-money-section.is-points {
+  .profile-edit-card .profile-money-detail {
     width: 100%;
   }
 }

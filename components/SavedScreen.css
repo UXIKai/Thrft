@@ -100,12 +100,10 @@
   padding: 6px;
   border-radius: 12px;
   border: 1px solid var(--glass-border, rgba(150, 150, 150, 0.18));
-  background: var(--glass-clear-tint, rgba(255, 255, 255, 0.004));
-  backdrop-filter: blur(var(--glass-clear-blur, 1.25px))
-    saturate(var(--glass-sat, 1.55)) brightness(var(--glass-clear-bright, 1.1));
-  -webkit-backdrop-filter: blur(var(--glass-clear-blur, 1.25px))
-    saturate(var(--glass-sat, 1.55)) brightness(var(--glass-clear-bright, 1.1));
-  box-shadow: var(--glass-clear-depth, var(--glass-depth));
+  background: rgba(8, 8, 8, 0.18);
+  backdrop-filter: blur(16px) saturate(1.12);
+  -webkit-backdrop-filter: blur(16px) saturate(1.12);
+  box-shadow: var(--glass-depth);
   color: rgba(255, 255, 255, 0.82);
   animation: saved-filter-menu-in 0.2s cubic-bezier(0.22, 1, 0.36, 1) both;
   transform-origin: top right;

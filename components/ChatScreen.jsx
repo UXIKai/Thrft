@@ -1535,7 +1535,33 @@ export default function ChatScreen({
           >
             <BackIcon />
           </button>
-          <span className="chat-thread-heading" aria-hidden />
+          <div className="chat-thread-identity">
+            <button
+              type="button"
+              className="chat-thread-avatar is-link"
+              aria-label={
+                activeChat.kind === 'dm'
+                  ? `Open ${activeChat.title} profile`
+                  : `Open ${activeChat.title} info`
+              }
+              onClick={() => {
+                if (activeChat.kind === 'dm') openPeerProfile(activeChat.title)
+                else openContactSheet()
+              }}
+            >
+              {activeChat.initials}
+            </button>
+            <button
+              type="button"
+              className="chat-thread-name is-link"
+              onClick={() => {
+                if (activeChat.kind === 'dm') openPeerProfile(activeChat.title)
+                else openContactSheet()
+              }}
+            >
+              {activeChat.title}
+            </button>
+          </div>
           {activeChat.kind === 'group' ? (
             <button
               type="button"
@@ -1549,40 +1575,6 @@ export default function ChatScreen({
             <span className="chat-top-spacer" aria-hidden />
           )}
         </header>
-        <div className="chat-thread-hero">
-          <button
-            type="button"
-            className="chat-thread-avatar is-link"
-            aria-label={
-              activeChat.kind === 'dm'
-                ? `Open ${activeChat.title} profile`
-                : `Open ${activeChat.title} info`
-            }
-            onClick={() => {
-              if (activeChat.kind === 'dm') openPeerProfile(activeChat.title)
-              else openContactSheet()
-            }}
-          >
-            {activeChat.initials}
-          </button>
-          {activeChat.kind === 'dm' ? (
-            <button
-              type="button"
-              className="chat-thread-name is-link"
-              onClick={() => openPeerProfile(activeChat.title)}
-            >
-              {activeChat.title}
-            </button>
-          ) : (
-            <button
-              type="button"
-              className="chat-thread-name is-link"
-              onClick={openContactSheet}
-            >
-              {activeChat.title}
-            </button>
-          )}
-        </div>
         <div className="chat-thread-scroll" ref={threadScrollRef}>
           <div className="chat-thread-body" aria-live="polite">
             {threadMessages.length === 0 ? (
