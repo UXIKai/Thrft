@@ -80,7 +80,7 @@
   display: flex;
   align-items: baseline;
   justify-content: center;
-  gap: clamp(2rem, 10vw, 3.6rem);
+  gap: 144px;
   box-sizing: border-box;
   width: min(524px, 100%);
   min-height: min(332px, 80vh);
