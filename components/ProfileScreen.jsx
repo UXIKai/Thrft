@@ -1396,12 +1396,31 @@ export default function ProfileScreen({
       {stageEl &&
         moneyOpen &&
         createPortal(
+          <div className="profile-links-layer">
+            <button
+              type="button"
+              className="profile-links-scrim"
+              aria-label="Dismiss"
+              onClick={() => setMoneyOpen(false)}
+            />
           <div
-            className="profile-panel profile-money-panel"
+            className="profile-panel profile-money-panel profile-money-card"
             role="dialog"
             aria-modal="true"
             aria-label="Money"
           >
+            <header className="profile-panel-top">
+              <button
+                type="button"
+                className="profile-panel-back"
+                aria-label="Back to profile"
+                onClick={() => setMoneyOpen(false)}
+              >
+                <BackIcon />
+              </button>
+              <h2 className="profile-suppliers-title">Money</h2>
+              <span className="profile-panel-spacer" aria-hidden />
+            </header>
             <div className="profile-panel-body profile-money-body">
               <div className="profile-money-grid" role="tablist" aria-label="Money">
                 {MONEY_TABS.map(({ id, label, Icon }) => (
@@ -1563,6 +1582,7 @@ export default function ProfileScreen({
                 <BackIcon />
               </button>
             </div>
+          </div>
           </div>,
           stageEl,
         )}

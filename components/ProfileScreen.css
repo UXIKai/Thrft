@@ -1986,7 +1986,8 @@
     cursor: pointer;
   }
 
-  .profile-panel.profile-links-card {
+  .profile-panel.profile-links-card,
+  .profile-panel.profile-money-card {
     inset: auto;
     top: 50%;
     left: 50%;
@@ -2002,6 +2003,18 @@
     backdrop-filter: blur(18px) saturate(1.55);
     -webkit-backdrop-filter: blur(18px) saturate(1.55);
     box-shadow: 0 18px 48px rgba(0, 0, 0, 0.22);
+  }
+
+  .profile-money-card > .profile-panel-top {
+    display: grid;
+  }
+
+  .profile-money-card .profile-money-bottom-dock {
+    display: none;
+  }
+
+  .profile-money-card .profile-money-body {
+    padding-bottom: 24px;
   }
 }
 
@@ -2028,6 +2041,12 @@
   min-height: 52px;
   padding: 4px 8px 8px;
   column-gap: 4px;
+}
+
+@media (max-width: 719px) {
+  .profile-money-card > .profile-panel-top {
+    display: none;
+  }
 }
 
 .profile-panel-back,
