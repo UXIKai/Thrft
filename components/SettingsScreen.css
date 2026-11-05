@@ -1444,24 +1444,25 @@
   max-width: 22rem;
   margin: 0 auto;
   display: grid;
-  gap: 18px;
-  padding-bottom: 24px;
+  gap: 28px;
+  padding-bottom: 12px;
 }
 
 .settings-started-intro {
-  margin: 0 4px;
+  margin: 0;
   font-size: 0.84rem;
   line-height: 1.45;
-  color: rgba(255, 255, 255, 0.72);
+  color: rgba(255, 255, 255, 0.68);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.32);
 }
 
 .settings-started-group {
   display: grid;
-  gap: 8px;
+  gap: 4px;
 }
 
 .settings-started-group-label {
-  margin: 0 4px;
+  margin: 0 0 6px;
   font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.12em;
@@ -1472,23 +1473,15 @@
 .settings-started-list {
   display: grid;
   gap: 0;
-  padding: 2px 14px;
-  border-radius: 16px;
-  border: 1px solid var(--glass-border, rgba(150, 150, 150, 0.18));
-  background: var(--glass-clear-tint, rgba(36, 36, 36, 0.12));
-  backdrop-filter: blur(var(--glass-blur, 3px)) saturate(var(--glass-sat, 1.55));
-  -webkit-backdrop-filter: blur(var(--glass-blur, 3px))
-    saturate(var(--glass-sat, 1.55));
-  box-shadow: var(--glass-depth);
 }
 
 .settings-started-row {
-  padding: 12px 0;
+  padding: 14px 0;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.settings-started-list .settings-started-row:first-child {
-  border-top: none;
+.settings-started-list .settings-started-row:last-child {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .settings-started-heading {
