@@ -291,7 +291,7 @@
 }
 
 .chat-pins-edit.is-open {
-  width: var(--pins-menu-w);
+  z-index: 22;
 }
 
 .chat-pins-pencil {
@@ -330,7 +330,7 @@
 .chat-pins-menu {
   box-sizing: border-box;
   position: absolute;
-  top: 0;
+  top: calc(100% + 8px);
   left: 0;
   z-index: 22;
   display: flex;

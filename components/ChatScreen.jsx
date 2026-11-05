@@ -2285,6 +2285,16 @@ export default function ChatScreen({
         </div>
         <div className="chat-list-toolbar" ref={pinsMenuRef}>
           <div className={`chat-pins-edit${pinsMenuOpen ? ' is-open' : ''}`}>
+            <button
+              type="button"
+              className={`chat-pins-pencil${pinsMode || pinsMenuOpen ? ' is-active' : ''}`}
+              aria-label="Edit"
+              aria-expanded={pinsMenuOpen}
+              aria-haspopup="menu"
+              onClick={() => setPinsMenuOpen((open) => !open)}
+            >
+              <PencilIcon />
+            </button>
             {pinsMenuOpen ? (
               <div className="chat-pins-menu" role="menu" aria-label="Pinned chat actions">
                 <button
@@ -2302,7 +2312,7 @@ export default function ChatScreen({
                   type="button"
                   role="menuitem"
                   className={`chat-pins-menu-btn${pinsMode === 'pins' ? ' is-on' : ''}`}
-                  aria-label="Edit"
+                  aria-label="Edit pins"
                   aria-pressed={pinsMode === 'pins'}
                   onClick={() => setPinsEditMode('pins')}
                 >
@@ -2310,18 +2320,7 @@ export default function ChatScreen({
                   <span className="chat-pins-menu-label">Edit</span>
                 </button>
               </div>
-            ) : (
-              <button
-                type="button"
-                className={`chat-pins-pencil${pinsMode ? ' is-active' : ''}`}
-                aria-label="Edit"
-                aria-expanded={false}
-                aria-haspopup="menu"
-                onClick={() => setPinsMenuOpen(true)}
-              >
-                <PencilIcon />
-              </button>
-            )}
+            ) : null}
           </div>
           <div className="chat-filter-wrap" ref={listFilterRef}>
             <button
