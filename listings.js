@@ -308,7 +308,7 @@ export function filterListingsByBrand(
 export function filterListingsByColor(listings = [], colorId = '') {
   const want = String(colorId || '').toLowerCase()
   if (!want) return listings
-  const word = new RegExp(`\\b${want}\\b`, 'i')
+  const word = new RegExp(`\\b${want.replace(/-/g, '[ -]')}\\b`, 'i')
   return listings.filter((item) => {
     if (item.color) return String(item.color).toLowerCase() === want
     return word.test(String(item.title || item.name || ''))
