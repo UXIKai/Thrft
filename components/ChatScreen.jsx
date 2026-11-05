@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { fetchSaved } from '../api.js'
 import BrandGlobe from './BrandGlobe.jsx'
+import StageSlot from './StageSlot.jsx'
 import './ChatScreen.css'
 
 const CHATS_KEY = 'thrft-chats-v1'
@@ -2420,7 +2421,8 @@ export default function ChatScreen({
         </ul>
       </section>
 
-      <div className={`chat-bottom-dock${composer ? ' is-sheet-open' : ''}`}>
+      <StageSlot>
+      <div className={`chat-bottom-dock${composer ? ' is-sheet-open' : ''}${usersPickerOpen || memberGlobeVisible ? ' is-covered' : ''}`}>
         {/* Full-width bar; back / + live inside as their own chip containers. */}
         <div
           className={`chat-search-bar${composer ? ' is-sheet-open' : ''}`}
@@ -2473,6 +2475,7 @@ export default function ChatScreen({
           </button>
         </div>
       </div>
+      </StageSlot>
 
       {menuId && menuPos && (
         <div

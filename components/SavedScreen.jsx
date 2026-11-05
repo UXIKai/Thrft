@@ -4,6 +4,7 @@ import { recordProductInterest, recordSearchHistory } from '../forYou.js'
 import { LISTING_BRANDS } from '../listingCatalog.js'
 import { SIZE_BRANDS } from '../sizeOptions.js'
 import BrandGlobe from './BrandGlobe.jsx'
+import StageSlot from './StageSlot.jsx'
 import './GlassOverlay.css'
 import './SavedScreen.css'
 
@@ -658,6 +659,7 @@ export default function SavedScreen({
           : null}
       </div>
 
+      <StageSlot>
       <div className={`saved-search-dock${globeOpen ? ' is-open' : ''}`}>
         <div className="saved-search-bar">
           <button
@@ -704,6 +706,7 @@ export default function SavedScreen({
           </button>
         </div>
       </div>
+      </StageSlot>
 
       {globePhase !== 'closed' && (
         <BrandGlobe

@@ -577,7 +577,6 @@ export default function App() {
         )}
       </div>
 
-      {!hideTabBar && <TabBar active={tab} onChange={setTab} />}
 
       {activeProduct && (
         <ProductDetail
@@ -687,6 +686,8 @@ export default function App() {
         />
       )}
       </div>
+
+      {signedIn && !hideTabBar && <TabBar active={tab} onChange={setTab} />}
     </div>
   )
 }

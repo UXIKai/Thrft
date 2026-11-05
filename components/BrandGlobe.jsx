@@ -1,4 +1,5 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import StageSlot from './StageSlot.jsx'
 import './BrandGlobe.css'
 
 function GlobeBackIcon() {
@@ -1430,10 +1431,11 @@ export default function BrandGlobe({
           </button>
         </div>
         {typeof onSearchChange === 'function' ? (
+          <StageSlot active={isDock}>
           <div
             className={`brand-globe-search-row${
-              typeof onSearchConfirm === 'function' ? ' has-confirm' : ''
-            }`}
+              isDock ? ` is-stage is-${phase}` : ''
+            }${typeof onSearchConfirm === 'function' ? ' has-confirm' : ''}`}
           >
             <div className="brand-globe-search">
               <button
@@ -1516,6 +1518,7 @@ export default function BrandGlobe({
               ) : null}
             </div>
           </div>
+          </StageSlot>
         ) : null}
       </div>
     </div>

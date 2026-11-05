@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import StageSlot from './StageSlot.jsx'
 import {
   addCustomCategory,
   getCustomCategories,
@@ -95,6 +96,7 @@ export default function ClothingTypeStrip({ activeId, onSelect, onOpen }) {
         nextLabel="Next clothing type"
       />
       {addOpen && (
+        <StageSlot>
         <div className="home-type-add-sheet" role="dialog" aria-modal="true">
           <button
             type="button"
@@ -128,6 +130,7 @@ export default function ClothingTypeStrip({ activeId, onSelect, onOpen }) {
             </button>
           </div>
         </div>
+        </StageSlot>
       )}
     </div>
   )

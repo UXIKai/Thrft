@@ -350,18 +350,27 @@
   box-sizing: border-box;
 }
 
-.brand-globe-panel.is-dock .brand-globe-search-row {
+.brand-globe-panel.is-dock .brand-globe-search-row,
+.brand-globe-search-row.is-stage {
   position: absolute;
   left: 50%;
   right: auto;
   bottom: calc(8px + env(safe-area-inset-bottom, 0px));
-  width: min(calc(420px + 4in), calc(100vw - 20px));
-  max-width: calc(100% - 20px);
+  width: min(calc(420px + 4in), calc(100% - 20px));
+  max-width: none;
   padding: 0;
   transform: translateX(-50%);
-  z-index: 6;
+  z-index: 30;
   margin: 0;
   pointer-events: auto;
+}
+
+.brand-globe-search-row.is-stage.is-enter {
+  animation: brand-globe-scrim-in 0.3s ease both;
+}
+
+.brand-globe-search-row.is-stage.is-exit {
+  animation: brand-globe-scrim-out 0.36s ease both;
 }
 
 /* Back / + sit in the bar as plain icons — no chip containers */

@@ -100,11 +100,20 @@
   padding-right: 16px;
 }
 
+/* Tab bar is a stage child so 100% is the window on every page, same as home. */
+.stage > .tab-bar,
 .app-column.is-home-wide .tab-bar {
   left: 50%;
   right: auto;
   width: min(calc(420px + 4in), calc(100% - 20px));
   transform: translateX(-50%);
+}
+
+/* Chat / saved / globe bars portaled onto the stage — same width as the nav. */
+.stage > .chat-bottom-dock,
+.stage > .saved-search-dock {
+  width: min(calc(420px + 4in), calc(100% - 20px));
+  max-width: none;
 }
 
 @media (min-width: 720px) {

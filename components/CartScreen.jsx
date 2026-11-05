@@ -117,14 +117,25 @@ export default function CartScreen({
               <span>Total</span>
               <strong>{totalLabel}</strong>
             </p>
-            <button
-              type="button"
-              className="cart-pay"
-              disabled={busy}
-              onClick={pay}
-            >
-              {busy ? '…' : 'Pay'}
-            </button>
+            <div className="cart-pay-actions">
+              <button
+                type="button"
+                className="cart-dock-back"
+                aria-label="Back"
+                onClick={onClose}
+                disabled={busy}
+              >
+                <BackIcon />
+              </button>
+              <button
+                type="button"
+                className="cart-pay"
+                disabled={busy}
+                onClick={pay}
+              >
+                {busy ? '…' : 'Pay'}
+              </button>
+            </div>
           </div>
           {error ? (
             <p className="cart-error" role="alert">
@@ -132,19 +143,19 @@ export default function CartScreen({
             </p>
           ) : null}
         </div>
-      ) : null}
-
-      <div className="cart-bottom-dock">
-        <button
-          type="button"
-          className="cart-dock-back"
-          aria-label="Back"
-          onClick={onClose}
-          disabled={busy}
-        >
-          <BackIcon />
-        </button>
-      </div>
+      ) : (
+        <div className="cart-bottom-dock">
+          <button
+            type="button"
+            className="cart-dock-back"
+            aria-label="Back"
+            onClick={onClose}
+            disabled={busy}
+          >
+            <BackIcon />
+          </button>
+        </div>
+      )}
     </div>,
     stageEl,
   )

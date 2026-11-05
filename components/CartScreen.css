@@ -168,6 +168,26 @@
   max-width: calc(100% - 24px);
 }
 
+/* Pay stays 20vw and page-centered; Back sits just to its left. */
+.cart-pay-actions {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  width: 20vw;
+  max-width: 100%;
+}
+
+.cart-pay-actions .cart-dock-back {
+  position: absolute;
+  top: 50%;
+  right: calc(100% + 12px);
+  transform: translateY(-50%);
+}
+
+.cart-pay-actions .cart-pay {
+  width: 100%;
+}
+
 .cart-total {
   display: flex;
   justify-content: space-between;

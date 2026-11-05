@@ -703,6 +703,11 @@
   pointer-events: auto;
 }
 
+.chat-bottom-dock.is-covered {
+  visibility: hidden;
+  pointer-events: none;
+}
+
 /* Back / + sit in the bar as plain icons — no chip containers */
 .chat-dock-back,
 .chat-search-add {
