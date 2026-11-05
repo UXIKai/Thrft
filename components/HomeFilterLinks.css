@@ -82,13 +82,14 @@
   justify-content: center;
   gap: 144px;
   box-sizing: border-box;
-  width: min(524px, 100%);
-  min-height: min(332px, 80vh);
+  width: min(476px, 100%);
+  min-height: min(284px, 80vh);
   align-items: center;
   padding: 28px 24px;
   border-radius: 28px;
   border: 0.5px solid rgba(255, 255, 255, 0.46);
-  overflow: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.16), transparent 42%),
     rgba(255, 255, 255, 0.1);
