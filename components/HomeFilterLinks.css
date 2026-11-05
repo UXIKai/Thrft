@@ -40,7 +40,7 @@
   align-items: center;
   justify-content: center;
   padding: 16px;
-  background: rgba(0, 0, 0, 0.25);
+  background: rgba(0, 0, 0, 0.06);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
 }
@@ -91,9 +91,9 @@
   overflow: hidden;
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.16), transparent 42%),
-    var(--glass-clear-tint);
-  backdrop-filter: blur(22px) saturate(1.9) brightness(1.06);
-  -webkit-backdrop-filter: blur(22px) saturate(1.9) brightness(1.06);
+    rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(22px) saturate(1.9) brightness(1.15);
+  -webkit-backdrop-filter: blur(22px) saturate(1.9) brightness(1.15);
   box-shadow:
     0 14px 36px rgba(0, 0, 0, 0.28),
     inset 0 1px 0 rgba(255, 255, 255, 0.35);
