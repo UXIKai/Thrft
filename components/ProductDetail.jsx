@@ -18,13 +18,26 @@ function BackIcon() {
   )
 }
 
+function PlusIcon() {
+  return (
+    <svg className="product-detail-plus" viewBox="0 0 24 24" aria-hidden>
+      <path fill="currentColor" d="M11 5h2v6h6v2h-6v6h-2v-6H5v-2h6V5z" />
+    </svg>
+  )
+}
+
+function productPhoto(product) {
+  const photo = product?.photoUrl || product?.imageUrl || product?.image_url || ''
+  if (!photo || /^placeholder$/i.test(photo)) return ''
+  return photo
+}
+
 /**
- * Product page — add listing to the marketplace bag.
+ * Product page — name, image, price, and a bare add plus.
  */
 export default function ProductDetail({
   product,
   onClose,
-  onOpenBrand,
   onAddToCart,
 }) {
   const [stageEl, setStageEl] = useState(null)
@@ -49,8 +62,16 @@ export default function ProductDetail({
 
   if (!product || !stageEl) return null
 
+  const photo = productPhoto(product)
+  const name = product.title || product.brandName || 'Product'
+
   return createPortal(
-    <div className="glass-overlay product-detail" role="dialog" aria-modal="true">
+    <div
+      className="glass-overlay product-detail"
+      role="dialog"
+      aria-modal="true"
+      aria-label={name}
+    >
       <header className="glass-overlay-top">
         <button
           type="button"
@@ -60,28 +81,27 @@ export default function ProductDetail({
         >
           <BackIcon />
         </button>
-        <h1 className="glass-overlay-title">Listing</h1>
+        <span className="glass-overlay-spacer" aria-hidden />
         <span className="glass-overlay-spacer" aria-hidden />
       </header>
-      <div className="glass-overlay-body">
-        <div className="product-detail-hero">
-          <p className="product-detail-code">{product.code}</p>
-          <p className="product-detail-price">{product.price}</p>
+      <div className="glass-overlay-body product-detail-body">
+        <h1 className="product-detail-title">{name}</h1>
+        <div className="product-detail-photo">
+          {photo ? (
+            <img src={photo} alt="" />
+          ) : (
+            <span className="product-detail-photo-empty" aria-hidden />
+          )}
         </div>
-        <h2 className="product-detail-title">{product.title}</h2>
-        {product.description ? (
-          <p className="glass-muted product-detail-desc">{product.description}</p>
-        ) : null}
+        <p className="product-detail-price">{product.price}</p>
         <button
           type="button"
-          className="product-detail-brand"
-          onClick={() => onOpenBrand?.(product.brandId, product.brandName)}
+          className="product-detail-add"
+          aria-label={added ? 'In bag' : 'Add to bag'}
+          aria-pressed={added}
+          onClick={add}
         >
-          {product.brandName || 'Brand'}
-        </button>
-
-        <button type="button" className="product-detail-buy" onClick={add}>
-          {added ? 'In bag' : 'Add to bag'}
+          <PlusIcon />
         </button>
       </div>
     </div>,

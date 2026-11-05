@@ -209,6 +209,18 @@ function CloseIcon() {
   )
 }
 
+function PersonIcon() {
+  return (
+    <svg className="chat-ico" viewBox="0 0 24 24" aria-hidden>
+      <circle cx="12" cy="8" r="3.2" fill="currentColor" />
+      <path
+        fill="currentColor"
+        d="M5.4 19.4c.6-3.2 3.2-5 6.6-5s6 1.8 6.6 5H5.4z"
+      />
+    </svg>
+  )
+}
+
 function PeopleIcon() {
   return (
     <svg className="chat-ico chat-people-ico" viewBox="0 0 24 24" aria-hidden>
@@ -640,17 +652,8 @@ export default function ChatScreen({
 
   const filteredUsers = useMemo(() => {
     const q = usersQuery.trim().toLowerCase()
-    if (!q) return userDirectory
-    const hits = userDirectory.filter((n) => n.toLowerCase().includes(q))
-    // Allow messaging a typed name that isn't in the directory yet
-    if (
-      q &&
-      !hits.some((n) => n.toLowerCase() === q) &&
-      usersQuery.trim()
-    ) {
-      return [usersQuery.trim(), ...hits]
-    }
-    return hits
+    if (!q) return []
+    return userDirectory.filter((n) => n.toLowerCase().includes(q))
   }, [userDirectory, usersQuery])
 
   const pinnedCells = useMemo(() => {
@@ -2614,10 +2617,7 @@ export default function ChatScreen({
             <PeopleIcon />
           </div>
           <ul className="chat-users-list">
-            {filteredUsers.length === 0 ? (
-              <li className="chat-users-empty">Search for people</li>
-            ) : (
-              filteredUsers.map((name) => {
+            {filteredUsers.map((name) => {
                 const friend = isFriend(name)
                 const initials = name
                   .split(/\s+/)
@@ -2641,7 +2641,7 @@ export default function ChatScreen({
                           aria-pressed={friend}
                           onClick={() => toggleFriend(name)}
                         >
-                          {friend ? 'Friends' : 'Add'}
+                          {friend ? <CheckCircleIcon className="chat-ico" /> : <PlusIcon />}
                         </button>
                         <button
                           type="button"
@@ -2649,14 +2649,13 @@ export default function ChatScreen({
                           aria-label={`Message ${name}`}
                           onClick={() => startChatWithUser(name)}
                         >
-                          Chat
+                          <PersonIcon />
                         </button>
                       </div>
                     </div>
                   </li>
                 )
-              })
-            )}
+              })}
           </ul>
           <div className="chat-users-dock">
             <div className="chat-users-bar">
