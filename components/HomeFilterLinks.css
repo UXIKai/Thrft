@@ -79,15 +79,16 @@
 
 .home-search-modal {
   position: relative;
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   align-items: center;
-  justify-content: center;
-  gap: 144px;
+  justify-items: stretch;
+  gap: min(144px, 12vw);
   box-sizing: border-box;
   width: min(476px, 100%);
   min-height: min(284px, 80vh);
   align-items: center;
-  padding: 28px 24px;
+  padding: 28px clamp(12px, 4vw, 24px);
   border-radius: 28px;
   border: 0.5px solid rgba(255, 255, 255, 0.46);
   overflow: hidden;
@@ -137,8 +138,7 @@
 }
 
 .home-search-wheel {
-  flex: 0 0 auto;
-  min-width: 110px;
+  min-width: 0;
 }
 
 .home-search-label {
@@ -156,7 +156,7 @@
 }
 
 .home-search-orbit.is-compact-wheel .type-carousel.is-wheel {
-  height: 34px;
+  height: 56px;
   perspective: 280px;
   overflow: hidden;
   -webkit-mask-image: none;
@@ -164,9 +164,15 @@
 }
 
 .home-search-orbit.is-compact-wheel .type-box.is-wheel {
-  padding: 2px 8px;
-  font-size: 1.05rem;
+  width: 100%;
+  max-width: 100%;
+  padding: 2px 4px;
+  overflow: visible;
+  font-size: clamp(0.85rem, 3.4vw, 1.05rem);
   font-weight: 600;
-  white-space: nowrap;
+  line-height: 1.15;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  text-align: center;
   color: #fff;
 }
