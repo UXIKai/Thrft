@@ -426,12 +426,25 @@
   display: none;
 }
 
+.settings-bg-photo-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
 .settings-choose.is-color-side {
   flex: 0 0 auto;
   width: 40px;
   height: 40px;
   margin: 0;
   align-self: center;
+  cursor: pointer;
+}
+
+.settings-choose.is-color-side.is-on {
+  border-color: rgba(255, 255, 255, 0.7);
 }
 
 .settings-divider {

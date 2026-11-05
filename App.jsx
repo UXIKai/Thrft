@@ -7,7 +7,6 @@ import BrandGlobe from './components/BrandGlobe.jsx'
 import ClothingTypePage from './components/ClothingTypePage.jsx'
 import ChatScreen from './components/ChatScreen.jsx'
 import CreateListing from './components/CreateListing.jsx'
-import HomeFilterLinks from './components/HomeFilterLinks.jsx'
 import LiquidGlassDefs from './components/LiquidGlassDefs.jsx'
 import CartScreen from './components/CartScreen.jsx'
 import ProductDetail from './components/ProductDetail.jsx'
@@ -24,7 +23,7 @@ import {
   BUBBLE,
   slotForRank,
 } from './layout.js'
-import { applyBackgroundImage } from './appAppearance.js'
+import { restoreBackground } from './appAppearance.js'
 import {
   fetchProfile,
   fetchSaved,
@@ -88,6 +87,21 @@ function buildHomeCategoryItems() {
     .map((t) => ({ id: t.id, label: t.label }))
 }
 
+function SearchIcon() {
+  return (
+    <svg className="home-search-ico" viewBox="0 0 24 24" aria-hidden>
+      <circle cx="11" cy="11" r="6.25" fill="none" stroke="currentColor" strokeWidth="1.7" />
+      <path
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+        d="m15.6 15.6 4 4"
+      />
+    </svg>
+  )
+}
+
 function CartIcon() {
   return (
     <svg className="home-checkout-ico" viewBox="0 0 24 24" aria-hidden>
@@ -114,6 +128,8 @@ export default function App() {
   const [clothingType, setClothingType] = useState('all')
   const [homeBrand, setHomeBrand] = useState(null) // { id, label } | null
   const [homePicker, setHomePicker] = useState(null) // 'brands' | 'category' | null
+  const [homeSearchOpen, setHomeSearchOpen] = useState(false)
+  const homeSearchRef = useRef(null)
   const [homePickerPhase, setHomePickerPhase] = useState('closed')
   const [homePickerQuery, setHomePickerQuery] = useState('')
   const [activeTypePage, setActiveTypePage] = useState(null) // type id or null
@@ -185,7 +201,7 @@ export default function App() {
 
   // Always keep the flowing B/W/gray atmosphere behind the stage.
   useEffect(() => {
-    applyBackgroundImage('atmosphere')
+    restoreBackground()
   }, [])
 
   useEffect(() => {
@@ -343,7 +359,18 @@ export default function App() {
     return () => stage.classList.remove('is-home-picker-open')
   }, [homePickerPhase])
 
+  useEffect(() => {
+    if (!homeSearchOpen) return undefined
+    function onPointerDown(event) {
+      const wrap = homeSearchRef.current
+      if (wrap && !wrap.contains(event.target)) setHomeSearchOpen(false)
+    }
+    document.addEventListener('pointerdown', onPointerDown)
+    return () => document.removeEventListener('pointerdown', onPointerDown)
+  }, [homeSearchOpen])
+
   function openHomePicker(kind) {
+    setHomeSearchOpen(false)
     setHomePickerQuery('')
     setHomePicker(kind)
     setHomePickerPhase('enter')
@@ -457,7 +484,38 @@ export default function App() {
         {tab === 'home' && (
           <>
             <header className="wordmark-wrap">
-              <span className="wordmark-side" aria-hidden />
+              <div className="home-search-wrap" ref={homeSearchRef}>
+                <button
+                  type="button"
+                  className={`home-search-btn${homeSearchOpen ? ' is-on' : ''}`}
+                  aria-label="Search brands and categories"
+                  aria-expanded={homeSearchOpen}
+                  aria-haspopup="menu"
+                  onClick={() => setHomeSearchOpen((open) => !open)}
+                >
+                  <SearchIcon />
+                </button>
+                {homeSearchOpen ? (
+                  <div className="home-search-menu" role="menu" aria-label="Brands and categories">
+                    <button
+                      type="button"
+                      role="menuitem"
+                      className={`home-search-menu-item${homeBrand?.label ? ' is-set' : ''}`}
+                      onClick={() => openHomePicker('brands')}
+                    >
+                      {homeBrand?.label || 'Brands'}
+                    </button>
+                    <button
+                      type="button"
+                      role="menuitem"
+                      className={`home-search-menu-item${homeCategoryLabel ? ' is-set' : ''}`}
+                      onClick={() => openHomePicker('category')}
+                    >
+                      {homeCategoryLabel || 'Category'}
+                    </button>
+                  </div>
+                ) : null}
+              </div>
               <h1 className="wordmark">
                 Thrft<span className="dot" aria-hidden="true">●</span>
               </h1>
@@ -496,13 +554,6 @@ export default function App() {
                 })}
               </div>
             </section>
-
-            <HomeFilterLinks
-              brandLabel={homeBrand?.label || null}
-              categoryLabel={homeCategoryLabel}
-              onOpenBrands={() => openHomePicker('brands')}
-              onOpenCategory={() => openHomePicker('category')}
-            />
 
             <ProductRows
               onOpenProduct={handleOpenProduct}

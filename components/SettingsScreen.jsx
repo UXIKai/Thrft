@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   applyAppColor,
-  applyBackgroundImage,
+  applyBackgroundPhoto,
+  readBackgroundPhoto,
   applyBarTransparency,
   applyBgColor,
   applyCustomBgColor,
@@ -627,6 +628,8 @@ export default function SettingsScreen({
   const [idBusy, setIdBusy] = useState(false)
   /** null = garment + brand list; brand id = brand-specific size drill-down */
   const [sizeBrandFocus, setSizeBrandFocus] = useState(null)
+  const bgPhotoInputRef = useRef(null)
+  const [bgPhotoOn, setBgPhotoOn] = useState(() => Boolean(readBackgroundPhoto()))
   const sizeCatsRef = useRef(null)
   const sizeSheetCardRef = useRef(null)
 
@@ -1152,12 +1155,44 @@ export default function SettingsScreen({
                       )
                     })}
                   </div>
+                  <input
+                    ref={bgPhotoInputRef}
+                    className="settings-bg-photo-input"
+                    type="file"
+                    accept="image/*"
+                    aria-hidden
+                    tabIndex={-1}
+                    onChange={(e) => {
+                      const file = e.target.files?.[0]
+                      e.target.value = ''
+                      if (!file) return
+                      const reader = new FileReader()
+                      reader.onload = () => {
+                        const src = String(reader.result || '')
+                        const img = new Image()
+                        img.onload = () => {
+                          const max = 1280
+                          const scale = Math.min(1, max / Math.max(img.width, img.height))
+                          const canvas = document.createElement('canvas')
+                          canvas.width = Math.max(1, Math.round(img.width * scale))
+                          canvas.height = Math.max(1, Math.round(img.height * scale))
+                          const ctx = canvas.getContext('2d')
+                          ctx?.drawImage(img, 0, 0, canvas.width, canvas.height)
+                          const dataUrl = canvas.toDataURL('image/jpeg', 0.72)
+                          applyBackgroundPhoto(dataUrl)
+                          setBgPhotoOn(true)
+                        }
+                        img.src = src
+                      }
+                      reader.readAsDataURL(file)
+                    }}
+                  />
                   <button
                     type="button"
-                    className="settings-choose is-color-side"
-                    aria-label="Background flow image"
-                    title="Background flow"
-                    onClick={() => applyBackgroundImage('atmosphere')}
+                    className={`settings-choose is-color-side${bgPhotoOn ? ' is-on' : ''}`}
+                    aria-label="Choose background image"
+                    title="Choose background image"
+                    onClick={() => bgPhotoInputRef.current?.click()}
                   >
                     <ImageIcon />
                   </button>

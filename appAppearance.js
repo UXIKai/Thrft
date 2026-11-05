@@ -15,6 +15,7 @@ export const CUSTOM_COLOR_KEY = 'thrft-app-color-hex'
 export const BG_COLOR_KEY = 'thrft-bg-color-v1'
 export const CUSTOM_BG_COLOR_KEY = 'thrft-bg-color-hex-v1'
 export const BG_IMAGE_KEY = 'thrft-bg-image-v2'
+export const BG_PHOTO_KEY = 'thrft-bg-photo-v1'
 /** Three hues that tint the living background atmosphere app-wide. */
 export const BG_EFFECT_KEY = 'thrft-bg-effect-colors-v1'
 /** Default Clear so the app opens in liquid-glass (not frosted plates). */
@@ -630,6 +631,8 @@ export function applyBackgroundImage(mode) {
   if (stage) {
     stage.classList.toggle('is-bg-none', currentBg === 'none')
     stage.classList.toggle('is-bg-atmosphere', currentBg === 'atmosphere')
+    stage.classList.remove('is-bg-photo')
+    stage.style.removeProperty('--bg-photo')
   }
   try {
     localStorage.setItem(BG_IMAGE_KEY, currentBg)
@@ -637,6 +640,51 @@ export function applyBackgroundImage(mode) {
     /* ignore */
   }
   return currentBg
+}
+
+export function readBackgroundPhoto() {
+  try {
+    const raw = localStorage.getItem(BG_PHOTO_KEY)
+    return raw && raw.startsWith('data:image/') ? raw : ''
+  } catch {
+    return ''
+  }
+}
+
+/** Apply a user-picked image as the stage background. Empty clears it. */
+export function applyBackgroundPhoto(dataUrl) {
+  const photo = typeof dataUrl === 'string' && dataUrl.startsWith('data:image/') ? dataUrl : ''
+  const stage = document.querySelector('.stage')
+  const root = document.documentElement
+  if (!photo) {
+    try {
+      localStorage.removeItem(BG_PHOTO_KEY)
+    } catch {
+      /* ignore */
+    }
+    applyBackgroundImage(readBackgroundImage())
+    return ''
+  }
+  currentBg = 'photo'
+  root.dataset.bgImage = 'photo'
+  if (stage) {
+    stage.classList.remove('is-bg-none')
+    stage.classList.add('is-bg-atmosphere', 'is-bg-photo')
+    stage.style.setProperty('--bg-photo', `url("${photo.replace(/"/g, '%22')}")`)
+  }
+  try {
+    localStorage.setItem(BG_PHOTO_KEY, photo)
+    localStorage.setItem(BG_IMAGE_KEY, 'photo')
+  } catch {
+    /* quota — still applied for this session */
+  }
+  return photo
+}
+
+export function restoreBackground() {
+  const photo = readBackgroundPhoto()
+  if (photo) return applyBackgroundPhoto(photo)
+  return applyBackgroundImage(readBackgroundImage())
 }
 
 function normalizeBgEffects(list) {
@@ -723,11 +771,11 @@ export function initAppearance() {
   currentBgColorId = readBgColor()
   currentGlassPct = readBarTransparency()
   readBgEffectColors()
-  // Flowing B/W/gray wash is the stage look
-  currentBg = 'atmosphere'
+  // Flowing wash, unless a picked background image is saved
+  currentBg = readBackgroundPhoto() ? 'photo' : 'atmosphere'
   applyGlassTokens()
   applyBgAtmosphereTokens()
-  const applyBg = () => applyBackgroundImage('atmosphere')
+  const applyBg = () => restoreBackground()
   if (document.querySelector('.stage')) applyBg()
   else queueMicrotask(applyBg)
   return {
