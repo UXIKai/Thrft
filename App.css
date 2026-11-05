@@ -97,6 +97,13 @@
   margin-right: auto;
 }
 
+/* Header spans the full window so search / cart sit in the page corners */
+.app-column.is-home-wide .home-scroll > .wordmark-wrap {
+  max-width: none;
+  padding-left: max(12px, 2vw);
+  padding-right: max(12px, 2vw);
+}
+
 .app-column.is-home-wide .brand-row-head {
   padding-left: max(16px, calc((100% - 560px) / 2 + 16px));
   padding-right: 16px;
