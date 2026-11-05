@@ -27,11 +27,6 @@ export default function HomeFilterLinks({
     }
   }, [open])
 
-  const pick = (fn) => () => {
-    setOpen(false)
-    fn?.()
-  }
-
   return (
     <div className="home-search">
       <button
@@ -58,7 +53,7 @@ export default function HomeFilterLinks({
               type="button"
               className={`home-filter-link${brandLabel ? ' is-set' : ''}`}
               aria-label={brandLabel ? `Brand filter: ${brandLabel}` : 'Open brands'}
-              onClick={pick(onOpenBrands)}
+              onClick={onOpenBrands}
             >
               {brandLabel || 'Brands'}
             </button>
@@ -66,9 +61,19 @@ export default function HomeFilterLinks({
               type="button"
               className={`home-filter-link${categoryLabel ? ' is-set' : ''}`}
               aria-label={categoryLabel ? `Category filter: ${categoryLabel}` : 'Open category'}
-              onClick={pick(onOpenCategory)}
+              onClick={onOpenCategory}
             >
               {categoryLabel || 'Category'}
+            </button>
+            <button
+              type="button"
+              className="home-search-done"
+              aria-label="Done"
+              onClick={() => setOpen(false)}
+            >
+              <svg viewBox="0 0 24 24" aria-hidden>
+                <path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
             </button>
           </div>
         </div>

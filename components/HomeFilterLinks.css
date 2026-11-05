@@ -45,7 +45,38 @@
   -webkit-backdrop-filter: blur(18px);
 }
 
+.home-search-done {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  width: 40px;
+  height: 40px;
+  min-height: 40px;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  place-items: center;
+  border: 0.5px solid rgba(255, 255, 255, 0.46);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.14);
+  box-shadow: none;
+  color: #fff;
+  cursor: pointer;
+}
+
+.home-search-done svg {
+  width: 22px;
+  height: 22px;
+}
+
+.home-search-done:hover,
+.home-search-done:focus-visible {
+  background: rgba(255, 255, 255, 0.28);
+  outline: none;
+}
+
 .home-search-modal {
+  position: relative;
   display: flex;
   align-items: baseline;
   justify-content: center;
