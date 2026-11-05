@@ -7,6 +7,7 @@ import BrandGlobe from './components/BrandGlobe.jsx'
 import ClothingTypePage from './components/ClothingTypePage.jsx'
 import ChatScreen from './components/ChatScreen.jsx'
 import CreateListing from './components/CreateListing.jsx'
+import { COLOR_OPTIONS } from './colorsCatalog.js'
 import HomeFilterLinks from './components/HomeFilterLinks.jsx'
 import LiquidGlassDefs from './components/LiquidGlassDefs.jsx'
 import CartScreen from './components/CartScreen.jsx'
@@ -112,6 +113,7 @@ export default function App() {
   )
   const [tab, setTab] = useState('home')
   const [clothingType, setClothingType] = useState('all')
+  const [homeColor, setHomeColor] = useState('')
   const [homeBrand, setHomeBrand] = useState(null) // { id, label } | null
   const [homePicker, setHomePicker] = useState(null) // 'brands' | 'category' | null
   const [homePickerPhase, setHomePickerPhase] = useState('closed')
@@ -463,6 +465,9 @@ export default function App() {
                 categories={homeCategoryItems}
                 brandId={homeBrand?.id || ''}
                 categoryId={clothingType || 'all'}
+                colors={COLOR_OPTIONS}
+                colorId={homeColor}
+                onPickColor={setHomeColor}
                 brandLabel={homeBrand?.label || null}
                 categoryLabel={homeCategoryLabel}
                 onPickBrand={(id) =>
@@ -515,6 +520,7 @@ export default function App() {
             <ProductRows
               onOpenProduct={handleOpenProduct}
               clothingType={clothingType}
+              colorId={homeColor}
               brandId={homeBrand?.id || ''}
               brandName={homeBrand?.label || ''}
               forYouRefresh={forYouRefresh}

@@ -304,6 +304,17 @@ export function filterListingsByBrand(
   })
 }
 
+/** Filter by color: uses item.color when present, else a color word in the title. */
+export function filterListingsByColor(listings = [], colorId = '') {
+  const want = String(colorId || '').toLowerCase()
+  if (!want) return listings
+  const word = new RegExp(`\\b${want}\\b`, 'i')
+  return listings.filter((item) => {
+    if (item.color) return String(item.color).toLowerCase() === want
+    return word.test(String(item.title || item.name || ''))
+  })
+}
+
 /** Sales dashboard stats for the signed-in seller. */
 export async function fetchSellerSalesStats(sellerId) {
   const supabase = await requireClient()

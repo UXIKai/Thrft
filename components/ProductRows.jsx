@@ -9,6 +9,7 @@ import {
 import {
   fetchAvailableListings,
   filterListingsByBrand,
+  filterListingsByColor,
   filterListingsByClothingType,
 } from '../listings.js'
 import { isSupabaseConfigured } from '../supabase.js'
@@ -112,6 +113,7 @@ export default function ProductRows({
   onOpenProduct,
   clothingType = 'all',
   brandId = '',
+  colorId = '',
   brandName = '',
   forYouRefresh = 0,
   feedRefresh = 0,
@@ -168,8 +170,11 @@ export default function ProductRows({
     const mock = BRAND_ROWS.flatMap((b) => b.products)
     const base = live.length ? live : mock
     const byType = filterListingsByClothingType(base, clothingType)
-    return filterListingsByBrand(byType, { brandId, brandName })
-  }, [listings, clothingType, brandId, brandName])
+    return filterListingsByColor(
+      filterListingsByBrand(byType, { brandId, brandName }),
+      colorId,
+    )
+  }, [listings, clothingType, brandId, brandName, colorId])
 
   const pool = useMemo(() => {
     // Personalization pool stays broad so likes/search still fill rows even

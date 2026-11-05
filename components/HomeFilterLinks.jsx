@@ -11,6 +11,9 @@ export default function HomeFilterLinks({
   categories = [],
   brandId = '',
   categoryId = 'all',
+  colors = [],
+  colorId = '',
+  onPickColor,
   brandLabel = null,
   categoryLabel = null,
   onPickBrand,
@@ -21,14 +24,20 @@ export default function HomeFilterLinks({
   const [open, setOpen] = useState(false)
   const [draftBrand, setDraftBrand] = useState(brandId)
   const [draftCategory, setDraftCategory] = useState(categoryId)
+  const [draftColor, setDraftColor] = useState(colorId)
 
   // Orbital picks (and external changes) flow back into the wheels.
   useEffect(() => setDraftBrand(brandId), [brandId])
   useEffect(() => setDraftCategory(categoryId), [categoryId])
+  useEffect(() => setDraftColor(colorId), [colorId])
 
   const brandItems = useMemo(
     () => [{ id: '', label: 'All brands' }, ...brands],
     [brands],
+  )
+  const colorItems = useMemo(
+    () => [{ id: '', label: 'All colors' }, ...colors],
+    [colors],
   )
   const categoryItems = useMemo(
     () => [{ id: 'all', label: 'All categories' }, ...categories.filter((c) => c.id !== 'all')],
@@ -38,6 +47,7 @@ export default function HomeFilterLinks({
   function done() {
     setOpen(false)
     if (draftBrand !== brandId) onPickBrand?.(draftBrand)
+    if (draftColor !== colorId) onPickColor?.(draftColor)
     if (draftCategory !== categoryId) onPickCategory?.(draftCategory)
   }
 
@@ -88,6 +98,18 @@ export default function HomeFilterLinks({
                 onSelect={setDraftBrand}
                 onActivate={onOpenBrands}
                 ariaLabel="Brand"
+              />
+            </div>
+            <div className="home-search-wheel">
+              <p className="home-search-label">Color</p>
+              <OrbitCarousel
+                variant="wheel"
+                compact
+                className="home-search-orbit"
+                items={colorItems}
+                activeId={draftColor}
+                onSelect={setDraftColor}
+                ariaLabel="Color"
               />
             </div>
             <div className="home-search-wheel">

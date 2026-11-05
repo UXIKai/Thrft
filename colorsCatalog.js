@@ -1,0 +1,18 @@
+export const COLOR_OPTIONS = [
+  'Black',
+  'White',
+  'Gray',
+  'Beige',
+  'Brown',
+  'Red',
+  'Orange',
+  'Yellow',
+  'Green',
+  'Blue',
+  'Navy',
+  'Purple',
+  'Pink',
+  'Gold',
+  'Silver',
+  'Multi',
+].map((label) => ({ id: label.toLowerCase(), label }))

@@ -80,10 +80,10 @@
 .home-search-modal {
   position: relative;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   align-items: center;
   justify-items: stretch;
-  gap: min(144px, 12vw);
+  gap: min(48px, 4vw);
   box-sizing: border-box;
   width: min(476px, 100%);
   min-height: min(284px, 80vh);
