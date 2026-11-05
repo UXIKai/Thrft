@@ -71,35 +71,18 @@ function chipHeightPx(dense, veryDense) {
   return veryDense ? 14 : dense ? 17 : 19
 }
 
-/**
- * Safe ellipse for a docked orbit.
- * Wide desktop stages stretch horizontally so names use the side space
- * instead of packing into a circle that leaves gutters and clips the bar.
- * Phone aspect stays circular. Compact member orbits stay near the seat.
- */
-function fitOrbit(
+/** Largest circle whose labels stay fully on screen, including 3/9 o'clock. */
+function safeOrbitRadius(
   stageW,
   stageH,
   maxChipW,
   maxChipH,
-  { dock = false, compact = false, snug = false, pad = 16 } = {},
+  pad = 16,
+  bottomInset = 0,
 ) {
-  const halfW = maxChipW / 2
-  const halfH = maxChipH / 2
-  const rx = Math.max(24, stageW / 2 - halfW - pad)
-  const vert = Math.max(24, stageH / 2 - halfH - pad)
-  const wide = rx > vert + 48
-  // Brand page only: lift just enough that the bottom ring clears the search bar.
-  const bar = dock && !compact && !snug && wide ? 78 : 0
-  const yBias = -bar / 2
-  const ry = Math.max(24, vert - bar / 2)
-  const safeR = Math.max(24, Math.min(rx, ry))
-  const full = ry > 1 ? rx / ry : 1
-  let stretchX = 1
-  if (dock && wide && !compact) {
-    stretchX = snug ? 1 + (full - 1) * 0.5 : full
-  }
-  return { rx, ry, safeR, stretchX, yBias }
+  const horiz = stageW / 2 - maxChipW / 2 - pad
+  const vert = stageH / 2 - maxChipH / 2 - pad - bottomInset
+  return Math.max(24, Math.min(horiz, vert))
 }
 
 function chipArc(w, rPx) {
@@ -616,28 +599,27 @@ function BrandGlobeView({
     59,
     Math.max(44, Math.min(stageSize.w, stageSize.h) * 0.16),
   )
-  // Page = ellipse to the stage edges; compact / snug stay nearer the seat.
+  // Circle only — never stretch into an ellipse. Compact / snug stay near the seat.
   // Cap every ring so a name at 3/9 o'clock stays fully on screen while it spins.
-  const orbitFit = useMemo(() => {
+  const safeR = useMemo(() => {
     let widest = 48
     for (const brand of brands) {
       widest = Math.max(widest, chipWidthPx(brand?.label, dense, veryDense))
     }
-    return fitOrbit(
+    return safeOrbitRadius(
       stageSize.w,
       stageSize.h,
       widest,
       chipHeightPx(dense, veryDense),
-      { dock: isDock, compact, snug },
+      16,
+      isDock && !compact ? 64 : 0,
     )
-  }, [brands, dense, veryDense, stageSize.w, stageSize.h, isDock, compact, snug])
-  const safeR = orbitFit.safeR
+  }, [brands, dense, veryDense, stageSize.w, stageSize.h, isDock, compact])
   const fillR = Math.min(
     compact
       ? Math.min(stageSize.w, stageSize.h) * 0.32
       : snug
-        ? Math.min(stageSize.w, stageSize.h) *
-          (isDock && orbitFit.stretchX > 1 ? 0.44 : 0.36)
+        ? Math.min(stageSize.w, stageSize.h) * 0.36
         : Math.hypot(stageSize.w * 0.5, stageSize.h * 0.5) * 0.98,
     safeR,
   )
@@ -825,8 +807,8 @@ function BrandGlobeView({
       const slot = slots[i] || { lon: 0, r: 80, ring: 0 }
       const lon = (slot.lon || 0) + orbit
       const r = slot.r || 80
-      const x = Math.cos(lon) * r * orbitFit.stretchX + panX
-      const y = Math.sin(lon) * r + panY + orbitFit.yBias
+      const x = Math.cos(lon) * r + panX
+      const y = Math.sin(lon) * r + panY
       return {
         brand,
         x,
@@ -843,7 +825,7 @@ function BrandGlobeView({
         long: String(brand.label || '').length > 9,
       }
     })
-  }, [brands, slots, panX, panY, orbit, stageSize.w, stageSize.h, orbitFit])
+  }, [brands, slots, panX, panY, orbit, stageSize.w, stageSize.h])
 
   projectedRef.current = layout
 
