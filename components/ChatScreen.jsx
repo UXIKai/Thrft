@@ -1875,6 +1875,7 @@ export default function ChatScreen({
         ) : null}
 
         {contactSheetOpen && !peerProfile && (
+          <StageSlot>
           <div
             className="chat-contact-sheet"
             role="dialog"
@@ -2005,9 +2006,11 @@ export default function ChatScreen({
               </div>
             </div>
           </div>
+          </StageSlot>
         )}
 
         {membersSheetOpen && activeChat?.kind === 'group' && (
+          <StageSlot>
           <div
             className="chat-members-sheet"
             role="dialog"
@@ -2116,9 +2119,11 @@ export default function ChatScreen({
               </ul>
             </div>
           </div>
+          </StageSlot>
         )}
 
         {peerProfile && (
+          <StageSlot>
           <div
             className="chat-contact-sheet chat-peer-sheet"
             role="dialog"
@@ -2229,6 +2234,7 @@ export default function ChatScreen({
               ) : null}
             </div>
           </div>
+          </StageSlot>
         )}
       </div>
     )
@@ -2533,6 +2539,7 @@ export default function ChatScreen({
       )}
 
       {composer && !usersPickerOpen && (
+        <StageSlot>
         <div
           className="chat-sheet is-clear"
           role="dialog"
@@ -2614,6 +2621,7 @@ export default function ChatScreen({
             )}
           </div>
         </div>
+        </StageSlot>
       )}
 
       {usersPickerOpen ? (

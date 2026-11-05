@@ -843,8 +843,37 @@
   position: absolute;
   inset: 0;
   border: none;
-  background: transparent;
+  background: rgba(8, 8, 8, 0.18);
+  backdrop-filter: blur(12px) saturate(1.08);
+  -webkit-backdrop-filter: blur(12px) saturate(1.08);
   cursor: pointer;
+}
+
+/* Portaled onto .stage so the phone-column edges don't cut the window. */
+.stage > .chat-sheet,
+.stage > .chat-contact-sheet,
+.stage > .chat-members-sheet {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.stage > .chat-sheet {
+  z-index: 12;
+}
+
+.stage > .chat-contact-sheet {
+  z-index: 40;
+}
+
+.stage > .chat-members-sheet {
+  z-index: 46;
+}
+
+.stage > .chat-sheet .chat-sheet-card,
+.stage > .chat-contact-sheet .chat-contact-card {
+  width: min(100% - 24px, 480px);
 }
 
 .chat-sheet-card {
@@ -1834,9 +1863,9 @@
   position: absolute;
   inset: 0;
   border: none;
-  background: rgba(0, 0, 0, 0.45);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  background: rgba(8, 8, 8, 0.2);
+  backdrop-filter: blur(14px) saturate(1.08);
+  -webkit-backdrop-filter: blur(14px) saturate(1.08);
 }
 
 .chat-contact-card {
@@ -1849,13 +1878,11 @@
   gap: 12px;
   padding: 28px 20px 28px;
   border-radius: 20px 20px 0 0;
-  background: var(--glass-tint, rgba(36, 36, 36, 0.1));
+  background: rgba(16, 16, 16, 0.34);
   border: 1px solid var(--glass-border, rgba(168, 168, 168, 0.18));
   border-bottom: none;
-  backdrop-filter: blur(var(--glass-blur, 3px)) saturate(var(--glass-sat, 1.55))
-    brightness(var(--glass-bright, 0.98));
-  -webkit-backdrop-filter: blur(var(--glass-blur, 3px)) saturate(var(--glass-sat, 1.55))
-    brightness(var(--glass-bright, 0.98));
+  backdrop-filter: blur(18px) saturate(1.15);
+  -webkit-backdrop-filter: blur(18px) saturate(1.15);
   box-shadow: var(--glass-depth);
 }
 
@@ -2001,12 +2028,10 @@
   gap: 14px;
   padding: 22px 16px 18px;
   border-radius: 20px;
-  background: var(--glass-tint, rgba(36, 36, 36, 0.12));
+  background: rgba(16, 16, 16, 0.34);
   border: 1px solid var(--glass-border, rgba(168, 168, 168, 0.2));
-  backdrop-filter: blur(var(--glass-blur, 3px)) saturate(var(--glass-sat, 1.55))
-    brightness(var(--glass-bright, 0.98));
-  -webkit-backdrop-filter: blur(var(--glass-blur, 3px)) saturate(var(--glass-sat, 1.55))
-    brightness(var(--glass-bright, 0.98));
+  backdrop-filter: blur(18px) saturate(1.15);
+  -webkit-backdrop-filter: blur(18px) saturate(1.15);
   box-shadow: var(--glass-depth);
   overflow: hidden;
 }
