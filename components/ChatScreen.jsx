@@ -2625,12 +2625,19 @@ export default function ChatScreen({
       )}
 
       {usersPickerOpen ? (
+        <StageSlot>
         <div
           className="chat-users-picker"
           role="dialog"
           aria-modal="true"
           aria-label="Find friends and chats"
         >
+          <button
+            type="button"
+            className="chat-users-scrim"
+            aria-label="Dismiss"
+            onClick={closeUsersPicker}
+          />
           <header className="chat-users-picker-top">
             <button
               type="button"
@@ -2712,6 +2719,7 @@ export default function ChatScreen({
             </div>
           </div>
         </div>
+        </StageSlot>
       ) : null}
 
       {memberGlobePhase !== 'closed' && memberGlobeOpen && (
