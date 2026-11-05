@@ -353,6 +353,7 @@ export default function App() {
   }
 
   function closeHomePicker() {
+    if (!homePicker) return
     setHomePickerPhase('exit')
   }
 
@@ -458,10 +459,14 @@ export default function App() {
           <>
             <header className="wordmark-wrap">
               <HomeFilterLinks
+                brands={HOME_BRAND_ITEMS}
+                categories={homeCategoryItems}
                 brandLabel={homeBrand?.label || null}
                 categoryLabel={homeCategoryLabel}
-                onOpenBrands={() => openHomePicker('brands')}
-                onOpenCategory={() => openHomePicker('category')}
+                onPickBrand={handleHomeBrandPick}
+                onPickCategory={handleHomeCategoryPick}
+                onClearBrand={() => setHomeBrand(null)}
+                onClearCategory={() => handleHomeCategoryPick('all')}
               />
               <h1 className="wordmark">
                 Thrft<span className="dot" aria-hidden="true">●</span>
