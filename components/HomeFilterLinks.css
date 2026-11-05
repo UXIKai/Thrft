@@ -40,7 +40,7 @@
   align-items: center;
   justify-content: center;
   padding: 16px;
-  background: rgba(0, 0, 0, 0.55);
+  background: rgba(0, 0, 0, 0.18);
 }
 
 .home-search-modal {
@@ -50,10 +50,17 @@
   gap: clamp(2rem, 10vw, 3.6rem);
   width: min(380px, 100%);
   padding: 28px 24px;
-  border-radius: 18px;
-  background: rgba(20, 20, 24, 0.96);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  border-radius: 28px;
+  border: 0.5px solid rgba(255, 255, 255, 0.46);
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.16), transparent 42%),
+    var(--glass-clear-tint);
+  backdrop-filter: blur(22px) saturate(1.9) brightness(1.06);
+  -webkit-backdrop-filter: blur(22px) saturate(1.9) brightness(1.06);
+  box-shadow:
+    0 14px 36px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
   font-family: var(--font-sans);
 }
 
@@ -64,7 +71,7 @@
   border-radius: 0;
   background: transparent;
   box-shadow: none;
-  color: rgba(255, 255, 255, 0.62);
+  color: rgba(255, 255, 255, 0.78);
   font-family: var(--font-sans);
   font-size: 1.05rem;
   font-weight: 400;
