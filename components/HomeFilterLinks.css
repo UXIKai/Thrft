@@ -41,6 +41,8 @@
   justify-content: center;
   padding: 16px;
   background: rgba(0, 0, 0, 0.06);
+  overscroll-behavior: contain;
+  touch-action: none;
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
 }
@@ -78,7 +80,7 @@
 .home-search-modal {
   position: relative;
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: center;
   gap: 144px;
   box-sizing: border-box;
@@ -88,8 +90,7 @@
   padding: 28px 24px;
   border-radius: 28px;
   border: 0.5px solid rgba(255, 255, 255, 0.46);
-  overflow-y: auto;
-  overscroll-behavior: contain;
+  overflow: hidden;
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.16), transparent 42%),
     rgba(255, 255, 255, 0.1);
@@ -128,4 +129,44 @@
 .home-filter-link:focus-visible {
   color: #fff;
   outline: none;
+}
+
+/* Page behind the popup must not scroll. */
+.stage.is-home-search-open .home-scroll {
+  overflow: hidden;
+}
+
+.home-search-wheel {
+  flex: 0 0 auto;
+  min-width: 110px;
+}
+
+.home-search-label {
+  margin: 0 0 2px;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-align: center;
+  color: rgba(244, 244, 242, 0.6);
+}
+
+.home-search-orbit.type-strip-wrap.is-wheel {
+  padding: 0;
+}
+
+.home-search-orbit.is-compact-wheel .type-carousel.is-wheel {
+  height: 34px;
+  perspective: 280px;
+  overflow: hidden;
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+
+.home-search-orbit.is-compact-wheel .type-box.is-wheel {
+  padding: 2px 8px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  white-space: nowrap;
+  color: #fff;
 }

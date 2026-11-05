@@ -459,8 +459,16 @@ export default function App() {
           <>
             <header className="wordmark-wrap">
               <HomeFilterLinks
+                brands={HOME_BRAND_ITEMS}
+                categories={homeCategoryItems}
+                brandId={homeBrand?.id || ''}
+                categoryId={clothingType || 'all'}
                 brandLabel={homeBrand?.label || null}
                 categoryLabel={homeCategoryLabel}
+                onPickBrand={(id) =>
+                  id ? handleHomeBrandPick(id) : setHomeBrand(null)
+                }
+                onPickCategory={handleHomeCategoryPick}
                 onOpenBrands={() => openHomePicker('brands')}
                 onOpenCategory={() => openHomePicker('category')}
               />

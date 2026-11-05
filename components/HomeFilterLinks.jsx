@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import OrbitCarousel from './OrbitCarousel.jsx'
 import './HomeFilterLinks.css'
 
 /**
@@ -6,12 +7,39 @@ import './HomeFilterLinks.css'
  * Brands / Category buttons, which launch the orbital picker.
  */
 export default function HomeFilterLinks({
+  brands = [],
+  categories = [],
+  brandId = '',
+  categoryId = 'all',
   brandLabel = null,
   categoryLabel = null,
+  onPickBrand,
+  onPickCategory,
   onOpenBrands,
   onOpenCategory,
 }) {
   const [open, setOpen] = useState(false)
+  const [draftBrand, setDraftBrand] = useState(brandId)
+  const [draftCategory, setDraftCategory] = useState(categoryId)
+
+  // Orbital picks (and external changes) flow back into the wheels.
+  useEffect(() => setDraftBrand(brandId), [brandId])
+  useEffect(() => setDraftCategory(categoryId), [categoryId])
+
+  const brandItems = useMemo(
+    () => [{ id: '', label: 'All brands' }, ...brands],
+    [brands],
+  )
+  const categoryItems = useMemo(
+    () => [{ id: 'all', label: 'All categories' }, ...categories.filter((c) => c.id !== 'all')],
+    [categories],
+  )
+
+  function done() {
+    setOpen(false)
+    if (draftBrand !== brandId) onPickBrand?.(draftBrand)
+    if (draftCategory !== categoryId) onPickCategory?.(draftCategory)
+  }
 
   useEffect(() => {
     if (!open) return undefined
@@ -45,31 +73,41 @@ export default function HomeFilterLinks({
         <div
           className="home-search-backdrop"
           onPointerDown={(e) => {
-            if (e.target === e.currentTarget) setOpen(false)
+            if (e.target === e.currentTarget) done()
           }}
         >
           <div className="home-search-modal" role="dialog" aria-modal="true" aria-label="Search">
-            <button
-              type="button"
-              className={`home-filter-link${brandLabel ? ' is-set' : ''}`}
-              aria-label={brandLabel ? `Brand filter: ${brandLabel}` : 'Open brands'}
-              onClick={onOpenBrands}
-            >
-              {brandLabel || 'Brands'}
-            </button>
-            <button
-              type="button"
-              className={`home-filter-link${categoryLabel ? ' is-set' : ''}`}
-              aria-label={categoryLabel ? `Category filter: ${categoryLabel}` : 'Open category'}
-              onClick={onOpenCategory}
-            >
-              {categoryLabel || 'Category'}
-            </button>
+            <div className="home-search-wheel">
+              <p className="home-search-label">Brand</p>
+              <OrbitCarousel
+                variant="wheel"
+                compact
+                className="home-search-orbit"
+                items={brandItems}
+                activeId={draftBrand}
+                onSelect={setDraftBrand}
+                onActivate={onOpenBrands}
+                ariaLabel="Brand"
+              />
+            </div>
+            <div className="home-search-wheel">
+              <p className="home-search-label">Category</p>
+              <OrbitCarousel
+                variant="wheel"
+                compact
+                className="home-search-orbit"
+                items={categoryItems}
+                activeId={draftCategory}
+                onSelect={setDraftCategory}
+                onActivate={onOpenCategory}
+                ariaLabel="Category"
+              />
+            </div>
             <button
               type="button"
               className="home-search-done"
               aria-label="Done"
-              onClick={() => setOpen(false)}
+              onClick={done}
             >
               <svg viewBox="0 0 24 24" aria-hidden>
                 <path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
