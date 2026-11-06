@@ -83,3 +83,8 @@ select {
 .saved-search-input {
   font-size: 16px;
 }
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+

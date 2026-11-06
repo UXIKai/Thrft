@@ -367,12 +367,12 @@
 }
 
 .listing-box:hover {
-  filter: brightness(1.12);
+  filter: none;
   border-color: rgba(255, 255, 255, 0.22);
 }
 
 .listing-box:focus-within {
-  filter: brightness(1.14);
+  filter: none;
   border-color: rgba(255, 255, 255, 0.28);
 }
 
@@ -464,12 +464,12 @@
 }
 
 .listing-input:hover {
-  filter: brightness(1.12);
+  filter: none;
 }
 
 .listing-input:focus {
   border-color: rgba(255, 255, 255, 0.28);
-  filter: brightness(1.14);
+  filter: none;
 }
 
 .listing-wheels {
