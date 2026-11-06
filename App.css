@@ -223,14 +223,14 @@
   inset: -50%;
   background:
     radial-gradient(
-      circle at 26% 16%,
+      circle at 26% 2%,
       rgba(var(--atmosphere-effect-a-rgb, 200, 200, 200), 0.45),
-      transparent 46%
+      transparent 60%
     ),
     radial-gradient(
-      circle at 78% 28%,
+      circle at 78% 10%,
       rgba(var(--atmosphere-effect-b-rgb, 170, 170, 170), 0.42),
-      transparent 42%
+      transparent 54%
     ),
     radial-gradient(
       circle at 48% 58%,
@@ -274,7 +274,7 @@
 .atmosphere-bloom-a {
   width: 78%;
   height: 52%;
-  top: -8%;
+  top: 4%;
   left: -30%;
   background: radial-gradient(
     circle at 50% 50%,
