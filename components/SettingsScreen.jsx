@@ -1097,11 +1097,13 @@ export default function SettingsScreen({
             <button
               type="button"
               className="settings-palette-edit"
-              aria-label="Edit color palette"
-              title="Edit palette"
-              onClick={() => setPaletteEditorOpen(true)}
+              aria-label="Background photo"
+              title="Background photo"
+              aria-haspopup="dialog"
+              aria-expanded={photoMenuOpen}
+              onClick={() => setPhotoMenuOpen((v) => !v)}
             >
-              <PencilIcon />
+              <ImageIcon />
             </button>
             <div className="settings-color-stack">
               <div className="settings-color-group">
@@ -1212,13 +1214,11 @@ export default function SettingsScreen({
                     <button
                       type="button"
                       className="settings-choose is-color-side"
-                      aria-label="Background photo"
-                      title="Background photo"
-                      aria-haspopup="dialog"
-                      aria-expanded={photoMenuOpen}
-                      onClick={() => setPhotoMenuOpen((v) => !v)}
+                      aria-label="Edit color palette"
+                      title="Edit palette"
+                      onClick={() => setPaletteEditorOpen(true)}
                     >
-                      <ImageIcon />
+                      <PencilIcon />
                     </button>
                     <input
                       ref={cameraInputRef}
