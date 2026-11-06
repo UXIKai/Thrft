@@ -2106,6 +2106,19 @@ export default function ChatScreen({
                   <span>Block</span>
                 </button>
               </div>
+              <div className="chat-contact-photos">
+                {threadMessages
+                  .filter((m) => m.kind === 'image' && m.imageUrl)
+                  .map((m) => (
+                    <img
+                      key={m.id}
+                      className="chat-contact-photo"
+                      src={m.imageUrl}
+                      alt={m.fileName || 'Photo'}
+                      loading="lazy"
+                    />
+                  ))}
+              </div>
             </div>
           </div>
           </StageSlot>
@@ -2320,6 +2333,19 @@ export default function ChatScreen({
                   <BlockIcon />
                   <span>Block</span>
                 </button>
+              </div>
+              <div className="chat-contact-photos">
+                {threadMessages
+                  .filter((m) => m.kind === 'image' && m.imageUrl)
+                  .map((m) => (
+                    <img
+                      key={m.id}
+                      className="chat-contact-photo"
+                      src={m.imageUrl}
+                      alt={m.fileName || 'Photo'}
+                      loading="lazy"
+                    />
+                  ))}
               </div>
               {peerProfile.fromGroup ? (
                 <button

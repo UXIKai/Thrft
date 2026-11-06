@@ -2801,7 +2801,7 @@
   height: 100%;
   max-height: none;
   box-sizing: border-box;
-  justify-content: center;
+  justify-content: flex-start;
   border-radius: 0;
   border: none;
   overflow-y: auto;
@@ -2810,4 +2810,30 @@
 
 .stage > .chat-contact-sheet .chat-contact-actions {
   max-width: 480px;
+}
+
+.chat-contact-photos {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  max-width: 480px;
+  margin-top: 12px;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: min-content;
+  gap: 4px;
+  scrollbar-width: none;
+}
+
+.chat-contact-photos::-webkit-scrollbar {
+  display: none;
+}
+
+.chat-contact-photo {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 10px;
+  display: block;
 }
