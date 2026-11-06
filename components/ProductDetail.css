@@ -233,3 +233,47 @@
   pointer-events: auto;
   transform: translateY(-50%) scale(1);
 }
+
+/* Picker: minus left, plus right, check below the number */
+.product-detail-buy .product-detail-minus,
+.product-detail-buy .product-detail-plus-btn,
+.product-detail-buy .product-detail-confirm {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  right: auto;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.4s cubic-bezier(0.34, 1.3, 0.5, 1);
+}
+
+.product-detail-buy .product-detail-minus {
+  transform: translate(calc(-50% - 30px), -50%) scale(0.6);
+}
+
+.product-detail-buy .product-detail-plus-btn {
+  transform: translate(calc(-50% + 30px), -50%) scale(0.6);
+}
+
+.product-detail-buy .product-detail-confirm {
+  transform: translate(-50%, calc(-50% + 30px)) scale(0.6);
+}
+
+.product-detail-buy.is-added .product-detail-minus,
+.product-detail-buy.is-added .product-detail-plus-btn,
+.product-detail-buy.is-added .product-detail-confirm {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.product-detail-buy.is-added .product-detail-minus {
+  transform: translate(calc(-50% - 30px), -50%);
+}
+
+.product-detail-buy.is-added .product-detail-plus-btn {
+  transform: translate(calc(-50% + 30px), -50%);
+}
+
+.product-detail-buy.is-added .product-detail-confirm {
+  transform: translate(-50%, calc(-50% + 30px));
+}

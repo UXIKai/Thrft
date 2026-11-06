@@ -148,55 +148,35 @@ export default function ProductDetail({
           </button>
           <button
             type="button"
+            className="product-detail-step product-detail-minus is-bare"
+            aria-label="Remove one"
+            tabIndex={added ? 0 : -1}
+            onClick={() => step(qty - 1)}
+          >
+            <svg viewBox="0 0 24 24" aria-hidden>
+              <path fill="currentColor" d="M5 11h14v2H5z" />
+            </svg>
+          </button>
+          <div className="product-detail-stepper" aria-hidden={!added}>
+            <span className="product-detail-qty">{qty}</span>
+          </div>
+          <button
+            type="button"
+            className="product-detail-step product-detail-plus-btn is-bare"
+            aria-label="Add one"
+            tabIndex={added ? 0 : -1}
+            onClick={() => step(qty + 1)}
+          >
+            <PlusIcon />
+          </button>
+          <button
+            type="button"
             className="product-detail-step product-detail-confirm is-bare"
             aria-label="Add selected to bag"
             tabIndex={added ? 0 : -1}
             onClick={confirm}
           >
             <CheckIcon />
-          </button>
-          <div className="product-detail-stepper" aria-hidden={!added}>
-            <button
-              type="button"
-              className="product-detail-step is-bare"
-              aria-label="Add one"
-              tabIndex={added ? 0 : -1}
-              onClick={() => step(qty + 1)}
-            >
-              <PlusIcon />
-            </button>
-            <span className="product-detail-qty">{qty}</span>
-            <button
-              type="button"
-              className="product-detail-step is-bare"
-              aria-label="Remove one"
-              tabIndex={added ? 0 : -1}
-              onClick={() => step(qty - 1)}
-            >
-              <svg viewBox="0 0 24 24" aria-hidden>
-                <path fill="currentColor" d="M5 11h14v2H5z" />
-              </svg>
-            </button>
-          </div>
-          <button
-            type="button"
-            className="product-detail-step product-detail-cancel is-bare"
-            aria-label="Cancel"
-            tabIndex={added ? 0 : -1}
-            onClick={() => {
-              setPicking(false)
-              setQty(1)
-            }}
-          >
-            <svg viewBox="0 0 24 24" aria-hidden>
-              <path
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.2"
-                strokeLinecap="round"
-                d="M6 6l12 12M18 6 6 18"
-              />
-            </svg>
           </button>
         </div>
       </div>
