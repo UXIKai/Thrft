@@ -1917,34 +1917,6 @@ export default function SettingsScreen({
         </div>
       )}
 
-      {wheelOpen && colorListOpen && (
-        <div
-          className="settings-color-list-backdrop"
-          onPointerDown={(e) => {
-            if (e.target === e.currentTarget) setColorListOpen(false)
-          }}
-        >
-          <div className="settings-color-list" role="dialog" aria-modal="true" aria-label="Colors">
-            <OrbitCarousel
-              variant="wheel"
-              compact
-              className="home-search-orbit"
-              items={colorListItems}
-              activeId={COLOR_OPTIONS.find((c) => colorHex(c.id) === wheelHex)?.id || ''}
-              onSelect={(id) => {
-                const hex = colorHex(id)
-                if (!hex) return
-                setWheelHsv(hexToHsv(hex))
-                applyWheelHex(hex)
-                rememberColor(hex)
-              }}
-              onActivate={() => setColorListOpen(false)}
-              ariaLabel="Colors"
-            />
-          </div>
-        </div>
-      )}
-
       {wheelOpen && (
         <div
           className="glass-sheet settings-wheel-sheet"
@@ -2072,6 +2044,34 @@ export default function SettingsScreen({
             >
               Done
             </button>
+          </div>
+        </div>
+      )}
+
+      {wheelOpen && colorListOpen && (
+        <div
+          className="settings-color-list-backdrop"
+          onPointerDown={(e) => {
+            if (e.target === e.currentTarget) setColorListOpen(false)
+          }}
+        >
+          <div className="settings-color-list" role="dialog" aria-modal="true" aria-label="Colors">
+            <OrbitCarousel
+              variant="wheel"
+              compact
+              className="home-search-orbit"
+              items={colorListItems}
+              activeId={COLOR_OPTIONS.find((c) => colorHex(c.id) === wheelHex)?.id || ''}
+              onSelect={(id) => {
+                const hex = colorHex(id)
+                if (!hex) return
+                setWheelHsv(hexToHsv(hex))
+                applyWheelHex(hex)
+                rememberColor(hex)
+              }}
+              onActivate={() => setColorListOpen(false)}
+              ariaLabel="Colors"
+            />
           </div>
         </div>
       )}

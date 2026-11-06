@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { fetchSaved } from '../api.js'
 import BrandGlobe from './BrandGlobe.jsx'
 import StageSlot from './StageSlot.jsx'
@@ -1608,15 +1609,19 @@ export default function ChatScreen({
   if (activeChat) {
     return (
       <div className="chat-thread" role="dialog" aria-label={activeChat.title}>
-        {menuId && (
-          <button
-            type="button"
-            className="chat-menu-scrim"
-            aria-label="Dismiss menu"
-            onClick={closeMenus}
-          />
-        )}
-        {renderDmMenu()}
+        {menuId &&
+          createPortal(
+            <div className="chat-dm-portal">
+              <button
+                type="button"
+                className="chat-dm-portal-scrim"
+                aria-label="Dismiss menu"
+                onClick={closeMenus}
+              />
+              {renderDmMenu()}
+            </div>,
+            document.body,
+          )}
         <header className="chat-thread-top">
           <button
             type="button"
