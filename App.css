@@ -1619,9 +1619,6 @@ html .profile-panel.profile-edit-card {
     inset 0 5px 8px -4px rgba(255, 255, 255, 0.3),
     inset 0 -5px 8px -4px rgba(255, 255, 255, 0.35),
     0 3px 10px rgba(0, 0, 0, 0.25);
-  transition:
-    left 0.45s cubic-bezier(0.34, 1.28, 0.5, 1),
-    transform 0.25s ease;
 }
 
 .tab-bar.is-dragging {
@@ -1647,7 +1644,6 @@ html .profile-panel.profile-edit-card {
   transform-origin: calc((var(--tab-i, 0) + 0.5) * 20%) 50%;
   color: #fff;
   pointer-events: none;
-  transition: left 0.45s cubic-bezier(0.34, 1.28, 0.5, 1), transform-origin 0.45s cubic-bezier(0.34, 1.28, 0.5, 1);
 }
 
 .tab-bar.is-dragging .tab-lens-inner {
@@ -1667,4 +1663,38 @@ html .profile-panel.profile-edit-card {
 .tab-lens-item .tab-icon {
   width: 26px;
   height: 26px;
+}
+
+/* real icons are hidden under the lens so only the magnified ones show */
+.tab-items {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  position: relative;
+  z-index: 1;
+  --hole-a: calc(var(--tab-i, 0) * 20%);
+  --hole-b: calc(var(--tab-i, 0) * 20% + 20%);
+  -webkit-mask-image: linear-gradient(90deg, #000 var(--hole-a), transparent var(--hole-a), transparent var(--hole-b), #000 var(--hole-b));
+  mask-image: linear-gradient(90deg, #000 var(--hole-a), transparent var(--hole-a), transparent var(--hole-b), #000 var(--hole-b));
+}
+
+@property --tab-i {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
+.tab-bar {
+  transition: --tab-i 0.45s cubic-bezier(0.34, 1.28, 0.5, 1);
+}
+
+.tab-bar.is-dragging {
+  transition: none;
+}
+
+.tab-pill,
+.tab-bar.is-dragging .tab-pill,
+.tab-lens-inner {
+  transition: none;
 }

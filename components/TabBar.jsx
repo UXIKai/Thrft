@@ -118,6 +118,7 @@ export default function TabBar({ active = 'home', onChange }) {
           ))}
         </span>
       </span>
+      <div className="tab-items">
       {TABS.map((tab) => {
         const selected = tab.id === active
         return (
@@ -135,6 +136,7 @@ export default function TabBar({ active = 'home', onChange }) {
           </button>
         )
       })}
+      </div>
     </nav>
   )
 }
