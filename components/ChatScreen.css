@@ -1281,7 +1281,7 @@
   min-height: 0;
   max-height: 100%;
   box-sizing: border-box;
-  padding: max(8px, env(safe-area-inset-top, 0px)) 16px 0;
+  padding: env(safe-area-inset-top, 0px) 16px 0;
   color: #f4f4f2;
   font-family: var(--font-sans);
   overflow: hidden;
@@ -1591,7 +1591,7 @@
 .chat-liked-picker {
   position: absolute;
   /* Cancel .chat-thread padding so the sheet covers the whole thread */
-  top: calc(-1 * max(8px, env(safe-area-inset-top, 0px)));
+  top: calc(-1 * env(safe-area-inset-top, 0px));
   left: -16px;
   right: -16px;
   bottom: 0;
@@ -2398,7 +2398,7 @@
 /* Find friends / 1:1 chat picker (opened from create-sheet +) */
 .chat-users-picker {
   position: absolute;
-  top: calc(-1 * max(8px, env(safe-area-inset-top, 0px)));
+  top: calc(-1 * env(safe-area-inset-top, 0px));
   left: -16px;
   right: -16px;
   bottom: 0;
