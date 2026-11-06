@@ -319,6 +319,7 @@ function Section({ label, children, className = '' }) {
 function Row({
   icon,
   title,
+  iconOnly = false,
   subtitle,
   meta,
   badge,
@@ -326,9 +327,14 @@ function Row({
   trailing,
 }) {
   return (
-    <button type="button" className="settings-row" onClick={onClick}>
+    <button
+      type="button"
+      className="settings-row"
+      aria-label={iconOnly ? title : undefined}
+      onClick={onClick}
+    >
       {icon && <span className="settings-row-leading">{icon}</span>}
-      <span className="settings-row-copy">
+      <span className="settings-row-copy" hidden={iconOnly}>
         <span className="settings-row-title">{title}</span>
         {subtitle && <span className="settings-row-sub">{subtitle}</span>}
       </span>
@@ -1469,9 +1475,9 @@ export default function SettingsScreen({
         </Section>
 
         <Section label="Help & Support" className="is-side-by-side">
-          <Row icon={<PlayIcon />} title="Introduction" onClick={() => setHelpPage('started')} />
+          <Row icon={<PlayIcon />} title="Introduction" iconOnly onClick={() => setHelpPage('started')} />
           <div className="settings-divider" aria-hidden />
-          <Row icon={<HelpIcon />} title="Q&A" onClick={openHelpAssistant} />
+          <Row icon={<HelpIcon />} title="Q&A" iconOnly onClick={openHelpAssistant} />
         </Section>
 
         <p className="settings-footer">ThrfT. v1.0.0</p>

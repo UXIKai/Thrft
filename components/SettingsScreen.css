@@ -2404,3 +2404,16 @@
   margin: 8px 0;
   background: rgba(255, 255, 255, 0.45);
 }
+
+.settings-section.is-side-by-side .settings-row {
+  gap: 0;
+}
+
+.settings-section.is-side-by-side .settings-row-leading {
+  width: auto;
+}
+
+.settings-section.is-side-by-side .settings-row-leading svg {
+  width: 24px;
+  height: 24px;
+}
