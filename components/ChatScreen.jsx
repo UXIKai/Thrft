@@ -2495,21 +2495,23 @@ export default function ChatScreen({
                   <span className="chat-row-preview">{chat.preview}</span>
                 </span>
               </button>
-              <div className="chat-menu-anchor">
-                <button
-                  type="button"
-                  className="chat-dots"
-                  aria-label={`More options for ${chat.title}`}
-                  aria-expanded={menuId === chat.id}
-                  ref={(el) => {
-                    if (el) dotsRefs.current.set(chat.id, el)
-                    else dotsRefs.current.delete(chat.id)
-                  }}
-                  onClick={() => openMenu(chat.id)}
-                >
-                  <DotsIcon />
-                </button>
-              </div>
+              {chat.kind !== 'dm' && (
+                <div className="chat-menu-anchor">
+                  <button
+                    type="button"
+                    className="chat-dots"
+                    aria-label={`More options for ${chat.title}`}
+                    aria-expanded={menuId === chat.id}
+                    ref={(el) => {
+                      if (el) dotsRefs.current.set(chat.id, el)
+                      else dotsRefs.current.delete(chat.id)
+                    }}
+                    onClick={() => openMenu(chat.id)}
+                  >
+                    <DotsIcon />
+                  </button>
+                </div>
+              )}
             </li>
           ))}
           {filtered.all.length === 0 && (
