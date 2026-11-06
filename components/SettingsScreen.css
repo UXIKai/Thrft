@@ -2188,3 +2188,15 @@
 .settings-color-list-backdrop {
   z-index: 700;
 }
+
+.settings-wheel-sheet .glass-sheet-head {
+  justify-content: flex-end;
+}
+
+.settings-wheel-sheet .glass-overlay-icon-btn {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
