@@ -1228,7 +1228,7 @@ export default function ProfileScreen({
         <button
           type="button"
           className="profile-suppliers-btn is-compact is-bare"
-          aria-label="Open ship tracker"
+          aria-label="Open orders"
           onMouseDown={holdScroll}
           onClick={() => setShipOpen(true)}
         >
@@ -2042,7 +2042,7 @@ export default function ProfileScreen({
             className="profile-panel is-popup"
             role="dialog"
             aria-modal="true"
-            aria-label="Ship Tracker"
+            aria-label="Orders"
           >
             <header className="profile-panel-top">
               <button
@@ -2055,7 +2055,7 @@ export default function ProfileScreen({
               </button>
               <div className="profile-label-row is-panel-title">
                 <h2 className="profile-suppliers-title" id="ship-label">
-                  Ship Tracker
+                  Orders
                 </h2>
                 <span className="profile-live">
                   <span className="profile-live-dot" aria-hidden />
