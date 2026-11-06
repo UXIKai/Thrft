@@ -772,6 +772,7 @@ export default function ChatScreen({
       setMenuPos({
         top: Math.min(r.bottom + 4, window.innerHeight - 220),
         right: Math.max(8, window.innerWidth - r.right),
+        centerX: r.left + r.width / 2,
       })
     }
     place()
@@ -1581,7 +1582,14 @@ export default function ChatScreen({
     if (!menuId || !menuPos) return null
     if (chats.find((c) => c.id === menuId)?.kind !== 'dm') return null
     return (
-        <div className="chat-dm-menu-wrap" style={{ top: menuPos.top, right: menuPos.right }}>
+        <div
+          className="chat-dm-menu-wrap"
+          style={
+            peerProfile
+              ? { top: menuPos.top, left: menuPos.centerX, transform: 'translateX(-50%)' }
+              : { top: menuPos.top, right: menuPos.right }
+          }
+        >
           {(() => {
             const chat = chats.find((c) => c.id === menuId)
             return (
@@ -2331,14 +2339,22 @@ export default function ChatScreen({
                   }}
                   onClick={() => openMenu(activeChat.id)}
                 >
-                  <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden>
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    aria-hidden
+                    style={{
+                      transform: menuId ? 'rotate(45deg)' : 'none',
+                      transition: 'transform 0.25s ease',
+                    }}
+                  >
                     <path
                       fill="none"
                       stroke="currentColor"
                       strokeWidth="1.8"
                       strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M6 9.5l6 6 6-6"
+                      d="M12 5v14M5 12h14"
                     />
                   </svg>
                 </button>
