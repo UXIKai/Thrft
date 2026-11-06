@@ -19,7 +19,7 @@ body,
   height: var(--app-height, 100dvh);
   min-height: 0;
   max-height: var(--app-height, 100dvh);
-  background: var(--void, #050505);
+  background: color-mix(in srgb, var(--atmosphere-base, #050505) 45%, #5a5a5a);
   color: #f4f4f2;
   overscroll-behavior: none;
 }
