@@ -2469,10 +2469,8 @@ export default function ChatScreen({
       </div>
       </StageSlot>
 
-      {menuId && chats.find((c) => c.id === menuId)?.kind === 'dm' && (
-        <div className="chat-dm-menu-backdrop" onPointerDown={(e) => {
-          if (e.target === e.currentTarget) closeMenus()
-        }}>
+      {menuId && menuPos && chats.find((c) => c.id === menuId)?.kind === 'dm' && (
+        <div className="chat-dm-menu-wrap" style={{ top: menuPos.top, right: menuPos.right }}>
           {(() => {
             const chat = chats.find((c) => c.id === menuId)
             return (
