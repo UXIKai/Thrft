@@ -1116,9 +1116,7 @@ export default function SettingsScreen({
           className={`settings-effect-switch is-bare${bgEffectOn ? ' is-on' : ''}`}
           style={{
             background: bgEffectOn ? '#000' : '#fff',
-            boxShadow: bgEffectOn
-              ? 'inset 0 0 0 2px #fff, 0 0 0 1px rgba(255,255,255,0.35)'
-              : 'inset 0 0 0 2px #000',
+            boxShadow: 'none',
             opacity: 1,
           }}
           onClick={() => {
