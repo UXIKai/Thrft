@@ -2653,7 +2653,7 @@
 
 .chat-dm-menu {
   display: flex !important;
-  flex-direction: column !important;
+  flex-direction: row !important;
   align-items: center;
   width: max-content;
   gap: 4px;
