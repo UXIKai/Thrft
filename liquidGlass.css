@@ -177,6 +177,8 @@ html[data-bg-color='none'] body button.settings-effect-switch {
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
   box-shadow: inset 0 0 0 2px #000 !important;
+  filter: none !important;
+  opacity: 1 !important;
 }
 html body button.settings-effect-switch.is-on,
 html[data-bg-color='none'] body button.settings-effect-switch.is-on {

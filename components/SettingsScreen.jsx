@@ -1113,7 +1113,7 @@ export default function SettingsScreen({
           role="switch"
           aria-checked={bgEffectOn}
           aria-label="Background effect"
-          className={`settings-effect-switch${bgEffectOn ? ' is-on' : ''}`}
+          className={`settings-effect-switch is-bare${bgEffectOn ? ' is-on' : ''}`}
           onClick={() => {
             const next = bgEffectOn ? 'none' : 'atmosphere'
             applyBackgroundImage(next)
