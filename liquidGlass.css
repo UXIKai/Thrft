@@ -40,7 +40,8 @@ html body button:not(:is(.auth-social-btn,.auth-switch-link,.brand-globe-close,.
 
 /* Navigation bar: refraction lives on pseudo layers under the icons */
 html body .tab-bar {
-  background: rgba(255, 255, 255, 0.015);
+  /* faint neutral frost so the bar stays visible on any background */
+  background: rgba(150, 150, 156, 0.16) !important;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
   border: 0.5px solid rgba(255, 255, 255, 0.32);
