@@ -1617,6 +1617,25 @@ export default function ChatScreen({
                       type="button"
                       role="menuitem"
                       className="chat-dm-menu-btn"
+                      aria-label="Edit name"
+                      onClick={() => {
+                        closeMenus()
+                        if (peerProfile) {
+                          setNickDraft(peerProfile.name)
+                          setEditingNick(true)
+                        } else {
+                          setNickDraft(chat.title || '')
+                          setEditingNick(true)
+                          setContactSheetOpen(true)
+                        }
+                      }}
+                    >
+                      <PencilIcon />
+                    </button>
+                    <button
+                      type="button"
+                      role="menuitem"
+                      className="chat-dm-menu-btn"
                       aria-label="Remove"
                       onClick={() => deleteChat(chat.id)}
                     >
@@ -2361,17 +2380,7 @@ export default function ChatScreen({
                         <PencilIcon />
                       </button>
                     ) : (
-                      <button
-                        type="button"
-                        className="chat-contact-name-edit"
-                        aria-label="Edit name"
-                        onClick={() => {
-                          setNickDraft(peerProfile.name)
-                          setEditingNick(true)
-                        }}
-                      >
-                        <PencilIcon />
-                      </button>
+                      <span className="chat-contact-name-spacer" aria-hidden />
                     )}
                   </>
                 )}
