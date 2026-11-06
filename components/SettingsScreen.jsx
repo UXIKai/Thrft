@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import OrbitCarousel from './OrbitCarousel.jsx'
+import { COLOR_OPTIONS, colorHex } from '../colorsCatalog.js'
 import {
   applyAppColor,
   applyBackgroundImage,
@@ -616,6 +618,19 @@ export default function SettingsScreen({
   const [wheelTarget, setWheelTarget] = useState('app')
   const wheelTargetRef = useRef('app')
   const paletteSlotRef = useRef(0)
+  const [colorListOpen, setColorListOpen] = useState(false)
+  useEffect(() => {
+    if (!wheelOpen) setColorListOpen(false)
+  }, [wheelOpen])
+  const colorListItems = useMemo(
+    () =>
+      COLOR_OPTIONS.map((c) => ({
+        id: c.id,
+        ariaLabel: c.label,
+        label: <span className="settings-color-dot" style={{ background: colorHex(c.id) }} />,
+      })),
+    [],
+  )
   const [wheelHsv, setWheelHsv] = useState(() => hexToHsv(readCustomColorHex()))
   const [recentColors, setRecentColors] = useState(() => readRecentColors())
   const wheelPadRef = useRef(null)
@@ -1902,6 +1917,34 @@ export default function SettingsScreen({
         </div>
       )}
 
+      {wheelOpen && colorListOpen && (
+        <div
+          className="settings-color-list-backdrop"
+          onPointerDown={(e) => {
+            if (e.target === e.currentTarget) setColorListOpen(false)
+          }}
+        >
+          <div className="settings-color-list" role="dialog" aria-modal="true" aria-label="Colors">
+            <OrbitCarousel
+              variant="wheel"
+              compact
+              className="home-search-orbit"
+              items={colorListItems}
+              activeId={COLOR_OPTIONS.find((c) => colorHex(c.id) === wheelHex)?.id || ''}
+              onSelect={(id) => {
+                const hex = colorHex(id)
+                if (!hex) return
+                setWheelHsv(hexToHsv(hex))
+                applyWheelHex(hex)
+                rememberColor(hex)
+              }}
+              onActivate={() => setColorListOpen(false)}
+              ariaLabel="Colors"
+            />
+          </div>
+        </div>
+      )}
+
       {wheelOpen && (
         <div
           className="glass-sheet settings-wheel-sheet"
@@ -1923,7 +1966,20 @@ export default function SettingsScreen({
           />
           <div className="glass-sheet-card settings-wheel-card">
             <div className="glass-sheet-head">
-              <h2 className="glass-sheet-title" aria-hidden="true" />
+              <button
+                type="button"
+                className="glass-overlay-icon-btn"
+                aria-label="Pick from colors"
+                aria-haspopup="dialog"
+                onClick={() => setColorListOpen(true)}
+              >
+                <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden>
+                  <path d="M12 3a9 9 0 100 18c1.4 0 2-.9 2-1.8 0-1.2-1-1.5-1-2.6 0-.9.7-1.6 1.6-1.6H17a4 4 0 004-4c0-4.4-4-8-9-8z" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+                  <circle cx="7.5" cy="11" r="1.1" fill="currentColor" />
+                  <circle cx="10.5" cy="7.2" r="1.1" fill="currentColor" />
+                  <circle cx="15" cy="7.4" r="1.1" fill="currentColor" />
+                </svg>
+              </button>
               <button
                 type="button"
                 className="glass-overlay-icon-btn"

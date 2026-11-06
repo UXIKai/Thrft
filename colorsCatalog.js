@@ -29,7 +29,9 @@ export const JEWELRY_METALS = [
   'Two-Tone',
 ]
 
-export const COLOR_OPTIONS = [...Object.values(COLOR_FAMILIES).flat(), ...JEWELRY_METALS]
+export const EXTRA_COLORS = ['Turquoise', 'Magenta']
+
+export const COLOR_OPTIONS = [...Object.values(COLOR_FAMILIES).flat(), ...JEWELRY_METALS, ...EXTRA_COLORS]
   .map((label) => ({ id: label.toLowerCase().replace(/\s+/g, '-'), label }))
 
 const HEX = {
@@ -46,6 +48,7 @@ const HEX = {
   ivory: '#fffff0', 'off-white': '#f5f5ee', snow: '#fffafa', pearl: '#eae0c8', bone: '#e3dac9',
   'yellow-gold': '#d4af37', 'white-gold': '#e8e4d8', 'rose-gold': '#b76e79', platinum: '#e5e4e2',
   'sterling-silver': '#c0c0c0', bronze: '#cd7f32', copper: '#b87333', brass: '#b5a642', titanium: '#878681',
+  turquoise: '#30d5c8', magenta: '#ff00ff',
   gunmetal: '#2a3439', pewter: '#8b8d8f', 'stainless-steel': '#b0b3b8', 'two-tone': '#c9a96e',
 }
 

@@ -249,7 +249,7 @@ export default function OrbitCarousel({
                   isStrip ? ' is-strip' : ''
                 }${isWheel ? ' is-wheel' : ''}${selected ? ' is-active' : ''}`}
                 aria-pressed={selected}
-                aria-label={item.label || 'None'}
+                aria-label={item.ariaLabel || item.label || 'None'}
                 tabIndex={selected ? 0 : -1}
                 onClick={() => handleSelect(item.id)}
                 style={{
