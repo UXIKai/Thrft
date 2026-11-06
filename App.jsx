@@ -25,7 +25,7 @@ import {
   BUBBLE,
   slotForRank,
 } from './layout.js'
-import { applyBackgroundImage } from './appAppearance.js'
+import { applyBackgroundImage, readBackgroundImage } from './appAppearance.js'
 import {
   fetchProfile,
   fetchSaved,
@@ -190,7 +190,7 @@ export default function App() {
 
   // Always keep the flowing B/W/gray atmosphere behind the stage.
   useEffect(() => {
-    applyBackgroundImage('atmosphere')
+    applyBackgroundImage(readBackgroundImage())
   }, [])
 
   useEffect(() => {

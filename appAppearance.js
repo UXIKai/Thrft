@@ -807,10 +807,10 @@ export function initAppearance() {
   readBgEffectColors()
   applyBackgroundPhoto(readBackgroundPhoto())
   // Flowing B/W/gray wash is the stage look
-  currentBg = 'atmosphere'
+  currentBg = readBackgroundImage()
   applyGlassTokens()
   applyBgAtmosphereTokens()
-  const applyBg = () => applyBackgroundImage('atmosphere')
+  const applyBg = () => applyBackgroundImage(currentBg)
   if (document.querySelector('.stage')) applyBg()
   else queueMicrotask(applyBg)
   return {

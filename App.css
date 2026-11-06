@@ -212,9 +212,10 @@
   opacity: 1;
 }
 
-.stage.is-bg-none .atmosphere-bloom {
-  opacity: 0.35;
-  animation-play-state: paused;
+.stage.is-bg-none .atmosphere-bloom,
+.stage.is-bg-none .atmosphere::before,
+.stage.is-bg-none .atmosphere::after {
+  display: none;
 }
 
 .atmosphere::before {

@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom'
 import {
   applyAppColor,
   applyBackgroundImage,
+  readBackgroundImage,
   applyBackgroundPhoto,
   readBackgroundPhoto,
   applyBarTransparency,
@@ -625,6 +626,7 @@ export default function SettingsScreen({
     return getPaletteColors()
   })
   const [paletteEditorOpen, setPaletteEditorOpen] = useState(false)
+  const [bgEffectOn, setBgEffectOn] = useState(() => readBackgroundImage() === 'atmosphere')
   const [uiScale, setUiScale] = useState(() => readUiScale())
   const [containerEdge, setContainerEdge] = useState(() => readContainerEdge())
   const [barTransparency, setBarTransparency] = useState(() =>
@@ -1106,7 +1108,20 @@ export default function SettingsScreen({
           <BackIcon />
         </button>
         <h1 className="settings-title" aria-label="Settings" />
-        <span className="settings-top-spacer" aria-hidden />
+        <button
+          type="button"
+          role="switch"
+          aria-checked={bgEffectOn}
+          aria-label="Background effect"
+          className={`settings-effect-switch${bgEffectOn ? ' is-on' : ''}`}
+          onClick={() => {
+            const next = bgEffectOn ? 'none' : 'atmosphere'
+            applyBackgroundImage(next)
+            setBgEffectOn(next === 'atmosphere')
+          }}
+        >
+          <span className="settings-effect-knob" />
+        </button>
       </header>
 
       <div className="settings-scroll">
