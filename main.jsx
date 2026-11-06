@@ -46,6 +46,23 @@ function fitScreen() {
   root.style.setProperty('--app-left', `${left}px`)
 }
 
+// iOS leaves the page scrolled up after the keyboard closes; snap it back down
+// while the keyboard animation finishes.
+function resetPage() {
+  ;[0, 100, 250, 450, 700].forEach((ms) =>
+    setTimeout(() => {
+      window.scrollTo(0, 0)
+      document.documentElement.scrollTop = 0
+      document.body.scrollTop = 0
+      fitScreen()
+    }, ms),
+  )
+}
+document.addEventListener('focusout', (e) => {
+  const t = e.target
+  if (t && /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)) resetPage()
+})
+
 fitScreen()
 window.addEventListener('resize', fitScreen)
 window.addEventListener('orientationchange', fitScreen)
