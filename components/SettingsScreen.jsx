@@ -1101,7 +1101,7 @@ export default function SettingsScreen({
       <header className="settings-top">
         <button
           type="button"
-          className="settings-back"
+          className="settings-back is-bare"
           aria-label="Back to profile"
           onClick={onBack}
         >

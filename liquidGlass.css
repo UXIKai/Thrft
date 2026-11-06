@@ -105,7 +105,8 @@ html body .auth-top.is-brand-only {
 
 /* settings pencil: no container */
 html body button.settings-palette-edit,
-html body button.settings-photo-fill-close {
+html body button.settings-photo-fill-close,
+html body button.settings-back {
   background: none !important;
   border: 0 !important;
   box-shadow: none !important;

@@ -2606,3 +2606,17 @@
 .settings-block.settings-palette-block {
   padding-top: 44px;
 }
+
+/* Back button stays put in the header (header sits outside the scroller) */
+.settings-top {
+  position: relative;
+  z-index: 5;
+  flex: 0 0 auto;
+}
+
+.settings-back {
+  position: relative;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+}
