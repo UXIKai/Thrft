@@ -2887,3 +2887,14 @@ html body button.chat-contact-nick-save {
   border-radius: 10px;
   display: block;
 }
+
+/* Contact / members / peer sheets: back button bottom-left */
+.stage > .chat-contact-sheet .chat-contact-close,
+.chat-contact-sheet .chat-contact-close {
+  position: fixed;
+  top: auto;
+  right: auto;
+  left: 14px;
+  bottom: calc(8px + max(env(safe-area-inset-bottom, 0px) - 22px, 0px));
+  z-index: 6;
+}

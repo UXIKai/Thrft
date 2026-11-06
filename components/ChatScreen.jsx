@@ -2065,10 +2065,10 @@ export default function ChatScreen({
               <button
                 type="button"
                 className="chat-contact-close"
-                aria-label="Close"
+                aria-label="Back"
                 onClick={closeContactSheet}
               >
-                <CloseIcon />
+                <BackIcon />
               </button>
               <span className="chat-contact-avatar" aria-hidden>
                 {activeChat.initials}
@@ -2193,10 +2193,10 @@ export default function ChatScreen({
               <button
                 type="button"
                 className="chat-contact-close"
-                aria-label="Close"
+                aria-label="Back"
                 onClick={closeMembersSheet}
               >
-                <CloseIcon />
+                <BackIcon />
               </button>
               <h2 className="chat-members-title">Members</h2>
               <ul className="chat-members-list">
@@ -2306,10 +2306,10 @@ export default function ChatScreen({
               <button
                 type="button"
                 className="chat-contact-close"
-                aria-label="Close"
+                aria-label="Back"
                 onClick={closePeerProfile}
               >
-                <CloseIcon />
+                <BackIcon />
               </button>
               <span className="chat-contact-avatar" aria-hidden>
                 {peerProfile.initials}
