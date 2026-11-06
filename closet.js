@@ -24,7 +24,51 @@ function writeAll(items) {
   return items
 }
 
+const NIKE_SEED_KEY = 'thrft-closet-nike-seed-v1'
+
+const NIKE_STARTER_ITEMS = [
+  ['Tees', 'Nike Sportswear Club Tee', '30'],
+  ['Tees', 'Nike Dri-FIT Training Tee', '35'],
+  ['Hoodies', 'Nike Sportswear Club Fleece Hoodie', '65'],
+  ['Hoodies', 'Nike Tech Fleece Full-Zip Hoodie', '120'],
+  ['Pants', 'Nike Tech Fleece Joggers', '110'],
+  ['Pants', 'Nike Club Fleece Sweatpants', '60'],
+  ['Shorts', 'Nike Dri-FIT Challenger Shorts', '40'],
+  ['Shorts', 'Nike Flex Stride Running Shorts', '45'],
+  ['Jackets', 'Nike Windrunner Jacket', '100'],
+  ['Jackets', 'Nike Sportswear Club Bomber', '90'],
+  ['Tanks', 'Nike Dri-FIT Legend Tank', '28'],
+  ['Sneakers', 'Nike Air Force 1 07', '115'],
+  ['Sneakers', 'Nike Air Max 90', '130'],
+  ['Sneakers', 'Nike Dunk Low', '120'],
+  ['Hats', 'Nike Heritage86 Cap', '28'],
+  ['Bags', 'Nike Brasilia Duffel Bag', '55'],
+]
+
+function seedNikeItems() {
+  try {
+    if (localStorage.getItem(NIKE_SEED_KEY)) return
+    localStorage.setItem(NIKE_SEED_KEY, '1')
+  } catch {
+    return
+  }
+  const now = Date.now()
+  const seeded = NIKE_STARTER_ITEMS.map(([category, title, price], i) => ({
+    id: `closet-nike-${i + 1}`,
+    brand: 'Nike',
+    category,
+    title,
+    price,
+    imageUrl: '',
+    scanned: false,
+    backgroundRemoved: false,
+    createdAt: new Date(now - i * 1000).toISOString(),
+  }))
+  writeAll([...readAll(), ...seeded])
+}
+
 export function fetchClosetItems() {
+  seedNikeItems()
   return readAll()
 }
 
