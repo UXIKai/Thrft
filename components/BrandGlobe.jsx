@@ -1500,7 +1500,7 @@ function BrandGlobeView({
               {typeof onSearchConfirm === 'function' ? (
                 <button
                   type="button"
-                  className="brand-globe-search-confirm dock-chip"
+                  className="brand-globe-search-confirm is-bare"
                   aria-label={searchConfirmLabel}
                   disabled={searchConfirmDisabled}
                   onClick={(event) => {
