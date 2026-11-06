@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { BRAND_ROWS } from '../brandsCatalog.js'
 import { fetchSaved } from '../api.js'
 import {
@@ -41,12 +41,13 @@ function CrawlRow({ row, rowIndex, onOpenProduct }) {
   const [loopPx, setLoopPx] = useState(0)
   const products = row.products || []
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const wrap = wrapRef.current
     const seq = seqRef.current
     if (!wrap || !seq || !products.length) return undefined
 
     const measure = () => {
+      if (!seq.getBoundingClientRect().width) return
       const styles = getComputedStyle(seq.parentElement)
       const gap = Number.parseFloat(styles.columnGap || styles.gap || '0') || 0
       const width = seq.getBoundingClientRect().width
@@ -69,7 +70,7 @@ function CrawlRow({ row, rowIndex, onOpenProduct }) {
     <article className="brand-row">
       <div ref={wrapRef} className="brand-row-track-wrap">
         <div
-          className={`brand-row-track ${goesRight ? 'crawl-right' : 'crawl-left'}`}
+          className={`brand-row-track ${loopPx > 0 ? (goesRight ? 'crawl-right' : 'crawl-left') : ''}`}
           style={{
             '--loop': `${loop}px`,
             '--crawl-duration': `${durationSec}s`,
