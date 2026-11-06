@@ -654,3 +654,22 @@
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+.listing-slider {
+  display: block;
+  width: 100%;
+  margin: 8px 0 0;
+  accent-color: #fff;
+  background: none;
+}
+
+.listing-date-field {
+  margin-bottom: 14px;
+}
+
+.listing-date-value {
+  display: block;
+  padding: 22px 16px 10px;
+  color: #fff;
+  font-weight: 600;
+}

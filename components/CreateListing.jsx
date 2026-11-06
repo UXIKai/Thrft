@@ -85,6 +85,9 @@ function segmentLabel(id) {
   return 'Market'
 }
 
+const NOW = new Date()
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+
 export default function CreateListing({ onPosted } = {}) {
   const [segment, setSegment] = useState('market')
   const [title, setTitle] = useState('')
@@ -93,6 +96,10 @@ export default function CreateListing({ onPosted } = {}) {
   const [price, setPrice] = useState('')
   const [condition, setCondition] = useState('Good')
   const [description, setDescription] = useState('')
+  const [descRows, setDescRows] = useState(4)
+  const [dateM, setDateM] = useState(NOW.getMonth() + 1)
+  const [dateD, setDateD] = useState(NOW.getDate())
+  const [dateY, setDateY] = useState(NOW.getFullYear())
   const [posted, setPosted] = useState(false)
   const [posting, setPosting] = useState(false)
   const [postError, setPostError] = useState('')
@@ -260,6 +267,8 @@ export default function CreateListing({ onPosted } = {}) {
           category,
           title: title.trim() || `${brand} ${category}`.trim(),
           price: price.trim(),
+          description: description.trim(),
+          date: `${dateY}-${String(dateM).padStart(2, '0')}-${String(dateD).padStart(2, '0')}`,
           imageUrl: scanPreview,
           scanned: true,
           backgroundRemoved: true,
@@ -268,6 +277,7 @@ export default function CreateListing({ onPosted } = {}) {
         setPosted(true)
         setScanPreview('')
         setPrice('')
+        setDescription('')
         onPosted?.(item)
       } catch (err) {
         setPostError(String(err?.message || 'Could not add to closet'))
@@ -532,6 +542,66 @@ export default function CreateListing({ onPosted } = {}) {
         </span>
       </label>
 
+      <label className="listing-field">
+        <span className={`listing-box${description ? ' is-filled' : ''}`}>
+          <span className="listing-label">Description</span>
+          <textarea
+            className="listing-input listing-textarea is-inset"
+            placeholder=" "
+            aria-label="Description"
+            rows={descRows}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+        </span>
+        <input
+          className="listing-slider"
+          type="range"
+          min="2"
+          max="10"
+          step="1"
+          aria-label="Description box size"
+          value={descRows}
+          onChange={(e) => setDescRows(Number(e.target.value))}
+        />
+      </label>
+
+      <div className="listing-field listing-date-field">
+        <span className="listing-box is-filled">
+          <span className="listing-label">Date</span>
+          <span className="listing-date-value">
+            {MONTHS[dateM - 1]} {dateD}, {dateY}
+          </span>
+        </span>
+        <input
+          className="listing-slider"
+          type="range"
+          min="1"
+          max="12"
+          aria-label="Month"
+          value={dateM}
+          onChange={(e) => setDateM(Number(e.target.value))}
+        />
+        <input
+          className="listing-slider"
+          type="range"
+          min="1"
+          max="31"
+          aria-label="Day"
+          value={dateD}
+          onChange={(e) => setDateD(Number(e.target.value))}
+        />
+        <input
+          className="listing-slider"
+          type="range"
+          min={NOW.getFullYear() - 10}
+          max={NOW.getFullYear()}
+          aria-label="Year"
+          value={dateY}
+          onChange={(e) => setDateY(Number(e.target.value))}
+        />
+      </div>
+
       {!isCloset && (
         <>
           <div className="listing-field">
@@ -552,20 +622,6 @@ export default function CreateListing({ onPosted } = {}) {
               })}
             </div>
           </div>
-
-          <label className="listing-field">
-            <span className={`listing-box${description ? ' is-filled' : ''}`}>
-              <span className="listing-label">Description</span>
-              <textarea
-                className="listing-input listing-textarea is-inset"
-                placeholder=" "
-                aria-label="Description"
-                rows={4}
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-              />
-            </span>
-          </label>
         </>
       )}
 
