@@ -187,3 +187,11 @@ html[data-bg-color='none'] body button.settings-effect-switch {
 html[data-bg-color='none'] body button.settings-effect-switch.is-on {
   background: #000 !important;
 }
+
+html body button.settings-effect-switch:not(.is-on),
+html[data-bg-color='none'] body button.settings-effect-switch:not(.is-on) {
+  background: #fff !important;
+}
+html body button.settings-effect-switch:not(.is-on) .settings-effect-knob {
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.18), 0 1px 3px rgba(0, 0, 0, 0.35);
+}
