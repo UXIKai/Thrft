@@ -1336,11 +1336,11 @@ export default function SettingsScreen({
                       setContainerEdge(next)
                       applyContainerEdge(next)
                     }}
-                    aria-label="Container edge from Thin to Thick"
+                    aria-label="Container height from Short to Tall"
                   />
                   <div className="settings-slider-ends">
-                    <span>Thin</span>
-                    <span>Thick</span>
+                    <span>Short</span>
+                    <span>Tall</span>
                   </div>
                 </div>
           </div>

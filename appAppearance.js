@@ -770,7 +770,7 @@ export function applyUiScale(pct) {
 }
 
 const EDGE_KEY = 'thrft-container-edge'
-const DEFAULT_EDGE = 14
+const DEFAULT_EDGE = 0
 
 export function readContainerEdge() {
   try {
@@ -783,7 +783,7 @@ export function readContainerEdge() {
   }
 }
 
-// 0 = thin hairline edge, 100 = thick edge on containers.
+// 0 = short (original) containers, 100 = tall containers.
 export function applyContainerEdge(pct) {
   const v = Math.min(100, Math.max(0, Math.round(Number(pct) || 0)))
   document.documentElement.style.setProperty('--container-edge', String(v / 100))

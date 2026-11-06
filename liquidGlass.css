@@ -163,8 +163,8 @@ html body .settings-palette-sheet .glass-overlay-icon-btn {
   transform: translateY(-50%);
 }
 
-/* Container edge slider: thin (0.5px) to thick (4px) */
-html body :is(.settings-block, .glass-sheet-card, .tab-bar, .profile-credits-card, .profile-music-card, .listing-post, .closet-detail-post, .chat-menu, .product-detail-photo) {
-  border-width: calc(0.5px + 3.5px * var(--container-edge, 0)) !important;
-  border-style: solid !important;
+/* Container height slider: short (as designed) to tall (+20px top and bottom) */
+html body :is(.settings-block, .profile-credits-card, .profile-music-card, .listing-post, .closet-detail-post, .chat-menu) {
+  border-top: calc(20px * var(--container-edge, 0)) solid transparent !important;
+  border-bottom: calc(20px * var(--container-edge, 0)) solid transparent !important;
 }
