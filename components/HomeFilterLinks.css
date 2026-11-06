@@ -177,10 +177,10 @@
 
 @keyframes home-search-teal-drift {
   0% {
-    background-position: 0% 0%, 100% 100%, 50% 100%, 0 0;
+    background-position: 0% 0%, 100% 100%, 50% 100%;
   }
   100% {
-    background-position: 100% 80%, 0% 0%, 50% 0%, 0 0;
+    background-position: 100% 80%, 0% 0%, 50% 0%;
   }
 }
 
@@ -208,12 +208,14 @@
   z-index: 49;
   overflow: hidden;
   pointer-events: none;
-  background:
-    radial-gradient(circle at 20% 25%, rgba(120, 255, 235, 0.6), transparent 45%),
-    radial-gradient(circle at 80% 70%, rgba(0, 150, 160, 0.65), transparent 50%),
-    radial-gradient(circle at 55% 90%, rgba(60, 220, 200, 0.45), transparent 45%),
-    rgba(10, 90, 95, 0.55);
-  background-size: 220% 220%, 200% 200%, 240% 240%, 100% 100%;
+  /* Follows the Color wheel; teal when no color is picked. */
+  background-color: var(--search-tint, #14a0a0);
+  background-image:
+    radial-gradient(circle at 20% 25%, rgba(255, 255, 255, 0.45), transparent 45%),
+    radial-gradient(circle at 80% 70%, rgba(0, 0, 0, 0.35), transparent 50%),
+    radial-gradient(circle at 55% 90%, rgba(255, 255, 255, 0.25), transparent 45%);
+  transition: background-color 0.5s ease;
+  background-size: 220% 220%, 200% 200%, 240% 240%;
   animation: home-search-teal-drift 9s ease-in-out infinite alternate;
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import OrbitCarousel from './OrbitCarousel.jsx'
+import { colorHex } from '../colorsCatalog.js'
 import './HomeFilterLinks.css'
 
 /**
@@ -80,7 +81,13 @@ export default function HomeFilterLinks({
           <path d="M16 16l4.5 4.5" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
         </svg>
       </button>
-      {open && <div className="home-search-blur" aria-hidden />}
+      {open && (
+        <div
+          className="home-search-blur"
+          aria-hidden
+          style={draftColor ? { '--search-tint': colorHex(draftColor) } : undefined}
+        />
+      )}
       {open && (
         <div
           className="home-search-backdrop"
