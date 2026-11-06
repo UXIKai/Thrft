@@ -1498,8 +1498,8 @@
   transition: bottom 0.2s ease;
   display: flex;
   align-items: flex-end;
-  width: min(calc(420px + 4in), calc(100vw - 20px));
-  max-width: calc(100% - 20px);
+  width: min(calc(420px + 4in), calc(100vw - 26px));
+  max-width: calc(100% - 26px);
   box-sizing: border-box;
   margin: 0;
   padding: 0;
