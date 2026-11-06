@@ -96,7 +96,6 @@ html body .tab-bar .tab-items {
 
 /* Keep headers below the notch / blurry browser top bar */
 html body .glass-overlay-top,
-html body .settings-top,
 html body .profile-top,
 html body .auth-top,
 html body .auth-top.is-brand-only {
@@ -203,4 +202,11 @@ html body button.settings-effect-switch.is-on .settings-effect-knob {
 
 html body button.settings-effect-switch.is-in-block {
   position: absolute;
+}
+
+/* Settings header: less empty space above the back button */
+html body .settings-top {
+  min-height: 0;
+  padding-top: max(calc(env(safe-area-inset-top, 0px) + 2px), 28px);
+  padding-bottom: 4px;
 }
