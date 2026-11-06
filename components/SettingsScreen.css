@@ -2543,3 +2543,14 @@
   flex: 0 0 auto;
   margin-left: auto;
 }
+
+.settings-edit-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+}
+.settings-palette-block .settings-edit-stack .settings-palette-edit {
+  margin-left: 0;
+}

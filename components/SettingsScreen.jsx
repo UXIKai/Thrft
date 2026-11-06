@@ -1101,20 +1101,6 @@ export default function SettingsScreen({
                   className="settings-color-row"
                   aria-label="Container color — nav, pins, chat rows, and info boxes"
                 >
-                  <button
-                    type="button"
-                    className="settings-color-wheel"
-                    title="Container color wheel"
-                    aria-label="Open container color wheel"
-                    onClick={() => openWheel('app')}
-                  >
-                    <svg className="settings-color-wheel-ico" viewBox="0 0 24 24" aria-hidden>
-                      <path d="M12 3a9 9 0 100 18c1.4 0 2-.9 2-1.8 0-1.2-1-1.5-1-2.6 0-.9.7-1.6 1.6-1.6H17a4 4 0 004-4c0-4.4-4-8-9-8z" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
-                      <circle cx="7.5" cy="11" r="1.1" fill="currentColor" />
-                      <circle cx="10.5" cy="7.2" r="1.1" fill="currentColor" />
-                      <circle cx="15" cy="7.4" r="1.1" fill="currentColor" />
-                    </svg>
-                  </button>
                   <div
                     className="settings-swatches is-full-palette"
                     role="listbox"
@@ -1145,6 +1131,21 @@ export default function SettingsScreen({
                       )
                     })}
                   </div>
+                    <span className="settings-edit-stack">
+                    <button
+                      type="button"
+                      className="settings-palette-edit"
+                      aria-label="Open color wheel"
+                      title="Color wheel"
+                      onClick={() => openWheel('app')}
+                    >
+                      <svg className="settings-color-wheel-ico" viewBox="0 0 24 24" aria-hidden>
+                        <path d="M12 3a9 9 0 100 18c1.4 0 2-.9 2-1.8 0-1.2-1-1.5-1-2.6 0-.9.7-1.6 1.6-1.6H17a4 4 0 004-4c0-4.4-4-8-9-8z" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+                        <circle cx="7.5" cy="11" r="1.1" fill="currentColor" />
+                        <circle cx="10.5" cy="7.2" r="1.1" fill="currentColor" />
+                        <circle cx="15" cy="7.4" r="1.1" fill="currentColor" />
+                      </svg>
+                    </button>
                     <button
                       type="button"
                       className="settings-palette-edit"
@@ -1154,6 +1155,7 @@ export default function SettingsScreen({
                     >
                       <PencilIcon />
                     </button>
+                    </span>
                 </div>
               </div>
 
@@ -1163,20 +1165,6 @@ export default function SettingsScreen({
                   className="settings-color-row"
                   aria-label="Background color — flowing atmosphere wash"
                 >
-                  <button
-                    type="button"
-                    className="settings-color-wheel"
-                    title="Background color wheel"
-                    aria-label="Open background color wheel"
-                    onClick={() => openWheel('bg')}
-                  >
-                    <svg className="settings-color-wheel-ico" viewBox="0 0 24 24" aria-hidden>
-                      <path d="M12 3a9 9 0 100 18c1.4 0 2-.9 2-1.8 0-1.2-1-1.5-1-2.6 0-.9.7-1.6 1.6-1.6H17a4 4 0 004-4c0-4.4-4-8-9-8z" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
-                      <circle cx="7.5" cy="11" r="1.1" fill="currentColor" />
-                      <circle cx="10.5" cy="7.2" r="1.1" fill="currentColor" />
-                      <circle cx="15" cy="7.4" r="1.1" fill="currentColor" />
-                    </svg>
-                  </button>
                   <div
                     className="settings-swatches is-full-palette"
                     role="listbox"
@@ -2138,6 +2126,28 @@ export default function SettingsScreen({
           />
           <div className="glass-sheet-card settings-wheel-card">
             <div className="glass-sheet-head">
+              {wheelTarget !== 'palette' && (
+                <div className="settings-palette-tabs" role="tablist">
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={wheelTarget === 'app'}
+                    className={`settings-palette-tab${wheelTarget === 'app' ? ' is-active' : ''}`}
+                    onClick={() => openWheel('app')}
+                  >
+                    Container
+                  </button>
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={wheelTarget === 'bg'}
+                    className={`settings-palette-tab${wheelTarget === 'bg' ? ' is-active' : ''}`}
+                    onClick={() => openWheel('bg')}
+                  >
+                    Background
+                  </button>
+                </div>
+              )}
               <button
                 type="button"
                 className="glass-overlay-icon-btn"
