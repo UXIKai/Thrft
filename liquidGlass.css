@@ -124,3 +124,41 @@ html body button.settings-choose.is-color-side {
   -webkit-backdrop-filter: none !important;
   outline: none;
 }
+
+/* Color sheets: bare tab words, centered, bare close X */
+html body .settings-wheel-sheet .glass-sheet-head,
+html body .settings-palette-sheet .glass-sheet-head {
+  position: relative;
+  justify-content: center !important;
+}
+
+html body .settings-wheel-sheet .settings-palette-tabs,
+html body .settings-palette-sheet .settings-palette-tabs {
+  background: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  padding: 0 !important;
+  margin: 0 auto !important;
+  justify-content: center;
+}
+
+html body .settings-wheel-sheet .settings-palette-tab,
+html body .settings-palette-sheet .settings-palette-tab,
+html body .settings-wheel-sheet .glass-overlay-icon-btn,
+html body .settings-palette-sheet .glass-overlay-icon-btn {
+  background: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+html body .settings-wheel-sheet .glass-overlay-icon-btn,
+html body .settings-palette-sheet .glass-overlay-icon-btn {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
