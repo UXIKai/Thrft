@@ -2503,3 +2503,9 @@
 .settings-photo-fill {
   background: var(--glass-clear-tint, rgba(36, 36, 36, 0.04));
 }
+
+/* color and slider containers: 7px taller */
+.settings-palette-block,
+.settings-slider-block {
+  padding-bottom: 19px;
+}
