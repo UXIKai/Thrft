@@ -1934,6 +1934,11 @@ export default function ChatScreen({
               aria-label="Message"
               value={draftMessage}
               onChange={(e) => setDraftMessage(e.target.value)}
+              onBlur={() => {
+                // iOS can leave the page shifted after the keyboard closes
+                setTimeout(() => window.scrollTo(0, 0), 50)
+                window.dispatchEvent(new Event('resize'))
+              }}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
                   e.preventDefault()
