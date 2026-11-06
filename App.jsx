@@ -169,7 +169,7 @@ export default function App() {
   const columnRef = useRef(null)
   const scrollRef = useRef(null)
   const hideTabBar = tab === 'chat' || tab === 'saved'
-  const showNav = tab !== 'saved' && !(tab === 'chat' && chatThreadOpen)
+  const showNav = !(tab === 'chat' && chatThreadOpen)
 
   const byId = useMemo(
     () => new Map(profiles.map((p) => [p.id, p])),

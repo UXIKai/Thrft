@@ -375,7 +375,7 @@
   overflow: auto;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
-  padding-bottom: calc(84px + env(safe-area-inset-bottom, 0px));
+  padding-bottom: calc(150px + env(safe-area-inset-bottom, 0px));
 }
 
 /* No box — picture floats on the atmosphere with the name under it. */
@@ -459,12 +459,14 @@
   position: absolute;
   left: 50%;
   right: auto;
-  bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+  /* Sits above the navigation bar */
+  bottom: calc(80px + env(safe-area-inset-bottom, 0px));
   z-index: 80; /* above brand globe so + can suck it closed */
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: stretch;
+  justify-content: space-between;
+  gap: 8px;
   width: var(--dock-bar-width);
   max-width: calc(100% - 20px);
   padding: 0;
@@ -474,6 +476,8 @@
 
 /* Back / + sit in the bar as plain icons — no chip containers */
 .saved-dock-back,
+.saved-dock-search,
+.saved-search-close,
 .saved-search-add {
   flex: 0 0 auto;
   width: 36px;

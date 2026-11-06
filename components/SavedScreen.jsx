@@ -16,6 +16,23 @@ function PlusIcon() {
   )
 }
 
+function SearchIcon() {
+  return (
+    <svg className="saved-dock-ico" viewBox="0 0 24 24" aria-hidden>
+      <circle cx="10.5" cy="10.5" r="6" fill="none" stroke="currentColor" strokeWidth="2" />
+      <path d="M15 15l5.5 5.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function CloseGlyph() {
+  return (
+    <svg className="saved-dock-ico" viewBox="0 0 24 24" aria-hidden>
+      <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  )
+}
+
 function BackIcon() {
   return (
     <svg className="saved-dock-ico" viewBox="0 0 24 24" aria-hidden>
@@ -312,6 +329,7 @@ export default function SavedScreen({
 }) {
   const [items, setItems] = useState([])
   const [query, setQuery] = useState('')
+  const [searchOpen, setSearchOpen] = useState(false)
   const [favoriteBrands, setFavoriteBrands] = useState(() =>
     Array.isArray(favoredBrands) ? [...favoredBrands] : [],
   )
@@ -661,15 +679,18 @@ export default function SavedScreen({
 
       <StageSlot>
       <div className={`saved-search-dock${globeOpen ? ' is-open' : ''}`}>
-        <div className="saved-search-bar">
           <button
+            ref={plusRef}
             type="button"
-            className="saved-dock-back"
-            aria-label="Back"
-            onClick={() => onBack?.()}
+            className={`saved-search-add${globeOpen ? ' is-globe-open' : ''}`}
+            aria-label={globeOpen ? 'Close brand globe' : 'Open brand globe'}
+            aria-pressed={globeOpen}
+            onClick={onPlusClick}
           >
-            <BackIcon />
+            <PlusIcon />
           </button>
+        {searchOpen || globeOpen ? (
+          <div className="saved-search-bar">
           <input
             id="saved-search-input"
             className="saved-search-input"
@@ -683,6 +704,7 @@ export default function SavedScreen({
             data-lpignore="true"
             data-1p-ignore="true"
             data-form-type="other"
+            autoFocus={!globeOpen}
             placeholder=""
             aria-label={
               globeOpen
@@ -694,17 +716,30 @@ export default function SavedScreen({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
+            {!globeOpen && (
+              <button
+                type="button"
+                className="saved-search-close"
+                aria-label="Close search"
+                onClick={() => {
+                  setQuery('')
+                  setSearchOpen(false)
+                }}
+              >
+                <CloseGlyph />
+              </button>
+            )}
+          </div>
+        ) : (
           <button
-            ref={plusRef}
             type="button"
-            className={`saved-search-add${globeOpen ? ' is-globe-open' : ''}`}
-            aria-label={globeOpen ? 'Close brand globe' : 'Open brand globe'}
-            aria-pressed={globeOpen}
-            onClick={onPlusClick}
+            className="saved-dock-search"
+            aria-label="Search"
+            onClick={() => setSearchOpen(true)}
           >
-            <PlusIcon />
+            <SearchIcon />
           </button>
-        </div>
+        )}
       </div>
       </StageSlot>
 
