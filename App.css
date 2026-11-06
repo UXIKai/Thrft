@@ -1216,7 +1216,7 @@
   right: auto;
   width: var(--dock-bar-width);
   transform: translateX(-50%);
-  bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+  bottom: max(10px, env(safe-area-inset-bottom, 0px));
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   align-items: center;
