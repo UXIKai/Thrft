@@ -71,3 +71,15 @@ textarea:-webkit-autofill:active {
   transition: background-color 99999s ease-out 0s;
   border-color: var(--glass-border, rgba(150, 150, 150, 0.2)) !important;
 }
+
+/* iOS zooms/pans the page when a focused field is under 16px. */
+input,
+textarea,
+select {
+  font-size: max(16px, 1em);
+}
+
+.chat-search-input,
+.saved-search-input {
+  font-size: 16px;
+}

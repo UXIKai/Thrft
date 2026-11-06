@@ -14,8 +14,9 @@ function fitScreen() {
     Math.max(vv?.height || 0, window.innerHeight, document.documentElement.clientHeight),
   )
   const width = Math.round(vv?.width || window.innerWidth)
-  const top = Math.round(vv?.offsetTop || 0)
-  const left = Math.round(vv?.offsetLeft || 0)
+  // Never follow the visual viewport's offset: the keyboard must not slide the page.
+  const top = 0
+  const left = 0
   const root = document.documentElement
   root.style.setProperty('--app-height', `${height}px`)
   root.style.setProperty('--app-width', `${width}px`)
