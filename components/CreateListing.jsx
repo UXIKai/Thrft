@@ -64,6 +64,25 @@ function ScannerIcon() {
   )
 }
 
+function GalleryChoiceIcon() {
+  return (
+    <svg className="listing-choice-ico" viewBox="0 0 24 24" aria-hidden>
+      <rect x="3.5" y="5.5" width="17" height="13" rx="2" fill="none" stroke="currentColor" strokeWidth="1.7" />
+      <circle cx="9" cy="10.5" r="1.3" fill="currentColor" />
+      <path d="m6.5 16.5 3.6-3.6 2.6 2.4 3-3.2 2.3 3" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+function CameraChoiceIcon() {
+  return (
+    <svg className="listing-choice-ico" viewBox="0 0 24 24" aria-hidden>
+      <path d="M4 8.5A1.5 1.5 0 015.5 7H8l1.2-2h5.6L16 7h2.5A1.5 1.5 0 0120 8.5v9a1.5 1.5 0 01-1.5 1.5h-13A1.5 1.5 0 014 17.5z" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+      <circle cx="12" cy="13" r="3.2" fill="none" stroke="currentColor" strokeWidth="1.7" />
+    </svg>
+  )
+}
+
 function PostIcon() {
   return (
     <svg className="listing-action-icon" viewBox="0 0 24 24" aria-hidden>
@@ -221,6 +240,11 @@ export default function CreateListing({ onPosted } = {}) {
   const [pickerPhase, setPickerPhase] = useState('closed')
   const [pickerQuery, setPickerQuery] = useState('')
   const scanInputRef = useRef(null)
+  const scanGalleryRef = useRef(null)
+  const photoCameraRef = useRef(null)
+  const photoGalleryRef = useRef(null)
+  const [photoChoice, setPhotoChoice] = useState(false)
+  const [marketPhotos, setMarketPhotos] = useState([])
 
   const isMarket = segment === 'market'
   const isCloset = segment === 'closet'
@@ -339,9 +363,21 @@ export default function CreateListing({ onPosted } = {}) {
     closeAddSheet()
   }
 
+  function onMarketPhoto(event) {
+    const files = Array.from(event.target.files || [])
+    event.target.value = ''
+    setPhotoChoice(false)
+    files.slice(0, 6).forEach((file) => {
+      const reader = new FileReader()
+      reader.onload = () => setMarketPhotos((prev) => [...prev, String(reader.result)].slice(0, 6))
+      reader.readAsDataURL(file)
+    })
+  }
+
   async function onScanFile(event) {
     const file = event.target.files?.[0]
     event.target.value = ''
+    setPhotoChoice(false)
     if (!file) return
     setScanning(true)
     setPostError('')
@@ -461,6 +497,7 @@ export default function CreateListing({ onPosted } = {}) {
               className={`listing-seg-btn ${active ? 'is-active' : ''}`}
               onClick={() => {
                 setSegment(seg.id)
+                setPhotoChoice(false)
                 setPosted(false)
                 setPostError('')
               }}
@@ -472,47 +509,58 @@ export default function CreateListing({ onPosted } = {}) {
       </div>
 
       {isMarket && (
-        <button
-          type="button"
-          className="listing-photo-drop"
-          aria-label="Add photos"
-          title="Add photos"
-        >
-          <CameraIcon />
-        </button>
+        <div className="listing-photo-drop" role="group" aria-label="Add photos">
+          <input ref={photoCameraRef} type="file" accept="image/*" capture="environment" className="listing-scan-input" aria-hidden tabIndex={-1} onChange={onMarketPhoto} />
+          <input ref={photoGalleryRef} type="file" accept="image/*" multiple className="listing-scan-input" aria-hidden tabIndex={-1} onChange={onMarketPhoto} />
+          {photoChoice ? (
+            <div className="listing-photo-choice">
+              <button type="button" className="listing-photo-choice-btn" aria-label="Take a photo" onClick={() => photoCameraRef.current?.click()}>
+                <CameraChoiceIcon />
+              </button>
+              <button type="button" className="listing-photo-choice-btn" aria-label="Choose from gallery" onClick={() => photoGalleryRef.current?.click()}>
+                <GalleryChoiceIcon />
+              </button>
+            </div>
+          ) : (
+            <button type="button" className="listing-photo-hit" aria-label="Add photos" title="Add photos" onClick={() => setPhotoChoice(true)}>
+              {marketPhotos.length ? (
+                <span className="listing-photo-thumbs">
+                  {marketPhotos.map((src, i) => (
+                    <img key={i} src={src} alt="" />
+                  ))}
+                </span>
+              ) : (
+                <CameraIcon />
+              )}
+            </button>
+          )}
+        </div>
       )}
 
       {isCloset && (
         <>
-          <input
-            ref={scanInputRef}
-            type="file"
-            accept="image/*"
-            capture="environment"
-            className="listing-scan-input"
-            aria-hidden
-            tabIndex={-1}
-            onChange={onScanFile}
-          />
-          <button
-            type="button"
-            className={`listing-scanner-btn${scanPreview ? ' has-preview' : ''}`}
-            aria-label="Clothing scanner"
-            title="Clothing scanner"
-            disabled={scanning}
-            onClick={() => scanInputRef.current?.click()}
-          >
-            {scanPreview ? (
-              <img
-                className="listing-scanner-preview"
-                src={scanPreview}
-                alt="Scanned clothing cutout"
-                style={{ transform: `scale(${scanZoom})` }}
-              />
+          <input ref={scanInputRef} type="file" accept="image/*" capture="environment" className="listing-scan-input" aria-hidden tabIndex={-1} onChange={onScanFile} />
+          <input ref={scanGalleryRef} type="file" accept="image/*" className="listing-scan-input" aria-hidden tabIndex={-1} onChange={onScanFile} />
+          <div className={`listing-scanner-btn${scanPreview ? ' has-preview' : ''}`} role="group" aria-label="Clothing scanner">
+            {photoChoice && !scanning ? (
+              <div className="listing-photo-choice">
+                <button type="button" className="listing-photo-choice-btn" aria-label="Take a photo" onClick={() => scanInputRef.current?.click()}>
+                  <CameraChoiceIcon />
+                </button>
+                <button type="button" className="listing-photo-choice-btn" aria-label="Choose from gallery" onClick={() => scanGalleryRef.current?.click()}>
+                  <GalleryChoiceIcon />
+                </button>
+              </div>
             ) : (
-              <ScannerIcon />
+              <button type="button" className="listing-photo-hit" aria-label="Clothing scanner" title="Clothing scanner" disabled={scanning} onClick={() => setPhotoChoice(true)}>
+                {scanPreview ? (
+                  <img className="listing-scanner-preview" src={scanPreview} alt="Scanned clothing cutout" style={{ transform: `scale(${scanZoom})` }} />
+                ) : (
+                  <ScannerIcon />
+                )}
+              </button>
             )}
-          </button>
+          </div>
           {scanPreview ? (
             <input
               className="listing-slider listing-scan-zoom"
