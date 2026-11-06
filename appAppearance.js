@@ -15,6 +15,7 @@ export const CUSTOM_COLOR_KEY = 'thrft-app-color-hex'
 export const BG_COLOR_KEY = 'thrft-bg-color-v1'
 export const CUSTOM_BG_COLOR_KEY = 'thrft-bg-color-hex-v1'
 export const BG_IMAGE_KEY = 'thrft-bg-image-v2'
+export const BG_PHOTO_KEY = 'thrft-bg-photo-v1'
 /** Three hues that tint the living background atmosphere app-wide. */
 export const BG_EFFECT_KEY = 'thrft-bg-effect-colors-v1'
 /** Default Clear so the app opens in liquid-glass (not frosted plates). */
@@ -704,6 +705,33 @@ export function readBgEffectColors() {
   return [...currentBgEffects]
 }
 
+/** Custom photo wallpaper (data URL); pass null to go back to the flowing wash. */
+export function applyBackgroundPhoto(dataUrl) {
+  const root = document.documentElement
+  if (dataUrl) {
+    root.style.setProperty('--bg-photo', `url("${dataUrl}")`)
+    root.dataset.bgPhoto = 'on'
+  } else {
+    root.style.removeProperty('--bg-photo')
+    delete root.dataset.bgPhoto
+  }
+  try {
+    if (dataUrl) localStorage.setItem(BG_PHOTO_KEY, dataUrl)
+    else localStorage.removeItem(BG_PHOTO_KEY)
+  } catch {
+    return false
+  }
+  return true
+}
+
+export function readBackgroundPhoto() {
+  try {
+    return localStorage.getItem(BG_PHOTO_KEY) || null
+  } catch {
+    return null
+  }
+}
+
 export function readBackgroundImage() {
   try {
     const raw = localStorage.getItem(BG_IMAGE_KEY)
@@ -723,6 +751,7 @@ export function initAppearance() {
   currentBgColorId = readBgColor()
   currentGlassPct = readBarTransparency()
   readBgEffectColors()
+  applyBackgroundPhoto(readBackgroundPhoto())
   // Flowing B/W/gray wash is the stage look
   currentBg = 'atmosphere'
   applyGlassTokens()

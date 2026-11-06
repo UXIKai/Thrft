@@ -3,6 +3,8 @@ import { createPortal } from 'react-dom'
 import {
   applyAppColor,
   applyBackgroundImage,
+  applyBackgroundPhoto,
+  readBackgroundPhoto,
   applyBarTransparency,
   applyBgColor,
   applyCustomBgColor,
@@ -16,7 +18,6 @@ import {
   readBarTransparency,
   readPalette,
   rememberRecentColor,
-  resetPalette,
   setPaletteSlot,
   readRecentColors,
 } from '../appAppearance.js'
@@ -617,6 +618,11 @@ export default function SettingsScreen({
   const [wheelTarget, setWheelTarget] = useState('app')
   const wheelTargetRef = useRef('app')
   const paletteSlotRef = useRef(0)
+  const [photoMenuOpen, setPhotoMenuOpen] = useState(false)
+  const [hasPhoto, setHasPhoto] = useState(() => Boolean(readBackgroundPhoto()))
+  const cameraInputRef = useRef(null)
+  const galleryInputRef = useRef(null)
+  const [blankSlots, setBlankSlots] = useState(() => new Set())
   const [wheelHsv, setWheelHsv] = useState(() => hexToHsv(readCustomColorHex()))
   const [recentColors, setRecentColors] = useState(() => readRecentColors())
   const wheelPadRef = useRef(null)
@@ -919,6 +925,34 @@ export default function SettingsScreen({
     rememberPaletteId(id)
   }
 
+  function onPhotoFile(e) {
+    const file = e.target.files?.[0]
+    e.target.value = ''
+    setPhotoMenuOpen(false)
+    if (!file || !file.type.startsWith('image/')) return
+    const url = URL.createObjectURL(file)
+    const img = new Image()
+    img.onload = () => {
+      const max = 1600
+      const scale = Math.min(1, max / Math.max(img.width, img.height))
+      const canvas = document.createElement('canvas')
+      canvas.width = Math.round(img.width * scale)
+      canvas.height = Math.round(img.height * scale)
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height)
+      URL.revokeObjectURL(url)
+      const ok = applyBackgroundPhoto(canvas.toDataURL('image/jpeg', 0.82))
+      setHasPhoto(ok)
+    }
+    img.onerror = () => URL.revokeObjectURL(url)
+    img.src = url
+  }
+
+  function clearPhoto() {
+    applyBackgroundPhoto(null)
+    setHasPhoto(false)
+    setPhotoMenuOpen(false)
+  }
+
   function refreshPalette() {
     setPaletteColors(getPaletteColors())
   }
@@ -939,6 +973,12 @@ export default function SettingsScreen({
   function applyWheelHex(hex) {
     if (wheelTargetRef.current === 'palette') {
       setPaletteSlot(paletteSlotRef.current, hex)
+      setBlankSlots((prev) => {
+        if (!prev.has(paletteSlotRef.current)) return prev
+        const next = new Set(prev)
+        next.delete(paletteSlotRef.current)
+        return next
+      })
       refreshPalette()
       return
     }
@@ -1151,15 +1191,78 @@ export default function SettingsScreen({
                       )
                     })}
                   </div>
-                  <button
-                    type="button"
-                    className="settings-choose is-color-side"
-                    aria-label="Background flow image"
-                    title="Background flow"
-                    onClick={() => applyBackgroundImage('atmosphere')}
-                  >
-                    <ImageIcon />
-                  </button>
+                  <span className="settings-photo-wrap">
+                    <button
+                      type="button"
+                      className="settings-choose is-color-side"
+                      aria-label="Background photo"
+                      title="Background photo"
+                      aria-haspopup="menu"
+                      aria-expanded={photoMenuOpen}
+                      onClick={() => setPhotoMenuOpen((v) => !v)}
+                    >
+                      <ImageIcon />
+                    </button>
+                    {photoMenuOpen && (
+                      <>
+                        <button
+                          type="button"
+                          className="settings-photo-scrim"
+                          aria-label="Dismiss"
+                          onClick={() => setPhotoMenuOpen(false)}
+                        />
+                        <div className="settings-photo-menu" role="menu">
+                          <button
+                            type="button"
+                            role="menuitem"
+                            className="settings-photo-btn"
+                            aria-label="Take a photo"
+                            onClick={() => cameraInputRef.current?.click()}
+                          >
+                            <svg viewBox="0 0 24 24" aria-hidden>
+                              <path d="M4 8.5A1.5 1.5 0 015.5 7H8l1.2-2h5.6L16 7h2.5A1.5 1.5 0 0120 8.5v9a1.5 1.5 0 01-1.5 1.5h-13A1.5 1.5 0 014 17.5z" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+                              <circle cx="12" cy="13" r="3.2" fill="none" stroke="currentColor" strokeWidth="1.7" />
+                            </svg>
+                          </button>
+                          <button
+                            type="button"
+                            role="menuitem"
+                            className="settings-photo-btn"
+                            aria-label="Choose from gallery"
+                            onClick={() => galleryInputRef.current?.click()}
+                          >
+                            <ImageIcon />
+                          </button>
+                          {hasPhoto && (
+                            <button
+                              type="button"
+                              role="menuitem"
+                              className="settings-photo-btn"
+                              aria-label="Remove photo background"
+                              onClick={clearPhoto}
+                            >
+                              <CloseIcon />
+                            </button>
+                          )}
+                        </div>
+                      </>
+                    )}
+                    <input
+                      ref={cameraInputRef}
+                      type="file"
+                      accept="image/*"
+                      capture="environment"
+                      hidden
+                      onChange={onPhotoFile}
+                    />
+                    <input
+                      ref={galleryInputRef}
+                      type="file"
+                      accept="image/*"
+                      hidden
+                      onChange={onPhotoFile}
+                    />
+                  </span>
                 </div>
               </div>
             </div>
@@ -1874,32 +1977,32 @@ export default function SettingsScreen({
                     onClick={() => openWheel('palette', index)}
                   >
                     <span
-                      className="settings-palette-edit-dot"
-                      style={{ background: c.swatch }}
+                      className={`settings-palette-edit-dot${blankSlots.has(index) ? ' is-blank' : ''}`}
+                      style={blankSlots.has(index) ? undefined : { background: c.swatch }}
                     />
                   </button>
                 ))}
+                  <button
+                    type="button"
+                    className="settings-palette-icon-btn is-grid-cell"
+                    aria-label="Reset palette"
+                    onClick={() => setBlankSlots(new Set(Array.from({ length: 11 }, (_, i) => i)))}
+                  >
+                    <svg viewBox="0 0 24 24" aria-hidden>
+                      <path d="M19.5 12a7.5 7.5 0 11-2.4-5.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                      <path d="M19.8 3.8v4.4h-4.4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </button>
             </div>
             <div className="settings-palette-actions">
               <button
                 type="button"
                 className="settings-palette-icon-btn"
-                aria-label="Reset palette"
-                onClick={() => {
-                  resetPalette()
-                  refreshPalette()
-                }}
-              >
-                <svg viewBox="0 0 24 24" aria-hidden>
-                  <path d="M19.5 12a7.5 7.5 0 11-2.4-5.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                  <path d="M19.8 3.8v4.4h-4.4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </button>
-              <button
-                type="button"
-                className="settings-palette-icon-btn"
                 aria-label="Done"
-                onClick={() => setPaletteEditorOpen(false)}
+                onClick={() => {
+                  setPaletteEditorOpen(false)
+                  setBlankSlots(new Set())
+                }}
               >
                 <svg viewBox="0 0 24 24" aria-hidden>
                   <path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
@@ -2024,6 +2127,7 @@ export default function SettingsScreen({
               className="home-search-done settings-wheel-done"
               aria-label="Done"
               onClick={() => {
+                if (wheelTargetRef.current === 'palette') applyWheelHex(wheelHex)
                 rememberColor(wheelHex)
                 setWheelOpen(false)
               }}

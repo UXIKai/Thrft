@@ -1467,3 +1467,16 @@
   filter: blur(14px);
   transition: filter 0.25s ease;
 }
+
+/* Custom photo wallpaper chosen in Settings */
+html[data-bg-photo] .atmosphere {
+  background-image: var(--bg-photo);
+  background-size: cover;
+  background-position: center;
+}
+
+html[data-bg-photo] .atmosphere::before,
+html[data-bg-photo] .atmosphere::after,
+html[data-bg-photo] .atmosphere-bloom {
+  display: none;
+}
