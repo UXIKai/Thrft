@@ -613,6 +613,7 @@
 }
 
 .saved-search-bar.is-collapsed {
+  flex: 0 0 auto;
   width: auto;
   height: 36px;
   margin-left: auto;
