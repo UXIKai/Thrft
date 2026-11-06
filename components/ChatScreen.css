@@ -1406,7 +1406,7 @@
   overflow-x: hidden;
   scrollbar-width: none;
   -ms-overflow-style: none;
-  padding-bottom: calc(87px + env(safe-area-inset-bottom, 0px));
+  padding-bottom: calc(87px + max(env(safe-area-inset-bottom, 0px), var(--kb-height, 0px)));
 }
 
 .chat-thread-scroll::-webkit-scrollbar {
@@ -1493,8 +1493,9 @@
   position: absolute;
   left: 50%;
   right: auto;
-  bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+  bottom: calc(8px + max(env(safe-area-inset-bottom, 0px), var(--kb-height, 0px)));
   z-index: 5;
+  transition: bottom 0.2s ease;
   display: flex;
   align-items: flex-end;
   width: min(calc(420px + 4in), calc(100vw - 20px));

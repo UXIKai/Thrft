@@ -38,8 +38,11 @@ function fitScreen() {
   // Never follow the visual viewport's offset: the keyboard must not slide the page.
   const top = 0
   const left = 0
-  if (window.scrollY || window.scrollX) window.scrollTo(0, 0)
+  if (window.scrollY || window.scrollX || (vv && vv.offsetTop > 0)) window.scrollTo(0, 0)
   const root = document.documentElement
+  // Keyboard height: the page stays put and docked bars ride above the keyboard.
+  const kb = vv ? Math.max(0, Math.round(window.innerHeight - vv.height)) : 0
+  root.style.setProperty('--kb-height', `${kb > 120 ? kb : 0}px`)
   root.style.setProperty('--app-height', `${height}px`)
   root.style.setProperty('--app-width', `${width}px`)
   root.style.setProperty('--app-top', `${top}px`)
