@@ -216,6 +216,7 @@
 }
 
 .product-detail-confirm {
+  right: auto;
   left: calc(50% + 18px);
 }
 
