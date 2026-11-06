@@ -30,6 +30,8 @@
   border: none;
   background: rgba(0, 0, 0, 0.42);
   cursor: pointer;
+  backdrop-filter: blur(18px) saturate(1.1);
+  -webkit-backdrop-filter: blur(18px) saturate(1.1);
 }
 
 .brand-globe.is-blend .brand-globe-scrim {

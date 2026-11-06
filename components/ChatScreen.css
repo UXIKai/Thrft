@@ -621,8 +621,10 @@
   border: none;
   padding: 0;
   margin: 0;
-  background: transparent;
+  background: rgba(8, 8, 8, 0.12);
   cursor: default;
+  backdrop-filter: blur(18px) saturate(1.1);
+  -webkit-backdrop-filter: blur(18px) saturate(1.1);
 }
 
 .chat-menu {
@@ -855,9 +857,9 @@
   inset: 0;
   border: none;
   background: rgba(8, 8, 8, 0.18);
-  backdrop-filter: blur(12px) saturate(1.08);
-  -webkit-backdrop-filter: blur(12px) saturate(1.08);
   cursor: pointer;
+  backdrop-filter: blur(18px) saturate(1.1);
+  -webkit-backdrop-filter: blur(18px) saturate(1.1);
 }
 
 /* Portaled onto .stage so the phone-column edges don't cut the window. */
@@ -1967,8 +1969,8 @@
   inset: 0;
   border: none;
   background: rgba(8, 8, 8, 0.2);
-  backdrop-filter: blur(14px) saturate(1.08);
-  -webkit-backdrop-filter: blur(14px) saturate(1.08);
+  backdrop-filter: blur(18px) saturate(1.1);
+  -webkit-backdrop-filter: blur(18px) saturate(1.1);
 }
 
 .chat-contact-card {
@@ -2419,9 +2421,9 @@
   z-index: 0;
   border: none;
   background: rgba(8, 8, 8, 0.18);
-  backdrop-filter: blur(12px) saturate(1.08);
-  -webkit-backdrop-filter: blur(12px) saturate(1.08);
   cursor: pointer;
+  backdrop-filter: blur(18px) saturate(1.1);
+  -webkit-backdrop-filter: blur(18px) saturate(1.1);
 }
 
 .stage > .chat-users-picker .chat-users-picker-top,

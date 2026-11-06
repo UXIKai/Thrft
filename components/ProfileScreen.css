@@ -2260,8 +2260,8 @@
   inset: 0;
   border: none;
   background: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(18px) saturate(1.1);
+  -webkit-backdrop-filter: blur(18px) saturate(1.1);
 }
 
 .profile-music-card {
@@ -2473,6 +2473,8 @@
   inset: 0;
   border: none;
   background: transparent;
+  backdrop-filter: blur(18px) saturate(1.1);
+  -webkit-backdrop-filter: blur(18px) saturate(1.1);
 }
 
 .closet-add-card {
@@ -2647,6 +2649,8 @@
   inset: 0;
   border: none;
   background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(18px) saturate(1.1);
+  -webkit-backdrop-filter: blur(18px) saturate(1.1);
 }
 
 .closet-detail-card {

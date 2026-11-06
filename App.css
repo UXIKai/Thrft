@@ -739,6 +739,8 @@
   inset: 0;
   border: none;
   background: transparent;
+  backdrop-filter: blur(18px) saturate(1.1);
+  -webkit-backdrop-filter: blur(18px) saturate(1.1);
 }
 
 .home-type-add-card {
