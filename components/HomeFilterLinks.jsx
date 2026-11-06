@@ -7,6 +7,16 @@ import './HomeFilterLinks.css'
  * Home search: magnifier button (top-left) opens a centered popup holding the
  * Brands / Category buttons, which launch the orbital picker.
  */
+// Black or white text, whichever reads better on the card color.
+function inkFor(hex) {
+  const m = /^#?([0-9a-f]{6})$/i.exec(String(hex || '').trim())
+  if (!m) return '#000'
+  const n = parseInt(m[1], 16)
+  const lum =
+    0.299 * ((n >> 16) & 255) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255)
+  return lum > 150 ? '#000' : '#fff'
+}
+
 export default function HomeFilterLinks({
   brands = [],
   categories = [],
@@ -67,6 +77,12 @@ export default function HomeFilterLinks({
     }
   }, [open])
 
+  const cardHex = draftColor ? colorHex(draftColor) : '#ffffff'
+  const cardStyle = {
+    '--card-bg': cardHex,
+    '--card-ink': inkFor(cardHex),
+  }
+
   return (
     <div className="home-search">
       <button
@@ -95,7 +111,13 @@ export default function HomeFilterLinks({
             if (e.target === e.currentTarget) done()
           }}
         >
-          <div className="home-search-modal" role="dialog" aria-modal="true" aria-label="Search">
+          <div
+            className="home-search-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Search"
+            style={cardStyle}
+          >
             <div className="home-search-wheel">
               <p className="home-search-label">Brand</p>
               <OrbitCarousel
