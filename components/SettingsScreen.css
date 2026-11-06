@@ -2163,7 +2163,9 @@
 .settings-wheel-sheet .settings-wheel-card {
   position: relative;
   z-index: 1;
-  width: min(360px, 100%);
+  width: min(476px, 100%);
+  min-height: min(284px, 80vh);
+  max-height: 90vh;
   border-radius: 28px;
   border: 0.5px solid rgba(255, 255, 255, 0.46);
   background:
