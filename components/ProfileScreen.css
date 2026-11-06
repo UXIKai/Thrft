@@ -2863,9 +2863,15 @@
 }
 
 .closet-pick-row {
-  display: flex;
+  display: grid;
+  grid-template-columns: 36px auto 36px;
   align-items: center;
+  justify-content: center;
   gap: 10px;
+}
+
+.closet-pick-row::before {
+  content: '';
 }
 
 .closet-pick-name {
