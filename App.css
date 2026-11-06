@@ -1575,13 +1575,19 @@ html .profile-panel.profile-edit-card {
   color: #fff;
 }
 
-/* Liquid Glass nav: flat clear pane, soft blur, hairline edge (no bubble highlights) */
+/* Liquid Glass nav (Apple Music style): smoky clear capsule, lens-like selected tab */
 .tab-bar {
-  background: rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(10px) saturate(1.6);
-  -webkit-backdrop-filter: blur(10px) saturate(1.6);
-  border: 0.5px solid rgba(255, 255, 255, 0.18);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+  overflow: visible;
+  background: rgba(60, 60, 60, 0.38);
+  backdrop-filter: blur(3px) saturate(1.4);
+  -webkit-backdrop-filter: blur(3px) saturate(1.4);
+  border: 0;
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.35),
+    inset 0 -1px 1px rgba(255, 255, 255, 0.2),
+    inset 6px 6px 14px -8px rgba(255, 255, 255, 0.4),
+    inset -6px -6px 14px -8px rgba(255, 255, 255, 0.25),
+    0 8px 24px rgba(0, 0, 0, 0.25);
 }
 
 .tab-bar::before,
@@ -1590,9 +1596,19 @@ html .profile-panel.profile-edit-card {
 }
 
 .tab-pill {
-  background: rgba(255, 255, 255, 0.12);
+  top: -7px;
+  bottom: -7px;
+  width: calc(20% + 8px);
+  left: calc(var(--tab-i, 0) * 20% - 4px);
   border: 0;
-  box-shadow: none;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
+  background: radial-gradient(ellipse at 50% 50%, rgba(255, 255, 255, 0.03) 55%, rgba(0, 0, 0, 0.28) 100%);
+  backdrop-filter: blur(1px) saturate(1.8) brightness(1.1);
+  -webkit-backdrop-filter: blur(1px) saturate(1.8) brightness(1.1);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.35),
+    inset 3px 3px 6px -2px rgba(90, 160, 255, 0.55),
+    inset -3px -3px 6px -2px rgba(190, 90, 255, 0.45),
+    inset 0 5px 8px -4px rgba(120, 255, 190, 0.4),
+    inset 0 -5px 8px -4px rgba(255, 255, 255, 0.35),
+    0 3px 10px rgba(0, 0, 0, 0.3);
 }
