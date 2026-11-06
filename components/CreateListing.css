@@ -717,3 +717,46 @@ input.listing-slider::-moz-range-thumb {
   border: none;
   background: #fff;
 }
+
+.listing-wheels {
+  display: flex;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.listing-wheel {
+  flex: 1;
+  height: 102px;
+  padding: 34px 0;
+  box-sizing: border-box;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  scrollbar-width: none;
+  overscroll-behavior: contain;
+  -webkit-mask-image: linear-gradient(transparent, #000 35%, #000 65%, transparent);
+  mask-image: linear-gradient(transparent, #000 35%, #000 65%, transparent);
+}
+
+.listing-wheel::-webkit-scrollbar {
+  display: none;
+}
+
+html body .listing-wheel .listing-wheel-item {
+  display: block;
+  width: 100%;
+  height: 34px;
+  padding: 0;
+  scroll-snap-align: center;
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  color: rgba(255, 255, 255, 0.5);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+html body .listing-wheel .listing-wheel-item.is-on {
+  color: #fff;
+}

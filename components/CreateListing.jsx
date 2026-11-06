@@ -87,6 +87,45 @@ function segmentLabel(id) {
 
 const NOW = new Date()
 const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+const DAYS = Array.from({ length: 31 }, (_, i) => String(i + 1))
+const YEARS = Array.from({ length: 11 }, (_, i) => NOW.getFullYear() - 10 + i)
+
+const WHEEL_ROW = 34
+
+function DateWheel({ label, items, value, onChange }) {
+  const ref = useRef(null)
+  const timer = useRef(0)
+
+  useEffect(() => {
+    const el = ref.current
+    if (el && Math.round(el.scrollTop / WHEEL_ROW) !== value) el.scrollTop = value * WHEEL_ROW
+  }, [value])
+
+  const onScroll = () => {
+    clearTimeout(timer.current)
+    timer.current = setTimeout(() => {
+      const i = Math.min(items.length - 1, Math.max(0, Math.round(ref.current.scrollTop / WHEEL_ROW)))
+      if (i !== value) onChange(i)
+    }, 80)
+  }
+
+  return (
+    <div className="listing-wheel" ref={ref} role="listbox" aria-label={label} onScroll={onScroll}>
+      {items.map((it, i) => (
+        <button
+          key={it}
+          type="button"
+          role="option"
+          aria-selected={i === value}
+          className={`listing-wheel-item${i === value ? ' is-on' : ''}`}
+          onClick={() => ref.current.scrollTo({ top: i * WHEEL_ROW, behavior: 'smooth' })}
+        >
+          {it}
+        </button>
+      ))}
+    </div>
+  )
+}
 
 export default function CreateListing({ onPosted } = {}) {
   const [segment, setSegment] = useState('market')
@@ -573,33 +612,11 @@ export default function CreateListing({ onPosted } = {}) {
             {MONTHS[dateM - 1]} {dateD}, {dateY}
           </span>
         </span>
-        <input
-          className="listing-slider"
-          type="range"
-          min="1"
-          max="12"
-          aria-label="Month"
-          value={dateM}
-          onChange={(e) => setDateM(Number(e.target.value))}
-        />
-        <input
-          className="listing-slider"
-          type="range"
-          min="1"
-          max="31"
-          aria-label="Day"
-          value={dateD}
-          onChange={(e) => setDateD(Number(e.target.value))}
-        />
-        <input
-          className="listing-slider"
-          type="range"
-          min={NOW.getFullYear() - 10}
-          max={NOW.getFullYear()}
-          aria-label="Year"
-          value={dateY}
-          onChange={(e) => setDateY(Number(e.target.value))}
-        />
+        <div className="listing-wheels">
+          <DateWheel label="Month" items={MONTHS} value={dateM - 1} onChange={(i) => setDateM(i + 1)} />
+          <DateWheel label="Day" items={DAYS} value={dateD - 1} onChange={(i) => setDateD(i + 1)} />
+          <DateWheel label="Year" items={YEARS} value={dateY - YEARS[0]} onChange={(i) => setDateY(YEARS[0] + i)} />
+        </div>
       </div>
 
       {!isCloset && (
