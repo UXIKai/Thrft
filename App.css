@@ -1850,3 +1850,29 @@ html body .tab-bar.is-dragging .tab-pill::after {
   content: none;
   background: none;
 }
+
+/* Active bubble: pure displacement lens, only a faint neutral edge */
+html body .tab-bar .tab-pill,
+html body .tab-bar.is-dragging .tab-pill {
+  background: transparent;
+  box-shadow: none;
+  border: 0.5px solid rgba(255, 255, 255, 0.15);
+  filter: none;
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+
+@supports (backdrop-filter: url('#lg-bubble')) {
+  html body .tab-bar .tab-pill,
+  html body .tab-bar.is-dragging .tab-pill {
+    backdrop-filter: url('#lg-bubble') url('#liquid-lens');
+  }
+}
+
+html body .tab-bar .tab-pill::before,
+html body .tab-bar .tab-pill::after,
+html body .tab-bar.is-dragging .tab-pill::before,
+html body .tab-bar.is-dragging .tab-pill::after {
+  content: none;
+  display: none;
+}
