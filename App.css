@@ -114,7 +114,7 @@
 .app-column.is-home-wide .tab-bar {
   left: 50%;
   right: auto;
-  width: min(calc(100% - 40px), 520px);
+  width: min(calc(100% - 16px), 640px);
   transform: translateX(-50%);
 }
 
@@ -175,7 +175,7 @@
   -ms-overflow-style: none;
   /* Clear the notch without a dead band — atmosphere shows through */
   padding-top: env(safe-area-inset-top, 0px);
-  padding-bottom: calc(92px + env(safe-area-inset-bottom, 0px));
+  padding-bottom: calc(112px + env(safe-area-inset-bottom, 0px));
   box-sizing: border-box;
 }
 
@@ -708,8 +708,8 @@
   top: 0;
   right: 0;
   z-index: 6;
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
   display: grid;
   place-items: center;
   margin: 0;
@@ -1275,8 +1275,8 @@
   align-items: center;
   justify-content: center;
   gap: 0;
-  min-height: 56px;
-  padding: 6px 2px;
+  min-height: 70px;
+  padding: 8px 2px;
   border-radius: 28px;
   border: none;
   color: rgba(255, 255, 255, 0.55);
