@@ -2532,11 +2532,22 @@ export default function ChatScreen({
 
       <StageSlot>
       <div className={`chat-bottom-dock${composer ? ' is-sheet-open' : ''}${usersPickerOpen || memberGlobeVisible ? ' is-covered' : ''}`}>
-        {searchOpen && !composer ? (
-          <div className="chat-search-bar">
+        {searchOpen || composer ? (
+          <div className={`chat-search-bar${composer ? ' is-sheet-open' : ''}`}>
+            <button
+              type="button"
+              className="chat-dock-search"
+              aria-label="Close search"
+              onClick={() => {
+                setQuery('')
+                setSearchOpen(false)
+              }}
+            >
+              <SearchIcon />
+            </button>
             <input
               id="chat-search-input"
-              className="chat-search-input"
+              className={`chat-search-input${composer ? ' is-sheet-hidden' : ''}`}
               type="text"
               inputMode="search"
               name="thrft_chat_search"
@@ -2548,24 +2559,22 @@ export default function ChatScreen({
               data-form-type="other"
               placeholder=""
               aria-label="Search chats"
-              autoFocus
+              aria-hidden={composer ? true : undefined}
+              tabIndex={composer ? -1 : undefined}
+              autoFocus={!composer}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />
-            <button
-              type="button"
-              className="chat-search-clear"
-              aria-label="Close search"
-              onClick={() => {
-                setQuery('')
-                setSearchOpen(false)
-              }}
-            >
-              <CloseIcon />
-            </button>
-          </div>
-        ) : (
-          <>
+            {query && !composer ? (
+              <button
+                type="button"
+                className="chat-search-clear"
+                aria-label="Clear search"
+                onClick={() => setQuery('')}
+              >
+                <CloseIcon />
+              </button>
+            ) : null}
             <button
               type="button"
               className={`chat-search-add${composer ? ' is-sheet-open' : ''}`}
@@ -2575,15 +2584,16 @@ export default function ChatScreen({
             >
               <PlusIcon />
             </button>
-            <button
-              type="button"
-              className={`chat-dock-search${composer ? ' is-sheet-hidden' : ''}`}
-              aria-label="Search chats"
-              onClick={() => setSearchOpen(true)}
-            >
-              <SearchIcon />
-            </button>
-          </>
+          </div>
+        ) : (
+          <button
+            type="button"
+            className="chat-dock-search"
+            aria-label="Search chats"
+            onClick={() => setSearchOpen(true)}
+          >
+            <SearchIcon />
+          </button>
         )}
       </div>
       </StageSlot>

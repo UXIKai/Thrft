@@ -679,18 +679,20 @@ export default function SavedScreen({
 
       <StageSlot>
       <div className={`saved-search-dock${globeOpen ? ' is-open' : ''}`}>
-          <button
-            ref={plusRef}
-            type="button"
-            className={`saved-search-add${globeOpen ? ' is-globe-open' : ''}`}
-            aria-label={globeOpen ? 'Close brand globe' : 'Open brand globe'}
-            aria-pressed={globeOpen}
-            onClick={onPlusClick}
-          >
-            <PlusIcon />
-          </button>
         {searchOpen || globeOpen ? (
           <div className="saved-search-bar">
+            <button
+              type="button"
+              className="saved-dock-search"
+              aria-label="Close search"
+              disabled={globeOpen}
+              onClick={() => {
+                setQuery('')
+                setSearchOpen(false)
+              }}
+            >
+              <SearchIcon />
+            </button>
           <input
             id="saved-search-input"
             className="saved-search-input"
@@ -716,19 +718,16 @@ export default function SavedScreen({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
-            {!globeOpen && (
-              <button
-                type="button"
-                className="saved-search-close"
-                aria-label="Close search"
-                onClick={() => {
-                  setQuery('')
-                  setSearchOpen(false)
-                }}
-              >
-                <CloseGlyph />
+          <button
+              ref={plusRef}
+              type="button"
+              className={`saved-search-add${globeOpen ? ' is-globe-open' : ''}`}
+              aria-label={globeOpen ? 'Close brand globe' : 'Open brand globe'}
+              aria-pressed={globeOpen}
+              onClick={onPlusClick}
+          >
+              <PlusIcon />
               </button>
-            )}
           </div>
         ) : (
           <button
