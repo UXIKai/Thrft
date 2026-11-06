@@ -117,7 +117,7 @@ export default function ProductDetail({
       <header className="glass-overlay-top">
         <button
           type="button"
-          className="glass-overlay-back"
+          className="glass-overlay-back is-bare"
           aria-label="Back"
           onClick={onClose}
         >
