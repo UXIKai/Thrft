@@ -1306,9 +1306,15 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
-  margin: 4px 0 12px;
+  gap: 4px;
+  margin: -46px 0 10px;
   flex: 0 0 auto;
+  position: relative;
+  pointer-events: none;
+}
+
+.chat-thread-hero > * {
+  pointer-events: auto;
 }
 
 .chat-top-spacer {
@@ -1317,13 +1323,13 @@
 }
 
 .chat-thread-avatar {
-  width: 88px;
-  height: 88px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   display: grid;
   place-items: center;
   font-weight: 700;
-  font-size: 1.5rem;
+  font-size: 1rem;
   color: #0a0a0a;
   background: #fff;
 }
@@ -1335,14 +1341,14 @@
   cursor: pointer;
   font: inherit;
   font-weight: 700;
-  font-size: 1.5rem;
+  font-size: 1rem;
   color: #0a0a0a;
   background: #fff;
 }
 
 .chat-thread-name {
   margin: 0;
-  font-size: 1.05rem;
+  font-size: 0.85rem;
   font-weight: 700;
 }
 
@@ -1352,7 +1358,7 @@
   background: transparent;
   color: inherit;
   font: inherit;
-  font-size: 1.05rem;
+  font-size: 0.85rem;
   font-weight: 700;
   padding: 0;
   cursor: pointer;
