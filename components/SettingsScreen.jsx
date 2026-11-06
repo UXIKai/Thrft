@@ -1880,23 +1880,32 @@ export default function SettingsScreen({
                   </button>
                 ))}
             </div>
-            <button
-              type="button"
-              className="settings-palette-reset"
-              onClick={() => {
-                resetPalette()
-                refreshPalette()
-              }}
-            >
-              Reset palette
-            </button>
-            <button
-              type="button"
-              className="glass-cta"
-              onClick={() => setPaletteEditorOpen(false)}
-            >
-              Done
-            </button>
+            <div className="settings-palette-actions">
+              <button
+                type="button"
+                className="settings-palette-icon-btn"
+                aria-label="Reset palette"
+                onClick={() => {
+                  resetPalette()
+                  refreshPalette()
+                }}
+              >
+                <svg viewBox="0 0 24 24" aria-hidden>
+                  <path d="M19.5 12a7.5 7.5 0 11-2.4-5.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                  <path d="M19.8 3.8v4.4h-4.4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
+              <button
+                type="button"
+                className="settings-palette-icon-btn"
+                aria-label="Done"
+                onClick={() => setPaletteEditorOpen(false)}
+              >
+                <svg viewBox="0 0 24 24" aria-hidden>
+                  <path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
       )}

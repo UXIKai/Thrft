@@ -2200,3 +2200,41 @@
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
 }
+
+.settings-palette-edit,
+.settings-choose.is-color-side {
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.settings-palette-actions {
+  display: flex;
+  justify-content: center;
+  gap: 28px;
+  margin-top: 6px;
+}
+
+.settings-palette-icon-btn {
+  width: 44px;
+  height: 44px;
+  min-height: 44px;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  place-items: center;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: #fff;
+  cursor: pointer;
+}
+
+.settings-palette-icon-btn svg {
+  width: 26px;
+  height: 26px;
+}
