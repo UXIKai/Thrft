@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 
 const MAP_X = "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22256%22%20height%3D%22128%22%20viewBox%3D%220%200%20256%20128%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20x2%3D%221%22%20y1%3D%220%22%20y2%3D%220%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22rgb%28255%2C0%2C0%29%22/%3E%3Cstop%20offset%3D%220.3%22%20stop-color%3D%22rgb%28128%2C0%2C0%29%22/%3E%3Cstop%20offset%3D%220.7%22%20stop-color%3D%22rgb%28128%2C0%2C0%29%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22rgb%280%2C0%2C0%29%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width%3D%22256%22%20height%3D%22128%22%20fill%3D%22url%28%23g%29%22/%3E%3C/svg%3E"
 const MAP_Y = "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22256%22%20height%3D%22128%22%20viewBox%3D%220%200%20256%20128%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20x2%3D%220%22%20y1%3D%220%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22rgb%280%2C255%2C0%29%22/%3E%3Cstop%20offset%3D%220.3%22%20stop-color%3D%22rgb%280%2C128%2C0%29%22/%3E%3Cstop%20offset%3D%220.7%22%20stop-color%3D%22rgb%280%2C128%2C0%29%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22rgb%280%2C0%2C0%29%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width%3D%22256%22%20height%3D%22128%22%20fill%3D%22url%28%23g%29%22/%3E%3C/svg%3E"
@@ -74,6 +74,8 @@ export default function TabBar({ active = 'home', onChange }) {
   const activeIdx = Math.max(0, TABS.findIndex((t) => t.id === active))
   const [dragPos, setDragPos] = useState(null)
   const [pressed, setPressed] = useState(false)
+  const pillRef = useRef(null)
+  const firstRun = useRef(true)
   const [lens, setLens] = useState({ w: 104, h: 56 })
 
   // The bubble's refraction map needs the lens size in pixels.
@@ -119,6 +121,24 @@ export default function TabBar({ active = 'home', onChange }) {
     if (commit && TABS[idx] && TABS[idx].id !== active) onChange?.(TABS[idx].id)
   }
 
+  // Droplet squash-and-stretch whenever the active tab changes.
+  useEffect(() => {
+    if (firstRun.current) {
+      firstRun.current = false
+      return
+    }
+    pillRef.current?.animate(
+      [
+        { transform: 'scale(1, 1)' },
+        { transform: 'scale(1.22, 0.86)', offset: 0.3 },
+        { transform: 'scale(0.94, 1.08)', offset: 0.6 },
+        { transform: 'scale(1.03, 0.98)', offset: 0.82 },
+        { transform: 'scale(1, 1)' },
+      ],
+      { duration: 650, easing: 'cubic-bezier(0.3, 0.7, 0.3, 1)' },
+    )
+  }, [activeIdx])
+
   const pos = dragPos ?? activeIdx
   return (
     <nav
@@ -150,7 +170,7 @@ export default function TabBar({ active = 'home', onChange }) {
           </filter>
         </defs>
       </svg>
-      <span className="tab-pill" aria-hidden="true">
+      <span className="tab-pill" ref={pillRef} aria-hidden="true">
         <span className="tab-lens-inner">
           {TABS.map((tab) => (
             <span key={tab.id} className="tab-lens-item">
