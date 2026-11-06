@@ -2536,14 +2536,12 @@ export default function ChatScreen({
           <div className={`chat-search-bar${composer ? ' is-sheet-open' : ''}`}>
             <button
               type="button"
-              className="chat-dock-search"
-              aria-label="Close search"
-              onClick={() => {
-                setQuery('')
-                setSearchOpen(false)
-              }}
+              className={`chat-dock-search chat-dock-new${composer ? ' is-sheet-open' : ''}`}
+              aria-label={composer ? 'Close' : 'New chat'}
+              aria-pressed={Boolean(composer)}
+              onClick={onDockPlusClick}
             >
-              <SearchIcon />
+              <PlusIcon />
             </button>
             <input
               id="chat-search-input"
@@ -2576,10 +2574,12 @@ export default function ChatScreen({
             ) : null}
             <button
               type="button"
-              className={`chat-search-add${composer ? ' is-sheet-open' : ''}`}
-              aria-label={composer ? 'Close' : 'New chat'}
-              aria-pressed={Boolean(composer)}
-              onClick={onDockPlusClick}
+              className={`chat-search-add is-search-open${composer ? ' is-sheet-hidden' : ''}`}
+              aria-label="Close search"
+              onClick={() => {
+                setQuery('')
+                setSearchOpen(false)
+              }}
             >
               <PlusIcon />
             </button>
@@ -2587,11 +2587,11 @@ export default function ChatScreen({
         ) : (
           <button
             type="button"
-            className="chat-dock-search"
+            className="chat-search-add chat-dock-collapsed"
             aria-label="Search chats"
             onClick={() => setSearchOpen(true)}
           >
-            <SearchIcon />
+            <PlusIcon />
           </button>
         )}
       </div>

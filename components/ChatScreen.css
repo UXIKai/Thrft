@@ -717,6 +717,7 @@
 }
 
 .chat-bottom-dock.is-sheet-open .chat-dock-back,
+.chat-bottom-dock.is-sheet-open .chat-dock-new,
 .chat-bottom-dock.is-sheet-open .chat-search-add {
   pointer-events: auto;
 }
@@ -2770,4 +2771,25 @@
 .chat-sheet-x svg {
   width: 22px;
   height: 22px;
+}
+
+/* Collapsed + sits where the X lands; it turns into the X when search opens */
+.chat-dock-collapsed {
+  margin-right: 7px;
+}
+
+.chat-search-add.is-search-open {
+  transform: rotate(45deg);
+}
+
+.chat-search-add.is-sheet-hidden {
+  visibility: hidden;
+}
+
+.chat-dock-new {
+  transition: transform 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.chat-dock-new.is-sheet-open {
+  transform: rotate(45deg);
 }
