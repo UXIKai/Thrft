@@ -2315,6 +2315,20 @@ export default function ChatScreen({
               >
                 <BackIcon />
               </button>
+              {!peerProfile.fromGroup ? (
+                <button
+                  type="button"
+                  className="chat-contact-dots is-bare"
+                  aria-label="More"
+                  ref={(el) => {
+                    if (el) dotsRefs.current.set(activeChat.id, el)
+                    else dotsRefs.current.delete(activeChat.id)
+                  }}
+                  onClick={() => openMenu(activeChat.id)}
+                >
+                  <DotsIcon />
+                </button>
+              ) : null}
               <span className="chat-contact-avatar" aria-hidden>
                 {peerProfile.initials}
               </span>
@@ -2361,18 +2375,7 @@ export default function ChatScreen({
                         <PencilIcon />
                       </button>
                     ) : (
-                      <button
-                        type="button"
-                        className="chat-contact-name-edit"
-                        aria-label="More"
-                        ref={(el) => {
-                          if (el) dotsRefs.current.set(activeChat.id, el)
-                          else dotsRefs.current.delete(activeChat.id)
-                        }}
-                        onClick={() => openMenu(activeChat.id)}
-                      >
-                        <DotsIcon />
-                      </button>
+                      <span className="chat-contact-name-spacer" aria-hidden />
                     )}
                   </>
                 )}
