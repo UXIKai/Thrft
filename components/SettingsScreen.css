@@ -2398,3 +2398,9 @@
   flex: 0 1 auto;
   text-align: center;
 }
+
+.settings-section.is-side-by-side .settings-divider {
+  width: 1px;
+  margin: 8px 0;
+  background: rgba(255, 255, 255, 0.45);
+}
