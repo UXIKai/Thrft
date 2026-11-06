@@ -7,7 +7,9 @@ html body button:not(:is(.auth-social-btn,.auth-switch-link,.brand-globe-close,.
   -webkit-backdrop-filter: blur(3px) !important;
   border: 0.5px solid rgba(255, 255, 255, 0.32) !important;
   box-shadow:
-    inset 0 2px 4px rgba(255, 255, 255, 0.36) !important;
+    inset 0 2px 4px rgba(255, 255, 255, 0.36),
+    0 0 0 0.5px rgba(0, 0, 0, 0.25),
+    0 1px 2px rgba(0, 0, 0, 0.12) !important;
   isolation: isolate;
   transition:
     filter 0.18s ease,
@@ -32,7 +34,8 @@ html body button:not(:is(.auth-social-btn,.auth-switch-link,.brand-globe-close,.
   filter: none;
   transform: scale(0.97);
   box-shadow:
-    inset 0 -2px 4px rgba(255, 255, 255, 0.2) !important;
+    inset 0 -2px 4px rgba(255, 255, 255, 0.2),
+    0 0 0 0.5px rgba(0, 0, 0, 0.25) !important;
 }
 
 /* Navigation bar: refraction lives on pseudo layers under the icons */
@@ -41,7 +44,10 @@ html body .tab-bar {
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
   border: 0.5px solid rgba(255, 255, 255, 0.32);
-  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.36);
+  box-shadow:
+    inset 0 2px 4px rgba(255, 255, 255, 0.36),
+    0 0 0 0.5px rgba(0, 0, 0, 0.25),
+    0 1px 2px rgba(0, 0, 0, 0.12);
 }
 
 html body .tab-bar::before,
