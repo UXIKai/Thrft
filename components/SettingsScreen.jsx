@@ -7,6 +7,8 @@ import {
   readBackgroundPhoto,
   applyBarTransparency,
   applyUiScale,
+  applyContainerEdge,
+  readContainerEdge,
   readUiScale,
   applyBgColor,
   applyCustomBgColor,
@@ -609,6 +611,7 @@ export default function SettingsScreen({
   })
   const [paletteEditorOpen, setPaletteEditorOpen] = useState(false)
   const [uiScale, setUiScale] = useState(() => readUiScale())
+  const [containerEdge, setContainerEdge] = useState(() => readContainerEdge())
   const [barTransparency, setBarTransparency] = useState(() =>
     readBarTransparency(),
   )
@@ -1329,6 +1332,31 @@ export default function SettingsScreen({
                   <div className="settings-slider-ends">
                     <span>Small</span>
                     <span>Large</span>
+                  </div>
+                </div>
+                <div
+                  className="settings-glass-slider"
+                  style={{ '--pull': containerEdge / 100 }}
+                >
+                  <div className="settings-slider-head is-value-only">
+                    <span className="settings-slider-value">{containerEdge}%</span>
+                  </div>
+                  <input
+                    className="settings-slider"
+                    type="range"
+                    min={0}
+                    max={100}
+                    value={containerEdge}
+                    onChange={(e) => {
+                      const next = Number(e.target.value)
+                      setContainerEdge(next)
+                      applyContainerEdge(next)
+                    }}
+                    aria-label="Container edge from Thin to Thick"
+                  />
+                  <div className="settings-slider-ends">
+                    <span>Thin</span>
+                    <span>Thick</span>
                   </div>
                 </div>
           </div>

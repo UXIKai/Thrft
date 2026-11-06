@@ -769,8 +769,35 @@ export function applyUiScale(pct) {
   return v
 }
 
+const EDGE_KEY = 'thrft-container-edge'
+const DEFAULT_EDGE = 14
+
+export function readContainerEdge() {
+  try {
+    const raw = localStorage.getItem(EDGE_KEY)
+    if (raw == null) return DEFAULT_EDGE
+    const n = Number(raw)
+    return Number.isFinite(n) ? Math.min(100, Math.max(0, Math.round(n))) : DEFAULT_EDGE
+  } catch {
+    return DEFAULT_EDGE
+  }
+}
+
+// 0 = thin hairline edge, 100 = thick edge on containers.
+export function applyContainerEdge(pct) {
+  const v = Math.min(100, Math.max(0, Math.round(Number(pct) || 0)))
+  document.documentElement.style.setProperty('--container-edge', String(v / 100))
+  try {
+    localStorage.setItem(EDGE_KEY, String(v))
+  } catch {
+    /* ignore */
+  }
+  return v
+}
+
 export function initAppearance() {
   applyUiScale(readUiScale())
+  applyContainerEdge(readContainerEdge())
   readPalette()
   readCustomColorHex()
   readCustomBgColorHex()
