@@ -1555,6 +1555,7 @@ export default function ChatScreen({
     setContactSheetOpen(false)
     setMembersSheetOpen(false)
     setEditingNick(false)
+    setPeerProfile(null)
     closeMenus()
   }
 
@@ -1564,6 +1565,7 @@ export default function ChatScreen({
     setContactSheetOpen(false)
     setMembersSheetOpen(false)
     setEditingNick(false)
+    setPeerProfile(null)
     closeMenus()
   }
 
@@ -1699,6 +1701,8 @@ export default function ChatScreen({
             >
               <DotsIcon />
             </button>
+          ) : activeChat.kind === 'dm' ? (
+            <span className="chat-top-btn" aria-hidden />
           ) : (
             <button
               type="button"
@@ -2344,17 +2348,32 @@ export default function ChatScreen({
                   <>
                     <span className="chat-contact-name-spacer" aria-hidden />
                     <p className="chat-contact-name">{peerProfile.name}</p>
-                    <button
-                      type="button"
-                      className="chat-contact-name-edit"
-                      aria-label="Edit name"
-                      onClick={() => {
-                        setNickDraft(peerProfile.name)
-                        setEditingNick(true)
-                      }}
-                    >
-                      <PencilIcon />
-                    </button>
+                    {peerProfile.fromGroup ? (
+                      <button
+                        type="button"
+                        className="chat-contact-name-edit"
+                        aria-label="Edit name"
+                        onClick={() => {
+                          setNickDraft(peerProfile.name)
+                          setEditingNick(true)
+                        }}
+                      >
+                        <PencilIcon />
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        className="chat-contact-name-edit"
+                        aria-label="More"
+                        ref={(el) => {
+                          if (el) dotsRefs.current.set(activeChat.id, el)
+                          else dotsRefs.current.delete(activeChat.id)
+                        }}
+                        onClick={() => openMenu(activeChat.id)}
+                      >
+                        <DotsIcon />
+                      </button>
+                    )}
                   </>
                 )}
               </div>
