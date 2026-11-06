@@ -2080,32 +2080,6 @@ export default function ChatScreen({
               <p className="chat-contact-added">
                 Added {activeChat.addedAt || 'recently'}
               </p>
-              <div className="chat-contact-actions">
-                <button
-                  type="button"
-                  className={`chat-contact-action${activeChat.pinned ? ' is-on' : ''}`}
-                  onClick={() => togglePin(activeChat.id)}
-                >
-                  <PinIcon className="chat-contact-action-ico" />
-                  <span>{activeChat.pinned ? 'Unpin' : 'Pin'}</span>
-                </button>
-                <button
-                  type="button"
-                  className="chat-contact-action"
-                  onClick={() => deleteChat(activeChat.id)}
-                >
-                  <TrashIcon />
-                  <span>Delete</span>
-                </button>
-                <button
-                  type="button"
-                  className="chat-contact-action is-danger"
-                  onClick={() => blockChat(activeChat.id)}
-                >
-                  <BlockIcon />
-                  <span>Block</span>
-                </button>
-              </div>
               <div className="chat-contact-photos">
                 {threadMessages
                   .filter((m) => m.kind === 'image' && m.imageUrl)
@@ -2308,32 +2282,6 @@ export default function ChatScreen({
                   Added {activeChat?.addedAt || 'recently'}
                 </p>
               )}
-              <div className="chat-contact-actions">
-                <button
-                  type="button"
-                  className={`chat-contact-action${peerIsPinned(peerProfile.name) ? ' is-on' : ''}`}
-                  onClick={() => pinPeer(peerProfile.name)}
-                >
-                  <PinIcon className="chat-contact-action-ico" />
-                  <span>{peerIsPinned(peerProfile.name) ? 'Unpin' : 'Pin'}</span>
-                </button>
-                <button
-                  type="button"
-                  className="chat-contact-action"
-                  onClick={() => deletePeer(peerProfile.name)}
-                >
-                  <TrashIcon />
-                  <span>{peerProfile.fromGroup ? 'Remove' : 'Delete'}</span>
-                </button>
-                <button
-                  type="button"
-                  className="chat-contact-action is-danger"
-                  onClick={() => blockPeer(peerProfile.name)}
-                >
-                  <BlockIcon />
-                  <span>Block</span>
-                </button>
-              </div>
               <div className="chat-contact-photos">
                 {threadMessages
                   .filter((m) => m.kind === 'image' && m.imageUrl)
