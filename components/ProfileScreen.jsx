@@ -2039,7 +2039,7 @@ export default function ProfileScreen({
         shipOpen &&
         createPortal(
           <div
-            className="profile-panel is-popup"
+            className="profile-panel is-popup is-orders"
             role="dialog"
             aria-modal="true"
             aria-label="Orders"
