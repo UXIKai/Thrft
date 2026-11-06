@@ -108,7 +108,6 @@ export default function OrbitCarousel({
       start: isWheel ? event.clientY : event.clientX,
       lastStep: 0,
     }
-    event.currentTarget.setPointerCapture?.(event.pointerId)
   }
 
   function onPointerMove(event) {
@@ -119,6 +118,11 @@ export default function OrbitCarousel({
     const threshold = isWheel ? WHEEL_DRAG_THRESHOLD : DRAG_THRESHOLD
     const steps = Math.trunc(delta / threshold)
     if (steps === drag.lastStep) return
+    // Capture only once a real drag starts so plain taps still click the word.
+    if (!drag.captured) {
+      drag.captured = true
+      event.currentTarget.setPointerCapture?.(event.pointerId)
+    }
     const diff = steps - drag.lastStep
     drag.lastStep = steps
     if (diff > 0) {
