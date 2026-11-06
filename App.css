@@ -1808,7 +1808,7 @@ html .profile-panel.profile-edit-card {
     radial-gradient(ellipse 70% 40% at 72% 94%, rgba(255, 255, 255, 0.14), transparent 70%);
 }
 
-/* Apple Music-style liquid bubble: clear center, lens warp, chromatic edge */
+/* Apple Music-style liquid bubble: clear center, lens warp, neutral light edge */
 html body .tab-bar .tab-pill,
 html body .tab-bar.is-dragging .tab-pill {
   isolation: isolate;
@@ -1817,9 +1817,10 @@ html body .tab-bar.is-dragging .tab-pill {
   animation: none;
   backdrop-filter: blur(0.4px);
   -webkit-backdrop-filter: blur(0.4px);
+  border: 0.5px solid rgba(255, 255, 255, 0.18);
   box-shadow:
-    inset 0 2px 4px rgba(255, 255, 255, 0.22),
-    inset 0 -2px 4px rgba(0, 0, 0, 0.12);
+    inset 0 1px 2px rgba(255, 255, 255, 0.3),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.12);
 }
 
 @supports (backdrop-filter: url('#lg-bubble')) {
@@ -1843,30 +1844,9 @@ html body .tab-bar.is-dragging .tab-pill::before {
   mask-image: radial-gradient(ellipse at 50% 50%, transparent 62%, #000 100%);
 }
 
-/* chromatic aberration ring: thin red / green / blue fringe on the boundary */
+/* no colored ring: the bubble edge is defined by neutral light only */
 html body .tab-bar .tab-pill::after,
 html body .tab-bar.is-dragging .tab-pill::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  padding: 1.5px;
-  background: conic-gradient(
-    from 200deg,
-    rgba(255, 70, 70, 0.7),
-    rgba(255, 210, 70, 0.55),
-    rgba(70, 255, 150, 0.7),
-    rgba(70, 200, 255, 0.7),
-    rgba(120, 90, 255, 0.6),
-    rgba(255, 70, 70, 0.7)
-  );
-  -webkit-mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask:
-    linear-gradient(#000 0 0) content-box exclude,
-    linear-gradient(#000 0 0);
-  filter: blur(0.3px);
+  content: none;
+  background: none;
 }

@@ -144,14 +144,7 @@ export default function TabBar({ active = 'home', onChange }) {
             <feImage href={MAP_X} x="0" y="0" width={lens.w} height={lens.h} preserveAspectRatio="none" result="mx" />
             <feImage href={MAP_Y} x="0" y="0" width={lens.w} height={lens.h} preserveAspectRatio="none" result="my" />
             <feComposite in="mx" in2="my" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" result="map" />
-            <feColorMatrix in="SourceGraphic" type="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="r" />
-            <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0" result="g" />
-            <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0" result="b" />
-            <feDisplacementMap in="r" in2="map" scale="34" xChannelSelector="R" yChannelSelector="G" result="rd" />
-            <feDisplacementMap in="g" in2="map" scale="28" xChannelSelector="R" yChannelSelector="G" result="gd" />
-            <feDisplacementMap in="b" in2="map" scale="22" xChannelSelector="R" yChannelSelector="G" result="bd" />
-            <feBlend in="rd" in2="gd" mode="screen" result="rg" />
-            <feBlend in="rg" in2="bd" mode="screen" />
+            <feDisplacementMap in="SourceGraphic" in2="map" scale="30" xChannelSelector="R" yChannelSelector="G" />
           </filter>
         </defs>
       </svg>
