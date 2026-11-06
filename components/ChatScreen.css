@@ -1945,12 +1945,11 @@ html body .chat-friend-item {
   box-sizing: border-box;
   padding: 6px;
   border-radius: 28px;
-  border: 1px solid var(--glass-border, rgba(150, 150, 150, 0.18));
-  background: var(--glass-clear-tint, rgba(36, 36, 36, 0.04));
-  backdrop-filter: blur(var(--glass-blur, 3px)) saturate(var(--glass-sat, 1.55));
-  -webkit-backdrop-filter: blur(var(--glass-blur, 3px))
-    saturate(var(--glass-sat, 1.55));
-  box-shadow: var(--glass-depth);
+  border: none;
+  background: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
 }
 
 .chat-compose-input {
