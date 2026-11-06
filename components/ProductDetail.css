@@ -119,7 +119,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
+  gap: 0;
   opacity: 0;
   pointer-events: none;
   transform: translate(-18px, -50%) scale(0.6);
@@ -153,6 +153,8 @@
 }
 
 .product-detail-qty {
+  height: 30px;
+  line-height: 30px;
   min-width: 22px;
   text-align: center;
   font-size: 1.05rem;
@@ -217,12 +219,12 @@
 
 .product-detail-confirm {
   right: auto;
-  left: calc(50% + 18px);
+  left: calc(50% + 15px);
 }
 
 .product-detail-cancel {
   left: auto;
-  right: calc(50% + 18px);
+  right: calc(50% + 15px);
 }
 
 .product-detail-buy.is-added .product-detail-confirm,
