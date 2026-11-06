@@ -159,6 +159,16 @@ export default function ProductDetail({
             <button
               type="button"
               className="product-detail-step is-bare"
+              aria-label="Add one"
+              tabIndex={added ? 0 : -1}
+              onClick={() => step(qty + 1)}
+            >
+              <PlusIcon />
+            </button>
+            <span className="product-detail-qty">{qty}</span>
+            <button
+              type="button"
+              className="product-detail-step is-bare"
               aria-label="Remove one"
               tabIndex={added ? 0 : -1}
               onClick={() => step(qty - 1)}
@@ -166,16 +176,6 @@ export default function ProductDetail({
               <svg viewBox="0 0 24 24" aria-hidden>
                 <path fill="currentColor" d="M5 11h14v2H5z" />
               </svg>
-            </button>
-            <span className="product-detail-qty">{qty}</span>
-            <button
-              type="button"
-              className="product-detail-step is-bare"
-              aria-label="Add one"
-              tabIndex={added ? 0 : -1}
-              onClick={() => step(qty + 1)}
-            >
-              <PlusIcon />
             </button>
           </div>
           <button
