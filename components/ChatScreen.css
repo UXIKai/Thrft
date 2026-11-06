@@ -2302,12 +2302,16 @@
 .chat-contact-nick-form {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
-  width: min(100%, 280px);
+  max-width: 100%;
 }
 
 .chat-contact-nick-input {
-  flex: 1;
+  flex: 0 1 auto;
+  box-sizing: content-box;
+  min-width: 0;
+  max-width: calc(100vw - 120px);
   min-height: 40px;
   padding: 0 12px;
   border-radius: 10px;
@@ -2321,14 +2325,25 @@
   text-align: center;
 }
 
-.chat-contact-nick-save {
-  border: none;
-  border-radius: 10px;
-  padding: 0 14px;
-  min-height: 40px;
-  background: var(--glass-tint, rgba(36, 36, 36, 0.06));
+html body button.chat-contact-nick-save {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 32px;
+  height: 40px;
+  padding: 0;
+  border: none !important;
+  border-radius: 0;
+  background: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
   color: #fff;
-  font-weight: 700;
+}
+
+.chat-contact-nick-save .chat-filter-menu-check {
+  width: 22px;
+  height: 22px;
 }
 
 .chat-contact-added {

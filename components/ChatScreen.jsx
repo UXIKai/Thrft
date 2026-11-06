@@ -2014,12 +2014,17 @@ export default function ChatScreen({
                     <input
                       ref={nickInputRef}
                       className="chat-contact-nick-input"
+                      size={Math.max(2, nickDraft.length + 1)}
                       value={nickDraft}
                       onChange={(e) => setNickDraft(e.target.value)}
                       aria-label="Name"
                     />
-                    <button type="submit" className="chat-contact-nick-save">
-                      Save
+                    <button
+                      type="submit"
+                      className="chat-contact-nick-save is-bare"
+                      aria-label="Save name"
+                    >
+                      <FilterCheckIcon />
                     </button>
                   </form>
                 ) : (
@@ -2249,12 +2254,17 @@ export default function ChatScreen({
                     <input
                       ref={nickInputRef}
                       className="chat-contact-nick-input"
+                      size={Math.max(2, nickDraft.length + 1)}
                       value={nickDraft}
                       onChange={(e) => setNickDraft(e.target.value)}
                       aria-label="Name"
                     />
-                    <button type="submit" className="chat-contact-nick-save">
-                      Save
+                    <button
+                      type="submit"
+                      className="chat-contact-nick-save is-bare"
+                      aria-label="Save name"
+                    >
+                      <FilterCheckIcon />
                     </button>
                   </form>
                 ) : (
