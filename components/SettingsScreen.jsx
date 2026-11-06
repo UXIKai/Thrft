@@ -343,7 +343,7 @@ function Row({
 
 const HELP_PAGES = {
   started: {
-    title: 'Getting Started',
+    title: 'Introduction',
     intro: 'The bottom bar runs left to right. Selling, money, and account live on those screens.',
     groups: [
       {
@@ -521,7 +521,7 @@ const ASSISTANT_PROMPTS = [
 ]
 
 const ASSISTANT_FALLBACK =
-  'I’m not sure on that yet. Try asking about Home, Create, Closet, Saved, Store, Settings, or Sign out — or open Getting Started for the full walkthrough.'
+  'I’m not sure on that yet. Try asking about Home, Create, Closet, Saved, Store, Settings, or Sign out — or open Introduction for the full walkthrough.'
 
 function answerAssistant(question) {
   const q = String(question || '').toLowerCase().trim()
@@ -1469,9 +1469,9 @@ export default function SettingsScreen({
         </Section>
 
         <Section label="Help & Support">
-          <Row icon={<PlayIcon />} title="Getting Started" onClick={() => setHelpPage('started')} />
+          <Row icon={<PlayIcon />} title="Introduction" onClick={() => setHelpPage('started')} />
           <div className="settings-divider" aria-hidden />
-          <Row icon={<HelpIcon />} title="Help & Support" onClick={openHelpAssistant} />
+          <Row icon={<HelpIcon />} title="Q&A" onClick={openHelpAssistant} />
         </Section>
 
         <p className="settings-footer">ThrfT. v1.0.0</p>
@@ -1736,7 +1736,7 @@ export default function SettingsScreen({
           className="glass-overlay settings-help-page is-assistant"
           role="dialog"
           aria-modal="true"
-          aria-label="Help & Support"
+          aria-label="Q&A"
         >
           <header className="glass-overlay-top settings-assistant-top">
             <button
@@ -1747,7 +1747,7 @@ export default function SettingsScreen({
             >
               <BackIcon />
             </button>
-            <h2 className="glass-overlay-title">Help & Support</h2>
+            <h2 className="glass-overlay-title">Q&A</h2>
             <span className="glass-overlay-spacer" aria-hidden />
           </header>
           <div
