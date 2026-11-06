@@ -138,6 +138,10 @@ export default function CreateListing({ onPosted } = {}) {
   const [dateM, setDateM] = useState(NOW.getMonth() + 1)
   const [dateD, setDateD] = useState(NOW.getDate())
   const [dateY, setDateY] = useState(NOW.getFullYear())
+  const daysInMonth = new Date(dateY, dateM, 0).getDate()
+  useEffect(() => {
+    setDateD((d) => Math.min(d, daysInMonth))
+  }, [daysInMonth])
   const [posted, setPosted] = useState(false)
   const [posting, setPosting] = useState(false)
   const [postError, setPostError] = useState('')
@@ -599,7 +603,7 @@ export default function CreateListing({ onPosted } = {}) {
       <div className="listing-field listing-date-field">
         <div className="listing-date-wheels">
           <DateWheel label="Month" items={MONTHS} value={dateM - 1} onChange={(i) => setDateM(i + 1)} />
-          <DateWheel label="Day" items={DAYS} value={dateD - 1} onChange={(i) => setDateD(i + 1)} />
+          <DateWheel label="Day" items={DAYS.slice(0, daysInMonth)} value={Math.min(dateD, daysInMonth) - 1} onChange={(i) => setDateD(i + 1)} />
           <DateWheel label="Year" items={YEARS} value={dateY - YEARS[0]} onChange={(i) => setDateY(YEARS[0] + i)} />
         </div>
       </div>
