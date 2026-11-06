@@ -1296,7 +1296,7 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.45),
     inset 0 0 0 0.5px rgba(255, 255, 255, 0.18);
   /* overshoots the target, then settles back */
-  transition: left 0.55s cubic-bezier(0.34, 1.9, 0.5, 1);
+  transition: left 0.45s cubic-bezier(0.34, 1.35, 0.5, 1);
 }
 
 .tab-item.is-active {
@@ -1304,11 +1304,11 @@
 }
 
 .tab-item.is-active .tab-icon {
-  animation: tab-icon-bounce 0.5s cubic-bezier(0.34, 1.9, 0.5, 1);
+  animation: tab-icon-bounce 0.4s cubic-bezier(0.34, 1.35, 0.5, 1);
 }
 
 @keyframes tab-icon-bounce {
-  0% { transform: scale(0.8); }
+  0% { transform: scale(0.9); }
   100% { transform: scale(1); }
 }
 
