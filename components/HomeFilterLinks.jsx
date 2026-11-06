@@ -80,6 +80,7 @@ export default function HomeFilterLinks({
           <path d="M16 16l4.5 4.5" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
         </svg>
       </button>
+      {open && <div className="home-search-blur" aria-hidden />}
       {open && (
         <div
           className="home-search-backdrop"

@@ -215,3 +215,14 @@
     animation: none;
   }
 }
+
+/* Sibling of the backdrop so the popup's own glass blur still works. */
+.home-search-blur {
+  position: fixed;
+  inset: 0;
+  z-index: 49;
+  background: rgba(0, 0, 0, 0.12);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  pointer-events: none;
+}
