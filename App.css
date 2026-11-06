@@ -1736,3 +1736,13 @@ html .profile-panel.profile-edit-card {
 .tab-item.is-active .tab-icon {
   animation: none;
 }
+
+/* lens icons sit exactly over the real ones; magnification is only a hint */
+.tab-bar.is-dragging .tab-lens-inner {
+  transform: scale(1.04);
+}
+
+.tab-lens-inner {
+  color: rgba(255, 255, 255, 0.92);
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.55));
+}
