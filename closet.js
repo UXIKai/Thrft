@@ -77,7 +77,7 @@ export function filterClosetItems(items, { brand = '', category = '' } = {}) {
  * Rough background removal: sample corner color and punch out similar pixels.
  * Prototype stand-in until a real cutout API is wired.
  */
-export function removeImageBackground(file) {
+function removeBackgroundSimple(file) {
   return new Promise((resolve, reject) => {
     if (!file) {
       reject(new Error('No image'))
@@ -137,4 +137,73 @@ export function removeImageBackground(file) {
     }
     img.src = url
   })
+}
+
+function blobToImage(blob) {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(blob)
+    const img = new Image()
+    img.onload = () => resolve({ img, url })
+    img.onerror = () => {
+      URL.revokeObjectURL(url)
+      reject(new Error('Could not read image'))
+    }
+    img.src = url
+  })
+}
+
+// Crop transparent margins so the item fills the image
+async function cropToItem(blob) {
+  const { img, url } = await blobToImage(blob)
+  try {
+    const max = 1024
+    const scale = Math.min(1, max / Math.max(img.width, img.height))
+    const w = Math.max(1, Math.round(img.width * scale))
+    const h = Math.max(1, Math.round(img.height * scale))
+    const canvas = document.createElement('canvas')
+    canvas.width = w
+    canvas.height = h
+    const ctx = canvas.getContext('2d')
+    ctx.drawImage(img, 0, 0, w, h)
+    const { data } = ctx.getImageData(0, 0, w, h)
+    let minX = w
+    let minY = h
+    let maxX = -1
+    let maxY = -1
+    for (let y = 0; y < h; y += 1) {
+      for (let x = 0; x < w; x += 1) {
+        if (data[(y * w + x) * 4 + 3] > 24) {
+          if (x < minX) minX = x
+          if (x > maxX) maxX = x
+          if (y < minY) minY = y
+          if (y > maxY) maxY = y
+        }
+      }
+    }
+    if (maxX < 0) return canvas.toDataURL('image/png')
+    const pad = Math.round(Math.max(w, h) * 0.02)
+    const sx = Math.max(0, minX - pad)
+    const sy = Math.max(0, minY - pad)
+    const sw = Math.min(w - sx, maxX - minX + 1 + pad * 2)
+    const sh = Math.min(h - sy, maxY - minY + 1 + pad * 2)
+    const out = document.createElement('canvas')
+    out.width = sw
+    out.height = sh
+    out.getContext('2d').drawImage(canvas, sx, sy, sw, sh, 0, 0, sw, sh)
+    return out.toDataURL('image/png')
+  } finally {
+    URL.revokeObjectURL(url)
+  }
+}
+
+/** Cuts the clothing out of a photo (AI model, falls back to color keying). */
+export async function removeImageBackground(file) {
+  if (!file) throw new Error('No image')
+  try {
+    const { removeBackground } = await import('@imgly/background-removal')
+    const blob = await removeBackground(file)
+    return await cropToItem(blob)
+  } catch {
+    return removeBackgroundSimple(file)
+  }
 }
