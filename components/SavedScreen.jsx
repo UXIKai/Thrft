@@ -679,65 +679,63 @@ export default function SavedScreen({
 
       <StageSlot>
       <div className={`saved-search-dock${globeOpen ? ' is-open' : ''}`}>
-        {searchOpen || globeOpen ? (
-          <div className="saved-search-bar">
+        <div className={`saved-search-bar${searchOpen ? '' : ' is-collapsed'}`}>
+          {searchOpen ? (
             <button
-              type="button"
-              className="saved-dock-search"
-              aria-label="Close search"
-              disabled={globeOpen}
-              onClick={() => {
-                setQuery('')
-                setSearchOpen(false)
-              }}
-            >
-              <SearchIcon />
-            </button>
-          <input
-            id="saved-search-input"
-            className="saved-search-input"
-            type="text"
-            inputMode="search"
-            enterKeyHint="search"
-            name="thrft_saved_search"
-            autoComplete="off"
-            autoCorrect="off"
-            spellCheck={false}
-            data-lpignore="true"
-            data-1p-ignore="true"
-            data-form-type="other"
-            placeholder=""
-            aria-label={
-              globeOpen
-                ? 'Filter brands on globe'
-                : showBrands
-                  ? 'Search brands'
-                  : 'Search clothing items'
-            }
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-          />
-          <button
               ref={plusRef}
               type="button"
-              className={`saved-search-add${globeOpen ? ' is-globe-open' : ''}`}
+              className="saved-dock-search"
               aria-label={globeOpen ? 'Close brand globe' : 'Open brand globe'}
               aria-pressed={globeOpen}
               onClick={onPlusClick}
-          >
-              <PlusIcon />
-              </button>
-          </div>
-        ) : (
+            >
+              <SearchIcon />
+            </button>
+          ) : null}
+          {searchOpen ? (
+            <input
+              id="saved-search-input"
+              className="saved-search-input"
+              type="text"
+              inputMode="search"
+              enterKeyHint="search"
+              name="thrft_saved_search"
+              autoComplete="off"
+              autoCorrect="off"
+              spellCheck={false}
+              data-lpignore="true"
+              data-1p-ignore="true"
+              data-form-type="other"
+              placeholder=""
+              aria-label={
+                globeOpen
+                  ? 'Filter brands on globe'
+                  : showBrands
+                    ? 'Search brands'
+                    : 'Search clothing items'
+              }
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+          ) : null}
           <button
             type="button"
-            className="saved-dock-search"
-            aria-label="Search"
-            onClick={() => setSearchOpen(true)}
+            className={`saved-search-add${searchOpen ? ' is-search-open' : ''}`}
+            aria-label={searchOpen ? 'Close search' : 'Search'}
+            aria-expanded={searchOpen}
+            onClick={() => {
+              if (searchOpen) {
+                if (globeOpen) closeGlobe()
+                setQuery('')
+                setSearchOpen(false)
+              } else {
+                setSearchOpen(true)
+              }
+            }}
           >
-            <SearchIcon />
+            <PlusIcon />
           </button>
-        )}
+        </div>
       </div>
       </StageSlot>
 

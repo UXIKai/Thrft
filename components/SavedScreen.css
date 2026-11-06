@@ -560,11 +560,11 @@
   transition: transform 0.38s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.saved-search-add.is-globe-open {
+.saved-search-add.is-search-open {
   transform: rotate(45deg);
 }
 
-.saved-search-add.is-globe-open .saved-dock-ico {
+.saved-search-add.is-search-open .saved-dock-ico {
   transform: rotate(0deg);
 }
 
@@ -610,4 +610,18 @@
   font-size: 0.68rem;
   font-weight: 400;
   color: rgba(255, 255, 255, 0.45);
+}
+
+.saved-search-bar.is-collapsed {
+  width: auto;
+  height: 36px;
+  margin-left: auto;
+  padding: 0;
+  gap: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
