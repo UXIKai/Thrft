@@ -2331,7 +2331,16 @@ export default function ChatScreen({
                   }}
                   onClick={() => openMenu(activeChat.id)}
                 >
-                  <DotsIcon />
+                  <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden>
+                    <path
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M6 9.5l6 6 6-6"
+                    />
+                  </svg>
                 </button>
               ) : null}
               <span className="chat-contact-avatar" aria-hidden>
