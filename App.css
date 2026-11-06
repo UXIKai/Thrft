@@ -1763,3 +1763,14 @@ html .profile-panel.profile-edit-card {
     backdrop-filter: blur(0.5px) url('#lg-lens-bg');
   }
 }
+
+/* icons are never altered by the lens */
+.tab-bar.is-dragging .tab-lens-inner {
+  visibility: hidden;
+  filter: none;
+}
+
+.tab-items {
+  -webkit-mask-image: none !important;
+  mask-image: none !important;
+}
