@@ -7,8 +7,7 @@ html body button:not(:is(.auth-social-btn,.auth-switch-link,.brand-globe-close,.
   -webkit-backdrop-filter: blur(3px) !important;
   border: 0.5px solid rgba(255, 255, 255, 0.32) !important;
   box-shadow:
-    inset 0 2px 4px rgba(255, 255, 255, 0.36),
-    inset 0 -2px 4px rgba(0, 0, 0, 0.16) !important;
+    inset 0 2px 4px rgba(255, 255, 255, 0.36) !important;
   isolation: isolate;
   transition:
     filter 0.18s ease,
@@ -25,16 +24,15 @@ html body button:not(:is(.auth-social-btn,.auth-switch-link,.brand-globe-close,.
 
 html body button:not(:is(.auth-social-btn,.auth-switch-link,.brand-globe-close,.brand-globe-dock-back,.brand-globe-dock-plus,.brand-globe-focus,.cart-dock-back,.cart-line-main,.cart-line-remove,.cart-pay,.chat-compose-plus,.chat-compose-send,.chat-contact-close,.chat-contact-member-link,.chat-contact-name,.chat-contact-name-edit,.chat-dm-menu-btn,.chat-dm-portal-scrim,.chat-dock-search,.chat-dots,.chat-filter-btn,.chat-liked-back,.chat-liked-item,.chat-liked-send,.chat-member-chip,.chat-pins-pencil,.chat-row,.chat-search-add,.chat-search-clear,.chat-sheet-find,.chat-sheet-save,.chat-sheet-x,.chat-thread-name,.chat-top-btn,.chat-users-action,.chat-users-back,.closet-tile,.home-checkout-btn,.home-search-btn,.home-search-done,.home-type-wheel-add,.is-bare,.is-minimal,.product-detail-add,.profile-gear,.profile-listing-tab,.profile-money-dock-back,.profile-music-close,.profile-name-edit,.profile-panel-back,.profile-panel-mode,.profile-username-link,.saved-dock-search,.saved-filter-btn,.saved-item,.saved-pencil-btn,.saved-search-add,.settings-color-wheel,.settings-idme-close,.settings-idme-unlink,.settings-palette-icon-btn,.settings-photo-btn,.settings-photo-scrim,.settings-row,.settings-size-back,.settings-size-brand-main,.settings-swatch,.settings-wheel-done,.type-box,.type-box-orbit,[class*='scrim'],[class*='swatch'],[class*='product-box'],.tab-item)):hover,
 html body button:not(:is(.auth-social-btn,.auth-switch-link,.brand-globe-close,.brand-globe-dock-back,.brand-globe-dock-plus,.brand-globe-focus,.cart-dock-back,.cart-line-main,.cart-line-remove,.cart-pay,.chat-compose-plus,.chat-compose-send,.chat-contact-close,.chat-contact-member-link,.chat-contact-name,.chat-contact-name-edit,.chat-dm-menu-btn,.chat-dm-portal-scrim,.chat-dock-search,.chat-dots,.chat-filter-btn,.chat-liked-back,.chat-liked-item,.chat-liked-send,.chat-member-chip,.chat-pins-pencil,.chat-row,.chat-search-add,.chat-search-clear,.chat-sheet-find,.chat-sheet-save,.chat-sheet-x,.chat-thread-name,.chat-top-btn,.chat-users-action,.chat-users-back,.closet-tile,.home-checkout-btn,.home-search-btn,.home-search-done,.home-type-wheel-add,.is-bare,.is-minimal,.product-detail-add,.profile-gear,.profile-listing-tab,.profile-money-dock-back,.profile-music-close,.profile-name-edit,.profile-panel-back,.profile-panel-mode,.profile-username-link,.saved-dock-search,.saved-filter-btn,.saved-item,.saved-pencil-btn,.saved-search-add,.settings-color-wheel,.settings-idme-close,.settings-idme-unlink,.settings-palette-icon-btn,.settings-photo-btn,.settings-photo-scrim,.settings-row,.settings-size-back,.settings-size-brand-main,.settings-swatch,.settings-wheel-done,.type-box,.type-box-orbit,[class*='scrim'],[class*='swatch'],[class*='product-box'],.tab-item)):focus-visible {
-  filter: brightness(0.94);
+  filter: none;
   outline: none;
 }
 
 html body button:not(:is(.auth-social-btn,.auth-switch-link,.brand-globe-close,.brand-globe-dock-back,.brand-globe-dock-plus,.brand-globe-focus,.cart-dock-back,.cart-line-main,.cart-line-remove,.cart-pay,.chat-compose-plus,.chat-compose-send,.chat-contact-close,.chat-contact-member-link,.chat-contact-name,.chat-contact-name-edit,.chat-dm-menu-btn,.chat-dm-portal-scrim,.chat-dock-search,.chat-dots,.chat-filter-btn,.chat-liked-back,.chat-liked-item,.chat-liked-send,.chat-member-chip,.chat-pins-pencil,.chat-row,.chat-search-add,.chat-search-clear,.chat-sheet-find,.chat-sheet-save,.chat-sheet-x,.chat-thread-name,.chat-top-btn,.chat-users-action,.chat-users-back,.closet-tile,.home-checkout-btn,.home-search-btn,.home-search-done,.home-type-wheel-add,.is-bare,.is-minimal,.product-detail-add,.profile-gear,.profile-listing-tab,.profile-money-dock-back,.profile-music-close,.profile-name-edit,.profile-panel-back,.profile-panel-mode,.profile-username-link,.saved-dock-search,.saved-filter-btn,.saved-item,.saved-pencil-btn,.saved-search-add,.settings-color-wheel,.settings-idme-close,.settings-idme-unlink,.settings-palette-icon-btn,.settings-photo-btn,.settings-photo-scrim,.settings-row,.settings-size-back,.settings-size-brand-main,.settings-swatch,.settings-wheel-done,.type-box,.type-box-orbit,[class*='scrim'],[class*='swatch'],[class*='product-box'],.tab-item)):active {
-  filter: brightness(0.86);
+  filter: none;
   transform: scale(0.97);
   box-shadow:
-    inset 0 -2px 4px rgba(255, 255, 255, 0.2),
-    inset 0 2px 4px rgba(0, 0, 0, 0.22) !important;
+    inset 0 -2px 4px rgba(255, 255, 255, 0.2) !important;
 }
 
 /* Navigation bar: refraction lives on pseudo layers under the icons */
@@ -43,9 +41,7 @@ html body .tab-bar {
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
   border: 0.5px solid rgba(255, 255, 255, 0.32);
-  box-shadow:
-    inset 0 2px 4px rgba(255, 255, 255, 0.36),
-    inset 0 -2px 4px rgba(0, 0, 0, 0.16);
+  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.36);
 }
 
 html body .tab-bar::before,

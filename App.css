@@ -1585,11 +1585,7 @@ html .profile-panel.profile-edit-card {
   cursor: grab;
   user-select: none;
   -webkit-user-select: none;
-  box-shadow:
-    inset 0 0 0 0.5px rgba(255, 255, 255, 0.3),
-    inset 0 1px 1px rgba(255, 255, 255, 0.3),
-    inset 0 -1px 1px rgba(255, 255, 255, 0.18),
-    0 6px 20px rgba(0, 0, 0, 0.14);
+  box-shadow: none;
 }
 
 .tab-bar::before,
@@ -1718,9 +1714,7 @@ html .profile-panel.profile-edit-card {
 .stage > .tab-bar.is-pressed {
   transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s ease;
   transform: translateX(-50%) scale(1.03);
-  box-shadow:
-    inset 0 0 0 0.5px rgba(255, 255, 255, 0.2),
-    0 12px 28px rgba(0, 0, 0, 0.18);
+  box-shadow: none;
 }
 
 .tab-bar.is-dragging .tab-pill {
@@ -1753,9 +1747,7 @@ html .profile-panel.profile-edit-card {
 }
 
 .tab-bar.is-dragging .tab-pill {
-  box-shadow:
-    inset 0 3px 8px -4px rgba(255, 255, 255, 0.18),
-    inset 0 -3px 8px -4px rgba(0, 0, 0, 0.14);
+  box-shadow: none;
 }
 
 @supports (backdrop-filter: url('#lg-lens-bg')) {
@@ -1779,8 +1771,6 @@ html .profile-panel.profile-edit-card {
 .tab-bar.is-dragging .tab-pill {
   background: rgba(255, 255, 255, 0.015);
   box-shadow:
-    inset 0 2px 5px rgba(255, 255, 255, 0.36),
-    inset 0 -2px 5px rgba(0, 0, 0, 0.16),
     inset 0 0 16px rgba(255, 255, 255, 0.1);
 }
 
@@ -1818,9 +1808,7 @@ html body .tab-bar.is-dragging .tab-pill {
   backdrop-filter: blur(0.4px);
   -webkit-backdrop-filter: blur(0.4px);
   border: 0.5px solid rgba(255, 255, 255, 0.18);
-  box-shadow:
-    inset 0 1px 2px rgba(255, 255, 255, 0.3),
-    inset 0 -1px 2px rgba(0, 0, 0, 0.12);
+  box-shadow: none;
 }
 
 @supports (backdrop-filter: url('#lg-bubble')) {
@@ -1896,9 +1884,7 @@ html body .tab-bar.is-pressed .tab-pill {
   backdrop-filter: blur(1px) brightness(1.1) contrast(1.06);
   -webkit-backdrop-filter: blur(1px) brightness(1.1) contrast(1.06);
   border: 0.5px solid rgba(255, 255, 255, 0.3);
-  box-shadow:
-    inset 0 1px 2px rgba(255, 255, 255, 0.3),
-    inset 0 -1px 2px rgba(0, 0, 0, 0.12);
+  box-shadow: none;
 }
 
 @supports (backdrop-filter: url('#lg-bubble')) {
