@@ -1917,5 +1917,5 @@ html body .tab-bar.is-pressed .tab-pill::before {
 
 /* Slimmer, wider nav so the lens reads as a pill */
 .tab-bar {
-  width: min(560px, calc(100% - 12px));
+  width: min(calc(420px + 4in), calc(100% - 26px));
 }
