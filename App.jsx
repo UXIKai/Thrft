@@ -367,7 +367,11 @@ export default function App() {
 
   const homePickerItems = useMemo(() => {
     const source =
-      homePicker === 'brands' ? HOME_BRAND_ITEMS : homeCategoryItems
+      homePicker === 'brands'
+        ? HOME_BRAND_ITEMS
+        : homePicker === 'colors'
+          ? COLOR_OPTIONS
+          : homeCategoryItems
     const q = homePickerQuery.trim().toLowerCase()
     if (!q) return source
     return source.filter(
@@ -475,6 +479,7 @@ export default function App() {
                 }
                 onPickCategory={handleHomeCategoryPick}
                 onOpenBrands={() => openHomePicker('brands')}
+                onOpenColors={() => openHomePicker('colors')}
                 onOpenCategory={() => openHomePicker('category')}
               />
               <h1 className="wordmark">
@@ -656,11 +661,19 @@ export default function App() {
           activeId={
             homePicker === 'brands'
               ? homeBrand?.id || ''
-              : clothingType === 'all'
-                ? ''
-                : clothingType
+              : homePicker === 'colors'
+                ? homeColor
+                : clothingType === 'all'
+                  ? ''
+                  : clothingType
           }
-          title={homePicker === 'brands' ? 'Brands' : 'Category'}
+          title={
+            homePicker === 'brands'
+              ? 'Brands'
+              : homePicker === 'colors'
+                ? 'Color'
+                : 'Category'
+          }
           snug={homePicker !== 'brands'}
           searchValue={homePickerQuery}
           onSearchChange={setHomePickerQuery}
@@ -668,7 +681,12 @@ export default function App() {
           onSelect={
             homePicker === 'brands'
               ? handleHomeBrandPick
-              : handleHomeCategoryPick
+              : homePicker === 'colors'
+                ? (id) => {
+                    setHomeColor(id)
+                    closeHomePicker()
+                  }
+                : handleHomeCategoryPick
           }
           onClose={closeHomePicker}
           onExitComplete={onHomePickerExitComplete}

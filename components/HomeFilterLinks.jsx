@@ -19,6 +19,7 @@ export default function HomeFilterLinks({
   onPickBrand,
   onPickCategory,
   onOpenBrands,
+  onOpenColors,
   onOpenCategory,
 }) {
   const [open, setOpen] = useState(false)
@@ -109,6 +110,7 @@ export default function HomeFilterLinks({
                 items={colorItems}
                 activeId={draftColor}
                 onSelect={setDraftColor}
+                onActivate={onOpenColors}
                 ariaLabel="Color"
               />
             </div>
