@@ -117,7 +117,15 @@ export default function CartScreen({
                   onClick={() => remove(item.id)}
                   disabled={busy}
                 >
-                  Remove
+                  <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden>
+                    <path
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                      d="M6 12h12"
+                    />
+                  </svg>
                 </button>
               </li>
             ))}

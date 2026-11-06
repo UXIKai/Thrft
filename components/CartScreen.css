@@ -78,7 +78,7 @@
 
 @media (max-height: 860px) {
   .cart-list {
-    top: 20px;
+    top: calc(env(safe-area-inset-top, 0px) + 72px);
     transform: translateX(-50%);
   }
 }
@@ -126,8 +126,10 @@
   flex: 0 0 auto;
   border: none;
   background: transparent;
-  padding: 6px 0;
-  color: rgba(255, 255, 255, 0.45);
+  padding: 6px;
+  display: grid;
+  place-items: center;
+  color: rgba(255, 255, 255, 0.7);
   font: inherit;
   font-size: 0.72rem;
   font-weight: 700;
