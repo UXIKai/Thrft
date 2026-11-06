@@ -147,7 +147,14 @@ function DateWheel({ label, items, value, onChange }) {
             autoFocus
             value={draft}
             aria-label={label}
-            onChange={(e) => setDraft(e.target.value)}
+            onChange={(e) => {
+              const v = e.target.value.toLowerCase()
+              const ok =
+                v === '' ||
+                items.some((it) => String(it).toLowerCase().startsWith(v)) ||
+                (label === 'Month' && /^\d+$/.test(v) && Number(v) >= 1 && Number(v) <= 12)
+              if (ok) setDraft(v)
+            }}
             onBlur={commit}
             onKeyDown={(e) => {
               if (e.key === 'Enter') e.currentTarget.blur()
