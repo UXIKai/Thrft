@@ -706,7 +706,6 @@ export default function SavedScreen({
             data-lpignore="true"
             data-1p-ignore="true"
             data-form-type="other"
-            autoFocus={!globeOpen}
             placeholder=""
             aria-label={
               globeOpen

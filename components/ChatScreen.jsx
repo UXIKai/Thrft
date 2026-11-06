@@ -2561,7 +2561,6 @@ export default function ChatScreen({
               aria-label="Search chats"
               aria-hidden={composer ? true : undefined}
               tabIndex={composer ? -1 : undefined}
-              autoFocus={!composer}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />
