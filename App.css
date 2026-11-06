@@ -1480,3 +1480,30 @@ html[data-bg-photo] .atmosphere::after,
 html[data-bg-photo] .atmosphere-bloom {
   display: none;
 }
+
+/* Every popup container follows the Background color setting (frosted, translucent). */
+html .glass-sheet-card,
+html .chat-sheet-card,
+html .chat-menu,
+html .chat-filter-menu,
+html .chat-pins-menu,
+html .chat-dm-menu,
+html .saved-filter-menu,
+html .saved-edit-menu,
+html .settings-photo-menu,
+html .settings-idme-card,
+html .settings-color-list,
+html .profile-music-card,
+html .listing-add-card,
+html .home-type-add-sheet > :not(.home-type-add-scrim),
+html .home-search-modal,
+html .profile-panel.is-popup:not(.is-orders),
+html .profile-panel.profile-links-card,
+html .profile-panel.profile-money-card,
+html .profile-panel.profile-edit-card {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.12), transparent 42%),
+    rgba(var(--bg-color-rgb, 36, 36, 36), 0.4) !important;
+  backdrop-filter: blur(28px) saturate(1.6);
+  -webkit-backdrop-filter: blur(28px) saturate(1.6);
+}
