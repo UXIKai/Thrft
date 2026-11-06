@@ -334,10 +334,12 @@ function Row({
       onClick={onClick}
     >
       {icon && <span className="settings-row-leading">{icon}</span>}
-      <span className="settings-row-copy" hidden={iconOnly}>
-        <span className="settings-row-title">{title}</span>
-        {subtitle && <span className="settings-row-sub">{subtitle}</span>}
-      </span>
+      {!iconOnly && (
+        <span className="settings-row-copy">
+          <span className="settings-row-title">{title}</span>
+          {subtitle && <span className="settings-row-sub">{subtitle}</span>}
+        </span>
+      )}
       {meta && <span className="settings-row-meta">{meta}</span>}
       {badge}
       {trailing}
@@ -630,13 +632,34 @@ export default function SettingsScreen({
   const galleryInputRef = useRef(null)
   const [paletteTarget, setPaletteTarget] = useState('app')
   const [paletteResetPending, setPaletteResetPending] = useState(false)
-  const [blankSlots, setBlankSlots] = useState(() => new Set())
-  useEffect(() => {
-    if (!paletteEditorOpen) {
-      setBlankSlots(new Set())
-      setPaletteResetPending(false)
+  const [hiddenSlots, setHiddenSlots] = useState(() => {
+    try {
+      const raw = JSON.parse(localStorage.getItem('thrft-hidden-slots-v1') || '{}')
+      return { app: new Set(raw.app || []), bg: new Set(raw.bg || []) }
+    } catch {
+      return { app: new Set(), bg: new Set() }
     }
-  }, [paletteEditorOpen])
+  })
+  const [blankSlots, setBlankSlots] = useState(() => new Set())
+  function saveHiddenSlots(target, set) {
+    setHiddenSlots((prev) => {
+      const next = { ...prev, [target]: new Set(set) }
+      try {
+        localStorage.setItem(
+          'thrft-hidden-slots-v1',
+          JSON.stringify({ app: [...next.app], bg: [...next.bg] }),
+        )
+      } catch {
+        /* ignore */
+      }
+      return next
+    })
+  }
+  useEffect(() => {
+    setBlankSlots(new Set(hiddenSlots[paletteTarget]))
+    setPaletteResetPending(false)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [paletteEditorOpen, paletteTarget])
   const [wheelHsv, setWheelHsv] = useState(() => hexToHsv(readCustomColorHex()))
   const [recentColors, setRecentColors] = useState(() => readRecentColors())
   const wheelPadRef = useRef(null)
@@ -1103,7 +1126,8 @@ export default function SettingsScreen({
                     role="listbox"
                     aria-label="Container color"
                   >
-                    {paletteColors.map((c) => {
+                    {paletteColors.map((c, ci) => {
+                      if (ci > 0 && hiddenSlots.app.has(ci - 1)) return null
                       const selected = appColor === c.id
                       return (
                         <button
@@ -1181,7 +1205,8 @@ export default function SettingsScreen({
                     role="listbox"
                     aria-label="Background color"
                   >
-                    {paletteColors.map((c) => {
+                    {paletteColors.map((c, ci) => {
+                      if (ci > 0 && hiddenSlots.bg.has(ci - 1)) return null
                       const selected = bgColor === c.id
                       return (
                         <button
@@ -2033,13 +2058,13 @@ export default function SettingsScreen({
                 className="settings-palette-icon-btn"
                 aria-label="Done"
                 onClick={() => {
+                  saveHiddenSlots(paletteTarget, blankSlots)
                   if (paletteResetPending) {
                     if (paletteTarget === 'bg') chooseBgColor('none')
                     else chooseAppColor('none')
                   }
                   setPaletteEditorOpen(false)
                   setPaletteResetPending(false)
-                  setBlankSlots(new Set())
                 }}
               >
                 <svg viewBox="0 0 24 24" aria-hidden>
