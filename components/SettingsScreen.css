@@ -2601,3 +2601,8 @@
   right: 10px;
   z-index: 3;
 }
+
+/* Room above the colors for the effect switch */
+.settings-block.settings-palette-block {
+  padding-top: 44px;
+}
