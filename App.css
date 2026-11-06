@@ -1882,13 +1882,9 @@ html body .tab-bar.is-dragging .tab-pill::after {
   transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s ease;
 }
 
-/* droplet shape: fuller at the bottom, stretches while dragged */
+/* pill shape stays; no squash or stretch */
 html body .tab-bar .tab-pill,
 html body .tab-bar.is-dragging .tab-pill {
-  border-radius: 48% 52% 50% 50% / 56% 56% 44% 44%;
-  transition: transform 0.3s cubic-bezier(0.3, 0.7, 0.3, 1);
-}
-
-html body .tab-bar.is-dragging .tab-pill {
-  transform: scale(1.12, 0.94);
+  border-radius: 999px;
+  transform: none;
 }
