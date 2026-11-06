@@ -1272,9 +1272,6 @@ export default function SettingsScreen({
                   className="settings-glass-slider"
                   style={{ '--pull': barTransparency / 100 }}
                 >
-                  <div className="settings-slider-head is-value-only">
-                    <span className="settings-slider-value">{barTransparency}%</span>
-                  </div>
                   <input
                     className="settings-slider"
                     type="range"
@@ -1297,9 +1294,6 @@ export default function SettingsScreen({
                   className="settings-glass-slider"
                   style={{ '--pull': (uiScale - 85) / 45 }}
                 >
-                  <div className="settings-slider-head is-value-only">
-                    <span className="settings-slider-value">{uiScale}%</span>
-                  </div>
                   <input
                     className="settings-slider"
                     type="range"
@@ -1322,9 +1316,6 @@ export default function SettingsScreen({
                   className="settings-glass-slider"
                   style={{ '--pull': containerEdge / 100 }}
                 >
-                  <div className="settings-slider-head is-value-only">
-                    <span className="settings-slider-value">{containerEdge}%</span>
-                  </div>
                   <input
                     className="settings-slider"
                     type="range"
