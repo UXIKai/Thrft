@@ -623,7 +623,14 @@ export default function SettingsScreen({
   const cameraInputRef = useRef(null)
   const galleryInputRef = useRef(null)
   const [paletteTarget, setPaletteTarget] = useState('app')
+  const [paletteResetPending, setPaletteResetPending] = useState(false)
   const [blankSlots, setBlankSlots] = useState(() => new Set())
+  useEffect(() => {
+    if (!paletteEditorOpen) {
+      setBlankSlots(new Set())
+      setPaletteResetPending(false)
+    }
+  }, [paletteEditorOpen])
   const [wheelHsv, setWheelHsv] = useState(() => hexToHsv(readCustomColorHex()))
   const [recentColors, setRecentColors] = useState(() => readRecentColors())
   const wheelPadRef = useRef(null)
@@ -2003,7 +2010,10 @@ export default function SettingsScreen({
                     type="button"
                     className="settings-palette-icon-btn is-grid-cell"
                     aria-label="Reset palette"
-                    onClick={() => setBlankSlots(new Set(Array.from({ length: 11 }, (_, i) => i)))}
+                    onClick={() => {
+                      setBlankSlots(new Set(Array.from({ length: 11 }, (_, i) => i)))
+                      setPaletteResetPending(true)
+                    }}
                   >
                     <svg viewBox="0 0 24 24" aria-hidden>
                       <path d="M19.5 12a7.5 7.5 0 11-2.4-5.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
@@ -2017,11 +2027,12 @@ export default function SettingsScreen({
                 className="settings-palette-icon-btn"
                 aria-label="Done"
                 onClick={() => {
-                  if (blankSlots.size > 0) {
+                  if (paletteResetPending) {
                     if (paletteTarget === 'bg') chooseBgColor('none')
                     else chooseAppColor('none')
                   }
                   setPaletteEditorOpen(false)
+                  setPaletteResetPending(false)
                   setBlankSlots(new Set())
                 }}
               >
