@@ -2011,6 +2011,7 @@ export default function ChatScreen({
                       saveNickname()
                     }}
                   >
+                    <span className="chat-contact-name-spacer" aria-hidden />
                     <input
                       ref={nickInputRef}
                       className="chat-contact-nick-input"
@@ -2251,6 +2252,7 @@ export default function ChatScreen({
                       savePeerNickname()
                     }}
                   >
+                    <span className="chat-contact-name-spacer" aria-hidden />
                     <input
                       ref={nickInputRef}
                       className="chat-contact-nick-input"

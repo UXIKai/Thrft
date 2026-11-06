@@ -2046,8 +2046,9 @@
 
 .chat-contact-name-row:has(.chat-contact-nick-form) {
   display: flex;
-  width: 100%;
+  justify-content: center;
   grid-template-columns: none;
+  width: 100%;
 }
 
 .chat-contact-name-spacer {
@@ -2300,10 +2301,11 @@
 }
 
 .chat-contact-nick-form {
-  display: flex;
+  display: grid;
+  grid-template-columns: 34px auto 34px;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  column-gap: 8px;
   max-width: 100%;
 }
 
@@ -2312,7 +2314,7 @@
   box-sizing: content-box;
   min-width: 0;
   max-width: calc(100vw - 120px);
-  min-height: 40px;
+  min-height: 34px;
   padding: 0;
   border-radius: 0;
   border: none;
@@ -2329,9 +2331,8 @@
 html body button.chat-contact-nick-save {
   display: grid;
   place-items: center;
-  flex: none;
-  width: 32px;
-  height: 40px;
+  width: 34px;
+  height: 34px;
   padding: 0;
   border: none !important;
   border-radius: 0;
