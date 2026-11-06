@@ -2426,37 +2426,67 @@
   -webkit-backdrop-filter: none;
 }
 
-/* Photo picker: popup fills the sheet instead of a dropdown */
-.settings-photo-sheet .settings-photo-card {
-  width: min(476px, 100%);
-  min-height: min(284px, 80vh);
+/* Photo picker fills the Appearance color container */
+.settings-photo-fill {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--glass-clear-tint, rgba(36, 36, 36, 0.04));
+  backdrop-filter: blur(24px) saturate(1.6);
+  -webkit-backdrop-filter: blur(24px) saturate(1.6);
+}
+
+.settings-photo-fill-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: none;
+  background: none;
+  color: #fff;
+}
+
+.settings-photo-fill-close svg {
+  width: 20px;
+  height: 20px;
 }
 
 .settings-photo-grid {
   display: flex;
-  flex: 1;
   align-items: center;
   justify-content: center;
   gap: 44px;
-  padding: 24px 0 8px;
 }
 
-.settings-photo-sheet .settings-photo-btn {
+.settings-photo-fill .settings-photo-btn {
   width: 64px;
   height: 64px;
   min-height: 64px;
 }
 
-.settings-photo-sheet .settings-photo-btn svg {
+.settings-photo-fill .settings-photo-btn svg {
   width: 40px;
   height: 40px;
 }
 
-.settings-photo-card {
-  display: flex;
-  flex-direction: column;
+.settings-section.is-sliders {
+  margin-top: -8px;
 }
 
+.settings-slider-block {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.settings-photo-fill-close,
 .settings-choose.is-color-side {
   border: none;
   background: none;
