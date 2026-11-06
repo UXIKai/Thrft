@@ -101,6 +101,20 @@ function DateWheel({ label, items, value, onChange }) {
     if (el && Math.round(el.scrollTop / WHEEL_ROW) !== value) el.scrollTop = value * WHEEL_ROW
   }, [value])
 
+  // One row per wheel notch (native scrolling jumps several rows)
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return undefined
+    const onWheel = (e) => {
+      e.preventDefault()
+      const cur = Math.round(el.scrollTop / WHEEL_ROW)
+      const next = Math.min(items.length - 1, Math.max(0, cur + Math.sign(e.deltaY)))
+      el.scrollTo({ top: next * WHEEL_ROW, behavior: 'smooth' })
+    }
+    el.addEventListener('wheel', onWheel, { passive: false })
+    return () => el.removeEventListener('wheel', onWheel)
+  }, [items.length])
+
   const onScroll = () => {
     clearTimeout(timer.current)
     timer.current = setTimeout(() => {
