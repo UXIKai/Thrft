@@ -1281,7 +1281,7 @@ html[data-bg-color='none'] .stage.is-bg-none .atmosphere {
   align-items: center;
   justify-content: center;
   gap: 0;
-  min-height: 56px;
+  min-height: 62px;
   padding: 6px 2px;
   border-radius: 28px;
   border: none;
