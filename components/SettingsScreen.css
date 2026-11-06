@@ -2193,6 +2193,7 @@
   justify-content: flex-end;
 }
 
+.settings-palette-sheet .glass-overlay-icon-btn,
 .settings-wheel-sheet .glass-overlay-icon-btn {
   background: transparent;
   border: none;
