@@ -581,6 +581,8 @@ export default function CreateListing({ onPosted } = {}) {
         </span>
       </label>
 
+      {isCloset && (
+        <>
       <label className="listing-field">
         <span className={`listing-box${description ? ' is-filled' : ''}`}>
           <span className="listing-label">Description</span>
@@ -618,6 +620,8 @@ export default function CreateListing({ onPosted } = {}) {
           <DateWheel label="Year" items={YEARS} value={dateY - YEARS[0]} onChange={(i) => setDateY(YEARS[0] + i)} />
         </div>
       </div>
+        </>
+      )}
 
       {!isCloset && (
         <>
@@ -639,6 +643,20 @@ export default function CreateListing({ onPosted } = {}) {
               })}
             </div>
           </div>
+
+          <label className="listing-field">
+            <span className={`listing-box${description ? ' is-filled' : ''}`}>
+              <span className="listing-label">Description</span>
+              <textarea
+                className="listing-input listing-textarea is-inset"
+                placeholder=" "
+                aria-label="Description"
+                rows={4}
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              />
+            </span>
+          </label>
         </>
       )}
 
