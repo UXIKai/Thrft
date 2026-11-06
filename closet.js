@@ -251,3 +251,21 @@ export async function removeImageBackground(file) {
     return removeBackgroundSimple(file)
   }
 }
+
+/** Bakes a zoom (0.4–2.5) into the cutout, keeping the same frame size. */
+export async function scaleCutout(dataUrl, scale) {
+  if (!dataUrl || Math.abs(scale - 1) < 0.01) return dataUrl
+  const img = await new Promise((resolve, reject) => {
+    const i = new Image()
+    i.onload = () => resolve(i)
+    i.onerror = () => reject(new Error('Could not read image'))
+    i.src = dataUrl
+  })
+  const canvas = document.createElement('canvas')
+  canvas.width = img.width
+  canvas.height = img.height
+  const w = img.width * scale
+  const h = img.height * scale
+  canvas.getContext('2d').drawImage(img, (img.width - w) / 2, (img.height - h) / 2, w, h)
+  return canvas.toDataURL('image/png')
+}

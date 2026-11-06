@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { addClosetItem, removeImageBackground } from '../closet.js'
+import { addClosetItem, removeImageBackground, scaleCutout } from '../closet.js'
 import {
   addCustomBrand,
   addCustomCategory,
@@ -209,6 +209,7 @@ export default function CreateListing({ onPosted } = {}) {
   const [postedProduct, setPostedProduct] = useState(null)
   const [scanPreview, setScanPreview] = useState('')
   const [scanning, setScanning] = useState(false)
+  const [scanZoom, setScanZoom] = useState(1)
   const [customCategories, setCustomCategories] = useState(() =>
     getCustomCategories(),
   )
@@ -347,6 +348,7 @@ export default function CreateListing({ onPosted } = {}) {
     try {
       const cutout = await removeImageBackground(file)
       setScanPreview(cutout)
+      setScanZoom(1)
     } catch (err) {
       setPostError(String(err?.message || 'Could not scan clothing'))
     } finally {
@@ -365,6 +367,7 @@ export default function CreateListing({ onPosted } = {}) {
       }
       setPosting(true)
       try {
+        const sizedImage = await scaleCutout(scanPreview, scanZoom)
         const item = addClosetItem({
           brand,
           category,
@@ -372,7 +375,7 @@ export default function CreateListing({ onPosted } = {}) {
           price: price.trim(),
           description: description.trim(),
           date: `${dateY}-${String(dateM).padStart(2, '0')}-${String(dateD).padStart(2, '0')}`,
-          imageUrl: scanPreview,
+          imageUrl: sizedImage,
           scanned: true,
           backgroundRemoved: true,
         })
@@ -504,11 +507,24 @@ export default function CreateListing({ onPosted } = {}) {
                 className="listing-scanner-preview"
                 src={scanPreview}
                 alt="Scanned clothing cutout"
+                style={{ transform: `scale(${scanZoom})` }}
               />
             ) : (
               <ScannerIcon />
             )}
           </button>
+          {scanPreview ? (
+            <input
+              className="listing-slider listing-scan-zoom"
+              type="range"
+              min="0.4"
+              max="2.5"
+              step="0.05"
+              aria-label="Photo size"
+              value={scanZoom}
+              onChange={(e) => setScanZoom(Number(e.target.value))}
+            />
+          ) : null}
         </>
       )}
 

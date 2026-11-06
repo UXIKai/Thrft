@@ -782,3 +782,11 @@ html body .listing-wheel .listing-wheel-input {
   font-weight: 600;
   text-align: center;
 }
+
+.listing-scanner-btn.has-preview {
+  overflow: hidden;
+}
+
+.listing-scan-zoom {
+  margin: -8px 0 18px;
+}
