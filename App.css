@@ -1455,3 +1455,15 @@
     transform: translate3d(4%, -4%, 0) scale(1.1);
   }
 }
+
+/*
+ * Popups: blur whatever sits behind them directly (preceding siblings of the
+ * popup), so the blur never depends on backdrop-filter surviving the layering.
+ */
+:has(~ :is([role='dialog'][aria-modal='true'], .brand-globe)):not(
+    .home-search-btn,
+    .atmosphere
+  ) {
+  filter: blur(14px);
+  transition: filter 0.25s ease;
+}
