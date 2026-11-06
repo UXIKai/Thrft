@@ -2334,7 +2334,7 @@ export default function ChatScreen({
 
   return (
     <div className="chat-screen">
-      {menuId && (
+      {menuId && chats.find((c) => c.id === menuId)?.kind !== 'dm' && (
         <button
           type="button"
           className="chat-menu-scrim"
@@ -2574,7 +2574,21 @@ export default function ChatScreen({
       </div>
       </StageSlot>
 
-      {renderDmMenu()}
+      {menuId &&
+        menuPos &&
+        chats.find((c) => c.id === menuId)?.kind === 'dm' &&
+        createPortal(
+          <div className="chat-dm-portal">
+            <button
+              type="button"
+              className="chat-dm-portal-scrim"
+              aria-label="Dismiss menu"
+              onClick={closeMenus}
+            />
+            {renderDmMenu()}
+          </div>,
+          document.body,
+        )}
 
       {menuId && menuPos && chats.find((c) => c.id === menuId)?.kind !== 'dm' && (
         <div
