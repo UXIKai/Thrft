@@ -93,6 +93,8 @@ const YEARS = Array.from({ length: NOW.getFullYear() - 1950 + 1 }, (_, i) => 195
 const WHEEL_ROW = 34
 
 function DateWheel({ label, items, value, onChange }) {
+  const [typing, setTyping] = useState(false)
+  const [draft, setDraft] = useState('')
   const ref = useRef(null)
   const timer = useRef(0)
 
@@ -115,6 +117,18 @@ function DateWheel({ label, items, value, onChange }) {
     return () => el.removeEventListener('wheel', onWheel)
   }, [items.length])
 
+  const commit = () => {
+    const t = draft.trim().toLowerCase()
+    setTyping(false)
+    if (!t) return
+    let idx = items.findIndex((it) => String(it).toLowerCase().startsWith(t))
+    if (idx < 0 && /^\d+$/.test(t) && label === 'Month') idx = Number(t) - 1
+    if (idx >= 0 && idx < items.length) {
+      onChange(idx)
+      ref.current?.scrollTo({ top: idx * WHEEL_ROW })
+    }
+  }
+
   const onScroll = () => {
     clearTimeout(timer.current)
     timer.current = setTimeout(() => {
@@ -126,16 +140,42 @@ function DateWheel({ label, items, value, onChange }) {
   return (
     <div className="listing-wheel" ref={ref} role="listbox" aria-label={label} onScroll={onScroll}>
       {items.map((it, i) => (
+        i === value && typing ? (
+          <input
+            key={it}
+            className="listing-wheel-input"
+            autoFocus
+            value={draft}
+            aria-label={label}
+            onChange={(e) => setDraft(e.target.value)}
+            onBlur={commit}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') e.currentTarget.blur()
+              if (e.key === 'Escape') {
+                setDraft('')
+                e.currentTarget.blur()
+              }
+            }}
+          />
+        ) : (
         <button
           key={it}
           type="button"
           role="option"
           aria-selected={i === value}
           className={`listing-wheel-item${i === value ? ' is-on' : ''}`}
-          onClick={() => ref.current.scrollTo({ top: i * WHEEL_ROW, behavior: 'smooth' })}
+          onClick={() => {
+            if (i === value) {
+              setDraft('')
+              setTyping(true)
+            } else {
+              ref.current.scrollTo({ top: i * WHEEL_ROW, behavior: 'smooth' })
+            }
+          }}
         >
           {it}
         </button>
+        )
       ))}
     </div>
   )

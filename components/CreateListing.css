@@ -760,3 +760,20 @@ html body .listing-wheel .listing-wheel-item {
 html body .listing-wheel .listing-wheel-item.is-on {
   color: #fff;
 }
+
+html body .listing-wheel .listing-wheel-input {
+  display: block;
+  width: 100%;
+  height: 34px;
+  padding: 0;
+  scroll-snap-align: center;
+  box-sizing: border-box;
+  background: none;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  text-align: center;
+}
