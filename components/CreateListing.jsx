@@ -88,7 +88,7 @@ function segmentLabel(id) {
 const NOW = new Date()
 const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
 const DAYS = Array.from({ length: 31 }, (_, i) => String(i + 1))
-const YEARS = Array.from({ length: 11 }, (_, i) => NOW.getFullYear() - 10 + i)
+const YEARS = Array.from({ length: NOW.getFullYear() - 1990 + 1 }, (_, i) => 1990 + i)
 
 const WHEEL_ROW = 34
 
