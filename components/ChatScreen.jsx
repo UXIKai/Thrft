@@ -1628,6 +1628,12 @@ export default function ChatScreen({
                       aria-label="Edit name"
                       onClick={() => {
                         closeMenus()
+                        // Focus inside the tap so iOS opens the keyboard, then hand off to the real input.
+                        const kb = document.createElement('input')
+                        kb.style.cssText = 'position:fixed;opacity:0;top:0;left:0;width:1px;height:1px;font-size:16px'
+                        document.body.appendChild(kb)
+                        kb.focus({ preventScroll: true })
+                        setTimeout(() => kb.remove(), 800)
                         if (peerProfile) {
                           setNickDraft(peerProfile.name)
                           setEditingNick(true)
