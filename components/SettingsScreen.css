@@ -2492,3 +2492,14 @@
   background: none;
   box-shadow: none;
 }
+
+/* Everything behind the open photo panel is blurred out */
+.settings-palette-block.is-photo-open > :not(.settings-photo-fill) {
+  filter: blur(18px);
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+.settings-photo-fill {
+  background: color-mix(in srgb, var(--atmosphere-base, #050505) 55%, rgba(60, 60, 60, 0.4));
+}

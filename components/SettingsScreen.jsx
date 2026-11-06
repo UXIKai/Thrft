@@ -1093,7 +1093,7 @@ export default function SettingsScreen({
 
       <div className="settings-scroll">
         <Section label="Appearance">
-          <div className="settings-block settings-palette-block">
+          <div className={`settings-block settings-palette-block${photoMenuOpen ? ' is-photo-open' : ''}`}>
             <button
               type="button"
               className="settings-palette-edit"
