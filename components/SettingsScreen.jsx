@@ -577,6 +577,21 @@ function CloseIcon() {
   )
 }
 
+function ProfileIcon() {
+  return (
+    <svg className="settings-pencil-ico" viewBox="0 0 24 24" aria-hidden>
+      <circle cx="12" cy="8.2" r="3.1" fill="none" stroke="currentColor" strokeWidth="1.7" />
+      <path
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+        d="M5.5 19.2c.6-3.3 3.2-5.2 6.5-5.2s5.9 1.9 6.5 5.2"
+      />
+    </svg>
+  )
+}
+
 function PencilIcon() {
   return (
     <svg className="settings-pencil-ico" viewBox="0 0 24 24" aria-hidden>
@@ -1391,7 +1406,7 @@ export default function SettingsScreen({
 
         <Section label="Account Settings">
           <Row
-            icon={<PencilIcon />}
+            icon={<ProfileIcon />}
             title="Profile"
             onClick={onEditProfile}
           />
