@@ -230,3 +230,35 @@
   background-size: 250% 100%;
   animation: home-search-shine 5s linear infinite;
 }
+
+/* White card on a black backdrop */
+html body .home-search-blur {
+  background: #000 !important;
+  background-image: none !important;
+  animation: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+html body .home-search-blur::after {
+  display: none;
+}
+
+html body .home-search-modal {
+  background: #fff !important;
+  border: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.5);
+}
+
+html body .home-search-modal .home-search-label {
+  color: rgba(0, 0, 0, 0.55);
+}
+
+html body .home-search-modal .home-search-orbit .type-box,
+html body .home-search-modal .home-search-orbit .type-box.is-wheel,
+html body .home-search-modal .home-search-done {
+  color: #000;
+  text-shadow: none;
+}
