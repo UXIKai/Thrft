@@ -176,6 +176,26 @@ export default function ProductDetail({
               <PlusIcon />
             </button>
           </div>
+          <button
+            type="button"
+            className="product-detail-step product-detail-cancel is-bare"
+            aria-label="Cancel"
+            tabIndex={added ? 0 : -1}
+            onClick={() => {
+              setPicking(false)
+              setQty(1)
+            }}
+          >
+            <svg viewBox="0 0 24 24" aria-hidden>
+              <path
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+                d="M6 6l12 12M18 6 6 18"
+              />
+            </svg>
+          </button>
         </div>
       </div>
     </div>,
