@@ -1108,33 +1108,34 @@ export default function SettingsScreen({
           <BackIcon />
         </button>
         <h1 className="settings-title" aria-label="Settings" />
-        <button
-          type="button"
-          role="switch"
-          aria-checked={bgEffectOn}
-          aria-label="Background effect"
-          className={`settings-effect-switch is-bare${bgEffectOn ? ' is-on' : ''}`}
-          style={{
-            background: bgEffectOn ? '#000' : '#fff',
-            boxShadow: 'none',
-            opacity: 1,
-          }}
-          onClick={() => {
-            const next = bgEffectOn ? 'none' : 'atmosphere'
-            applyBackgroundImage(next)
-            setBgEffectOn(next === 'atmosphere')
-          }}
-        >
-          <span
-            className="settings-effect-knob"
-            style={{ background: bgEffectOn ? '#fff' : '#000' }}
-          />
-        </button>
+        <span className="settings-top-spacer" aria-hidden />
       </header>
 
       <div className="settings-scroll">
         <Section label="Appearance">
           <div className={`settings-block settings-palette-block${photoMenuOpen ? ' is-photo-open' : ''}`}>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={bgEffectOn}
+              aria-label="Background effect"
+              className={`settings-effect-switch is-bare is-in-block${bgEffectOn ? ' is-on' : ''}`}
+              style={{
+                background: bgEffectOn ? '#000' : '#fff',
+                boxShadow: 'none',
+                opacity: 1,
+              }}
+              onClick={() => {
+                const next = bgEffectOn ? 'none' : 'atmosphere'
+                applyBackgroundImage(next)
+                setBgEffectOn(next === 'atmosphere')
+              }}
+            >
+              <span
+                className="settings-effect-knob"
+                style={{ background: bgEffectOn ? '#fff' : '#000' }}
+              />
+            </button>
             <div className="settings-color-stack">
               <div className="settings-color-group">
                 <p className="settings-color-caption">Containers</p>

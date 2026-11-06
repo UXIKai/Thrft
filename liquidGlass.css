@@ -199,3 +199,7 @@ html body button.settings-effect-switch.is-on .settings-effect-knob {
   background: #fff;
   transform: translateX(18px);
 }
+
+html body button.settings-effect-switch.is-in-block {
+  position: absolute;
+}
