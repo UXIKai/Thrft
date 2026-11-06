@@ -2509,3 +2509,21 @@
 .settings-slider-block {
   padding-bottom: 19px;
 }
+
+.settings-photo-wrap {
+  position: static;
+}
+
+.settings-palette-edit.is-bottom {
+  top: auto;
+  bottom: 8px;
+  right: 8px;
+}
+
+@media (max-width: 640px) {
+  .settings-palette-edit.is-bottom {
+    top: auto;
+    bottom: 6px;
+    right: 6px;
+  }
+}

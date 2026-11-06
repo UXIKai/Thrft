@@ -1213,7 +1213,7 @@ export default function SettingsScreen({
                   <span className="settings-photo-wrap">
                     <button
                       type="button"
-                      className="settings-choose is-color-side"
+                      className="settings-palette-edit is-bottom"
                       aria-label="Edit color palette"
                       title="Edit palette"
                       onClick={() => setPaletteEditorOpen(true)}
