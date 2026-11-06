@@ -64,7 +64,12 @@ const TABS = [
 
 export default function TabBar({ active = 'home', onChange }) {
   return (
-    <nav className="tab-bar" aria-label="Main">
+    <nav
+      className="tab-bar"
+      aria-label="Main"
+      style={{ '--tab-i': Math.max(0, TABS.findIndex((t) => t.id === active)) }}
+    >
+      <span className="tab-pill" aria-hidden="true" />
       {TABS.map((tab) => {
         const selected = tab.id === active
         return (
