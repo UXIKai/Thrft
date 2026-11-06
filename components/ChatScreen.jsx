@@ -2323,7 +2323,7 @@ export default function ChatScreen({
               {!peerProfile.fromGroup ? (
                 <button
                   type="button"
-                  className="chat-contact-dots"
+                  className="chat-contact-dots is-bare"
                   aria-label="More"
                   ref={(el) => {
                     if (el) dotsRefs.current.set(activeChat.id, el)
