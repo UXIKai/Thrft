@@ -1726,3 +1726,13 @@ html .profile-panel.profile-edit-card {
 .tab-bar.is-dragging .tab-pill {
   transform: none;
 }
+
+/* magnify is immediate; no delayed pop or bounce of the icon in the lens */
+.tab-lens-inner,
+.tab-bar.is-dragging .tab-lens-inner {
+  transition: none;
+}
+
+.tab-item.is-active .tab-icon {
+  animation: none;
+}
