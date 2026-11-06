@@ -596,6 +596,7 @@ export default function App() {
               setActiveAccount({ username, isOwn: true })
             }}
             onOpenProduct={setActiveProduct}
+            onShareToChat={() => setTab('chat')}
             onSignOut={async () => {
               await signOut()
               setSignedIn(false)

@@ -2649,14 +2649,14 @@
 .closet-detail-card {
   position: relative;
   z-index: 1;
-  width: 100%;
-  padding: 18px 16px calc(18px + env(safe-area-inset-bottom, 0px));
-  border-radius: 22px 22px 0 0;
+  padding: 18px 16px;
+  border-radius: 28px;
+  margin-bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+  width: calc(100% - 28px);
   background: var(--glass-clear-tint, rgba(36, 36, 36, 0.12));
   backdrop-filter: blur(12px) saturate(1.4);
   -webkit-backdrop-filter: blur(12px) saturate(1.4);
   border: 1px solid var(--glass-border, rgba(150, 150, 150, 0.2));
-  border-bottom: none;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -2718,4 +2718,53 @@
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
   box-shadow: none;
+}
+
+.closet-split {
+  position: relative;
+  width: 100%;
+  height: 48px;
+  margin-top: 4px;
+}
+
+.closet-split-plus,
+.closet-split-btn {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 48px;
+  height: 48px;
+  margin-left: -24px;
+  display: grid;
+  place-items: center;
+  border: none;
+  background: none;
+  color: #fff;
+  transition: transform 0.28s ease, opacity 0.2s ease;
+}
+
+.closet-split-plus {
+  z-index: 2;
+}
+
+.closet-split.is-open .closet-split-plus {
+  transform: rotate(45deg);
+}
+
+.closet-split-btn {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.closet-split.is-open .closet-split-btn {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.closet-split.is-open .is-market {
+  transform: translateX(-56px);
+}
+
+.closet-split.is-open .is-message {
+  transform: translateX(56px);
 }

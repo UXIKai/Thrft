@@ -625,8 +625,10 @@ export default function ProfileScreen({
   onPostListing,
   onOpenAccountPage,
   onOpenProduct,
+  onShareToChat,
   onSignOut,
 }) {
+  const [closetSplit, setClosetSplit] = useState(false)
   const [spaceTab, setSpaceTab] = useState('store') // 'store' | 'closet'
   const [panelListingTab, setPanelListingTab] = useState('active')
   const [storeProducts, setStoreProducts] = useState([])
@@ -802,6 +804,7 @@ export default function ProfileScreen({
     if (spaceTab !== 'closet') return
     setClosetItems(fetchClosetItems())
     setClosetSelected(null)
+    setClosetSplit(false)
     setClosetPostError('')
     setClosetCustomCategories(getCustomCategories())
   }, [spaceTab])
@@ -1376,6 +1379,7 @@ export default function ProfileScreen({
                         className="closet-tile is-bare"
                         onClick={() => {
                           setClosetSelected(item)
+                          setClosetSplit(false)
                           setClosetPostError('')
                         }}
                       >
@@ -1437,14 +1441,60 @@ export default function ProfileScreen({
                         {closetPostError}
                       </p>
                     ) : null}
-                    <button
-                      type="button"
-                      className="closet-detail-post"
-                      disabled={closetPosting}
-                      onClick={postClosetToMarket}
-                    >
-                      {closetPosting ? 'Posting…' : 'Post to Market'}
-                    </button>
+                    <div className={`closet-split${closetSplit ? ' is-open' : ''}`}>
+                      <button
+                        type="button"
+                        className="closet-split-btn is-bare is-market"
+                        aria-label="Post to Market"
+                        tabIndex={closetSplit ? 0 : -1}
+                        disabled={closetPosting}
+                        onClick={postClosetToMarket}
+                      >
+                        <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden>
+                          <path
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="1.8"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M4 9.5 5.5 4h13L20 9.5M4 9.5h16M4 9.5a2.7 2.7 0 0 0 5.3 0 2.7 2.7 0 0 0 5.4 0 2.7 2.7 0 0 0 5.3 0M5.5 12.5V20h13v-7.5M10 20v-4.5h4V20"
+                          />
+                        </svg>
+                      </button>
+                      <button
+                        type="button"
+                        className="closet-split-plus is-bare"
+                        aria-label={closetSplit ? 'Close' : 'Share'}
+                        onClick={() => setClosetSplit((v) => !v)}
+                      >
+                        <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden>
+                          <path
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="1.8"
+                            strokeLinecap="round"
+                            d="M12 5v14M5 12h14"
+                          />
+                        </svg>
+                      </button>
+                      <button
+                        type="button"
+                        className="closet-split-btn is-bare is-message"
+                        aria-label="Send in a message"
+                        tabIndex={closetSplit ? 0 : -1}
+                        onClick={() => {
+                          setClosetSelected(null)
+                          onShareToChat?.()
+                        }}
+                      >
+                        <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden>
+                          <path
+                            fill="currentColor"
+                            d="M5 4h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-7l-5 4v-4H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"
+                          />
+                        </svg>
+                      </button>
+                    </div>
                   </div>
                 </div>
               )}
