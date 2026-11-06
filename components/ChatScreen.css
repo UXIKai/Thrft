@@ -2794,3 +2794,20 @@
 .chat-dock-new.is-sheet-open {
   transform: rotate(45deg);
 }
+
+/* Contact card fills the whole screen */
+.stage > .chat-contact-sheet .chat-contact-card {
+  width: 100%;
+  height: 100%;
+  max-height: none;
+  box-sizing: border-box;
+  justify-content: center;
+  border-radius: 0;
+  border: none;
+  overflow-y: auto;
+  padding: calc(env(safe-area-inset-top, 0px) + 28px) 20px calc(env(safe-area-inset-bottom, 0px) + 28px);
+}
+
+.stage > .chat-contact-sheet .chat-contact-actions {
+  max-width: 480px;
+}
