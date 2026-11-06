@@ -2775,6 +2775,7 @@
 
 /* Collapsed + sits where the X lands; it turns into the X when search opens */
 .chat-dock-collapsed {
+  height: 62px;
   margin-right: 7px;
 }
 
