@@ -1746,3 +1746,20 @@ html .profile-panel.profile-edit-card {
   color: rgba(255, 255, 255, 0.92);
   filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.55));
 }
+
+/* liquid refraction while held (colorless) */
+.tab-bar.is-dragging .tab-lens-inner {
+  filter: url('#lg-lens') drop-shadow(0 1px 2px rgba(0, 0, 0, 0.55));
+}
+
+.tab-bar.is-dragging .tab-pill {
+  box-shadow:
+    inset 0 3px 8px -4px rgba(255, 255, 255, 0.18),
+    inset 0 -3px 8px -4px rgba(0, 0, 0, 0.14);
+}
+
+@supports (backdrop-filter: url('#lg-lens-bg')) {
+  html body .tab-bar.is-dragging .tab-pill {
+    backdrop-filter: blur(0.5px) url('#lg-lens-bg');
+  }
+}

@@ -51,6 +51,16 @@ export default function LiquidGlassDefs() {
           <feGaussianBlur in="n" stdDeviation="1" result="s" />
           <feDisplacementMap in="SourceGraphic" in2="s" scale="48" xChannelSelector="R" yChannelSelector="G" />
         </filter>
+        <filter id="lg-lens" x="-10%" y="-10%" width="120%" height="120%" colorInterpolationFilters="sRGB">
+          <feTurbulence type="fractalNoise" baseFrequency="0.014 0.02" numOctaves="2" seed="11" result="n" />
+          <feGaussianBlur in="n" stdDeviation="1.5" result="s" />
+          <feDisplacementMap in="SourceGraphic" in2="s" scale="14" xChannelSelector="R" yChannelSelector="G" />
+        </filter>
+        <filter id="lg-lens-bg" x="-10%" y="-10%" width="120%" height="120%" colorInterpolationFilters="sRGB">
+          <feTurbulence type="fractalNoise" baseFrequency="0.012 0.02" numOctaves="2" seed="4" result="n" />
+          <feGaussianBlur in="n" stdDeviation="1.5" result="s" />
+          <feDisplacementMap in="SourceGraphic" in2="s" scale="40" xChannelSelector="R" yChannelSelector="G" />
+        </filter>
       </defs>
     </svg>
   )
