@@ -92,20 +92,20 @@ html body .tab-bar .tab-items {
   z-index: 2;
 }
 
-/* Keep headers below the notch / status bar */
+/* Keep headers below the notch / blurry browser top bar */
 html body .glass-overlay-top,
-html body .settings-top {
-  padding-top: max(4px, env(safe-area-inset-top, 0px));
-}
-
-html body .profile-top {
-  padding-top: max(10px, env(safe-area-inset-top, 0px));
-}
-
-html body .auth-top {
-  padding-top: max(10px, env(safe-area-inset-top, 0px));
-}
-
+html body .settings-top,
+html body .profile-top,
+html body .auth-top,
 html body .auth-top.is-brand-only {
-  padding-top: max(28px, env(safe-area-inset-top, 0px));
+  padding-top: max(calc(env(safe-area-inset-top, 0px) + 8px), 54px);
+}
+
+/* settings pencil: no container */
+html body button.settings-palette-edit {
+  background: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
