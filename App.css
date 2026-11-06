@@ -1222,7 +1222,7 @@
   right: auto;
   width: var(--dock-bar-width);
   transform: translateX(-50%);
-  bottom: max(4px, calc(env(safe-area-inset-bottom, 0px) * 0.3));
+  bottom: calc(max(4px, env(safe-area-inset-bottom, 0px) * 0.3) + 15px);
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   align-items: center;
