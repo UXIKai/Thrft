@@ -40,8 +40,7 @@ html body button:not(:is(.auth-social-btn,.auth-switch-link,.brand-globe-close,.
 
 /* Navigation bar: refraction lives on pseudo layers under the icons */
 html body .tab-bar {
-  /* faint neutral frost so the bar stays visible on any background */
-  background: rgba(150, 150, 156, 0.1) !important;
+  background: rgba(255, 255, 255, 0.015);
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
   border: 0.5px solid rgba(255, 255, 255, 0.32);
@@ -64,21 +63,9 @@ html body .tab-bar::after {
   background: none;
 }
 
-/* Frosted bar with a clear window where the sliding pill sits */
 html body .tab-bar::before {
-  backdrop-filter: blur(6px) saturate(1.15);
-  -webkit-backdrop-filter: blur(6px) saturate(1.15);
-  /* pill-shaped clear window that slides with the lens */
-  -webkit-mask-image: url("data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%20100%20100%27%20preserveAspectRatio%3D%27none%27%3E%3Crect%20width%3D%27100%27%20height%3D%27100%27%20rx%3D%2750%27%20ry%3D%2750%27/%3E%3C/svg%3E"), linear-gradient(#000, #000);
-  mask-image: url("data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%20100%20100%27%20preserveAspectRatio%3D%27none%27%3E%3Crect%20width%3D%27100%27%20height%3D%27100%27%20rx%3D%2750%27%20ry%3D%2750%27/%3E%3C/svg%3E"), linear-gradient(#000, #000);
-  -webkit-mask-size: 20% 100%, 100% 100%;
-  mask-size: 20% 100%, 100% 100%;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-position: calc(var(--tab-i, 0) * 25%) 0, 0 0;
-  mask-position: calc(var(--tab-i, 0) * 25%) 0, 0 0;
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
 }
 
 /* stronger bend and magnification toward the bottom border */
@@ -91,7 +78,7 @@ html body .tab-bar::after {
 
 @supports (backdrop-filter: url('#lg-nav')) and (not (-webkit-touch-callout: none)) {
   html body .tab-bar::before {
-    backdrop-filter: blur(6px) saturate(1.15) url('#lg-nav');
+    backdrop-filter: blur(2px) url('#lg-nav');
   }
   html body .tab-bar::after {
     backdrop-filter: blur(1px) url('#lg-nav-edge');
