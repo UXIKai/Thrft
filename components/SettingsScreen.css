@@ -2383,3 +2383,18 @@
   margin: 10px 0;
   flex: 0 0 1px;
 }
+
+.settings-section.is-side-by-side .settings-row {
+  justify-content: center;
+  text-align: center;
+}
+
+.settings-section.is-side-by-side .settings-row > svg:last-child,
+.settings-section.is-side-by-side .settings-row .settings-chevron {
+  display: none;
+}
+
+.settings-section.is-side-by-side .settings-row-copy {
+  flex: 0 1 auto;
+  text-align: center;
+}
