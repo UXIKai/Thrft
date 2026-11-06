@@ -12,6 +12,7 @@ let maxHeight = 0
 let lastLandscape = null
 
 let lastKb = 0
+let kbShift = 0
 
 function fitScreen() {
   const vv = window.visualViewport
@@ -47,7 +48,8 @@ function fitScreen() {
   // iOS pans the visual viewport to reveal the field; pin the app to it so nothing appears to move.
   const pan = vv ? Math.max(0, Math.round(vv.offsetTop)) : 0
   const app = document.getElementById('root')
-  if (app) app.style.transform = pan ? `translateY(${pan}px)` : ''
+  const dy = pan - kbShift
+  if (app) app.style.transform = dy ? `translateY(${dy}px)` : ''
   if (kb > 120) lastKb = kb
   const focusedField = document.activeElement?.closest?.('.chat-compose')
   root.style.setProperty('--kb-height', `${kb > 120 ? kb : focusedField && lastKb ? lastKb : 0}px`)
@@ -69,24 +71,57 @@ function resetPage() {
     }, ms),
   )
 }
-// Raise the bar above the keyboard *before* focusing so iOS sees the field as
+const TEXT_TYPES = /^(text|search|email|password|url|tel|number)$/i
+
+function isTextField(t) {
+  return (
+    t instanceof HTMLTextAreaElement ||
+    (t instanceof HTMLInputElement && TEXT_TYPES.test(t.type))
+  )
+}
+
+// Fields outside the chat bar: lift the page just enough to keep the field above the keyboard.
+function liftForKeyboard(el) {
+  if (!el || el.closest('.chat-compose')) {
+    kbShift = 0
+    return
+  }
+  const r = el.getBoundingClientRect()
+  const visibleBottom = window.innerHeight - (lastKb || 346)
+  const need = r.bottom + kbShift + 16 - visibleBottom
+  const room = r.top + kbShift - 70
+  kbShift = Math.max(0, Math.round(Math.min(need, room)))
+  fitScreen()
+}
+
+// Move things above the keyboard *before* focusing so iOS sees the field as
 // already visible and never pans the page.
 document.addEventListener(
   'touchstart',
   (e) => {
     const t = e.target
-    if (!(t instanceof HTMLTextAreaElement) || !t.closest('.chat-compose')) return
-    if (document.activeElement === t) return
+    if (!isTextField(t) || document.activeElement === t) return
     e.preventDefault()
-    document.documentElement.style.setProperty('--kb-height', `${lastKb || 346}px`)
+    if (t.closest('.chat-compose')) {
+      document.documentElement.style.setProperty('--kb-height', `${lastKb || 346}px`)
+    } else {
+      liftForKeyboard(t)
+    }
     t.focus({ preventScroll: true })
     setTimeout(fitScreen, 350)
   },
   { passive: false },
 )
+document.addEventListener('focusin', (e) => {
+  const t = e.target
+  if (isTextField(t) && !t.closest('.chat-compose')) liftForKeyboard(t)
+})
 document.addEventListener('focusout', (e) => {
   const t = e.target
-  if (t && /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)) resetPage()
+  if (t && /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)) {
+    kbShift = 0
+    resetPage()
+  }
 })
 
 fitScreen()
