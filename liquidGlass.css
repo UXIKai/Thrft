@@ -169,29 +169,21 @@ html body :is(.settings-block, .profile-credits-card, .profile-music-card, .list
   border-bottom: calc(20px * var(--container-edge, 0)) solid transparent !important;
 }
 
-html body button.settings-effect-switch {
-  background: rgba(var(--bg-color-rgb, 36, 36, 36), 0.45) !important;
+html body button.settings-effect-switch,
+html[data-bg-color='none'] body button.settings-effect-switch {
+  background: #fff !important;
   border: 0 !important;
   border-radius: 999px !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25) !important;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.18) !important;
 }
-html body button.settings-effect-switch.is-on {
-  background: rgb(var(--bg-color-rgb, 36, 36, 36)) !important;
-}
-
-html[data-bg-color='none'] body button.settings-effect-switch {
-  background: rgba(0, 0, 0, 0.45) !important;
-}
+html body button.settings-effect-switch.is-on,
 html[data-bg-color='none'] body button.settings-effect-switch.is-on {
   background: #000 !important;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25) !important;
 }
-
-html body button.settings-effect-switch:not(.is-on),
-html[data-bg-color='none'] body button.settings-effect-switch:not(.is-on) {
-  background: #fff !important;
-}
-html body button.settings-effect-switch:not(.is-on) .settings-effect-knob {
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.18), 0 1px 3px rgba(0, 0, 0, 0.35);
+html body button.settings-effect-switch .settings-effect-knob {
+  background: #9a9a9e;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
 }
