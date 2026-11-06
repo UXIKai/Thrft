@@ -1602,8 +1602,8 @@ html .profile-panel.profile-edit-card {
 }
 
 .tab-pill {
-  top: -7px;
-  bottom: -7px;
+  top: 0;
+  bottom: 0;
   width: 20%;
   left: calc(var(--tab-i, 0) * 20%);
   overflow: hidden;
@@ -1632,15 +1632,15 @@ html .profile-panel.profile-edit-card {
 /* magnified copy of the icons, aligned with the real ones */
 .tab-lens-inner {
   position: absolute;
-  top: 7px;
-  bottom: 7px;
+  top: 0;
+  bottom: 0;
   left: calc(var(--tab-i, 0) * -100%);
   width: 500%;
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   align-items: center;
   justify-items: center;
-  transform: scale(1.45);
+  transform: scale(1);
   transform-origin: calc((var(--tab-i, 0) + 0.5) * 20%) 50%;
   color: #fff;
   pointer-events: none;
@@ -1697,4 +1697,20 @@ html .profile-panel.profile-edit-card {
 .tab-bar.is-dragging .tab-pill,
 .tab-lens-inner {
   transition: none;
+}
+
+/* lens fits the bar at rest; grows and magnifies only while held */
+.tab-pill,
+.tab-lens-inner {
+  transition: transform 0.25s ease;
+}
+
+.tab-bar.is-dragging .tab-pill {
+  transition: transform 0.25s ease;
+  transform: scale(1.3);
+}
+
+.tab-bar.is-dragging .tab-lens-inner {
+  transition: transform 0.25s ease;
+  transform: scale(1.2);
 }
