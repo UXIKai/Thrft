@@ -2313,14 +2313,15 @@
   min-width: 0;
   max-width: calc(100vw - 120px);
   min-height: 40px;
-  padding: 0 12px;
-  border-radius: 10px;
-  border: 1px solid var(--glass-border, rgba(150, 150, 150, 0.2));
-  background: var(--glass-clear-tint, rgba(36, 36, 36, 0.04));
+  padding: 0;
+  border-radius: 0;
+  border: none;
+  box-shadow: none;
+  background: none;
   color: #fff;
   outline: none;
   font-family: inherit;
-  font-size: 0.95rem;
+  font-size: 1.1rem;
   font-weight: 700;
   text-align: center;
 }
