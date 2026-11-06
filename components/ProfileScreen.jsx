@@ -1484,6 +1484,7 @@ export default function ProfileScreen({
                         alt=""
                       />
                     ) : null}
+                    <div className="closet-detail-info">
                     <p className="closet-detail-title">
                       {closetSelected.title ||
                         `${closetSelected.brand} ${closetSelected.category}`}
@@ -1576,6 +1577,7 @@ export default function ProfileScreen({
                           />
                         </svg>
                       </button>
+                    </div>
                     </div>
                   </div>
                   {closetPickOpen ? (
