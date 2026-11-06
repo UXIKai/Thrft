@@ -175,3 +175,57 @@
   pointer-events: auto;
   transform: translateY(-50%) scale(1);
 }
+
+/* Picker: the number takes the plus's spot; check left, X right, minus above, plus below */
+.product-detail-buy {
+  width: 36px;
+  height: 36px;
+  margin: 0 auto;
+}
+
+.product-detail-add {
+  position: absolute;
+  inset: 0;
+  transition: opacity 0.2s ease, transform 0.3s ease;
+}
+
+.product-detail-buy.is-added .product-detail-add {
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.5) rotate(90deg);
+}
+
+.product-detail-stepper {
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.6);
+  transform-origin: center;
+}
+
+.product-detail-buy.is-added .product-detail-stepper {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.product-detail-confirm,
+.product-detail-cancel {
+  position: absolute;
+  top: 50%;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-50%) scale(0.6);
+  transition: opacity 0.25s ease, transform 0.4s cubic-bezier(0.34, 1.3, 0.5, 1);
+}
+
+.product-detail-confirm {
+  right: calc(50% + 18px);
+}
+
+.product-detail-cancel {
+  left: calc(50% + 18px);
+}
+
+.product-detail-buy.is-added .product-detail-confirm,
+.product-detail-buy.is-added .product-detail-cancel {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(-50%) scale(1);
+}

@@ -140,18 +140,20 @@ export default function ProductDetail({
           <button
             type="button"
             className="product-detail-add"
-            aria-label={added ? 'Add selected to bag' : 'Choose amount'}
-            aria-pressed={added}
-            onClick={added ? confirm : start}
+            aria-label="Choose amount"
+            tabIndex={added ? -1 : 0}
+            onClick={start}
           >
-            <span className={`product-detail-swap${added ? ' is-check' : ''}`}>
-              <span className="product-detail-swap-plus">
-                <PlusIcon />
-              </span>
-              <span className="product-detail-swap-check">
-                <CheckIcon />
-              </span>
-            </span>
+            <PlusIcon />
+          </button>
+          <button
+            type="button"
+            className="product-detail-step product-detail-confirm is-bare"
+            aria-label="Add selected to bag"
+            tabIndex={added ? 0 : -1}
+            onClick={confirm}
+          >
+            <CheckIcon />
           </button>
           <div className="product-detail-stepper" aria-hidden={!added}>
             <button
