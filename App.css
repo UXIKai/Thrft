@@ -222,6 +222,12 @@
   position: absolute;
   inset: -50%;
   background:
+    linear-gradient(
+      180deg,
+      rgba(var(--atmosphere-effect-b-rgb, 150, 150, 150), 0.42) 0%,
+      rgba(var(--atmosphere-effect-b-rgb, 150, 150, 150), 0.3) 24%,
+      transparent 50%
+    ),
     radial-gradient(
       circle at 26% 2%,
       rgba(var(--atmosphere-effect-a-rgb, 200, 200, 200), 0.45),
