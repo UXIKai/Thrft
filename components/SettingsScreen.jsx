@@ -308,9 +308,9 @@ function CheckIcon() {
   )
 }
 
-function Section({ label, children }) {
+function Section({ label, children, className = '' }) {
   return (
-    <section className="settings-section" aria-label={label}>
+    <section className={`settings-section ${className}`.trim()} aria-label={label}>
       <div className="settings-card">{children}</div>
     </section>
   )
@@ -1468,7 +1468,7 @@ export default function SettingsScreen({
           </div>
         </Section>
 
-        <Section label="Help & Support">
+        <Section label="Help & Support" className="is-side-by-side">
           <Row icon={<PlayIcon />} title="Introduction" onClick={() => setHelpPage('started')} />
           <div className="settings-divider" aria-hidden />
           <Row icon={<HelpIcon />} title="Q&A" onClick={openHelpAssistant} />
