@@ -1114,13 +1114,23 @@ export default function SettingsScreen({
           aria-checked={bgEffectOn}
           aria-label="Background effect"
           className={`settings-effect-switch is-bare${bgEffectOn ? ' is-on' : ''}`}
+          style={{
+            background: bgEffectOn ? '#000' : '#fff',
+            boxShadow: bgEffectOn
+              ? 'inset 0 0 0 2px #fff, 0 0 0 1px rgba(255,255,255,0.35)'
+              : 'inset 0 0 0 2px #000',
+            opacity: 1,
+          }}
           onClick={() => {
             const next = bgEffectOn ? 'none' : 'atmosphere'
             applyBackgroundImage(next)
             setBgEffectOn(next === 'atmosphere')
           }}
         >
-          <span className="settings-effect-knob" />
+          <span
+            className="settings-effect-knob"
+            style={{ background: bgEffectOn ? '#fff' : '#000' }}
+          />
         </button>
       </header>
 
