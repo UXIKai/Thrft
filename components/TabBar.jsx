@@ -1,3 +1,5 @@
+import { useRef, useState } from 'react'
+
 const TABS = [
   {
     id: 'home',
@@ -63,13 +65,59 @@ const TABS = [
 ]
 
 export default function TabBar({ active = 'home', onChange }) {
+  const navRef = useRef(null)
+  const dragRef = useRef(null)
+  const activeIdx = Math.max(0, TABS.findIndex((t) => t.id === active))
+  const [dragPos, setDragPos] = useState(null)
+
+  const posFromEvent = (e) => {
+    const r = navRef.current.getBoundingClientRect()
+    const raw = ((e.clientX - r.left) / r.width) * TABS.length - 0.5
+    return Math.min(TABS.length - 1, Math.max(0, raw))
+  }
+
+  const onPointerDown = (e) => {
+    if (e.button !== undefined && e.button !== 0) return
+    dragRef.current = { moved: false, startX: e.clientX }
+    navRef.current.setPointerCapture?.(e.pointerId)
+    setDragPos(posFromEvent(e))
+  }
+  const onPointerMove = (e) => {
+    const d = dragRef.current
+    if (!d) return
+    if (Math.abs(e.clientX - d.startX) > 4) d.moved = true
+    setDragPos(posFromEvent(e))
+  }
+  const endDrag = (e, commit) => {
+    const d = dragRef.current
+    if (!d) return
+    dragRef.current = null
+    const idx = Math.round(posFromEvent(e))
+    setDragPos(null)
+    if (commit && TABS[idx] && TABS[idx].id !== active) onChange?.(TABS[idx].id)
+  }
+
+  const pos = dragPos ?? activeIdx
   return (
     <nav
-      className="tab-bar"
+      ref={navRef}
+      className={`tab-bar ${dragPos !== null ? 'is-dragging' : ''}`}
       aria-label="Main"
-      style={{ '--tab-i': Math.max(0, TABS.findIndex((t) => t.id === active)) }}
+      style={{ '--tab-i': pos, touchAction: 'none' }}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={(e) => endDrag(e, true)}
+      onPointerCancel={(e) => endDrag(e, false)}
     >
-      <span className="tab-pill" aria-hidden="true" />
+      <span className="tab-pill" aria-hidden="true">
+        <span className="tab-lens-inner">
+          {TABS.map((tab) => (
+            <span key={tab.id} className="tab-lens-item">
+              {tab.icon}
+            </span>
+          ))}
+        </span>
+      </span>
       {TABS.map((tab) => {
         const selected = tab.id === active
         return (
@@ -79,7 +127,9 @@ export default function TabBar({ active = 'home', onChange }) {
             className={`tab-item ${selected ? 'is-active' : ''}`}
             aria-current={selected ? 'page' : undefined}
             aria-label={tab.label}
-            onClick={() => onChange?.(tab.id)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') onChange?.(tab.id)
+            }}
           >
             {tab.icon}
           </button>

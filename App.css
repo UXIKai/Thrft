@@ -1575,19 +1575,21 @@ html .profile-panel.profile-edit-card {
   color: #fff;
 }
 
-/* Liquid Glass nav (Apple Music style): smoky clear capsule, lens-like selected tab */
+/* Liquid Glass nav: clear as water, draggable magnifying lens */
 .tab-bar {
   overflow: visible;
-  background: rgba(60, 60, 60, 0.38);
-  backdrop-filter: blur(3px) saturate(1.4);
-  -webkit-backdrop-filter: blur(3px) saturate(1.4);
+  background: rgba(255, 255, 255, 0.015);
+  backdrop-filter: blur(0.5px);
+  -webkit-backdrop-filter: blur(0.5px);
   border: 0;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
   box-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.35),
-    inset 0 -1px 1px rgba(255, 255, 255, 0.2),
-    inset 6px 6px 14px -8px rgba(255, 255, 255, 0.4),
-    inset -6px -6px 14px -8px rgba(255, 255, 255, 0.25),
-    0 8px 24px rgba(0, 0, 0, 0.25);
+    inset 0 0 0 0.5px rgba(255, 255, 255, 0.3),
+    inset 0 1px 1px rgba(255, 255, 255, 0.3),
+    inset 0 -1px 1px rgba(255, 255, 255, 0.18),
+    0 6px 20px rgba(0, 0, 0, 0.14);
 }
 
 .tab-bar::before,
@@ -1595,20 +1597,71 @@ html .profile-panel.profile-edit-card {
   display: none;
 }
 
+.tab-item {
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.55));
+}
+
 .tab-pill {
   top: -7px;
   bottom: -7px;
-  width: calc(20% + 8px);
-  left: calc(var(--tab-i, 0) * 20% - 4px);
+  width: 20%;
+  left: calc(var(--tab-i, 0) * 20%);
+  overflow: hidden;
   border: 0;
-  background: radial-gradient(ellipse at 50% 50%, rgba(255, 255, 255, 0.03) 55%, rgba(0, 0, 0, 0.28) 100%);
-  backdrop-filter: blur(1px) saturate(1.8) brightness(1.1);
-  -webkit-backdrop-filter: blur(1px) saturate(1.8) brightness(1.1);
+  border-radius: 999px;
+  background: radial-gradient(ellipse at 50% 50%, rgba(255, 255, 255, 0.02) 60%, rgba(0, 0, 0, 0.22) 100%);
+  backdrop-filter: saturate(1.8) brightness(1.1);
+  -webkit-backdrop-filter: saturate(1.8) brightness(1.1);
   box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 255, 0.35),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.4),
     inset 3px 3px 6px -2px rgba(90, 160, 255, 0.55),
     inset -3px -3px 6px -2px rgba(190, 90, 255, 0.45),
     inset 0 5px 8px -4px rgba(120, 255, 190, 0.4),
     inset 0 -5px 8px -4px rgba(255, 255, 255, 0.35),
-    0 3px 10px rgba(0, 0, 0, 0.3);
+    0 3px 10px rgba(0, 0, 0, 0.25);
+  transition:
+    left 0.45s cubic-bezier(0.34, 1.28, 0.5, 1),
+    transform 0.25s ease;
+}
+
+.tab-bar.is-dragging {
+  cursor: grabbing;
+}
+
+.tab-bar.is-dragging .tab-pill {
+  transition: transform 0.25s ease;
+  transform: scale(1.18);
+}
+
+/* magnified copy of the icons, aligned with the real ones */
+.tab-lens-inner {
+  position: absolute;
+  top: 7px;
+  bottom: 7px;
+  left: calc(var(--tab-i, 0) * -100%);
+  width: 500%;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  align-items: center;
+  justify-items: center;
+  transform: scale(1.45);
+  transform-origin: calc((var(--tab-i, 0) + 0.5) * 20%) 50%;
+  color: #4aa3ff;
+  pointer-events: none;
+  transition: left 0.45s cubic-bezier(0.34, 1.28, 0.5, 1), transform-origin 0.45s cubic-bezier(0.34, 1.28, 0.5, 1);
+}
+
+.tab-bar.is-dragging .tab-lens-inner {
+  transition: none;
+}
+
+.tab-lens-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tab-lens-item .tab-icon {
+  width: 26px;
+  height: 26px;
 }
