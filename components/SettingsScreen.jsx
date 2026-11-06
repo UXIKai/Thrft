@@ -1264,56 +1264,12 @@ export default function SettingsScreen({
                       className="settings-choose is-color-side"
                       aria-label="Background photo"
                       title="Background photo"
-                      aria-haspopup="menu"
+                      aria-haspopup="dialog"
                       aria-expanded={photoMenuOpen}
                       onClick={() => setPhotoMenuOpen((v) => !v)}
                     >
                       <ImageIcon />
                     </button>
-                    {photoMenuOpen && (
-                      <>
-                        <button
-                          type="button"
-                          className="settings-photo-scrim"
-                          aria-label="Dismiss"
-                          onClick={() => setPhotoMenuOpen(false)}
-                        />
-                        <div className="settings-photo-menu" role="menu">
-                          <button
-                            type="button"
-                            role="menuitem"
-                            className="settings-photo-btn"
-                            aria-label="Take a photo"
-                            onClick={() => cameraInputRef.current?.click()}
-                          >
-                            <svg viewBox="0 0 24 24" aria-hidden>
-                              <path d="M4 8.5A1.5 1.5 0 015.5 7H8l1.2-2h5.6L16 7h2.5A1.5 1.5 0 0120 8.5v9a1.5 1.5 0 01-1.5 1.5h-13A1.5 1.5 0 014 17.5z" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
-                              <circle cx="12" cy="13" r="3.2" fill="none" stroke="currentColor" strokeWidth="1.7" />
-                            </svg>
-                          </button>
-                          <button
-                            type="button"
-                            role="menuitem"
-                            className="settings-photo-btn"
-                            aria-label="Choose from gallery"
-                            onClick={() => galleryInputRef.current?.click()}
-                          >
-                            <ImageIcon />
-                          </button>
-                          {hasPhoto && (
-                            <button
-                              type="button"
-                              role="menuitem"
-                              className="settings-photo-btn"
-                              aria-label="Remove photo background"
-                              onClick={clearPhoto}
-                            >
-                              <CloseIcon />
-                            </button>
-                          )}
-                        </div>
-                      </>
-                    )}
                     <input
                       ref={cameraInputRef}
                       type="file"
@@ -2103,6 +2059,67 @@ export default function SettingsScreen({
           </div>
         </div>
       )}
+
+      {photoMenuOpen &&
+        createPortal(
+          <div
+            className="glass-sheet settings-wheel-sheet settings-photo-sheet"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Background photo"
+          >
+            <button
+              type="button"
+              className="glass-sheet-scrim"
+              aria-label="Dismiss"
+              onClick={() => setPhotoMenuOpen(false)}
+            />
+            <div className="glass-sheet-card settings-wheel-card settings-photo-card">
+              <div className="glass-sheet-head">
+                <button
+                  type="button"
+                  className="glass-overlay-icon-btn"
+                  aria-label="Close"
+                  onClick={() => setPhotoMenuOpen(false)}
+                >
+                  <CloseIcon />
+                </button>
+              </div>
+              <div className="settings-photo-grid">
+                <button
+                  type="button"
+                  className="settings-photo-btn"
+                  aria-label="Take a photo"
+                  onClick={() => cameraInputRef.current?.click()}
+                >
+                  <svg viewBox="0 0 24 24" aria-hidden>
+                    <path d="M4 8.5A1.5 1.5 0 015.5 7H8l1.2-2h5.6L16 7h2.5A1.5 1.5 0 0120 8.5v9a1.5 1.5 0 01-1.5 1.5h-13A1.5 1.5 0 014 17.5z" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+                    <circle cx="12" cy="13" r="3.2" fill="none" stroke="currentColor" strokeWidth="1.7" />
+                  </svg>
+                </button>
+                <button
+                  type="button"
+                  className="settings-photo-btn"
+                  aria-label="Choose from gallery"
+                  onClick={() => galleryInputRef.current?.click()}
+                >
+                  <ImageIcon />
+                </button>
+                {hasPhoto && (
+                  <button
+                    type="button"
+                    className="settings-photo-btn"
+                    aria-label="Remove photo background"
+                    onClick={clearPhoto}
+                  >
+                    <CloseIcon />
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>,
+          document.body,
+        )}
 
       {wheelOpen &&
         createPortal(
