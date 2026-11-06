@@ -216,11 +216,11 @@
 }
 
 .product-detail-confirm {
-  right: calc(50% + 18px);
+  left: calc(50% + 18px);
 }
 
 .product-detail-cancel {
-  left: calc(50% + 18px);
+  right: calc(50% + 18px);
 }
 
 .product-detail-buy.is-added .product-detail-confirm,
