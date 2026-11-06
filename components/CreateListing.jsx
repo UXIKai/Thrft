@@ -597,7 +597,6 @@ export default function CreateListing({ onPosted } = {}) {
       </label>
 
       <div className="listing-field listing-date-field">
-        </span>
         <div className="listing-date-wheels">
           <DateWheel label="Month" items={MONTHS} value={dateM - 1} onChange={(i) => setDateM(i + 1)} />
           <DateWheel label="Day" items={DAYS} value={dateD - 1} onChange={(i) => setDateD(i + 1)} />
