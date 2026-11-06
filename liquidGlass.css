@@ -66,12 +66,19 @@ html body .tab-bar::after {
 
 /* Frosted bar with a clear window where the sliding pill sits */
 html body .tab-bar::before {
-  --hole-a: calc(var(--tab-i, 0) * 20%);
-  --hole-b: calc(var(--tab-i, 0) * 20% + 20%);
   backdrop-filter: blur(6px) saturate(1.15);
   -webkit-backdrop-filter: blur(6px) saturate(1.15);
-  -webkit-mask-image: linear-gradient(90deg, #000 var(--hole-a), transparent var(--hole-a), transparent var(--hole-b), #000 var(--hole-b));
-  mask-image: linear-gradient(90deg, #000 var(--hole-a), transparent var(--hole-a), transparent var(--hole-b), #000 var(--hole-b));
+  /* pill-shaped clear window that slides with the lens */
+  -webkit-mask-image: url("data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%20100%20100%27%20preserveAspectRatio%3D%27none%27%3E%3Crect%20width%3D%27100%27%20height%3D%27100%27%20rx%3D%2750%27%20ry%3D%2750%27/%3E%3C/svg%3E"), linear-gradient(#000, #000);
+  mask-image: url("data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%20100%20100%27%20preserveAspectRatio%3D%27none%27%3E%3Crect%20width%3D%27100%27%20height%3D%27100%27%20rx%3D%2750%27%20ry%3D%2750%27/%3E%3C/svg%3E"), linear-gradient(#000, #000);
+  -webkit-mask-size: 20% 100%, 100% 100%;
+  mask-size: 20% 100%, 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: calc(var(--tab-i, 0) * 25%) 0, 0 0;
+  mask-position: calc(var(--tab-i, 0) * 25%) 0, 0 0;
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
 }
 
 /* stronger bend and magnification toward the bottom border */
