@@ -629,6 +629,8 @@ export default function ProfileScreen({
 }) {
   const [closetSplit, setClosetSplit] = useState(false)
   const [closetPeople, setClosetPeople] = useState(null)
+  const [closetPickOpen, setClosetPickOpen] = useState(false)
+  const [closetPickQuery, setClosetPickQuery] = useState('')
 
   function readChatList() {
     try {
@@ -663,6 +665,7 @@ export default function ProfileScreen({
       return
     }
     setClosetPeople(null)
+    setClosetPickOpen(false)
     setClosetSplit(false)
     setClosetSelected(null)
   }
@@ -1505,7 +1508,10 @@ export default function ProfileScreen({
                               <button
                                 type="button"
                                 className="closet-people-btn is-bare"
-                                onClick={() => sendClosetToChat(c.id)}
+                                onClick={() => {
+                                  setClosetPickQuery('')
+                                  setClosetPickOpen(true)
+                                }}
                               >
                                 {c.title || 'Chat'}
                               </button>
@@ -1572,6 +1578,53 @@ export default function ProfileScreen({
                       </button>
                     </div>
                   </div>
+                  {closetPickOpen ? (
+                    <div className="closet-pick" role="dialog" aria-label="Send to">
+                      <button
+                        type="button"
+                        className="closet-detail-x is-bare"
+                        aria-label="Close"
+                        onClick={() => setClosetPickOpen(false)}
+                      >
+                        <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden>
+                          <path
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="1.8"
+                            strokeLinecap="round"
+                            d="M6 6l12 12M18 6 6 18"
+                          />
+                        </svg>
+                      </button>
+                      <ul className="closet-pick-list">
+                        {readChatList()
+                          .filter((c) =>
+                            (c.title || '')
+                              .toLowerCase()
+                              .includes(closetPickQuery.trim().toLowerCase()),
+                          )
+                          .map((c) => (
+                            <li key={c.id}>
+                              <button
+                                type="button"
+                                className="closet-people-btn is-bare"
+                                onClick={() => sendClosetToChat(c.id)}
+                              >
+                                {c.title || 'Chat'}
+                              </button>
+                            </li>
+                          ))}
+                      </ul>
+                      <input
+                        className="closet-pick-search"
+                        type="search"
+                        placeholder="Search"
+                        value={closetPickQuery}
+                        onChange={(e) => setClosetPickQuery(e.target.value)}
+                        autoFocus
+                      />
+                    </div>
+                  ) : null}
                 </div>,
                 stageEl,
               )}
