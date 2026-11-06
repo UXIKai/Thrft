@@ -113,6 +113,15 @@ function PlusIcon() {
   )
 }
 
+function SearchIcon() {
+  return (
+    <svg className="chat-ico" viewBox="0 0 24 24" aria-hidden>
+      <circle cx="10.5" cy="10.5" r="6" fill="none" stroke="currentColor" strokeWidth="2" />
+      <path d="M15 15l5.5 5.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  )
+}
+
 function DotsIcon() {
   return (
     <svg className="chat-dots-ico" viewBox="0 0 24 24" aria-hidden>
@@ -516,6 +525,7 @@ export default function ChatScreen({
   const [dmRenaming, setDmRenaming] = useState(false)
   const [dmNameDraft, setDmNameDraft] = useState('')
   const [query, setQuery] = useState('')
+  const [searchOpen, setSearchOpen] = useState(false)
   const [composer, setComposer] = useState(null) // null | { mode: 'create'|'edit', chatId? }
   const [draftName, setDraftName] = useState('')
   const [draftMembers, setDraftMembers] = useState([])
@@ -2522,57 +2532,59 @@ export default function ChatScreen({
 
       <StageSlot>
       <div className={`chat-bottom-dock${composer ? ' is-sheet-open' : ''}${usersPickerOpen || memberGlobeVisible ? ' is-covered' : ''}`}>
-        {/* Full-width bar; back / + live inside as their own chip containers. */}
-        <div
-          className={`chat-search-bar${composer ? ' is-sheet-open' : ''}`}
-        >
-          <button
-            type="button"
-            className="chat-dock-back"
-            aria-label="Back"
-            onClick={() => onBack?.()}
-          >
-            <BackIcon />
-          </button>
-          <input
-            id="chat-search-input"
-            className={`chat-search-input${composer ? ' is-sheet-hidden' : ''}`}
-            type="text"
-            inputMode="search"
-            name="thrft_chat_search"
-            autoComplete="off"
-            autoCorrect="off"
-            spellCheck={false}
-            data-lpignore="true"
-            data-1p-ignore="true"
-            data-form-type="other"
-            placeholder=""
-            aria-label="Search chats"
-            aria-hidden={composer ? true : undefined}
-            tabIndex={composer ? -1 : undefined}
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-          />
-          {query && !composer ? (
+        {searchOpen && !composer ? (
+          <div className="chat-search-bar">
+            <input
+              id="chat-search-input"
+              className="chat-search-input"
+              type="text"
+              inputMode="search"
+              name="thrft_chat_search"
+              autoComplete="off"
+              autoCorrect="off"
+              spellCheck={false}
+              data-lpignore="true"
+              data-1p-ignore="true"
+              data-form-type="other"
+              placeholder=""
+              aria-label="Search chats"
+              autoFocus
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
             <button
               type="button"
               className="chat-search-clear"
-              aria-label="Clear search"
-              onClick={() => setQuery('')}
+              aria-label="Close search"
+              onClick={() => {
+                setQuery('')
+                setSearchOpen(false)
+              }}
             >
               <CloseIcon />
             </button>
-          ) : null}
-          <button
-            type="button"
-            className={`chat-search-add${composer ? ' is-sheet-open' : ''}`}
-            aria-label={composer ? 'Close' : 'New chat'}
-            aria-pressed={Boolean(composer)}
-            onClick={onDockPlusClick}
-          >
-            <PlusIcon />
-          </button>
-        </div>
+          </div>
+        ) : (
+          <>
+            <button
+              type="button"
+              className={`chat-search-add${composer ? ' is-sheet-open' : ''}`}
+              aria-label={composer ? 'Close' : 'New chat'}
+              aria-pressed={Boolean(composer)}
+              onClick={onDockPlusClick}
+            >
+              <PlusIcon />
+            </button>
+            <button
+              type="button"
+              className={`chat-dock-search${composer ? ' is-sheet-hidden' : ''}`}
+              aria-label="Search chats"
+              onClick={() => setSearchOpen(true)}
+            >
+              <SearchIcon />
+            </button>
+          </>
+        )}
       </div>
       </StageSlot>
 

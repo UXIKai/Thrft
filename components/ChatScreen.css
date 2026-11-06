@@ -692,12 +692,13 @@
   position: absolute;
   left: 50%;
   right: auto;
-  bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+  /* Sits above the navigation bar */
+  bottom: calc(80px + env(safe-area-inset-bottom, 0px));
   z-index: 20;
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: stretch;
+  justify-content: space-between;
   width: var(--dock-bar-width);
   max-width: calc(100% - 20px);
   margin: 0;
@@ -709,6 +710,10 @@
 .chat-bottom-dock.is-sheet-open {
   /* Pass clicks through to the sheet except the chip buttons. */
   pointer-events: none;
+}
+
+.chat-dock-search.is-sheet-hidden {
+  visibility: hidden;
 }
 
 .chat-bottom-dock.is-sheet-open .chat-dock-back,
@@ -723,6 +728,7 @@
 
 /* Back / + sit in the bar as plain icons — no chip containers */
 .chat-dock-back,
+.chat-dock-search,
 .chat-search-add {
   flex: 0 0 auto;
   width: 36px;
@@ -740,6 +746,7 @@
   cursor: pointer;
 }
 
+.chat-dock-search .chat-ico,
 .chat-dock-back .chat-ico,
 .chat-search-add .chat-ico {
   width: 18px;
@@ -842,7 +849,7 @@
   align-items: flex-end;
   justify-content: center;
   /* Sit low above the bottom + (search hides while sheet is open) */
-  padding: 12px 12px calc(78px + env(safe-area-inset-bottom, 0px));
+  padding: 12px 12px calc(150px + env(safe-area-inset-bottom, 0px));
   background: transparent;
 }
 
