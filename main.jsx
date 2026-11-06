@@ -8,13 +8,33 @@ import './liquidGlass.css'
 
 initAppearance()
 
+let maxHeight = 0
+let lastLandscape = null
+
 function fitScreen() {
   const vv = window.visualViewport
-  // iOS can leave visualViewport stale after the toolbar collapses; take the largest.
-  const height = Math.round(
+  const width = Math.round(vv?.width || window.innerWidth)
+  const landscape = window.innerWidth > window.innerHeight
+  // New orientation: forget the old maximum
+  if (landscape !== lastLandscape) {
+    lastLandscape = landscape
+    maxHeight = 0
+  }
+  // iOS can leave visualViewport / innerHeight short after the keyboard or toolbar
+  // closes (empty band at the bottom).
+  const measured = Math.round(
     Math.max(vv?.height || 0, window.innerHeight, document.documentElement.clientHeight),
   )
-  const width = Math.round(vv?.width || window.innerWidth)
+  const standalone =
+    window.navigator.standalone === true ||
+    window.matchMedia?.('(display-mode: standalone)').matches
+  const screenH = landscape
+    ? Math.min(window.screen.width, window.screen.height)
+    : Math.max(window.screen.width, window.screen.height)
+  maxHeight = Math.max(maxHeight, measured, standalone ? screenH : 0)
+  // In a browser tab the toolbar legitimately changes the height; only the
+  // installed app keeps the largest value.
+  const height = standalone ? maxHeight : measured
   // Never follow the visual viewport's offset: the keyboard must not slide the page.
   const top = 0
   const left = 0
