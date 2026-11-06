@@ -622,6 +622,7 @@ export default function SettingsScreen({
   const [hasPhoto, setHasPhoto] = useState(() => Boolean(readBackgroundPhoto()))
   const cameraInputRef = useRef(null)
   const galleryInputRef = useRef(null)
+  const [paletteTarget, setPaletteTarget] = useState('app')
   const [blankSlots, setBlankSlots] = useState(() => new Set())
   const [wheelHsv, setWheelHsv] = useState(() => hexToHsv(readCustomColorHex()))
   const [recentColors, setRecentColors] = useState(() => readRecentColors())
@@ -1948,7 +1949,26 @@ export default function SettingsScreen({
           />
           <div className="glass-sheet-card settings-palette-card">
             <div className="glass-sheet-head">
-              <h2 className="glass-sheet-title">Palette</h2>
+              <div className="settings-palette-tabs" role="tablist">
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={paletteTarget === 'app'}
+                  className={`settings-palette-tab${paletteTarget === 'app' ? ' is-active' : ''}`}
+                  onClick={() => setPaletteTarget('app')}
+                >
+                  Container
+                </button>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={paletteTarget === 'bg'}
+                  className={`settings-palette-tab${paletteTarget === 'bg' ? ' is-active' : ''}`}
+                  onClick={() => setPaletteTarget('bg')}
+                >
+                  Background
+                </button>
+              </div>
               <button
                 type="button"
                 className="glass-overlay-icon-btn"
@@ -1958,9 +1978,6 @@ export default function SettingsScreen({
                 <CloseIcon />
               </button>
             </div>
-            <p className="settings-palette-hint">
-              Tap a color to replace it. None stays first on both rows.
-            </p>
             <div
               className="settings-palette-edit-grid"
               role="list"
@@ -2000,6 +2017,10 @@ export default function SettingsScreen({
                 className="settings-palette-icon-btn"
                 aria-label="Done"
                 onClick={() => {
+                  if (blankSlots.size > 0) {
+                    if (paletteTarget === 'bg') chooseBgColor('none')
+                    else chooseAppColor('none')
+                  }
                   setPaletteEditorOpen(false)
                   setBlankSlots(new Set())
                 }}
