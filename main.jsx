@@ -11,6 +11,8 @@ initAppearance()
 let maxHeight = 0
 let lastLandscape = null
 
+let lastKb = 0
+
 function fitScreen() {
   const vv = window.visualViewport
   const width = Math.round(vv?.width || window.innerWidth)
@@ -34,9 +36,7 @@ function fitScreen() {
   maxHeight = Math.max(maxHeight, measured, standalone ? screenH : 0)
   // In a browser tab the toolbar legitimately changes the height; only the
   // installed app keeps the largest value.
-  const kbOpen = vv && window.innerHeight - vv.height > 120
-  // Keyboard open: size the app to the visible area so iOS has nothing to pan.
-  const height = kbOpen ? Math.round(vv.height) : standalone ? maxHeight : measured
+  const height = standalone ? maxHeight : measured
   // Never follow the visual viewport's offset: the keyboard must not slide the page.
   const top = 0
   const left = 0
@@ -48,7 +48,9 @@ function fitScreen() {
   const pan = vv ? Math.max(0, Math.round(vv.offsetTop)) : 0
   const app = document.getElementById('root')
   if (app) app.style.transform = pan ? `translateY(${pan}px)` : ''
-  root.style.setProperty('--kb-height', '0px')
+  if (kb > 120) lastKb = kb
+  const focusedField = document.activeElement?.closest?.('.chat-compose')
+  root.style.setProperty('--kb-height', `${kb > 120 ? kb : focusedField && lastKb ? lastKb : 0}px`)
   root.style.setProperty('--app-height', `${height}px`)
   root.style.setProperty('--app-width', `${width}px`)
   root.style.setProperty('--app-top', `${top}px`)
@@ -67,6 +69,21 @@ function resetPage() {
     }, ms),
   )
 }
+// Raise the bar above the keyboard *before* focusing so iOS sees the field as
+// already visible and never pans the page.
+document.addEventListener(
+  'touchstart',
+  (e) => {
+    const t = e.target
+    if (!(t instanceof HTMLTextAreaElement) || !t.closest('.chat-compose')) return
+    if (document.activeElement === t) return
+    e.preventDefault()
+    document.documentElement.style.setProperty('--kb-height', `${lastKb || 346}px`)
+    t.focus({ preventScroll: true })
+    setTimeout(fitScreen, 350)
+  },
+  { passive: false },
+)
 document.addEventListener('focusout', (e) => {
   const t = e.target
   if (t && /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)) resetPage()
