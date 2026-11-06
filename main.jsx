@@ -4,6 +4,7 @@ import App from './App.jsx'
 import { BagProvider } from './BagContext.jsx'
 import { initAppearance } from './appAppearance.js'
 import './index.css'
+import './liquidGlass.css'
 
 initAppearance()
 
