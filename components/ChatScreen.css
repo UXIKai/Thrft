@@ -2642,3 +2642,78 @@
   font: inherit;
   font-size: 0.86rem;
 }
+
+/* DM options: centered glass container, icon-only buttons */
+.chat-dm-menu-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.06);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.chat-dm-menu {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  padding: 22px 30px;
+  border-radius: 28px;
+  border: 0.5px solid rgba(255, 255, 255, 0.46);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.16), transparent 42%),
+    rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(22px) saturate(1.9) brightness(1.15);
+  -webkit-backdrop-filter: blur(22px) saturate(1.9) brightness(1.15);
+  box-shadow:
+    0 14px 36px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.chat-dm-menu-btn {
+  width: 44px;
+  height: 44px;
+  min-height: 44px;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  place-items: center;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: #fff;
+  cursor: pointer;
+}
+
+.chat-dm-menu-btn.is-danger {
+  color: #ff8e8e;
+}
+
+.chat-dm-menu-btn svg,
+.chat-dm-menu-ico {
+  width: 26px;
+  height: 26px;
+}
+
+.chat-dm-menu-btn:hover,
+.chat-dm-menu-btn:focus-visible {
+  filter: brightness(1.25);
+  outline: none;
+}
+
+.chat-dm-menu-input {
+  width: 180px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font: inherit;
+  outline: none;
+}

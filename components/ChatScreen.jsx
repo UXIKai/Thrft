@@ -512,6 +512,8 @@ export default function ChatScreen({
   const [chats, setChats] = useState(() => readStoredChats())
   const [memberDraft, setMemberDraft] = useState('')
   const [menuId, setMenuId] = useState(null)
+  const [dmRenaming, setDmRenaming] = useState(false)
+  const [dmNameDraft, setDmNameDraft] = useState('')
   const [query, setQuery] = useState('')
   const [composer, setComposer] = useState(null) // null | { mode: 'create'|'edit', chatId? }
   const [draftName, setDraftName] = useState('')
@@ -1226,6 +1228,15 @@ export default function ChatScreen({
   function closeMenus() {
     setMenuId(null)
     setMenuPos(null)
+    setDmRenaming(false)
+  }
+
+  function saveDmName(id) {
+    const name = dmNameDraft.trim()
+    if (name) {
+      setChats((prev) => prev.map((c) => (c.id === id ? { ...c, title: name } : c)))
+    }
+    closeMenus()
   }
 
   function closePinsMenu() {
@@ -2458,7 +2469,85 @@ export default function ChatScreen({
       </div>
       </StageSlot>
 
-      {menuId && menuPos && (
+      {menuId && chats.find((c) => c.id === menuId)?.kind === 'dm' && (
+        <div className="chat-dm-menu-backdrop" onPointerDown={(e) => {
+          if (e.target === e.currentTarget) closeMenus()
+        }}>
+          {(() => {
+            const chat = chats.find((c) => c.id === menuId)
+            return (
+              <div className="chat-dm-menu" role="menu" aria-label={`Options for ${chat.title}`}>
+                {dmRenaming ? (
+                  <>
+                    <input
+                      className="chat-dm-menu-input"
+                      type="text"
+                      value={dmNameDraft}
+                      maxLength={32}
+                      autoFocus
+                      aria-label="Name"
+                      onChange={(e) => setDmNameDraft(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') saveDmName(chat.id)
+                      }}
+                    />
+                    <button
+                      type="button"
+                      className="chat-dm-menu-btn"
+                      aria-label="Save name"
+                      onClick={() => saveDmName(chat.id)}
+                    >
+                      <svg viewBox="0 0 24 24" aria-hidden>
+                        <path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      type="button"
+                      role="menuitem"
+                      className="chat-dm-menu-btn"
+                      aria-label="Edit name"
+                      onClick={() => {
+                        setDmNameDraft(chat.title || '')
+                        setDmRenaming(true)
+                      }}
+                    >
+                      <svg viewBox="0 0 24 24" aria-hidden>
+                        <path d="M4 20l1-4L16.5 4.5a2 2 0 0 1 2.8 0l.2.2a2 2 0 0 1 0 2.8L8 19l-4 1zM14.5 6.5l3 3" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </button>
+                    <button
+                      type="button"
+                      role="menuitem"
+                      className="chat-dm-menu-btn"
+                      aria-label="Remove"
+                      onClick={() => deleteChat(chat.id)}
+                    >
+                      <svg viewBox="0 0 24 24" aria-hidden>
+                        <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" strokeWidth="1.8" />
+                        <path d="M7.5 12h9" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                      </svg>
+                    </button>
+                    <button
+                      type="button"
+                      role="menuitem"
+                      className="chat-dm-menu-btn is-danger"
+                      aria-label="Block"
+                      onClick={() => blockChat(chat.id)}
+                    >
+                      <BlockIcon className="chat-dm-menu-ico" />
+                    </button>
+                  </>
+                )}
+              </div>
+            )
+          })()}
+        </div>
+      )}
+
+      {menuId && menuPos && chats.find((c) => c.id === menuId)?.kind !== 'dm' && (
         <div
           ref={menuRef}
           className="chat-menu is-fixed"

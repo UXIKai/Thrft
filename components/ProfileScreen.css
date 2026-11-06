@@ -197,6 +197,7 @@
 }
 
 .profile-name-row {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -2703,4 +2704,13 @@
   font-family: var(--font-sans);
   font-size: 0.9rem;
   font-weight: 700;
+}
+
+/* Keep the name truly centered; the edit pencil floats beside it. */
+.profile-name-row .profile-name-edit {
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-left: 8px;
 }
