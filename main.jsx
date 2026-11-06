@@ -34,7 +34,9 @@ function fitScreen() {
   maxHeight = Math.max(maxHeight, measured, standalone ? screenH : 0)
   // In a browser tab the toolbar legitimately changes the height; only the
   // installed app keeps the largest value.
-  const height = standalone ? maxHeight : measured
+  const kbOpen = vv && window.innerHeight - vv.height > 120
+  // Keyboard open: size the app to the visible area so iOS has nothing to pan.
+  const height = kbOpen ? Math.round(vv.height) : standalone ? maxHeight : measured
   // Never follow the visual viewport's offset: the keyboard must not slide the page.
   const top = 0
   const left = 0
@@ -46,7 +48,7 @@ function fitScreen() {
   const pan = vv ? Math.max(0, Math.round(vv.offsetTop)) : 0
   const app = document.getElementById('root')
   if (app) app.style.transform = pan ? `translateY(${pan}px)` : ''
-  root.style.setProperty('--kb-height', `${kb > 120 ? kb : 0}px`)
+  root.style.setProperty('--kb-height', '0px')
   root.style.setProperty('--app-height', `${height}px`)
   root.style.setProperty('--app-width', `${width}px`)
   root.style.setProperty('--app-top', `${top}px`)
