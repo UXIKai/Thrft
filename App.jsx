@@ -570,6 +570,9 @@ export default function App() {
           <SavedScreen
             onBack={() => setTab('home')}
             onOpenProduct={setActiveProduct}
+            onOpenBrand={(brandId, brandName) =>
+              setActiveBrand({ brandId, brandName })
+            }
             favoredBrands={userProfile?.favoredBrands || []}
             onFavoredBrandsChange={async (next) => {
               await handleSaveProfile({ favoredBrands: next })

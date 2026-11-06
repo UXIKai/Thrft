@@ -323,6 +323,7 @@ const BRAND_CATALOG = buildBrandCatalog()
 export default function SavedScreen({
   onBack,
   onOpenProduct,
+  onOpenBrand,
   favoredBrands = [],
   onFavoredBrandsChange,
   onForYouRefresh,
@@ -474,10 +475,6 @@ export default function SavedScreen({
     closeGlobe()
   }
 
-  function removeFavoriteBrand(brandId) {
-    persistFavored(favoriteBrands.filter((id) => id !== brandId))
-  }
-
   function onPlusClick() {
     if (globeOpen) {
       closeGlobe()
@@ -624,8 +621,8 @@ export default function SavedScreen({
                 key={`brand-${brand.id}`}
                 type="button"
                 className="saved-item"
-                onClick={() => removeFavoriteBrand(brand.id)}
-                aria-label={`${brand.name} favorite brand. Tap to remove.`}
+                onClick={() => onOpenBrand?.(brand.id, brand.name)}
+                aria-label={`${brand.name} listings`}
               >
                 <span className="saved-item-media" aria-hidden>
                   <span className="saved-item-mark">

@@ -134,6 +134,8 @@
 
 /* Book / Settings overlays: hide underlay so atmosphere stays the backdrop */
 .stage.is-overlay-open .home-scroll,
+.stage.is-overlay-open .saved-screen,
+.stage.is-overlay-open .saved-search-dock,
 .stage.is-overlay-open .tab-bar {
   opacity: 0;
   pointer-events: none;
