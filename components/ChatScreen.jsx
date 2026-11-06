@@ -2728,6 +2728,16 @@ export default function ChatScreen({
                 Save changes
               </button>
             )}
+            {composer.mode === 'create' && (
+              <button
+                type="button"
+                className="chat-sheet-x"
+                aria-label="Close"
+                onClick={closeComposer}
+              >
+                <CloseIcon />
+              </button>
+            )}
           </div>
         </div>
         </StageSlot>

@@ -2743,3 +2743,24 @@
   z-index: 1;
   pointer-events: auto;
 }
+
+.chat-sheet-x {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  min-height: 44px;
+  margin: 10px auto 0;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: #fff;
+  cursor: pointer;
+}
+
+.chat-sheet-x svg {
+  width: 22px;
+  height: 22px;
+}
