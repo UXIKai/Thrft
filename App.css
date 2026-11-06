@@ -1629,8 +1629,7 @@ html .profile-panel.profile-edit-card {
 }
 
 .tab-bar.is-dragging .tab-pill {
-  transition: transform 0.25s ease;
-  transform: scale(1.18);
+  transition: none;
 }
 
 /* magnified copy of the icons, aligned with the real ones */
@@ -1659,6 +1658,10 @@ html .profile-panel.profile-edit-card {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.tab-lens-item {
+  zoom: var(--ui-scale, 1);
 }
 
 .tab-lens-item .tab-icon {
