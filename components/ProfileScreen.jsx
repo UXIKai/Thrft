@@ -831,7 +831,7 @@ export default function ProfileScreen({
       filterClosetItems(closetItems, {
         brand: closetBrand,
         category: closetType,
-      }),
+      }).filter((item) => item.imageUrl),
     [closetItems, closetBrand, closetType],
   )
 
@@ -1373,7 +1373,7 @@ export default function ProfileScreen({
                     <li key={item.id}>
                       <button
                         type="button"
-                        className="closet-tile"
+                        className="closet-tile is-bare"
                         onClick={() => {
                           setClosetSelected(item)
                           setClosetPostError('')

@@ -2584,9 +2584,9 @@
   flex-direction: column;
   gap: 8px;
   width: 100%;
-  padding: 10px;
-  border: 1px solid var(--glass-border, rgba(150, 150, 150, 0.16));
-  border-radius: 18px;
+  padding: 0;
+  border: none;
+  border-radius: 0;
   background: transparent;
   color: #fff;
   text-align: left;
@@ -2596,14 +2596,7 @@
   width: 100%;
   aspect-ratio: 1;
   object-fit: contain;
-  border-radius: 12px;
-  background:
-    linear-gradient(45deg, rgba(255, 255, 255, 0.05) 25%, transparent 25%),
-    linear-gradient(-45deg, rgba(255, 255, 255, 0.05) 25%, transparent 25%),
-    linear-gradient(45deg, transparent 75%, rgba(255, 255, 255, 0.05) 75%),
-    linear-gradient(-45deg, transparent 75%, rgba(255, 255, 255, 0.05) 75%);
-  background-size: 14px 14px;
-  background-position: 0 0, 0 7px, 7px -7px, -7px 0;
+  background: none;
 }
 
 .closet-tile-fallback {
