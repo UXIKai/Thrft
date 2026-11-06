@@ -597,11 +597,6 @@ export default function CreateListing({ onPosted } = {}) {
       </label>
 
       <div className="listing-field listing-date-field">
-        <span className="listing-box is-filled">
-          <span className="listing-label">Date</span>
-          <span className="listing-date-value">
-            {MONTHS[dateM - 1]} {dateD}, {dateY}
-          </span>
         </span>
         <div className="listing-date-wheels">
           <DateWheel label="Month" items={MONTHS} value={dateM - 1} onChange={(i) => setDateM(i + 1)} />
