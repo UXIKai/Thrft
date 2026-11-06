@@ -554,7 +554,8 @@ export default function CreateListing({ onPosted } = {}) {
             onChange={(e) => setDescription(e.target.value)}
           />
         </span>
-        <input
+      </label>
+      <input
           className="listing-slider"
           type="range"
           min="2"
@@ -564,7 +565,6 @@ export default function CreateListing({ onPosted } = {}) {
           value={descRows}
           onChange={(e) => setDescRows(Number(e.target.value))}
         />
-      </label>
 
       <div className="listing-field listing-date-field">
         <span className="listing-box is-filled">
