@@ -64,8 +64,8 @@ html body .tab-bar::after {
 }
 
 html body .tab-bar::before {
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 }
 
 /* stronger bend and magnification toward the bottom border */
@@ -78,7 +78,7 @@ html body .tab-bar::after {
 
 @supports (backdrop-filter: url('#lg-nav')) and (not (-webkit-touch-callout: none)) {
   html body .tab-bar::before {
-    backdrop-filter: blur(2px) url('#lg-nav');
+    backdrop-filter: blur(4px) url('#lg-nav');
   }
   html body .tab-bar::after {
     backdrop-filter: blur(1px) url('#lg-nav-edge');
