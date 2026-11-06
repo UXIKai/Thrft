@@ -73,6 +73,7 @@ export default function TabBar({ active = 'home', onChange }) {
   const dragRef = useRef(null)
   const activeIdx = Math.max(0, TABS.findIndex((t) => t.id === active))
   const [dragPos, setDragPos] = useState(null)
+  const [pressed, setPressed] = useState(false)
   const [lens, setLens] = useState({ w: 104, h: 56 })
 
   // The bubble's refraction map needs the lens size in pixels.
@@ -100,13 +101,13 @@ export default function TabBar({ active = 'home', onChange }) {
     if (e.button !== undefined && e.button !== 0) return
     dragRef.current = { moved: false, startX: e.clientX }
     navRef.current.setPointerCapture?.(e.pointerId)
-    setDragPos(posFromEvent(e))
+    setPressed(true)
   }
   const onPointerMove = (e) => {
     const d = dragRef.current
     if (!d) return
-    if (Math.abs(e.clientX - d.startX) > 4) d.moved = true
-    setDragPos(posFromEvent(e))
+    if (Math.abs(e.clientX - d.startX) > 6) d.moved = true
+    if (d.moved) setDragPos(posFromEvent(e))
   }
   const endDrag = (e, commit) => {
     const d = dragRef.current
@@ -114,6 +115,7 @@ export default function TabBar({ active = 'home', onChange }) {
     dragRef.current = null
     const idx = Math.round(posFromEvent(e))
     setDragPos(null)
+    setPressed(false)
     if (commit && TABS[idx] && TABS[idx].id !== active) onChange?.(TABS[idx].id)
   }
 
@@ -121,7 +123,7 @@ export default function TabBar({ active = 'home', onChange }) {
   return (
     <nav
       ref={navRef}
-      className={`tab-bar ${dragPos !== null ? 'is-dragging' : ''}`}
+      className={`tab-bar${pressed ? ' is-pressed' : ''}${dragPos !== null ? ' is-dragging' : ''}`}
       aria-label="Main"
       style={{ '--tab-i': pos, touchAction: 'none' }}
       onPointerDown={onPointerDown}
