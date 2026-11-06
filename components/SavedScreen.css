@@ -615,9 +615,10 @@
 .saved-search-bar.is-collapsed {
   flex: 0 0 auto;
   width: auto;
-  height: 36px;
+  height: 62px;
   margin-left: auto;
-  padding: 0;
+  /* Same inset as the open bar (1px border + 6px padding) so the + is exactly where the X lands */
+  padding: 0 7px 0 0;
   gap: 0;
   border: none;
   border-radius: 0;
