@@ -286,3 +286,20 @@ html body .product-detail .glass-overlay-back {
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
 }
+
+/* Back button at the bottom, everything else centered in the remaining space */
+.product-detail .glass-overlay-top {
+  order: 2;
+  display: flex;
+  justify-content: center;
+  padding: 4px 8px calc(20px + env(safe-area-inset-bottom, 0px));
+}
+
+.product-detail .glass-overlay-top .glass-overlay-spacer {
+  display: none;
+}
+
+.product-detail .product-detail-body {
+  justify-content: center;
+  padding-top: 0;
+}
