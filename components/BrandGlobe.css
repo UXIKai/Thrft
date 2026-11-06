@@ -675,3 +675,14 @@
 .brand-globe-stage:hover {
   cursor: grab;
 }
+
+/* Effect off: the center seat becomes a black hole with a glowing white ring */
+html[data-bg-image='none'] .brand-globe-center-hole,
+html[data-bg-image='none'] .brand-globe-stage.is-choosing .brand-globe-center-hole {
+  background: #000;
+  box-shadow:
+    0 0 0 3px #fff,
+    0 0 14px 4px rgba(255, 255, 255, 0.85),
+    0 0 34px 10px rgba(255, 255, 255, 0.35),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.9);
+}
