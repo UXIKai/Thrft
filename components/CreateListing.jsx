@@ -135,7 +135,6 @@ export default function CreateListing({ onPosted } = {}) {
   const [price, setPrice] = useState('')
   const [condition, setCondition] = useState('Good')
   const [description, setDescription] = useState('')
-  const [descRows, setDescRows] = useState(4)
   const [dateM, setDateM] = useState(NOW.getMonth() + 1)
   const [dateD, setDateD] = useState(NOW.getDate())
   const [dateY, setDateY] = useState(NOW.getFullYear())
@@ -590,22 +589,12 @@ export default function CreateListing({ onPosted } = {}) {
             className="listing-input listing-textarea is-inset"
             placeholder=" "
             aria-label="Description"
-            rows={descRows}
+            rows={4}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
         </span>
       </label>
-      <input
-          className="listing-slider"
-          type="range"
-          min="2"
-          max="10"
-          step="1"
-          aria-label="Description box size"
-          value={descRows}
-          onChange={(e) => setDescRows(Number(e.target.value))}
-        />
 
       <div className="listing-field listing-date-field">
         <span className="listing-box is-filled">
