@@ -1525,9 +1525,98 @@ export default function ChatScreen({
     return () => cancelAnimationFrame(id)
   }, [contactSheetOpen, peerProfile, editingNick])
 
+  function renderDmMenu() {
+    if (!menuId || !menuPos) return null
+    if (chats.find((c) => c.id === menuId)?.kind !== 'dm') return null
+    return (
+        <div className="chat-dm-menu-wrap" style={{ top: menuPos.top, right: menuPos.right }}>
+          {(() => {
+            const chat = chats.find((c) => c.id === menuId)
+            return (
+              <div className="chat-dm-menu" role="menu" aria-label={`Options for ${chat.title}`}>
+                {dmRenaming ? (
+                  <>
+                    <input
+                      className="chat-dm-menu-input"
+                      type="text"
+                      value={dmNameDraft}
+                      maxLength={32}
+                      autoFocus
+                      aria-label="Name"
+                      onChange={(e) => setDmNameDraft(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') saveDmName(chat.id)
+                      }}
+                    />
+                    <button
+                      type="button"
+                      className="chat-dm-menu-btn"
+                      aria-label="Save name"
+                      onClick={() => saveDmName(chat.id)}
+                    >
+                      <svg viewBox="0 0 24 24" aria-hidden>
+                        <path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      type="button"
+                      role="menuitem"
+                      className="chat-dm-menu-btn"
+                      aria-label="Edit name"
+                      onClick={() => {
+                        setDmNameDraft(chat.title || '')
+                        setDmRenaming(true)
+                      }}
+                    >
+                      <svg viewBox="0 0 24 24" aria-hidden>
+                        <path d="M4 20l1-4L16.5 4.5a2 2 0 0 1 2.8 0l.2.2a2 2 0 0 1 0 2.8L8 19l-4 1zM14.5 6.5l3 3" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </button>
+                    <button
+                      type="button"
+                      role="menuitem"
+                      className="chat-dm-menu-btn"
+                      aria-label="Remove"
+                      onClick={() => deleteChat(chat.id)}
+                    >
+                      <svg viewBox="0 0 24 24" aria-hidden>
+                        <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" strokeWidth="1.8" />
+                        <path d="M7.5 12h9" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                      </svg>
+                    </button>
+                    <button
+                      type="button"
+                      role="menuitem"
+                      className="chat-dm-menu-btn is-danger"
+                      aria-label="Block"
+                      onClick={() => blockChat(chat.id)}
+                    >
+                      <BlockIcon className="chat-dm-menu-ico" />
+                    </button>
+                  </>
+                )}
+              </div>
+            )
+          })()}
+        </div>
+    )
+  }
+
   if (activeChat) {
     return (
       <div className="chat-thread" role="dialog" aria-label={activeChat.title}>
+        {menuId && (
+          <button
+            type="button"
+            className="chat-menu-scrim"
+            aria-label="Dismiss menu"
+            onClick={closeMenus}
+          />
+        )}
+        {renderDmMenu()}
         <header className="chat-thread-top">
           <button
             type="button"
@@ -1557,7 +1646,18 @@ export default function ChatScreen({
               <DotsIcon />
             </button>
           ) : (
-            <span className="chat-top-spacer" aria-hidden />
+            <button
+              type="button"
+              className="chat-top-btn"
+              aria-label="More"
+              ref={(el) => {
+                if (el) dotsRefs.current.set(activeChat.id, el)
+                else dotsRefs.current.delete(activeChat.id)
+              }}
+              onClick={() => openMenu(activeChat.id)}
+            >
+              <DotsIcon />
+            </button>
           )}
         </header>
         <div className="chat-thread-hero">
@@ -2469,81 +2569,7 @@ export default function ChatScreen({
       </div>
       </StageSlot>
 
-      {menuId && menuPos && chats.find((c) => c.id === menuId)?.kind === 'dm' && (
-        <div className="chat-dm-menu-wrap" style={{ top: menuPos.top, right: menuPos.right }}>
-          {(() => {
-            const chat = chats.find((c) => c.id === menuId)
-            return (
-              <div className="chat-dm-menu" role="menu" aria-label={`Options for ${chat.title}`}>
-                {dmRenaming ? (
-                  <>
-                    <input
-                      className="chat-dm-menu-input"
-                      type="text"
-                      value={dmNameDraft}
-                      maxLength={32}
-                      autoFocus
-                      aria-label="Name"
-                      onChange={(e) => setDmNameDraft(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter') saveDmName(chat.id)
-                      }}
-                    />
-                    <button
-                      type="button"
-                      className="chat-dm-menu-btn"
-                      aria-label="Save name"
-                      onClick={() => saveDmName(chat.id)}
-                    >
-                      <svg viewBox="0 0 24 24" aria-hidden>
-                        <path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                      </svg>
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <button
-                      type="button"
-                      role="menuitem"
-                      className="chat-dm-menu-btn"
-                      aria-label="Edit name"
-                      onClick={() => {
-                        setDmNameDraft(chat.title || '')
-                        setDmRenaming(true)
-                      }}
-                    >
-                      <svg viewBox="0 0 24 24" aria-hidden>
-                        <path d="M4 20l1-4L16.5 4.5a2 2 0 0 1 2.8 0l.2.2a2 2 0 0 1 0 2.8L8 19l-4 1zM14.5 6.5l3 3" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                      </svg>
-                    </button>
-                    <button
-                      type="button"
-                      role="menuitem"
-                      className="chat-dm-menu-btn"
-                      aria-label="Remove"
-                      onClick={() => deleteChat(chat.id)}
-                    >
-                      <svg viewBox="0 0 24 24" aria-hidden>
-                        <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" strokeWidth="1.8" />
-                        <path d="M7.5 12h9" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-                      </svg>
-                    </button>
-                    <button
-                      type="button"
-                      role="menuitem"
-                      className="chat-dm-menu-btn is-danger"
-                      aria-label="Block"
-                      onClick={() => blockChat(chat.id)}
-                    >
-                      <BlockIcon className="chat-dm-menu-ico" />
-                    </button>
-                  </>
-                )}
-              </div>
-            )
-          })()}
-        </div>
-      )}
+      {renderDmMenu()}
 
       {menuId && menuPos && chats.find((c) => c.id === menuId)?.kind !== 'dm' && (
         <div

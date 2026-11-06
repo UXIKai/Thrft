@@ -177,7 +177,12 @@
   overflow-y: auto;
   margin-bottom: 14px;
   padding-right: 2px;
-  scrollbar-width: thin;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.settings-size-cats::-webkit-scrollbar {
+  display: none;
 }
 
 .settings-size-section-label {
