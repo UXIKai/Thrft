@@ -81,12 +81,12 @@
   grid-template-columns: repeat(3, 1fr);
   align-items: center;
   justify-items: stretch;
-  gap: min(48px, 4vw);
+  gap: clamp(6px, 2vw, 48px);
   box-sizing: border-box;
   width: min(476px, 100%);
   min-height: min(284px, 80vh);
   align-items: center;
-  padding: 28px clamp(12px, 4vw, 24px);
+  padding: 28px clamp(8px, 3vw, 24px);
   border-radius: 28px;
   border: 0.5px solid rgba(255, 255, 255, 0.46);
   overflow: hidden;
@@ -166,11 +166,12 @@
   max-width: 100%;
   padding: 2px 4px;
   overflow: visible;
-  font-size: clamp(0.85rem, 3.4vw, 1.05rem);
+  font-size: clamp(0.72rem, 3.3vw, 1.05rem);
   font-weight: 600;
   line-height: 1.15;
   white-space: normal;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
+  word-break: normal;
   text-align: center;
   color: #fff;
 }
