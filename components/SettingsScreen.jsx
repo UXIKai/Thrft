@@ -1120,10 +1120,23 @@ export default function SettingsScreen({
               aria-checked={bgEffectOn}
               aria-label="Background effect"
               className={`settings-effect-switch is-bare is-in-block${bgEffectOn ? ' is-on' : ''}`}
-              style={{
-                background: bgEffectOn ? '#000' : '#fff',
-                boxShadow: 'none',
-                opacity: 1,
+              ref={(el) => {
+                // Inline !important so no theme/glass rule can turn the track gray.
+                if (!el) return
+                const track = bgEffectOn ? '#000' : '#fff'
+                el.style.setProperty('background', track, 'important')
+                el.style.setProperty('background-color', track, 'important')
+                el.style.setProperty('opacity', '1', 'important')
+                el.style.setProperty('filter', 'none', 'important')
+                el.style.setProperty('box-shadow', 'none', 'important')
+                el.style.setProperty('border', '0', 'important')
+                el.style.setProperty('forced-color-adjust', 'none', 'important')
+                const knob = el.firstElementChild
+                knob?.style.setProperty(
+                  'background',
+                  bgEffectOn ? '#fff' : '#000',
+                  'important',
+                )
               }}
               onClick={() => {
                 const next = bgEffectOn ? 'none' : 'atmosphere'
@@ -1131,10 +1144,7 @@ export default function SettingsScreen({
                 setBgEffectOn(next === 'atmosphere')
               }}
             >
-              <span
-                className="settings-effect-knob"
-                style={{ background: bgEffectOn ? '#fff' : '#000' }}
-              />
+              <span className="settings-effect-knob" />
             </button>
             <div className="settings-color-stack">
               <div className="settings-color-group">
