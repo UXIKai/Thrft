@@ -2768,3 +2768,28 @@
 .closet-split.is-open .is-message {
   transform: translateX(56px);
 }
+
+.closet-people {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 160px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.closet-people-btn {
+  border: none;
+  background: none;
+  padding: 8px 12px;
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+}
+
+.closet-people-empty {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.5);
+}

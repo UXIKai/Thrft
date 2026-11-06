@@ -625,10 +625,47 @@ export default function ProfileScreen({
   onPostListing,
   onOpenAccountPage,
   onOpenProduct,
-  onShareToChat,
   onSignOut,
 }) {
   const [closetSplit, setClosetSplit] = useState(false)
+  const [closetPeople, setClosetPeople] = useState(null)
+
+  function readChatList() {
+    try {
+      const list = JSON.parse(localStorage.getItem('thrft-chats-v1') || '[]')
+      return Array.isArray(list) ? list.filter((c) => c && c.id) : []
+    } catch {
+      return []
+    }
+  }
+
+  function sendClosetToChat(chatId) {
+    if (!closetSelected) return
+    const item = closetSelected
+    const title = item.title || `${item.brand} ${item.category}`.trim() || 'Item'
+    const msg = {
+      id: `m-${Date.now()}`,
+      kind: item.imageUrl ? 'image' : 'text',
+      text: title,
+      from: 'me',
+      at: Date.now(),
+      ...(item.imageUrl ? { imageUrl: item.imageUrl, fileName: title } : {}),
+    }
+    try {
+      const next = readChatList().map((c) =>
+        c.id === chatId
+          ? { ...c, messages: [...(c.messages || []), msg], preview: title, time: 'Now' }
+          : c,
+      )
+      localStorage.setItem('thrft-chats-v1', JSON.stringify(next))
+    } catch {
+      setClosetPostError('Could not send')
+      return
+    }
+    setClosetPeople(null)
+    setClosetSplit(false)
+    setClosetSelected(null)
+  }
   const [spaceTab, setSpaceTab] = useState('store') // 'store' | 'closet'
   const [panelListingTab, setPanelListingTab] = useState('active')
   const [storeProducts, setStoreProducts] = useState([])
@@ -1380,6 +1417,7 @@ export default function ProfileScreen({
                         onClick={() => {
                           setClosetSelected(item)
                           setClosetSplit(false)
+                          setClosetPeople(null)
                           setClosetPostError('')
                         }}
                       >
@@ -1441,6 +1479,25 @@ export default function ProfileScreen({
                         {closetPostError}
                       </p>
                     ) : null}
+                    {closetPeople ? (
+                      <ul className="closet-people">
+                        {closetPeople.length === 0 ? (
+                          <li className="closet-people-empty">No chats yet</li>
+                        ) : (
+                          closetPeople.map((c) => (
+                            <li key={c.id}>
+                              <button
+                                type="button"
+                                className="closet-people-btn is-bare"
+                                onClick={() => sendClosetToChat(c.id)}
+                              >
+                                {c.title || 'Chat'}
+                              </button>
+                            </li>
+                          ))
+                        )}
+                      </ul>
+                    ) : null}
                     <div className={`closet-split${closetSplit ? ' is-open' : ''}`}>
                       <button
                         type="button"
@@ -1465,7 +1522,10 @@ export default function ProfileScreen({
                         type="button"
                         className="closet-split-plus is-bare"
                         aria-label={closetSplit ? 'Close' : 'Share'}
-                        onClick={() => setClosetSplit((v) => !v)}
+                        onClick={() => {
+                          setClosetSplit((v) => !v)
+                          setClosetPeople(null)
+                        }}
                       >
                         <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden>
                           <path
@@ -1480,17 +1540,17 @@ export default function ProfileScreen({
                       <button
                         type="button"
                         className="closet-split-btn is-bare is-message"
-                        aria-label="Send in a message"
+                        aria-label="Send to a person"
                         tabIndex={closetSplit ? 0 : -1}
-                        onClick={() => {
-                          setClosetSelected(null)
-                          onShareToChat?.()
-                        }}
+                        onClick={() => setClosetPeople((v) => (v ? null : readChatList()))}
                       >
                         <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden>
                           <path
-                            fill="currentColor"
-                            d="M5 4h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-7l-5 4v-4H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="1.8"
+                            strokeLinecap="round"
+                            d="M12 12a3.6 3.6 0 1 0 0-7.2 3.6 3.6 0 0 0 0 7.2zM5 20c.6-3.6 3.5-5.5 7-5.5s6.4 1.9 7 5.5"
                           />
                         </svg>
                       </button>
