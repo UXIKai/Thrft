@@ -2717,12 +2717,12 @@ html body button.chat-contact-nick-save {
 
 .chat-dm-menu {
   display: flex !important;
-  flex-direction: row !important;
+  flex-direction: column !important;
   align-items: center;
   width: max-content;
   gap: 4px;
   padding: 8px;
-  border-radius: 16px;
+  border-radius: 22px;
   border: 0.5px solid rgba(255, 255, 255, 0.46);
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.16), transparent 42%),
