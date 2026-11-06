@@ -1574,3 +1574,41 @@ html .profile-panel.profile-edit-card {
 .tab-item.is-active {
   color: #fff;
 }
+
+/* Liquid Glass nav: nearly clear, barely blurred, light bends at the rim */
+.tab-bar {
+  background:
+    radial-gradient(120% 140% at 50% -40%, rgba(255, 255, 255, 0.22), transparent 55%),
+    rgba(255, 255, 255, 0.035);
+  backdrop-filter: blur(2px) saturate(1.8) brightness(1.08);
+  -webkit-backdrop-filter: blur(2px) saturate(1.8) brightness(1.08);
+  border: 1px solid rgba(255, 255, 255, 0.38);
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.22),
+    inset 3px 3px 7px -3px rgba(255, 255, 255, 0.7),
+    inset -3px -3px 7px -3px rgba(255, 255, 255, 0.45),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+    inset 0 0 22px rgba(255, 255, 255, 0.06);
+}
+
+.tab-bar::before {
+  opacity: 0.5;
+}
+
+.tab-pill {
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow:
+    inset 2px 2px 6px -2px rgba(255, 255, 255, 0.7),
+    inset -2px -2px 6px -2px rgba(255, 255, 255, 0.4),
+    0 4px 12px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(1px) saturate(1.9) brightness(1.12);
+  -webkit-backdrop-filter: blur(1px) saturate(1.9) brightness(1.12);
+}
+
+@supports (backdrop-filter: url('#lg-refract')) {
+  .tab-bar {
+    backdrop-filter: blur(2px) saturate(1.8) brightness(1.08) url('#lg-refract');
+    -webkit-backdrop-filter: blur(2px) saturate(1.8) brightness(1.08) url('#lg-refract');
+  }
+}
