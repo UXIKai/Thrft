@@ -40,7 +40,10 @@ function normalizeChat(chat) {
         .filter((m) => m && typeof m.text === 'string' && m.text.trim())
         .map((m) => {
           const kind =
-            m.kind === 'image' || m.kind === 'file' || m.kind === 'liked'
+            m.kind === 'image' ||
+            m.kind === 'file' ||
+            m.kind === 'liked' ||
+            m.kind === 'friend'
               ? m.kind
               : 'text'
           const next = {
@@ -451,6 +454,21 @@ function ImageAttachIcon() {
   )
 }
 
+function PersonAttachIcon() {
+  return (
+    <svg className="chat-compose-attach-ico" viewBox="0 0 24 24" aria-hidden>
+      <circle cx="12" cy="8" r="3.6" fill="none" stroke="currentColor" strokeWidth="1.7" />
+      <path
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+        d="M4.8 20c.7-3.6 3.6-5.6 7.2-5.6s6.5 2 7.2 5.6"
+      />
+    </svg>
+  )
+}
+
 function HeartAttachIcon() {
   return (
     <svg className="chat-compose-attach-ico" viewBox="0 0 24 24" aria-hidden>
@@ -560,6 +578,7 @@ export default function ChatScreen({
   const [draftMessage, setDraftMessage] = useState('')
   const [attachOpen, setAttachOpen] = useState(false)
   const [likedPickerOpen, setLikedPickerOpen] = useState(false)
+  const [friendListOpen, setFriendListOpen] = useState(false)
   const [likedItems, setLikedItems] = useState([])
   const [likedQuery, setLikedQuery] = useState('')
   const [likedSelected, setLikedSelected] = useState([]) // item keys, max 10
@@ -579,6 +598,9 @@ export default function ChatScreen({
   const imageInputRef = useRef(null)
   const fileInputRef = useRef(null)
   const attachWrapRef = useRef(null)
+  useEffect(() => {
+    if (!attachOpen) setFriendListOpen(false)
+  }, [attachOpen])
   const activeChat = chats.find((c) => c.id === activeChatId) || null
   const threadMessages = activeChat?.messages || []
   const managedMembers = useMemo(() => {
@@ -1171,6 +1193,23 @@ export default function ChatScreen({
     closeAttachMenu()
   }
 
+  function sendFriendInvite(chat) {
+    if (!activeChatId || !chat) return
+    const name = chat.title || 'Friend'
+    pushThreadMessage(
+      {
+        id: `m-${Date.now()}`,
+        kind: 'friend',
+        text: name,
+        from: 'me',
+        at: Date.now(),
+      },
+      `Invite · ${name}`,
+    )
+    setFriendListOpen(false)
+    setAttachOpen(false)
+  }
+
   async function openLikedPicker() {
     setAttachOpen(false)
     setLikedQuery('')
@@ -1747,6 +1786,12 @@ export default function ChatScreen({
                       </span>
                     </div>
                   ) : null}
+                  {msg.kind === 'friend' ? (
+                    <div className="chat-thread-bubble-liked">
+                      <PersonAttachIcon />
+                      <span>{msg.text}</span>
+                    </div>
+                  ) : null}
                   {(!msg.kind || msg.kind === 'text') && msg.text ? (
                     <p className="chat-thread-bubble-text">{msg.text}</p>
                   ) : null}
@@ -1802,6 +1847,32 @@ export default function ChatScreen({
                   >
                     <FileAttachIcon />
                   </button>
+                  <button
+                    type="button"
+                    className="chat-compose-attach-btn"
+                    aria-label="Send a friend"
+                    aria-expanded={friendListOpen}
+                    onClick={() => setFriendListOpen((v) => !v)}
+                  >
+                    <PersonAttachIcon />
+                  </button>
+                  {friendListOpen ? (
+                    <ul className="chat-friend-list" aria-label="Friends">
+                      {chats
+                        .filter((c) => c.id !== activeChatId && c.title)
+                        .map((c) => (
+                          <li key={c.id}>
+                            <button
+                              type="button"
+                              className="chat-friend-item"
+                              onClick={() => sendFriendInvite(c)}
+                            >
+                              {c.title}
+                            </button>
+                          </li>
+                        ))}
+                    </ul>
+                  ) : null}
                 </div>
               ) : null}
               <button
