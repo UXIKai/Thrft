@@ -2417,3 +2417,11 @@
   width: 24px;
   height: 24px;
 }
+
+.settings-back {
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
