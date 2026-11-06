@@ -718,7 +718,7 @@ input.listing-slider::-moz-range-thumb {
   background: #fff;
 }
 
-.listing-wheels {
+.listing-date-wheels {
   display: flex;
   gap: 8px;
   margin-top: 6px;

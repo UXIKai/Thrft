@@ -614,7 +614,7 @@ export default function CreateListing({ onPosted } = {}) {
             {MONTHS[dateM - 1]} {dateD}, {dateY}
           </span>
         </span>
-        <div className="listing-wheels">
+        <div className="listing-date-wheels">
           <DateWheel label="Month" items={MONTHS} value={dateM - 1} onChange={(i) => setDateM(i + 1)} />
           <DateWheel label="Day" items={DAYS} value={dateD - 1} onChange={(i) => setDateD(i + 1)} />
           <DateWheel label="Year" items={YEARS} value={dateY - YEARS[0]} onChange={(i) => setDateY(YEARS[0] + i)} />
