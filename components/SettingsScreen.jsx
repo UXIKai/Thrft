@@ -1094,17 +1094,6 @@ export default function SettingsScreen({
       <div className="settings-scroll">
         <Section label="Appearance">
           <div className={`settings-block settings-palette-block${photoMenuOpen ? ' is-photo-open' : ''}`}>
-            <button
-              type="button"
-              className="settings-palette-edit is-bottom"
-              aria-label="Background photo"
-              title="Background photo"
-              aria-haspopup="dialog"
-              aria-expanded={photoMenuOpen}
-              onClick={() => setPhotoMenuOpen((v) => !v)}
-            >
-              <ImageIcon />
-            </button>
             <div className="settings-color-stack">
               <div className="settings-color-group">
                 <p className="settings-color-caption">Containers</p>
@@ -1156,7 +1145,15 @@ export default function SettingsScreen({
                       )
                     })}
                   </div>
-                  <span className="settings-color-side-spacer" aria-hidden />
+                    <button
+                      type="button"
+                      className="settings-palette-edit"
+                      aria-label="Edit color palette"
+                      title="Edit palette"
+                      onClick={() => setPaletteEditorOpen(true)}
+                    >
+                      <PencilIcon />
+                    </button>
                 </div>
               </div>
 
@@ -1214,11 +1211,13 @@ export default function SettingsScreen({
                     <button
                       type="button"
                       className="settings-palette-edit"
-                      aria-label="Edit color palette"
-                      title="Edit palette"
-                      onClick={() => setPaletteEditorOpen(true)}
+                      aria-label="Background photo"
+                      title="Background photo"
+                      aria-haspopup="dialog"
+                      aria-expanded={photoMenuOpen}
+                      onClick={() => setPhotoMenuOpen((v) => !v)}
                     >
-                      <PencilIcon />
+                      <ImageIcon />
                     </button>
                     <input
                       ref={cameraInputRef}

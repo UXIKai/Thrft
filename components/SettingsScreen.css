@@ -2527,3 +2527,19 @@
     right: 6px;
   }
 }
+
+/* Pencil and image buttons sit centered in their own color rows */
+.settings-color-stack {
+  padding-right: 0;
+}
+
+.settings-color-row {
+  align-items: center;
+}
+
+.settings-palette-block .settings-palette-edit,
+.settings-palette-block .settings-palette-edit.is-bottom {
+  position: static;
+  flex: 0 0 auto;
+  margin-left: auto;
+}
