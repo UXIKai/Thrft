@@ -72,24 +72,32 @@ export default function AccountPage({
       aria-modal="true"
       aria-label={`${name} account`}
     >
-      <header className="glass-overlay-top">
-        <button
-          type="button"
-          className="glass-overlay-back"
-          aria-label="Back"
-          onClick={onClose}
-        >
-          <BackIcon />
-        </button>
-        <h1 className="glass-overlay-title">{isOwn ? 'Your page' : 'Account'}</h1>
-        <span className="glass-overlay-spacer" aria-hidden />
-      </header>
-      <div className="glass-overlay-body">
+      <div className="glass-overlay-body account-page-body">
+        {(loading || error || !account) && (
+          <div className="account-page-hero">
+            <button
+              type="button"
+              className="account-page-back is-bare"
+              aria-label="Back"
+              onClick={onClose}
+            >
+              <BackIcon />
+            </button>
+          </div>
+        )}
         {loading && <p className="account-page-muted">Loading…</p>}
         {!loading && error && <p className="account-page-muted">{error}</p>}
         {!loading && !error && account && (
           <>
-            <div className="account-page-hero glass-pane-card">
+            <div className="account-page-hero">
+          <button
+            type="button"
+            className="account-page-back is-bare"
+            aria-label="Back"
+            onClick={onClose}
+          >
+            <BackIcon />
+          </button>
               <span
                 className={`account-page-avatar${account.avatarUrl ? ' has-photo' : ''}`}
                 aria-hidden

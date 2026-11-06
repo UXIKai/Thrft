@@ -3,9 +3,33 @@
   flex-direction: column;
   align-items: center;
   gap: 8px;
+  position: relative;
+  min-height: 40px;
   margin-bottom: 20px;
-  padding: 28px 16px 22px;
+  padding: 0 16px;
   text-align: center;
+}
+
+.account-page-body {
+  padding-top: max(calc(env(safe-area-inset-top, 0px) + 10px), 14px);
+}
+
+.account-page-back {
+  position: absolute;
+  left: 0;
+  top: 18px;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  color: #fff;
+  cursor: pointer;
 }
 
 .account-page-avatar {
