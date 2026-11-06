@@ -90,15 +90,9 @@
   border-radius: 28px;
   border: 0.5px solid rgba(255, 255, 255, 0.46);
   overflow: hidden;
-  /* Shiny teal that drifts like the app background */
   background:
-    radial-gradient(circle at 20% 25%, rgba(120, 255, 235, 0.55), transparent 45%),
-    radial-gradient(circle at 80% 70%, rgba(0, 150, 160, 0.6), transparent 50%),
-    radial-gradient(circle at 55% 90%, rgba(60, 220, 200, 0.4), transparent 45%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.22), transparent 42%),
-    rgba(20, 150, 150, 0.45);
-  background-size: 220% 220%, 200% 200%, 240% 240%, 100% 100%, 100% 100%;
-  animation: home-search-teal-drift 9s ease-in-out infinite alternate;
+    linear-gradient(180deg, rgba(255, 255, 255, 0.16), transparent 42%),
+    rgba(255, 255, 255, 0.06);
   backdrop-filter: blur(32px) saturate(1.9) brightness(1.1);
   -webkit-backdrop-filter: blur(32px) saturate(1.9) brightness(1.1);
   box-shadow:
@@ -183,21 +177,11 @@
 
 @keyframes home-search-teal-drift {
   0% {
-    background-position: 0% 0%, 100% 100%, 50% 100%, 0 0, 0 0;
+    background-position: 0% 0%, 100% 100%, 50% 100%, 0 0;
   }
   100% {
-    background-position: 100% 80%, 0% 0%, 50% 0%, 0 0, 0 0;
+    background-position: 100% 80%, 0% 0%, 50% 0%, 0 0;
   }
-}
-
-.home-search-modal::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: linear-gradient(115deg, transparent 35%, rgba(255, 255, 255, 0.28) 50%, transparent 65%);
-  background-size: 250% 100%;
-  animation: home-search-shine 5s linear infinite;
 }
 
 @keyframes home-search-shine {
@@ -210,19 +194,36 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .home-search-modal,
-  .home-search-modal::after {
+  .home-search-blur,
+  .home-search-blur::after {
     animation: none;
   }
 }
 
-/* Sibling of the backdrop so the popup's own glass blur still works. */
+/* Shiny teal backdrop that drifts like the app background; sibling of the
+   popup so the popup's own glass blur still works. */
 .home-search-blur {
   position: fixed;
   inset: 0;
   z-index: 49;
-  background: rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 20% 25%, rgba(120, 255, 235, 0.6), transparent 45%),
+    radial-gradient(circle at 80% 70%, rgba(0, 150, 160, 0.65), transparent 50%),
+    radial-gradient(circle at 55% 90%, rgba(60, 220, 200, 0.45), transparent 45%),
+    rgba(10, 90, 95, 0.55);
+  background-size: 220% 220%, 200% 200%, 240% 240%, 100% 100%;
+  animation: home-search-teal-drift 9s ease-in-out infinite alternate;
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
-  pointer-events: none;
+}
+
+.home-search-blur::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 35%, rgba(255, 255, 255, 0.28) 50%, transparent 65%);
+  background-size: 250% 100%;
+  animation: home-search-shine 5s linear infinite;
 }
