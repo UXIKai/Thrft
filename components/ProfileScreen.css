@@ -2861,3 +2861,27 @@
   text-align: center;
   outline: none;
 }
+
+.closet-pick-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.closet-pick-name {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #fff;
+  padding: 12px 0;
+}
+
+.closet-pick-send {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border: none;
+  background: none;
+  padding: 0;
+  color: #fff;
+}

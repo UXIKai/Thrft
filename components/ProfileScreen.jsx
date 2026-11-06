@@ -1604,13 +1604,24 @@ export default function ProfileScreen({
                               .includes(closetPickQuery.trim().toLowerCase()),
                           )
                           .map((c) => (
-                            <li key={c.id}>
+                            <li key={c.id} className="closet-pick-row">
+                              <span className="closet-pick-name">{c.title || 'Chat'}</span>
                               <button
                                 type="button"
-                                className="closet-people-btn is-bare"
+                                className="closet-pick-send is-bare"
+                                aria-label={`Send to ${c.title || 'chat'}`}
                                 onClick={() => sendClosetToChat(c.id)}
                               >
-                                {c.title || 'Chat'}
+                                <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden>
+                                  <path
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="1.8"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M12 19V5M6 11l6-6 6 6"
+                                  />
+                                </svg>
                               </button>
                             </li>
                           ))}
