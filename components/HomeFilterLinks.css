@@ -233,7 +233,9 @@
 
 /* Card follows the picked color (white by default) on a black backdrop */
 html body .home-search-blur {
-  background: #000 !important;
+  /* Black by default; a deep shade of the picked color otherwise */
+  background: color-mix(in srgb, var(--search-tint, #000) 38%, #000) !important;
+  transition: background-color 0.4s ease;
   background-image: none !important;
   animation: none;
   backdrop-filter: none;

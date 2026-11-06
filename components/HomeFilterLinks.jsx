@@ -101,7 +101,7 @@ export default function HomeFilterLinks({
         <div
           className="home-search-blur"
           aria-hidden
-          style={draftColor ? { '--search-tint': colorHex(draftColor) } : undefined}
+          style={{ '--search-tint': draftColor ? colorHex(draftColor) : '#000000' }}
         />
       )}
       {open && (
