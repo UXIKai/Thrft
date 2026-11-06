@@ -41,7 +41,7 @@ html body button:not(:is(.auth-social-btn,.auth-switch-link,.brand-globe-close,.
 /* Navigation bar: refraction lives on pseudo layers under the icons */
 html body .tab-bar {
   /* faint neutral frost so the bar stays visible on any background */
-  background: rgba(150, 150, 156, 0.16) !important;
+  background: rgba(150, 150, 156, 0.2) !important;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
   border: 0.5px solid rgba(255, 255, 255, 0.32);
@@ -68,8 +68,8 @@ html body .tab-bar::after {
 html body .tab-bar::before {
   --hole-a: calc(var(--tab-i, 0) * 20%);
   --hole-b: calc(var(--tab-i, 0) * 20% + 20%);
-  backdrop-filter: blur(9px) saturate(1.25);
-  -webkit-backdrop-filter: blur(9px) saturate(1.25);
+  backdrop-filter: blur(12px) saturate(1.3);
+  -webkit-backdrop-filter: blur(12px) saturate(1.3);
   -webkit-mask-image: linear-gradient(90deg, #000 var(--hole-a), transparent var(--hole-a), transparent var(--hole-b), #000 var(--hole-b));
   mask-image: linear-gradient(90deg, #000 var(--hole-a), transparent var(--hole-a), transparent var(--hole-b), #000 var(--hole-b));
 }
@@ -82,9 +82,9 @@ html body .tab-bar::after {
   mask-image: linear-gradient(180deg, transparent 55%, #000 100%);
 }
 
-@supports (backdrop-filter: url('#lg-nav')) {
+@supports (backdrop-filter: url('#lg-nav')) and (not (-webkit-touch-callout: none)) {
   html body .tab-bar::before {
-    backdrop-filter: blur(9px) saturate(1.25) url('#lg-nav');
+    backdrop-filter: blur(12px) saturate(1.3) url('#lg-nav');
   }
   html body .tab-bar::after {
     backdrop-filter: blur(1px) url('#lg-nav-edge');
