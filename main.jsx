@@ -42,6 +42,10 @@ function fitScreen() {
   const root = document.documentElement
   // Keyboard height: the page stays put and docked bars ride above the keyboard.
   const kb = vv ? Math.max(0, Math.round(window.innerHeight - vv.height)) : 0
+  // iOS pans the visual viewport to reveal the field; pin the app to it so nothing appears to move.
+  const pan = vv ? Math.max(0, Math.round(vv.offsetTop)) : 0
+  const app = document.getElementById('root')
+  if (app) app.style.transform = pan ? `translateY(${pan}px)` : ''
   root.style.setProperty('--kb-height', `${kb > 120 ? kb : 0}px`)
   root.style.setProperty('--app-height', `${height}px`)
   root.style.setProperty('--app-width', `${width}px`)
