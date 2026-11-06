@@ -310,7 +310,7 @@
   border-radius: 0;
   background: transparent;
   box-shadow: none;
-  color: rgba(255, 255, 255, 0.94);
+  color: #fff;
   font-family: var(--font-sans);
   font-size: 0.84rem;
   font-weight: 400;

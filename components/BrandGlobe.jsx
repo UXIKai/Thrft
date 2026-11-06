@@ -1376,7 +1376,7 @@ function BrandGlobeView({
                   proximity = 1 - smoothstep(0.06, 0.42, d)
                 }
                 const opacity = clamp(
-                  (0.82 + proximity * 0.18 + (isActive ? 0.1 : 0)) * (vis ?? 1),
+                  1 * (vis ?? 1),
                   0,
                   1,
                 )
