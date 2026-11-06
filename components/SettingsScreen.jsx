@@ -1096,7 +1096,7 @@ export default function SettingsScreen({
           <div className={`settings-block settings-palette-block${photoMenuOpen ? ' is-photo-open' : ''}`}>
             <button
               type="button"
-              className="settings-palette-edit"
+              className="settings-palette-edit is-bottom"
               aria-label="Background photo"
               title="Background photo"
               aria-haspopup="dialog"
@@ -1213,7 +1213,7 @@ export default function SettingsScreen({
                   <span className="settings-photo-wrap">
                     <button
                       type="button"
-                      className="settings-palette-edit is-bottom"
+                      className="settings-palette-edit"
                       aria-label="Edit color palette"
                       title="Edit palette"
                       onClick={() => setPaletteEditorOpen(true)}
