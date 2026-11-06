@@ -2908,7 +2908,6 @@ html body button.chat-contact-nick-save {
   height: 44px;
   display: grid;
   place-items: center;
-  border: none;
-  background: none;
+  border-radius: 50%;
   color: #fff;
 }

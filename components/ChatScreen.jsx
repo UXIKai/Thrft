@@ -1617,20 +1617,6 @@ export default function ChatScreen({
                       type="button"
                       role="menuitem"
                       className="chat-dm-menu-btn"
-                      aria-label="Edit name"
-                      onClick={() => {
-                        setDmNameDraft(chat.title || '')
-                        setDmRenaming(true)
-                      }}
-                    >
-                      <svg viewBox="0 0 24 24" aria-hidden>
-                        <path d="M4 20l1-4L16.5 4.5a2 2 0 0 1 2.8 0l.2.2a2 2 0 0 1 0 2.8L8 19l-4 1zM14.5 6.5l3 3" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                      </svg>
-                    </button>
-                    <button
-                      type="button"
-                      role="menuitem"
-                      className="chat-dm-menu-btn"
                       aria-label="Remove"
                       onClick={() => deleteChat(chat.id)}
                     >
@@ -2318,7 +2304,7 @@ export default function ChatScreen({
               {!peerProfile.fromGroup ? (
                 <button
                   type="button"
-                  className="chat-contact-dots is-bare"
+                  className="chat-contact-dots"
                   aria-label="More"
                   ref={(el) => {
                     if (el) dotsRefs.current.set(activeChat.id, el)
@@ -2375,7 +2361,17 @@ export default function ChatScreen({
                         <PencilIcon />
                       </button>
                     ) : (
-                      <span className="chat-contact-name-spacer" aria-hidden />
+                      <button
+                        type="button"
+                        className="chat-contact-name-edit"
+                        aria-label="Edit name"
+                        onClick={() => {
+                          setNickDraft(peerProfile.name)
+                          setEditingNick(true)
+                        }}
+                      >
+                        <PencilIcon />
+                      </button>
                     )}
                   </>
                 )}
