@@ -1131,21 +1131,6 @@ export default function SettingsScreen({
                       )
                     })}
                   </div>
-                    <span className="settings-edit-stack">
-                    <button
-                      type="button"
-                      className="settings-palette-edit"
-                      aria-label="Open color wheel"
-                      title="Color wheel"
-                      onClick={() => openWheel('app')}
-                    >
-                      <svg className="settings-color-wheel-ico" viewBox="0 0 24 24" aria-hidden>
-                        <path d="M12 3a9 9 0 100 18c1.4 0 2-.9 2-1.8 0-1.2-1-1.5-1-2.6 0-.9.7-1.6 1.6-1.6H17a4 4 0 004-4c0-4.4-4-8-9-8z" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
-                        <circle cx="7.5" cy="11" r="1.1" fill="currentColor" />
-                        <circle cx="10.5" cy="7.2" r="1.1" fill="currentColor" />
-                        <circle cx="15" cy="7.4" r="1.1" fill="currentColor" />
-                      </svg>
-                    </button>
                     <button
                       type="button"
                       className="settings-palette-edit"
@@ -1155,7 +1140,6 @@ export default function SettingsScreen({
                     >
                       <PencilIcon />
                     </button>
-                    </span>
                 </div>
               </div>
 
@@ -1224,6 +1208,23 @@ export default function SettingsScreen({
                     />
                   </span>
                 </div>
+              </div>
+
+              <div className="settings-wheel-row">
+                  <button
+                    type="button"
+                    className="settings-palette-edit"
+                    aria-label="Open color wheel"
+                    title="Color wheel"
+                    onClick={() => openWheel('app')}
+                  >
+                    <svg className="settings-color-wheel-ico" viewBox="0 0 24 24" aria-hidden>
+                      <path d="M12 3a9 9 0 100 18c1.4 0 2-.9 2-1.8 0-1.2-1-1.5-1-2.6 0-.9.7-1.6 1.6-1.6H17a4 4 0 004-4c0-4.4-4-8-9-8z" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+                      <circle cx="7.5" cy="11" r="1.1" fill="currentColor" />
+                      <circle cx="10.5" cy="7.2" r="1.1" fill="currentColor" />
+                      <circle cx="15" cy="7.4" r="1.1" fill="currentColor" />
+                    </svg>
+                  </button>
               </div>
             </div>
             {photoMenuOpen && (

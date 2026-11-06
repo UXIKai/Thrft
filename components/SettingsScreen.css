@@ -2554,3 +2554,8 @@
 .settings-palette-block .settings-edit-stack .settings-palette-edit {
   margin-left: 0;
 }
+
+.settings-wheel-row {
+  display: flex;
+  justify-content: flex-end;
+}
