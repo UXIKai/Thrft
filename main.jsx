@@ -18,6 +18,7 @@ function fitScreen() {
   // Never follow the visual viewport's offset: the keyboard must not slide the page.
   const top = 0
   const left = 0
+  if (window.scrollY || window.scrollX) window.scrollTo(0, 0)
   const root = document.documentElement
   root.style.setProperty('--app-height', `${height}px`)
   root.style.setProperty('--app-width', `${width}px`)

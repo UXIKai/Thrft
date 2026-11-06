@@ -91,3 +91,21 @@ html body .tab-bar .tab-pill {
 html body .tab-bar .tab-items {
   z-index: 2;
 }
+
+/* Keep headers below the notch / status bar */
+html body .glass-overlay-top,
+html body .settings-top {
+  padding-top: max(4px, env(safe-area-inset-top, 0px));
+}
+
+html body .profile-top {
+  padding-top: max(10px, env(safe-area-inset-top, 0px));
+}
+
+html body .auth-top {
+  padding-top: max(10px, env(safe-area-inset-top, 0px));
+}
+
+html body .auth-top.is-brand-only {
+  padding-top: max(28px, env(safe-area-inset-top, 0px));
+}
