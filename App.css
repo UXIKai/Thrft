@@ -175,7 +175,7 @@
   -ms-overflow-style: none;
   /* Clear the notch without a dead band — atmosphere shows through */
   padding-top: env(safe-area-inset-top, 0px);
-  padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px));
+  padding-bottom: calc(92px + env(safe-area-inset-bottom, 0px));
   box-sizing: border-box;
 }
 
@@ -1222,7 +1222,7 @@
   align-items: center;
   gap: 0;
   padding: 0;
-  border-radius: 24px;
+  border-radius: 28px;
   border: 1px solid var(--glass-border);
   overflow: hidden;
   background: var(--glass-clear-tint);
@@ -1269,9 +1269,9 @@
   align-items: center;
   justify-content: center;
   gap: 0;
-  min-height: 46px;
-  padding: 6px 2px;
-  border-radius: 24px;
+  min-height: 58px;
+  padding: 8px 2px;
+  border-radius: 28px;
   border: none;
   color: rgba(255, 255, 255, 0.55);
   background: transparent;
@@ -1289,7 +1289,7 @@
   bottom: 0;
   width: 20%;
   left: calc(var(--tab-i, 0) * 20%);
-  border-radius: 24px;
+  border-radius: 28px;
   pointer-events: none;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02));
   box-shadow:
@@ -1317,8 +1317,8 @@
 }
 
 .tab-icon {
-  width: 22px;
-  height: 22px;
+  width: 26px;
+  height: 26px;
   display: block;
 }
 

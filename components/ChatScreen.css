@@ -693,7 +693,7 @@
   left: 50%;
   right: auto;
   /* Sits above the navigation bar */
-  bottom: calc(72px + env(safe-area-inset-bottom, 0px));
+  bottom: calc(86px + env(safe-area-inset-bottom, 0px));
   z-index: 20;
   display: flex;
   flex-direction: row;
