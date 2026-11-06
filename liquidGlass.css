@@ -180,3 +180,10 @@ html body button.settings-effect-switch {
 html body button.settings-effect-switch.is-on {
   background: rgb(var(--bg-color-rgb, 36, 36, 36)) !important;
 }
+
+html[data-bg-color='none'] body button.settings-effect-switch {
+  background: rgba(0, 0, 0, 0.45) !important;
+}
+html[data-bg-color='none'] body button.settings-effect-switch.is-on {
+  background: #000 !important;
+}

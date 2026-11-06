@@ -208,8 +208,13 @@
 }
 
 .stage.is-bg-none .atmosphere {
-  /* Keep a soft still wash even if Settings hides motion layers */
+  /* Effect off: flat Background color, black when no color is chosen */
   opacity: 1;
+  background: rgb(var(--bg-color-rgb, 36, 36, 36));
+}
+
+html[data-bg-color='none'] .stage.is-bg-none .atmosphere {
+  background: #000;
 }
 
 .stage.is-bg-none .atmosphere-bloom,
