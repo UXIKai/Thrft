@@ -1700,10 +1700,18 @@ html .profile-panel.profile-edit-card {
 
 /* whole bar comes slightly toward you while held; icons stay the same */
 .tab-lens-inner {
-  display: none;
+  visibility: hidden;
+  transform: scale(1);
+  transition: transform 0.25s ease;
 }
 
-.tab-items {
+.tab-bar.is-dragging .tab-lens-inner {
+  visibility: visible;
+  transform: scale(1.15);
+  transition: transform 0.25s ease;
+}
+
+.tab-bar:not(.is-dragging) .tab-items {
   -webkit-mask-image: none;
   mask-image: none;
 }
