@@ -18,7 +18,7 @@ export const TYPE_TO_CATEGORIES = {
   dresses: ['Dresses', 'Rompers'],
   shoes: ['Shoes', 'Sneakers', 'Boots'],
   bags: ['Bags'],
-  accessories: ['Hats', 'Belts', 'Jewelry', 'Accessories'],
+  accessories: ['Hats', 'Belts', 'Jewelry', 'Rings', 'Necklaces', 'Bracelets', 'Earrings', 'Watches', 'Accessories'],
   activewear: ['Active', 'Tees', 'Shorts', 'Hoodies', 'Tanks'],
   denim: ['Jeans', 'Pants', 'Shorts', 'Jackets'],
   knitwear: ['Sweaters', 'Hoodies'],

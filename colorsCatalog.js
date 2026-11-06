@@ -1,4 +1,4 @@
-// 11 base colors × 5 shades each.
+// 11 base colors × 5 shades each, plus jewelry metals.
 export const COLOR_FAMILIES = {
   Red: ['Crimson', 'Scarlet', 'Burgundy', 'Maroon', 'Coral'],
   Orange: ['Tangerine', 'Burnt Orange', 'Rust', 'Peach', 'Apricot'],
@@ -13,6 +13,21 @@ export const COLOR_FAMILIES = {
   White: ['Ivory', 'Off White', 'Snow', 'Pearl', 'Bone'],
 }
 
-export const COLOR_OPTIONS = Object.values(COLOR_FAMILIES)
-  .flat()
+export const JEWELRY_METALS = [
+  'Yellow Gold',
+  'White Gold',
+  'Rose Gold',
+  'Platinum',
+  'Sterling Silver',
+  'Bronze',
+  'Copper',
+  'Brass',
+  'Titanium',
+  'Gunmetal',
+  'Pewter',
+  'Stainless Steel',
+  'Two-Tone',
+]
+
+export const COLOR_OPTIONS = [...Object.values(COLOR_FAMILIES).flat(), ...JEWELRY_METALS]
   .map((label) => ({ id: label.toLowerCase().replace(/\s+/g, '-'), label }))
