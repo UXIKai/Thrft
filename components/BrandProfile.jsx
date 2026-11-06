@@ -24,7 +24,6 @@ export default function BrandProfile({ brandId, brandName, onClose, onOpenProduc
   const [stageEl, setStageEl] = useState(null)
   const [products, setProducts] = useState([])
   const [status, setStatus] = useState('loading') // loading | ready | empty | error
-  const [category, setCategory] = useState('')
 
   useEffect(() => {
     setStageEl(document.querySelector('.stage'))
@@ -45,7 +44,6 @@ export default function BrandProfile({ brandId, brandName, onClose, onOpenProduc
       .then((rows) => {
         if (!alive) return
         setProducts(rows)
-        setCategory(rows[0]?.category || '')
         setStatus(rows.length ? 'ready' : 'empty')
       })
       .catch(() => {
@@ -63,19 +61,20 @@ export default function BrandProfile({ brandId, brandName, onClose, onOpenProduc
 
   return createPortal(
     <div className="glass-overlay brand-profile" role="dialog" aria-modal="true">
-      <header className="glass-overlay-top">
-        <button type="button" className="glass-overlay-back" aria-label="Back" onClick={onClose}>
-          <BackIcon />
-        </button>
-        <h1 className="glass-overlay-title">{name}</h1>
-        <span className="glass-overlay-spacer" aria-hidden />
-      </header>
-      <div className="glass-overlay-body">
-        <div className="brand-profile-hero glass-pane-card">
+      <div className="glass-overlay-body brand-profile-body">
+        <div className="brand-profile-hero">
+          <button
+            type="button"
+            className="brand-profile-back is-bare"
+            aria-label="Back"
+            onClick={onClose}
+          >
+            <BackIcon />
+          </button>
           <span className="brand-profile-mark" aria-hidden>
             {name.slice(0, 1)}
           </span>
-          <p className="brand-profile-cat">{category || 'Brand'}</p>
+          <h1 className="brand-profile-cat">{name}</h1>
         </div>
         {status === 'loading' && (
           <p className="brand-profile-empty" role="status">
