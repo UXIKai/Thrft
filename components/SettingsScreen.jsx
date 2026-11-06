@@ -6,6 +6,8 @@ import {
   applyBackgroundPhoto,
   readBackgroundPhoto,
   applyBarTransparency,
+  applyUiScale,
+  readUiScale,
   applyBgColor,
   applyCustomBgColor,
   applyCustomColor,
@@ -606,6 +608,7 @@ export default function SettingsScreen({
     return getPaletteColors()
   })
   const [paletteEditorOpen, setPaletteEditorOpen] = useState(false)
+  const [uiScale, setUiScale] = useState(() => readUiScale())
   const [barTransparency, setBarTransparency] = useState(() =>
     readBarTransparency(),
   )
@@ -1176,6 +1179,31 @@ export default function SettingsScreen({
                   <div className="settings-slider-ends">
                     <span>Opaque</span>
                     <span>Clear</span>
+                  </div>
+                </div>
+                <div
+                  className="settings-glass-slider"
+                  style={{ '--pull': (uiScale - 85) / 45 }}
+                >
+                  <div className="settings-slider-head is-value-only">
+                    <span className="settings-slider-value">{uiScale}%</span>
+                  </div>
+                  <input
+                    className="settings-slider"
+                    type="range"
+                    min={85}
+                    max={130}
+                    value={uiScale}
+                    onChange={(e) => {
+                      const next = Number(e.target.value)
+                      setUiScale(next)
+                      applyUiScale(next)
+                    }}
+                    aria-label="Text and button size"
+                  />
+                  <div className="settings-slider-ends">
+                    <span>Small</span>
+                    <span>Large</span>
                   </div>
                 </div>
               </div>

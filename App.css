@@ -114,7 +114,7 @@
 .app-column.is-home-wide .tab-bar {
   left: 50%;
   right: auto;
-  width: var(--dock-bar-width);
+  width: min(380px, calc(100% - 56px));
   transform: translateX(-50%);
 }
 
@@ -1216,13 +1216,13 @@
   right: auto;
   width: var(--dock-bar-width);
   transform: translateX(-50%);
-  bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+  bottom: calc(14px + env(safe-area-inset-bottom, 0px));
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   align-items: center;
   gap: 4px;
-  padding: 6px;
-  border-radius: 28px;
+  padding: 4px;
+  border-radius: 24px;
   border: 1px solid var(--glass-border);
   overflow: hidden;
   background: var(--glass-clear-tint);
@@ -1269,9 +1269,9 @@
   align-items: center;
   justify-content: center;
   gap: 0;
-  min-height: 48px;
-  padding: 10px 2px;
-  border-radius: 18px;
+  min-height: 40px;
+  padding: 6px 2px;
+  border-radius: 20px;
   border: none;
   color: rgba(255, 255, 255, 0.55);
   background: transparent;
@@ -1285,11 +1285,11 @@
 .tab-pill {
   position: absolute;
   z-index: 0;
-  top: 6px;
-  bottom: 6px;
-  width: calc((100% - 28px) / 5);
-  left: calc(6px + var(--tab-i, 0) * ((100% - 28px) / 5 + 4px));
-  border-radius: 18px;
+  top: 4px;
+  bottom: 4px;
+  width: calc((100% - 24px) / 5);
+  left: calc(4px + var(--tab-i, 0) * ((100% - 24px) / 5 + 4px));
+  border-radius: 20px;
   pointer-events: none;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02));
   box-shadow:
@@ -1517,4 +1517,14 @@ html .profile-panel.profile-edit-card {
     rgba(var(--bg-color-rgb, 36, 36, 36), 0.4) !important;
   backdrop-filter: blur(28px) saturate(1.6);
   -webkit-backdrop-filter: blur(28px) saturate(1.6);
+}
+
+/* Settings → text & button size */
+.tab-item,
+.home-search-btn,
+.chat-dock-search,
+.chat-search-add,
+.saved-dock-search,
+.saved-search-add {
+  zoom: var(--ui-scale, 1);
 }

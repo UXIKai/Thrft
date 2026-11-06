@@ -459,7 +459,7 @@
   left: 50%;
   right: auto;
   /* Sits above the navigation bar */
-  bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+  bottom: calc(72px + env(safe-area-inset-bottom, 0px));
   z-index: 80; /* above brand globe so + can suck it closed */
   display: flex;
   flex-direction: row;

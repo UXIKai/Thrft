@@ -15,6 +15,8 @@ export const CUSTOM_COLOR_KEY = 'thrft-app-color-hex'
 export const BG_COLOR_KEY = 'thrft-bg-color-v1'
 export const CUSTOM_BG_COLOR_KEY = 'thrft-bg-color-hex-v1'
 export const BG_IMAGE_KEY = 'thrft-bg-image-v2'
+export const UI_SCALE_KEY = 'thrft-ui-scale-v1'
+export const DEFAULT_UI_SCALE = 100
 export const BG_PHOTO_KEY = 'thrft-bg-photo-v1'
 /** Three hues that tint the living background atmosphere app-wide. */
 export const BG_EFFECT_KEY = 'thrft-bg-effect-colors-v1'
@@ -743,7 +745,32 @@ export function readBackgroundImage() {
   }
 }
 
+export function readUiScale() {
+  try {
+    const n = Number(localStorage.getItem(UI_SCALE_KEY))
+    if (!n) return DEFAULT_UI_SCALE
+    return Math.min(130, Math.max(85, Math.round(n)))
+  } catch {
+    return DEFAULT_UI_SCALE
+  }
+}
+
+// Text follows the root font size; icon buttons follow --ui-scale.
+export function applyUiScale(pct) {
+  const v = Math.min(130, Math.max(85, Math.round(Number(pct) || DEFAULT_UI_SCALE)))
+  const root = document.documentElement
+  root.style.fontSize = `${(16 * v) / 100}px`
+  root.style.setProperty('--ui-scale', String(v / 100))
+  try {
+    localStorage.setItem(UI_SCALE_KEY, String(v))
+  } catch {
+    /* ignore */
+  }
+  return v
+}
+
 export function initAppearance() {
+  applyUiScale(readUiScale())
   readPalette()
   readCustomColorHex()
   readCustomBgColorHex()
