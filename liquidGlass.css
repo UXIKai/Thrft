@@ -184,9 +184,12 @@ html[data-bg-color='none'] body button.settings-effect-switch.is-on {
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3) !important;
 }
 html body button.settings-effect-switch .settings-effect-knob {
-  background: #000;
+  box-sizing: border-box;
+  background: #fff;
+  border: 3px solid #000;
   box-shadow: none;
 }
 html body button.settings-effect-switch.is-on .settings-effect-knob {
-  background: #fff;
+  background: #000;
+  border-color: #fff;
 }
