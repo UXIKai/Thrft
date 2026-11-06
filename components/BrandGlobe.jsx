@@ -301,8 +301,7 @@ function packCarouselOrbit(
   const ringStep = Math.max(h + 22, 34)
   // Cap how many labels share a ring so Type lists don't crush into each other.
   const maxPerRing = Math.max(6, Math.min(10, Math.ceil(Math.sqrt(n) * 1.9)))
-  const hardR = Number.isFinite(safeR) ? safeR : Infinity
-  const maxRCap = Math.min(hardR, Math.max(fillR * 2.1, minClearR + ringStep * 4))
+  const maxRCap = Math.max(fillR * 2.1, minClearR + ringStep * 4)
 
   function minRadiusForSlice(slice) {
     const m = slice.length
@@ -357,7 +356,7 @@ function packCarouselOrbit(
     }
 
     const slice = ordered.slice(cursor, cursor + bestTake)
-    const rPx = Math.min(hardR, Math.max(baseR, bestR))
+    const rPx = Math.max(baseR, bestR)
     groups.push({ slice, rPx })
     outerR = rPx
     cursor += slice.length
@@ -382,7 +381,7 @@ function packCarouselOrbit(
         index: slice[i].index,
         lon,
         _baseLon: lon,
-        r: Math.min(hardR, rPx * scale),
+        r: rPx * scale,
         ring: r,
         w: slice[i].w,
         h: slice[i].h,
@@ -521,7 +520,7 @@ function packCircleLanes(
         index: slice[i].index,
         lon: baseLon,
         _baseLon: baseLon,
-        r: Math.min(hardR, rPx * scale),
+        r: rPx * scale,
         ring: r,
         w: slice[i].w,
         h: slice[i].h,
