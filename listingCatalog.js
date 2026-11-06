@@ -203,4 +203,4 @@ export const LISTING_CATEGORIES = [
   'Lounge',
 ]
 
-export const LISTING_CONDITIONS = ['New', 'Like New', 'Good', 'Fair']
+export const LISTING_CONDITIONS = ['Fair', 'Good', 'Like New', 'New']
