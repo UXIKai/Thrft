@@ -857,10 +857,15 @@ function BrandGlobeView({
   // Seat name only while actively scrubbing / holding to choose.
   // Idle (and after settle): empty orb — no leftover brand popping in.
   const seatOpen = choosing || rotating || popping
+  // While typing in the search, the best match shows in the seat.
+  const typedBrand =
+    !seatOpen && typeof searchValue === 'string' && searchValue.trim()
+      ? brands[0] || null
+      : null
   const focusBrand =
     seatOpen && focusId
       ? brands.find((b) => b.id === focusId) || null
-      : null
+      : typedBrand
   const focusLabel = focusBrand?.label || ''
   const focusWords = focusLabel.trim().split(/\s+/).filter(Boolean)
 
@@ -1323,7 +1328,7 @@ function BrandGlobeView({
   }
 
   const seatTint =
-    previewColors && seatOpen && focusId ? colorHex(focusId) : null
+    previewColors && focusBrand ? colorHex(focusBrand.id) : null
   const originStyle = {
     ...(origin && typeof origin.dx === 'number'
       ? { '--globe-dx': `${origin.dx}px`, '--globe-dy': `${origin.dy}px` }
