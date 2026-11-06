@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import OrbitCarousel from './OrbitCarousel.jsx'
 import { COLOR_OPTIONS, colorHex } from '../colorsCatalog.js'
 import {
@@ -1915,7 +1916,8 @@ export default function SettingsScreen({
         </div>
       )}
 
-      {wheelOpen && (
+      {wheelOpen &&
+        createPortal(
         <div
           className="glass-sheet settings-wheel-sheet"
           role="dialog"
@@ -2039,19 +2041,25 @@ export default function SettingsScreen({
 
             <button
               type="button"
-              className="glass-cta"
+              className="home-search-done settings-wheel-done"
+              aria-label="Done"
               onClick={() => {
                 rememberColor(wheelHex)
                 setWheelOpen(false)
               }}
             >
-              Done
+              <svg viewBox="0 0 24 24" aria-hidden>
+                <path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
             </button>
           </div>
-        </div>
-      )}
+        </div>,
+        document.body,
+        )}
 
-      {wheelOpen && colorListOpen && (
+      {wheelOpen &&
+        colorListOpen &&
+        createPortal(
         <div
           className="settings-color-list-backdrop"
           onPointerDown={(e) => {
@@ -2076,8 +2084,9 @@ export default function SettingsScreen({
               ariaLabel="Colors"
             />
           </div>
-        </div>
-      )}
+        </div>,
+        document.body,
+        )}
     </div>
   )
 }
