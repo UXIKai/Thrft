@@ -1444,7 +1444,7 @@ export default function ProfileScreen({
                 </ul>
               )}
 
-              {closetSelected && (
+              {closetSelected && stageEl && createPortal(
                 <div
                   className="closet-detail"
                   role="dialog"
@@ -1458,6 +1458,22 @@ export default function ProfileScreen({
                     onClick={() => setClosetSelected(null)}
                   />
                   <div className="closet-detail-card">
+                    <button
+                      type="button"
+                      className="closet-detail-x is-bare"
+                      aria-label="Close"
+                      onClick={() => setClosetSelected(null)}
+                    >
+                      <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden>
+                        <path
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.8"
+                          strokeLinecap="round"
+                          d="M6 6l12 12M18 6 6 18"
+                        />
+                      </svg>
+                    </button>
                     {closetSelected.imageUrl ? (
                       <img
                         className="closet-detail-img"
@@ -1556,7 +1572,8 @@ export default function ProfileScreen({
                       </button>
                     </div>
                   </div>
-                </div>
+                </div>,
+                stageEl,
               )}
             </div>
           )}
