@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import StageSlot from './StageSlot.jsx'
+import { colorHex } from '../colorsCatalog.js'
 import './BrandGlobe.css'
 
 function GlobeBackIcon() {
@@ -569,6 +570,8 @@ function BrandGlobeView({
   compact = false,
   /** Type / small lists — stay near the seat; expand only as items grow. */
   snug = false,
+  /** Color picker — tint the globe with the color under the seat. */
+  previewColors = false,
 }) {
   const [focusId, setFocusId] = useState(null)
   const [brushing, setBrushing] = useState(false)
@@ -1319,13 +1322,14 @@ function BrandGlobeView({
     onSelect?.(brand.id)
   }
 
-  const originStyle =
-    origin && typeof origin.dx === 'number'
-      ? {
-          '--globe-dx': `${origin.dx}px`,
-          '--globe-dy': `${origin.dy}px`,
-        }
-      : undefined
+  const seatTint =
+    previewColors && seatOpen && focusId ? colorHex(focusId) : null
+  const originStyle = {
+    ...(origin && typeof origin.dx === 'number'
+      ? { '--globe-dx': `${origin.dx}px`, '--globe-dy': `${origin.dy}px` }
+      : null),
+    ...(seatTint ? { '--globe-tint': seatTint } : null),
+  }
 
   return (
     <div
@@ -1336,7 +1340,9 @@ function BrandGlobeView({
         dense ? ' is-dense' : ''
       }${veryDense ? ' is-very-dense' : ''}${
         compact || snug ? ' is-compact' : ''
-      }${rotating ? ' is-rotating' : ''}`}
+      }${rotating ? ' is-rotating' : ''}${
+        seatTint ? ' has-tint' : ''
+      }`}
       style={originStyle}
       role="dialog"
       aria-modal="true"

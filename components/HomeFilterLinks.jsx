@@ -77,7 +77,7 @@ export default function HomeFilterLinks({
     }
   }, [open])
 
-  const cardHex = draftColor ? colorHex(draftColor) : '#ffffff'
+  const cardHex = draftColor ? colorHex(draftColor) || '#ffffff' : '#ffffff'
   const cardStyle = {
     '--card-bg': cardHex,
     '--card-ink': inkFor(cardHex),
@@ -101,7 +101,7 @@ export default function HomeFilterLinks({
         <div
           className="home-search-blur"
           aria-hidden
-          style={{ '--search-tint': draftColor ? colorHex(draftColor) : '#000000' }}
+          style={{ '--search-tint': (draftColor && colorHex(draftColor)) || '#000000' }}
         />
       )}
       {open && (
