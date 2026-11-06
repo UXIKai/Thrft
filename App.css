@@ -1220,8 +1220,8 @@
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   align-items: center;
-  gap: 4px;
-  padding: 4px;
+  gap: 0;
+  padding: 0;
   border-radius: 24px;
   border: 1px solid var(--glass-border);
   overflow: hidden;
@@ -1269,9 +1269,9 @@
   align-items: center;
   justify-content: center;
   gap: 0;
-  min-height: 40px;
+  min-height: 46px;
   padding: 6px 2px;
-  border-radius: 20px;
+  border-radius: 24px;
   border: none;
   color: rgba(255, 255, 255, 0.55);
   background: transparent;
@@ -1285,11 +1285,11 @@
 .tab-pill {
   position: absolute;
   z-index: 0;
-  top: 4px;
-  bottom: 4px;
-  width: calc((100% - 24px) / 5);
-  left: calc(4px + var(--tab-i, 0) * ((100% - 24px) / 5 + 4px));
-  border-radius: 20px;
+  top: 0;
+  bottom: 0;
+  width: 20%;
+  left: calc(var(--tab-i, 0) * 20%);
+  border-radius: 24px;
   pointer-events: none;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02));
   box-shadow:

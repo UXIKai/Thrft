@@ -27,6 +27,7 @@
 .profile-top::before,
 .auth-top::before,
 .chat-thread-top::before {
+  display: none;
   content: '';
   position: absolute;
   z-index: 0;
@@ -65,6 +66,7 @@
 .profile-top::after,
 .auth-top::after,
 .chat-thread-top::after {
+  display: none;
   content: '';
   position: absolute;
   z-index: 2;
