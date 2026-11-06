@@ -1,5 +1,6 @@
 import { createPortal } from 'react-dom'
 import { useEffect, useState } from 'react'
+import { useBag } from '../BagContext.jsx'
 import './GlassOverlay.css'
 import './ProductDetail.css'
 
@@ -26,6 +27,21 @@ function PlusIcon() {
   )
 }
 
+function CheckIcon() {
+  return (
+    <svg className="product-detail-plus" viewBox="0 0 24 24" aria-hidden>
+      <path
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M5 12.8 10 17.5 19 7.5"
+      />
+    </svg>
+  )
+}
+
 function productPhoto(product) {
   const photo = product?.photoUrl || product?.imageUrl || product?.image_url || ''
   if (!photo || /^placeholder$/i.test(photo)) return ''
@@ -41,7 +57,9 @@ export default function ProductDetail({
   onAddToCart,
 }) {
   const [stageEl, setStageEl] = useState(null)
-  const [added, setAdded] = useState(false)
+  const { items, replaceItems, removeItem } = useBag()
+  const qty = items.find((row) => row.id === product?.id)?.qty || 0
+  const added = qty > 0
 
   useEffect(() => {
     setStageEl(document.querySelector('.stage'))
@@ -50,14 +68,20 @@ export default function ProductDetail({
     return () => stage?.classList.remove('is-overlay-open')
   }, [])
 
-  useEffect(() => {
-    setAdded(false)
-  }, [product?.id])
-
   function add() {
     if (!product) return
     onAddToCart?.(product)
-    setAdded(true)
+  }
+
+  function setQty(next) {
+    if (!product) return
+    if (next <= 0) {
+      removeItem(product.id)
+      return
+    }
+    replaceItems(
+      items.map((row) => (row.id === product.id ? { ...row, qty: next } : row)),
+    )
   }
 
   if (!product || !stageEl) return null
@@ -94,15 +118,47 @@ export default function ProductDetail({
           )}
         </div>
         <p className="product-detail-price">{product.price}</p>
-        <button
-          type="button"
-          className="product-detail-add"
-          aria-label={added ? 'In bag' : 'Add to bag'}
-          aria-pressed={added}
-          onClick={add}
-        >
-          <PlusIcon />
-        </button>
+        <div className={`product-detail-buy${added ? ' is-added' : ''}`}>
+          <button
+            type="button"
+            className="product-detail-add"
+            aria-label={added ? 'Remove from bag' : 'Add to bag'}
+            aria-pressed={added}
+            onClick={added ? () => setQty(0) : add}
+          >
+            <span className={`product-detail-swap${added ? ' is-check' : ''}`}>
+              <span className="product-detail-swap-plus">
+                <PlusIcon />
+              </span>
+              <span className="product-detail-swap-check">
+                <CheckIcon />
+              </span>
+            </span>
+          </button>
+          <div className="product-detail-stepper" aria-hidden={!added}>
+            <button
+              type="button"
+              className="product-detail-step is-bare"
+              aria-label="Remove one"
+              tabIndex={added ? 0 : -1}
+              onClick={() => setQty(qty - 1)}
+            >
+              <svg viewBox="0 0 24 24" aria-hidden>
+                <path fill="currentColor" d="M5 11h14v2H5z" />
+              </svg>
+            </button>
+            <span className="product-detail-qty">{qty || 1}</span>
+            <button
+              type="button"
+              className="product-detail-step is-bare"
+              aria-label="Add one"
+              tabIndex={added ? 0 : -1}
+              onClick={() => setQty(qty + 1)}
+            >
+              <PlusIcon />
+            </button>
+          </div>
+        </div>
       </div>
     </div>,
     stageEl,
