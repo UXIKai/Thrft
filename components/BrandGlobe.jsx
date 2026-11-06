@@ -25,6 +25,28 @@ function GlobePlusIcon() {
   )
 }
 
+function GlobePersonIcon() {
+  return (
+    <svg className="brand-globe-dock-ico" viewBox="0 0 24 24" aria-hidden>
+      <circle
+        cx="12"
+        cy="8.2"
+        r="3.6"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+      />
+      <path
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        d="M5 19.5c.8-3.6 3.5-5.4 7-5.4s6.2 1.8 7 5.4"
+      />
+    </svg>
+  )
+}
+
 const CIRCLE_LIMIT = 1.2
 /** Clear the visual select circle — no shell words inside (fraction of seat). */
 const CENTER_SELECT = 0.48
@@ -1467,7 +1489,11 @@ function BrandGlobeView({
                   onClose?.()
                 }}
               >
-                <GlobeBackIcon />
+                {typeof onSearchConfirm === 'function' ? (
+                  <GlobePersonIcon />
+                ) : (
+                  <GlobeBackIcon />
+                )}
               </button>
               <input
                 className="brand-globe-search-input"
@@ -1500,28 +1526,17 @@ function BrandGlobeView({
               {typeof onSearchConfirm === 'function' ? (
                 <button
                   type="button"
-                  className="brand-globe-search-confirm is-bare"
-                  aria-label={searchConfirmLabel}
-                  disabled={searchConfirmDisabled}
+                  className={`brand-globe-search-confirm is-bare${
+                    searchConfirmDisabled ? ' is-x' : ''
+                  }`}
+                  aria-label={searchConfirmDisabled ? 'Close' : searchConfirmLabel}
                   onClick={(event) => {
                     event.stopPropagation()
-                    if (!searchConfirmDisabled) onSearchConfirm()
+                    if (searchConfirmDisabled) onClose?.()
+                    else onSearchConfirm()
                   }}
                 >
-                  <svg
-                    className="brand-globe-check-ico"
-                    viewBox="0 0 24 24"
-                    aria-hidden
-                  >
-                    <path
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2.2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M5 12.5 10 17.5 19 7"
-                    />
-                  </svg>
+                  <GlobePlusIcon />
                 </button>
               ) : typeof onSearchPlus === 'function' ? (
                 <button

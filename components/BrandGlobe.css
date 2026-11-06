@@ -489,9 +489,12 @@
   transition: background-color 99999s ease-out;
 }
 
-.brand-globe-search-confirm:disabled {
-  opacity: 0.38;
-  cursor: default;
+.brand-globe-search-confirm .brand-globe-dock-ico {
+  transition: transform 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.brand-globe-search-confirm.is-x .brand-globe-dock-ico {
+  transform: rotate(45deg);
 }
 
 .brand-globe-check-ico {
