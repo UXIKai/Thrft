@@ -125,6 +125,8 @@ export default function App() {
   const [signedIn, setSignedIn] = useState(false)
   const [authMode, setAuthMode] = useState('login')
   const [authReady, setAuthReady] = useState(false)
+  // Bumped when the user logs in so a slow boot check can't overwrite a fresh login.
+  const authVersionRef = useRef(0)
   const [activeProduct, setActiveProduct] = useState(null)
   const [activeBrand, setActiveBrand] = useState(null)
   const [activeAccount, setActiveAccount] = useState(null) // { username, isOwn }
@@ -218,6 +220,7 @@ export default function App() {
   // Boot: verify Supabase session (server-side getUser). Block dashboard if missing.
   useEffect(() => {
     let alive = true
+    const bootVersion = authVersionRef.current
     ;(async () => {
       // Local OAuth return: ?auth=ok&token=…
       const params = new URLSearchParams(window.location.search)
@@ -248,6 +251,10 @@ export default function App() {
       }
       if (!session) session = await getAuthSession()
       if (!alive) return
+      if (authVersionRef.current !== bootVersion) {
+        setAuthReady(true)
+        return
+      }
       applySession(session)
       setAuthReady(true)
 
@@ -709,6 +716,7 @@ export default function App() {
         <AuthScreen
           mode={authMode}
           onEnter={(result) => {
+            authVersionRef.current += 1
             applySession(result)
             setAuthMode('login')
             setTab('home')
