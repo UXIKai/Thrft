@@ -220,6 +220,7 @@
 }
 
 .product-detail-cancel {
+  left: auto;
   right: calc(50% + 18px);
 }
 
