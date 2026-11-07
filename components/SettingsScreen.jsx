@@ -847,6 +847,7 @@ export default function SettingsScreen({
   const [genderOpen, setGenderOpen] = useState(false)
   const [addNew, setAddNew] = useState(null)
   const [wizStep, setWizStep] = useState(null)
+  const [confirmRemove, setConfirmRemove] = useState(null)
   const genderTimerRef = useRef(null)
   const [sizeFromSummary, setSizeFromSummary] = useState(false)
   const [sizeScrub, setSizeScrub] = useState(null)
@@ -966,7 +967,7 @@ export default function SettingsScreen({
   const allGarments = [
     ...SIZE_GARMENTS,
     ...(sheetDraft.customCategories || []),
-  ]
+  ].filter((g) => !(sheetDraft.hiddenCategories || []).includes(g.id))
   const allGenders = [...GENDER_OPTIONS, ...(sheetDraft.customGenders || [])]
   const commitAddNew = (picked) => {
     const text = (typeof picked === 'string' ? picked : addNew?.text || '').trim().slice(0, 20)
@@ -1027,7 +1028,7 @@ export default function SettingsScreen({
     update()
     el.addEventListener('scroll', update, { passive: true })
     return () => el.removeEventListener('scroll', update)
-  }, [sizeSummary, sheetDraft.gender, sheetDraft.customCategories])
+  }, [sizeSummary, sheetDraft.gender, sheetDraft.customCategories, sheetDraft.hiddenCategories])
 
   // Hold a word: the finger becomes the scroll bar; release opens the centered word.
   useEffect(() => {
@@ -1205,6 +1206,7 @@ export default function SettingsScreen({
       draft.gender = userProfile?.gender || ''
       draft.sizesByGender = { ...(userProfile?.sizesByGender || {}) }
       draft.customGenders = [...(userProfile?.customGenders || [])]
+      draft.hiddenCategories = [...(userProfile?.hiddenCategories || [])]
       draft.age = userProfile?.age || ''
       draft.sex = userProfile?.sex || ''
       draft.height = userProfile?.height || ''
@@ -1324,6 +1326,7 @@ export default function SettingsScreen({
           clothingSizes: { ...(sheetDraft.clothingSizes || {}) },
           gender: sheetDraft.gender || '',
           customGenders: [...(sheetDraft.customGenders || [])],
+          hiddenCategories: [...(sheetDraft.hiddenCategories || [])],
           age: sheetDraft.age || '',
           sex: sheetDraft.sex || '',
           height: sheetDraft.height || '',
@@ -2282,10 +2285,48 @@ export default function SettingsScreen({
                 />
               </div>
             )}
+                      {confirmRemove && (
+                        <div className="settings-remove-confirm">
+                          <button
+                            type="button"
+                            className="is-bare"
+                            aria-label="Cancel"
+                            onClick={() => setConfirmRemove(null)}
+                          >
+                            <svg viewBox="0 0 24 24" aria-hidden>
+                              <path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                            </svg>
+                          </button>
+                          <button
+                            type="button"
+                            className="is-bare"
+                            aria-label="Remove category"
+                            onClick={() => {
+                              const gid = confirmRemove
+                              setSheetDraft((d) => {
+                                const cs = { ...(d.clothingSizes || {}) }
+                                delete cs[gid]
+                                return {
+                                  ...d,
+                                  clothingSizes: cs,
+                                  customCategories: (d.customCategories || []).filter((c) => c.id !== gid),
+                                  hiddenCategories: [...new Set([...(d.hiddenCategories || []), gid])],
+                                }
+                              })
+                              setConfirmRemove(null)
+                            }}
+                          >
+                            <svg viewBox="0 0 24 24" aria-hidden>
+                              <path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
+                          </button>
+                        </div>
+                      )}
                       <div className="settings-size-wheelbox">
                       <div
                         className="settings-size-summary"
                         ref={summaryListRef}
+                        onScroll={() => setConfirmRemove(null)}
                       >
                         {[...allGarments]
                           .sort((a, b) => a.label.length - b.label.length)
@@ -2505,16 +2546,7 @@ export default function SettingsScreen({
                   const gid = summaryListRef.current?.querySelector(
                     '.settings-size-summary-row.is-hot [data-gid]',
                   )?.dataset.gid
-                  if (!gid) return
-                  setSheetDraft((d) => {
-                    const cs = { ...(d.clothingSizes || {}) }
-                    delete cs[gid]
-                    return {
-                      ...d,
-                      clothingSizes: cs,
-                      customCategories: (d.customCategories || []).filter((c) => c.id !== gid),
-                    }
-                  })
+                  setConfirmRemove((c) => (c || !gid ? null : gid))
                 }}
               >
                 <svg viewBox="0 0 24 24" aria-hidden>
@@ -2538,6 +2570,7 @@ export default function SettingsScreen({
                     height: '',
                     customGenders: [],
                     customCategories: [],
+                    hiddenCategories: [],
                   }))
                   setWizStep(0)
                 }}

@@ -66,6 +66,7 @@ const DEFAULT_PROFILE = {
   sex: '',
   height: '',
   customGenders: [],
+  hiddenCategories: [],
   customCategories: [],
   favoredBrands: [],
   brandSizes: {},

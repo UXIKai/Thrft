@@ -83,6 +83,7 @@ function profileFromUser(user) {
     sex: '',
     height: '',
     customGenders: [],
+    hiddenCategories: [],
     customCategories: [],
     favoredBrands: [],
     brandSizes: {},

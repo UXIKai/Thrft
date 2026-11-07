@@ -156,6 +156,7 @@ export default function App() {
     sex: '',
     height: '',
     customGenders: [],
+    hiddenCategories: [],
     customCategories: [],
     favoredBrands: [],
     brandSizes: {},

@@ -1247,3 +1247,17 @@ html body .glass-sheet-card.is-size-summary-page .glass-sheet-head .glass-overla
   transform: translateX(-21vw) !important;
   z-index: 6;
 }
+.settings-remove-confirm {
+  position: absolute;
+  left: calc((100% - min(86vw, 360px)) / 2 + 18px);
+  top: calc(50% + 24px);
+  z-index: 8;
+  display: flex;
+  gap: 6px;
+  padding: 4px 8px;
+  border-radius: 16px;
+  background: rgba(var(--bg-color-rgb, 36, 36, 36), 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+.settings-remove-confirm button { width: 40px; height: 36px; color: #fff; display: flex; align-items: center; justify-content: center; }
+.settings-remove-confirm svg { width: 20px; height: 20px; }
