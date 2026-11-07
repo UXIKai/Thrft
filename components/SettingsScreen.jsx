@@ -613,12 +613,12 @@ function PencilIcon() {
  */
 const GENDER_OPTIONS = ['Men', 'Women', 'Unisex']
 
-function GenderDrum({ value, onPick }) {
+function GenderDrum({ value, onPick, options = GENDER_OPTIONS }) {
   const ref = useRef(null)
   useEffect(() => {
     const el = ref.current
     if (!el) return undefined
-    const idx = Math.max(0, GENDER_OPTIONS.indexOf(value))
+    const idx = Math.max(0, options.indexOf(value))
     const rowH = el.firstElementChild?.offsetHeight || 44
     el.scrollTop = idx * rowH
     const update = () => {
@@ -696,10 +696,10 @@ function GenderDrum({ value, onPick }) {
       el.removeEventListener('touchmove', touch)
       el.removeEventListener('click', click, true)
     }
-  }, [value, onPick])
+  }, [value, onPick, options])
   return (
     <div className="gender-drum" ref={ref}>
-      {GENDER_OPTIONS.map((g) => (
+      {options.map((g) => (
         <div key={g} data-opt={g} className="gender-drum-row">
           <button type="button" className="is-bare" onClick={() => onPick(g)}>
             {g}
@@ -800,6 +800,7 @@ export default function SettingsScreen({
   const [sizePeek, setSizePeek] = useState(null)
   const [, setSizeSummary] = useState(false)
   const [genderOpen, setGenderOpen] = useState(false)
+  const [addNew, setAddNew] = useState(null)
   const genderTimerRef = useRef(null)
   const [sizeFromSummary, setSizeFromSummary] = useState(false)
   const [sizeScrub, setSizeScrub] = useState(null)
@@ -916,6 +917,33 @@ export default function SettingsScreen({
   }, [sheet])
 
   const sizeSummary = sheet === 'size' && !sizeGarment && !sizeBrandFocus
+  const allGarments = [
+    ...SIZE_GARMENTS,
+    ...(sheetDraft.customCategories || []),
+  ]
+  const allGenders = [...GENDER_OPTIONS, ...(sheetDraft.customGenders || [])]
+  const commitAddNew = () => {
+    const text = (addNew?.text || '').trim().slice(0, 20)
+    if (text) {
+      if (addNew.kind === 'gender') {
+        if (!allGenders.some((x) => x.toLowerCase() === text.toLowerCase())) {
+          setSheetDraft((d) => ({
+            ...d,
+            customGenders: [...(d.customGenders || []), text],
+          }))
+        }
+      } else if (!allGarments.some((x) => x.label.toLowerCase() === text.toLowerCase())) {
+        setSheetDraft((d) => ({
+          ...d,
+          customCategories: [
+            ...(d.customCategories || []),
+            { id: `custom-${Date.now().toString(36)}`, label: text },
+          ],
+        }))
+      }
+    }
+    setAddNew(null)
+  }
 
   useEffect(() => {
     if (!sizeSummary) return undefined
@@ -939,7 +967,7 @@ export default function SettingsScreen({
     update()
     el.addEventListener('scroll', update, { passive: true })
     return () => el.removeEventListener('scroll', update)
-  }, [sizeSummary, sheetDraft.gender])
+  }, [sizeSummary, sheetDraft.gender, sheetDraft.customCategories])
 
   // Hold a word: the finger becomes the scroll bar; release opens the centered word.
   useEffect(() => {
@@ -1116,6 +1144,8 @@ export default function SettingsScreen({
       draft.clothingSizes = { ...(userProfile?.clothingSizes || {}) }
       draft.gender = userProfile?.gender || ''
       draft.sizesByGender = { ...(userProfile?.sizesByGender || {}) }
+      draft.customGenders = [...(userProfile?.customGenders || [])]
+      draft.customCategories = [...(userProfile?.customCategories || [])]
       if (draft.gender && draft.sizesByGender[draft.gender]) {
         draft.clothingSizes = { ...draft.sizesByGender[draft.gender] }
       }
@@ -1229,6 +1259,8 @@ export default function SettingsScreen({
         await onSaveProfile?.({
           clothingSizes: { ...(sheetDraft.clothingSizes || {}) },
           gender: sheetDraft.gender || '',
+          customGenders: [...(sheetDraft.customGenders || [])],
+          customCategories: [...(sheetDraft.customCategories || [])],
           sizesByGender: {
             ...(sheetDraft.sizesByGender || {}),
             ...(sheetDraft.gender
@@ -1955,7 +1987,7 @@ export default function SettingsScreen({
                   <>
                     {sizeGarment ? (
                       (() => {
-                        const cat = SIZE_GARMENTS.find((g) => g.id === sizeGarment)
+                        const cat = allGarments.find((g) => g.id === sizeGarment)
                         if (!cat) return null
                         const rawSel = sheetDraft.clothingSizes?.[cat.id]
                         const selectedList = Array.isArray(rawSel)
@@ -2157,6 +2189,7 @@ export default function SettingsScreen({
                       {genderOpen && (
               <div className="gender-overlay">
                 <GenderDrum
+                  options={allGenders}
                   value={sheetDraft.gender || ''}
                   onPick={(g) => {
                     setSheetDraft((d) => {
@@ -2183,7 +2216,7 @@ export default function SettingsScreen({
                         className="settings-size-summary"
                         ref={summaryListRef}
                       >
-                        {[...SIZE_GARMENTS]
+                        {[...allGarments]
                           .sort((a, b) => a.label.length - b.label.length)
                           .map((g) => (
                           <div
@@ -2300,21 +2333,42 @@ export default function SettingsScreen({
               <button
                 type="button"
                 className="glass-sheet-add is-bare"
-                aria-label="Add size"
-                onClick={() => {
-                  const gid = summaryListRef.current?.querySelector(
-                    '.settings-size-summary-row.is-hot [data-gid]',
-                  )?.dataset.gid
-                  if (!gid) return
-                  setSizeSummary(false)
-                  setSizeFromSummary(true)
-                  setSizeGarment(gid)
-                }}
+                aria-label="Add gender or category"
+                onClick={() => setAddNew({ kind: 'category', text: '' })}
               >
                 <svg viewBox="0 0 24 24" aria-hidden>
                   <path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
                 </svg>
               </button>
+            )}
+            {sheet === 'size' && addNew && (
+              <div className="settings-size-add-dock settings-new-dock">
+                <div className="settings-new-kinds">
+                  {['category', 'gender'].map((k) => (
+                    <button
+                      key={k}
+                      type="button"
+                      className={`is-bare${addNew.kind === k ? ' is-on' : ''}`}
+                      onPointerDown={(e) => e.preventDefault()}
+                      onClick={() => setAddNew((a) => ({ ...a, kind: k }))}
+                    >
+                      {k === 'category' ? 'Category' : 'Gender'}
+                    </button>
+                  ))}
+                </div>
+                <input
+                  className="settings-size-add-input"
+                  autoFocus
+                  value={addNew.text}
+                  maxLength={20}
+                  enterKeyHint="done"
+                  onChange={(e) => setAddNew((a) => ({ ...a, text: e.target.value }))}
+                  onBlur={commitAddNew}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') e.currentTarget.blur()
+                  }}
+                />
+              </div>
             )}
             {sheet !== 'size' ||
             Object.values(sheetDraft.clothingSizes || {}).some(Boolean) ? (

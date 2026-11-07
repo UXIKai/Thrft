@@ -79,6 +79,8 @@ function profileFromUser(user) {
     clothingSizes: {},
     gender: '',
     sizesByGender: {},
+    customGenders: [],
+    customCategories: [],
     favoredBrands: [],
     brandSizes: {},
     shippingAddress: '',

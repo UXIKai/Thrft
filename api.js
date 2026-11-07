@@ -62,6 +62,8 @@ const DEFAULT_PROFILE = {
   clothingSizes: {},
   gender: '',
   sizesByGender: {},
+  customGenders: [],
+  customCategories: [],
   favoredBrands: [],
   brandSizes: {},
   shippingAddress: '',

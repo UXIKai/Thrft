@@ -1106,3 +1106,7 @@ html body .glass-sheet-card.is-size-summary-page:not(.is-gender-gate) .settings-
 }
 html body .settings-size-chip.settings-size-add { font-size: 1.5rem; }
 html body .glass-sheet-card.is-size-summary-page .glass-sheet-add svg { width: 20px; height: 20px; }
+.settings-new-kinds { display: flex; justify-content: center; gap: 22px; padding-bottom: 6px; }
+.settings-new-kinds button { color: rgba(255,255,255,0.5); font-size: 0.95rem; font-weight: 600; }
+.settings-new-kinds button.is-on { color: #fff; text-decoration: underline; text-underline-offset: 6px; }
+.settings-size-add-dock.settings-new-dock { flex-direction: column; align-items: center; }

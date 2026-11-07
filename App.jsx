@@ -152,6 +152,8 @@ export default function App() {
     clothingSizes: {},
     gender: '',
     sizesByGender: {},
+    customGenders: [],
+    customCategories: [],
     favoredBrands: [],
     brandSizes: {},
     shippingAddress: '',

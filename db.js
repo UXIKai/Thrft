@@ -33,6 +33,8 @@ function emptyProfile() {
     clothingSizes: {},
     gender: '',
     sizesByGender: {},
+    customGenders: [],
+    customCategories: [],
     favoredBrands: [],
     brandSizes: {},
     shippingAddress: '',
@@ -63,6 +65,8 @@ function mapProfile(row) {
     clothingSizes: asObject(row.clothingSizes),
     gender: typeof row.gender === 'string' ? row.gender : '',
     sizesByGender: asObject(row.sizesByGender),
+    customGenders: asArray(row.customGenders),
+    customCategories: asArray(row.customCategories),
     favoredBrands: asArray(row.favoredBrands),
     brandSizes: asObject(row.brandSizes),
     shippingAddress: row.shippingAddress || '',
@@ -209,6 +213,14 @@ export async function updateProfile(patch = {}, accountId = null) {
       patch.sizesByGender && typeof patch.sizesByGender === 'object'
         ? patch.sizesByGender
         : current.sizesByGender,
+    customGenders: Array.isArray(patch.customGenders)
+      ? patch.customGenders.filter((x) => typeof x === 'string').slice(0, 12)
+      : current.customGenders,
+    customCategories: Array.isArray(patch.customCategories)
+      ? patch.customCategories
+          .filter((c) => c && typeof c.id === 'string' && typeof c.label === 'string')
+          .slice(0, 40)
+      : current.customCategories,
     favoredBrands: Array.isArray(patch.favoredBrands)
       ? patch.favoredBrands.slice(0, 40)
       : current.favoredBrands,
