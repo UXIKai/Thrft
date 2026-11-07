@@ -246,3 +246,21 @@ html body .chat-dm-menu .chat-dm-menu-ico {
   width: 18px;
   height: 18px;
 }
+
+/* Settings: back button floats at the top with no header band; content scrolls under it */
+html body .settings-screen > .settings-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  pointer-events: none;
+  background: none;
+}
+html body .settings-screen > .settings-top > * {
+  pointer-events: auto;
+}
+html body .settings-screen > .settings-scroll {
+  flex: 1 1 auto;
+  padding-top: calc(max(calc(env(safe-area-inset-top, 0px) + 2px), 28px) + 48px);
+}
