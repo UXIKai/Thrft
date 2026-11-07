@@ -14,6 +14,7 @@ import { getCustomCategories } from '../customCatalog.js'
 import { LISTING_BRANDS, LISTING_CATEGORIES } from '../listingCatalog.js'
 import { createListing, fetchSellerSalesStats, formatListingPrice } from '../listings.js'
 import { getSupabase, isSupabaseConfigured } from '../supabase.js'
+import BrandGlobe from './BrandGlobe.jsx'
 import OrbitCarousel from './OrbitCarousel.jsx'
 import SettingsScreen from './SettingsScreen.jsx'
 import './GlassOverlay.css'
@@ -674,6 +675,9 @@ export default function ProfileScreen({
   const [storeProducts, setStoreProducts] = useState([])
   const [closetItems, setClosetItems] = useState([])
   const [closetBrand, setClosetBrand] = useState('All')
+  const [closetGlobe, setClosetGlobe] = useState(null)
+  const [closetGlobePhase, setClosetGlobePhase] = useState('closed')
+  const [closetGlobeQuery, setClosetGlobeQuery] = useState('')
   const [closetType, setClosetType] = useState('All')
   const [closetCustomCategories, setClosetCustomCategories] = useState(() =>
     getCustomCategories(),
@@ -868,6 +872,19 @@ export default function ProfileScreen({
     }
     return list
   }, [closetCustomCategories])
+
+  function openClosetGlobe(kind) {
+    setClosetGlobeQuery('')
+    setClosetGlobe(kind)
+    setClosetGlobePhase('enter')
+    window.requestAnimationFrame(() => setClosetGlobePhase('open'))
+  }
+
+  const closetGlobeItems = useMemo(() => {
+    const all = closetGlobe === 'type' ? closetTypeItems : closetBrandItems
+    const q = closetGlobeQuery.trim().toLowerCase()
+    return q ? all.filter((i) => i.label.toLowerCase().includes(q)) : all
+  }, [closetGlobe, closetGlobeQuery, closetBrandItems, closetTypeItems])
 
   const visibleClosetItems = useMemo(
     () =>
@@ -1385,6 +1402,7 @@ export default function ProfileScreen({
                     items={closetBrandItems}
                     activeId={closetBrand}
                     onSelect={setClosetBrand}
+                    onActivate={() => openClosetGlobe('brand')}
                     ariaLabel="Closet brand"
                     prevLabel="Previous brand"
                     nextLabel="Next brand"
@@ -1399,6 +1417,7 @@ export default function ProfileScreen({
                     items={closetTypeItems}
                     activeId={closetType}
                     onSelect={setClosetType}
+                    onActivate={() => openClosetGlobe('type')}
                     ariaLabel="Closet type"
                     prevLabel="Previous type"
                     nextLabel="Next type"
@@ -2218,6 +2237,35 @@ export default function ProfileScreen({
               </button>
             </div>
           </div>,
+          stageEl,
+        )}
+
+      {stageEl &&
+        closetGlobePhase !== 'closed' &&
+        closetGlobe &&
+        createPortal(
+          <BrandGlobe
+            variant="dock"
+            phase={closetGlobePhase === 'enter' ? 'enter' : closetGlobePhase === 'exit' ? 'exit' : 'open'}
+            brands={closetGlobeItems}
+            activeId={closetGlobe === 'type' ? closetType : closetBrand}
+            title={closetGlobe === 'type' ? 'Category' : 'Brands'}
+            snug={closetGlobe === 'type'}
+            searchValue={closetGlobeQuery}
+            onSearchChange={setClosetGlobeQuery}
+            searchPlaceholder=""
+            onSelect={(id) => {
+              if (closetGlobe === 'type') setClosetType(id)
+              else setClosetBrand(id)
+              setClosetGlobePhase('exit')
+            }}
+            onClose={() => setClosetGlobePhase('exit')}
+            onExitComplete={() => {
+              setClosetGlobe(null)
+              setClosetGlobePhase('closed')
+              setClosetGlobeQuery('')
+            }}
+          />,
           stageEl,
         )}
 
