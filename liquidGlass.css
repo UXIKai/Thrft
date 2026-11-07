@@ -893,3 +893,8 @@ html body .glass-sheet-card.is-size-summary-page .settings-size-summary-row.is-h
 html body .glass-sheet-card.is-size-summary-page .settings-size-summary-row:not(.is-hot) .settings-size-summary-label {
   color: rgba(255, 255, 255, 0.6);
 }
+
+html body .glass-sheet-card.is-size-summary-page .settings-size-summary {
+  height: calc(var(--row-h) * 9);
+  padding: calc(var(--row-h) * 4) 0 !important;
+}
