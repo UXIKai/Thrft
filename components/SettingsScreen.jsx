@@ -1097,6 +1097,7 @@ export default function SettingsScreen({
       aria-modal="true"
       aria-label="Settings"
     >
+      <div className="settings-scroll">
       <header className="settings-top">
         <button
           type="button"
@@ -1109,8 +1110,6 @@ export default function SettingsScreen({
         <h1 className="settings-title" aria-label="Settings" />
         <span className="settings-top-spacer" aria-hidden />
       </header>
-
-      <div className="settings-scroll">
         <Section label="Appearance">
           <div className={`settings-block settings-palette-block${photoMenuOpen ? ' is-photo-open' : ''}`}>
             <button
@@ -1872,6 +1871,7 @@ export default function SettingsScreen({
               <span className="settings-started-bloom settings-started-bloom-d" />
             </div>
           )}
+          <div className="glass-overlay-body settings-help-body">
           <header className="glass-overlay-top">
             <button
               type="button"
@@ -1884,7 +1884,6 @@ export default function SettingsScreen({
             <h2 className="glass-overlay-title">{HELP_PAGES[helpPage].title}</h2>
             <span className="glass-overlay-spacer" aria-hidden />
           </header>
-          <div className="glass-overlay-body settings-help-body">
             {helpPage === 'started' ? (
               <article className="settings-started">
                 {HELP_PAGES.started.intro ? (

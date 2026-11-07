@@ -256,3 +256,14 @@ html body .settings-help-page > .glass-overlay-top {
   padding-bottom: 4px;
   background: none;
 }
+
+/* Back button scrolls away with the page (top of the page, not the screen) */
+html body .settings-help-page .settings-help-body > .glass-overlay-top {
+  margin: 0 -18px;
+}
+html body .settings-help-page.is-started .settings-help-body {
+  padding-top: 0;
+}
+html body .settings-help-page.is-started .settings-help-body > .glass-overlay-top {
+  margin: 0 -22px;
+}
