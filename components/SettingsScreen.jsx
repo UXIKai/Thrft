@@ -1583,7 +1583,7 @@ export default function SettingsScreen({
             onClick={() => setSheet(null)}
           />
           <div
-            className={`glass-sheet-card${sheet === 'size' ? ` is-size-sheet${sizeGarment ? '' : ' is-size-wheel'}` : ''}`}
+            className={`glass-sheet-card${sheet === 'size' ? ` is-size-sheet${sizeGarment ? '' : ' is-size-wheel'}${sizeSummary ? ' is-size-summary-page' : ''}` : ''}`}
             ref={sheet === 'size' ? sizeSheetCardRef : undefined}
           >
             <div className="glass-sheet-head">

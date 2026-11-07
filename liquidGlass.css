@@ -568,3 +568,25 @@ html body .settings-size-wheel.is-picked.is-compact-wheel .type-carousel.is-whee
 .settings-size-summary-row strong {
   color: #fff;
 }
+
+/* Saved sizes page: list from the top under the back arrow, check at the bottom */
+html body .glass-sheet-card.is-size-summary-page {
+  justify-content: flex-start;
+  padding-top: calc(env(safe-area-inset-top, 0px) + 80px);
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 24px);
+  overflow-y: auto;
+}
+html body .glass-sheet-card.is-size-summary-page .settings-size-cats {
+  flex: 1 1 auto;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 100%;
+}
+html body .glass-sheet-card.is-size-summary-page .settings-size-summary {
+  width: min(88vw, 420px);
+  margin: 0 auto;
+}
+html body .glass-sheet-card.is-size-summary-page .glass-sheet-plus {
+  margin: auto auto 0 !important;
+  flex: 0 0 auto;
+}
