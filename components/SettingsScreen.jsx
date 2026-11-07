@@ -557,7 +557,15 @@ function answerAssistant(question) {
 
 const SHEET_COPY = {
   size: { title: '', fields: [] },
-  shipping: { title: '', fields: [{ key: 'address', label: 'Address' }] },
+  shipping: {
+    title: '',
+    fields: [
+      { key: 'address', label: 'Address' },
+      { key: 'city', label: 'City' },
+      { key: 'state', label: 'State' },
+      { key: 'zip', label: 'Zip code' },
+    ],
+  },
   shop: { title: '', fields: [{ key: 'shop', label: 'Shop email' }] },
   sync: { title: '', fields: [{ key: 'sync', label: 'Catalog' }] },
   storeApi: {
@@ -847,6 +855,7 @@ export default function SettingsScreen({
   const [genderOpen, setGenderOpen] = useState(false)
   const [addNew, setAddNew] = useState(null)
   const [wizStep, setWizStep] = useState(null)
+  const [addrStep, setAddrStep] = useState(0)
   const [confirmRemove, setConfirmRemove] = useState(null)
   const genderTimerRef = useRef(null)
   const [sizeFromSummary, setSizeFromSummary] = useState(false)
@@ -1224,14 +1233,19 @@ export default function SettingsScreen({
       conf.fields.forEach((f) => {
         if (id === 'displayName' && f.key === 'name') draft[f.key] = displayName
         else if (id === 'shop' && f.key === 'shop') draft[f.key] = email
-        else if (id === 'shipping' && f.key === 'address') {
-          draft[f.key] = userProfile?.shippingAddress || ''
+        else if (id === 'shipping') {
+          const [a = '', c = '', rest = ''] = (
+            userProfile?.shippingAddress || ''
+          ).split(', ')
+          const [st = '', ...z] = rest.split(' ')
+          draft[f.key] = { address: a, city: c, state: st, zip: z.join(' ') }[f.key] || ''
         } else if (id === 'storeApi' && f.key === 'storeApiKey') {
           draft[f.key] = userProfile?.storeApiKey || ''
         } else draft[f.key] = ''
       })
     }
     setSaveNote('')
+    setAddrStep(0)
     setSheetDraft(draft)
     setSheet(id)
   }
@@ -1313,7 +1327,15 @@ export default function SettingsScreen({
         setSaveNote('Saved')
       } else if (sheet === 'shipping') {
         await onSaveProfile?.({
-          shippingAddress: (sheetDraft.address || '').trim(),
+          shippingAddress: [
+            (sheetDraft.address || '').trim(),
+            (sheetDraft.city || '').trim(),
+            [(sheetDraft.state || '').trim(), (sheetDraft.zip || '').trim()]
+              .filter(Boolean)
+              .join(' '),
+          ]
+            .filter(Boolean)
+            .join(', '),
         })
         setSaveNote('Saved')
       } else if (sheet === 'storeApi') {
@@ -1964,7 +1986,9 @@ export default function SettingsScreen({
                 className="glass-overlay-icon-btn"
                 aria-label="Close"
                 onClick={() =>
-                  sheet === 'size' && sizeGarment
+                  sheet === 'shipping' && addrStep > 0
+                    ? setAddrStep(addrStep - 1)
+                    : sheet === 'size' && sizeGarment
                     ? sizePicked
                       ? setSizePicked(null)
                       : (setSizeGarment(null),
@@ -2375,7 +2399,9 @@ export default function SettingsScreen({
                 )}
               </div>
             ) : (
-              SHEET_COPY[sheet].fields.map((f) => (
+              SHEET_COPY[sheet].fields
+                .filter((_, i) => sheet !== 'shipping' || i === addrStep)
+                .map((f) => (
                 <label key={f.key} className="glass-field">
                   <span className="glass-field-label">{f.label}</span>
                   <input
@@ -2668,7 +2694,11 @@ export default function SettingsScreen({
               className="glass-sheet-plus is-bare"
               aria-label="Save"
               disabled={saveBusy}
-              onClick={saveSheet}
+              onClick={() =>
+                sheet === 'shipping' && addrStep < 3
+                  ? setAddrStep(addrStep + 1)
+                  : saveSheet()
+              }
             >
               <svg viewBox="0 0 24 24" aria-hidden>
                 <path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
