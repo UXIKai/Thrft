@@ -2387,16 +2387,18 @@ export default function SettingsScreen({
               </button>
             )}
             {sheet === 'size' && wizStep !== null && sizeSummary && (() => {
-              const steps = ['age', 'sex', 'gender', 'category']
+              const steps = ['age', 'height', 'sex', 'gender', 'category']
               const kind = steps[wizStep]
               const label = ADD_KINDS.find(([k]) => k === kind)?.[1]
               const options =
                 kind === 'age'
                   ? PRESET_AGES
-                  : kind === 'sex'
-                    ? PRESET_SEX
-                    : kind === 'gender'
-                      ? [...allGenders, ...PRESET_GENDERS.filter((x) => !allGenders.includes(x))]
+                  : kind === 'height'
+                    ? PRESET_HEIGHTS
+                    : kind === 'sex'
+                      ? PRESET_SEX
+                      : kind === 'gender'
+                        ? [...allGenders, ...PRESET_GENDERS.filter((x) => !allGenders.includes(x))]
                       : PRESET_CATEGORIES.filter(
                           (x) => !allGarments.some((g) => g.label === x),
                         )
@@ -2405,7 +2407,7 @@ export default function SettingsScreen({
                   '.settings-new-page .gender-drum-row.is-hot',
                 )?.dataset.opt
                 if (!hot) return
-                if (kind === 'age' || kind === 'sex') {
+                if (kind === 'age' || kind === 'height' || kind === 'sex') {
                   setSheetDraft((d) => ({ ...d, [kind]: hot }))
                 } else if (kind === 'gender') {
                   setSheetDraft((d) => {
@@ -2431,7 +2433,7 @@ export default function SettingsScreen({
                     ],
                   }))
                 }
-                setWizStep(wizStep >= 3 ? null : wizStep + 1)
+                setWizStep(wizStep >= 4 ? null : wizStep + 1)
               }
               return (
                 <div className="settings-new-page settings-wiz-page">
@@ -2441,7 +2443,7 @@ export default function SettingsScreen({
                   <div className="settings-new-drum">
                     <GenderDrum
                       key={kind}
-                      value={sheetDraft[kind] || (kind === 'age' ? '25' : '')}
+                      value={sheetDraft[kind] || (kind === 'age' ? '25' : kind === 'height' ? '5\'9"' : '')}
                       options={options}
                       onPick={(x) =>
                         document
