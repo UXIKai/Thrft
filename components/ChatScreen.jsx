@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { createPortal } from 'react-dom'
+import { createPortal, flushSync } from 'react-dom'
 import { fetchSaved } from '../api.js'
 import BrandGlobe from './BrandGlobe.jsx'
 import StageSlot from './StageSlot.jsx'
@@ -1628,20 +1628,23 @@ export default function ChatScreen({
                       aria-label="Edit name"
                       onClick={() => {
                         closeMenus()
-                        // Focus inside the tap so iOS opens the keyboard, then hand off to the real input.
+                        // Hidden input opens the iOS keyboard inside the tap; the real field takes focus synchronously
                         const kb = document.createElement('input')
                         kb.style.cssText = 'position:fixed;opacity:0;top:0;left:0;width:1px;height:1px;font-size:16px'
                         document.body.appendChild(kb)
                         kb.focus({ preventScroll: true })
-                        setTimeout(() => kb.remove(), 800)
-                        if (peerProfile) {
-                          setNickDraft(peerProfile.name)
+                        flushSync(() => {
+                          if (peerProfile) {
+                            setNickDraft(peerProfile.name)
+                          } else {
+                            setNickDraft(chat.title || '')
+                            setContactSheetOpen(true)
+                          }
                           setEditingNick(true)
-                        } else {
-                          setNickDraft(chat.title || '')
-                          setEditingNick(true)
-                          setContactSheetOpen(true)
-                        }
+                        })
+                        const real = nickInputRef.current
+                        if (real) real.focus({ preventScroll: true })
+                        setTimeout(() => kb.remove(), real ? 50 : 800)
                       }}
                     >
                       <PencilIcon />
