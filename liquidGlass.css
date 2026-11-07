@@ -1162,3 +1162,18 @@ html body .glass-sheet-card .settings-size-chip.settings-size-add-input.is-inlin
 }
 .settings-new-page .settings-new-kinds { flex-wrap: wrap; gap: 14px 26px; padding: 0 6vw; }
 .settings-new-page .settings-new-kinds button { font-size: 1.25rem; }
+.settings-new-page .gender-drum { height: calc(var(--row-h, 44px) * 5); padding: calc(var(--row-h, 44px) * 2) 0; }
+.settings-new-actions {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 14dvh);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0;
+}
+.settings-new-actions button { width: 44px; height: 44px; color: #fff; display: flex; align-items: center; justify-content: center; }
+.settings-new-actions button:first-child { transform: translateX(-21vw); }
+.settings-new-actions button + button { position: absolute; left: 50%; margin-left: -22px; }
+.settings-new-actions svg { width: 24px; height: 24px; }

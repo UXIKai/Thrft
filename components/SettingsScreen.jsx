@@ -2417,18 +2417,41 @@ export default function SettingsScreen({
                                     (x) => !allGarments.some((g) => g.label === x),
                                   )
                       }
-                      onPick={(x) => commitAddNew(x)}
+                      onPick={(x) =>
+                        document
+                          .querySelector(`.settings-new-page [data-opt="${CSS.escape(x)}"]`)
+                          ?.scrollIntoView({ block: 'center', behavior: 'smooth' })
+                      }
                     />
                   </div>
                 )}
-                <button
-                  type="button"
-                  className="settings-new-close is-bare"
-                  aria-label="Close"
-                  onClick={() => setAddNew(null)}
-                >
-                  <BackIcon />
-                </button>
+                <div className="settings-new-actions">
+                  <button
+                    type="button"
+                    className="is-bare"
+                    aria-label="Back"
+                    onClick={() => setAddNew(null)}
+                  >
+                    <BackIcon />
+                  </button>
+                  {addNew.kind && (
+                    <button
+                      type="button"
+                      className="is-bare"
+                      aria-label="Add"
+                      onClick={() => {
+                        const hot = document.querySelector(
+                          '.settings-new-page .gender-drum-row.is-hot',
+                        )?.dataset.opt
+                        if (hot) commitAddNew(hot)
+                      }}
+                    >
+                      <svg viewBox="0 0 24 24" aria-hidden>
+                        <path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </button>
+                  )}
+                </div>
               </div>
             )}
             {sheet !== 'size' ||
