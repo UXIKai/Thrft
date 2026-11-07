@@ -6,11 +6,12 @@
 /** Letter sizes used by knits / outer layers */
 export const LETTER_SIZES = ['XXS', 'XS', 'S', 'M', 'L', 'XL', 'XXL', '3XL']
 
-/** US shoe sizes 1–14 including halves */
+/** US shoe sizes: kids 1K–13K, then adult 1–18, all with halves */
 export const SHOE_SIZES_US = (() => {
   const out = []
-  for (let n = 1; n <= 14; n += 1) out.push(String(n), `${n}.5`)
-  return out.filter((x) => x !== '14.5')
+  for (let n = 1; n <= 13; n += 1) out.push(`${n}K`, `${n}.5K`)
+  for (let n = 1; n <= 18; n += 1) out.push(String(n), `${n}.5`)
+  return out.filter((x) => x !== '18.5' && x !== '13.5K')
 })()
 
 /** Dress shirt: neck / sleeve */
