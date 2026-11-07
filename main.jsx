@@ -11,6 +11,7 @@ initAppearance()
 let maxHeight = 0
 let lastLandscape = null
 
+const DOCKED = '.chat-compose, .settings-assistant-dock'
 let lastKb = 0
 let kbShift = 0
 
@@ -51,7 +52,7 @@ function fitScreen() {
   const dy = pan - kbShift
   if (app) app.style.transform = dy ? `translateY(${dy}px)` : ''
   if (kb > 120) lastKb = kb
-  const focusedField = document.activeElement?.closest?.('.chat-compose')
+  const focusedField = document.activeElement?.closest?.(DOCKED)
   root.style.setProperty('--kb-height', `${kb > 120 ? kb : focusedField && lastKb ? lastKb : 0}px`)
   root.style.setProperty('--app-height', `${height}px`)
   root.style.setProperty('--app-width', `${width}px`)
@@ -82,7 +83,7 @@ function isTextField(t) {
 
 // Fields outside the chat bar: lift the page just enough to keep the field above the keyboard.
 function liftForKeyboard(el) {
-  if (!el || el.closest('.chat-compose')) {
+  if (!el || el.closest(DOCKED)) {
     kbShift = 0
     return
   }
@@ -102,7 +103,7 @@ document.addEventListener(
     const t = e.target
     if (!isTextField(t) || document.activeElement === t) return
     e.preventDefault()
-    if (t.closest('.chat-compose')) {
+    if (t.closest(DOCKED)) {
       document.documentElement.style.setProperty('--kb-height', `${lastKb || 346}px`)
     } else {
       liftForKeyboard(t)
@@ -114,7 +115,7 @@ document.addEventListener(
 )
 document.addEventListener('focusin', (e) => {
   const t = e.target
-  if (isTextField(t) && !t.closest('.chat-compose')) liftForKeyboard(t)
+  if (isTextField(t) && !t.closest(DOCKED)) liftForKeyboard(t)
 })
 document.addEventListener('focusout', (e) => {
   const t = e.target
