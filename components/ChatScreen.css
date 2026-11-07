@@ -1521,9 +1521,9 @@
   z-index: 8;
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: 8px;
   height: 48px;
-  padding: 2px 4px;
+  padding: 2px 0;
   box-sizing: border-box;
   border-radius: 16px;
   border: none;
@@ -1563,7 +1563,7 @@
 }
 
 .chat-compose-attach-btn {
-  width: 40px;
+  width: 36px;
   height: 44px;
   display: grid;
   place-items: center;
