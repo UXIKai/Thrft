@@ -611,7 +611,23 @@ function PencilIcon() {
 /**
  * Settings — continuous scroll; row popups + Help pages; color wheel.
  */
-const GENDER_OPTIONS = ['Men', 'Women', 'Unisex']
+const GENDER_OPTIONS = [
+  'Agender',
+  'Androgynous',
+  'Bigender',
+  'Cisgender Man',
+  'Cisgender Woman',
+  'Demiboy',
+  'Demigirl',
+  'Genderfluid',
+  'Genderqueer',
+  'Non-Binary',
+  'Pangender',
+  'Polygender',
+  'Transgender Man',
+  'Transgender Woman',
+  'Two-Spirit',
+]
 const PRESET_SEX = ['Male', 'Female', 'Intersex']
 const PRESET_AGES = Array.from({ length: 99 }, (_, i) => String(i + 1))
 const PRESET_HEIGHTS = (() => {
@@ -628,11 +644,7 @@ const ADD_KINDS = [
   ['height', 'Height'],
   ['category', 'Category'],
 ]
-const PRESET_GENDERS = [
-  'Boys', 'Girls', 'Kids', 'Toddler', 'Baby', 'Infant', 'Teen', 'Non-binary',
-  'Genderfluid', 'Women Plus', 'Men Big & Tall', 'Petite', 'Tall',
-  'Maternity', 'Youth', 'Adult', 'Senior', 'Pets',
-]
+const PRESET_GENDERS = []
 const PRESET_CATEGORIES = [
   'Dresses', 'Skirts', 'Leggings', 'Coats', 'Cardigans', 'Overalls',
   'Jumpsuits', 'Rompers', 'Pajamas', 'Underwear', 'Bras', 'Swimwear',
@@ -958,7 +970,18 @@ export default function SettingsScreen({
   const allGenders = [...GENDER_OPTIONS, ...(sheetDraft.customGenders || [])]
   const commitAddNew = (picked) => {
     const text = (typeof picked === 'string' ? picked : addNew?.text || '').trim().slice(0, 20)
-    if (text && ['age', 'sex', 'height'].includes(addNew?.kind)) {
+    if (text && addNew?.kind === 'gender') {
+      setSheetDraft((d) => {
+        const by = { ...(d.sizesByGender || {}) }
+        if (d.gender) by[d.gender] = d.clothingSizes || {}
+        return {
+          ...d,
+          gender: text,
+          sizesByGender: by,
+          clothingSizes: by[text] ? { ...by[text] } : d.gender ? {} : d.clothingSizes || {},
+        }
+      })
+    } else if (text && ['age', 'sex', 'height'].includes(addNew?.kind)) {
       const key = addNew.kind
       setSheetDraft((d) => ({ ...d, [key]: text }))
     } else if (text) {
@@ -2527,7 +2550,7 @@ export default function SettingsScreen({
                             : addNew.kind === 'height'
                               ? PRESET_HEIGHTS
                               : addNew.kind === 'gender'
-                                ? PRESET_GENDERS.filter((x) => !allGenders.includes(x))
+                                ? allGenders
                                 : PRESET_CATEGORIES.filter(
                                     (x) => !allGarments.some((g) => g.label === x),
                                   )
