@@ -701,3 +701,15 @@ html body .settings-size-add-dock .settings-size-add-input {
   text-align: center;
   outline: none;
 }
+
+html body .glass-sheet-card.is-size-sheet,
+html body .glass-sheet-card.is-size-sheet * {
+  -webkit-user-select: none !important;
+  user-select: none !important;
+  -webkit-touch-callout: none !important;
+  -webkit-tap-highlight-color: transparent;
+}
+html body .glass-sheet-card.is-size-sheet input {
+  -webkit-user-select: text !important;
+  user-select: text !important;
+}
