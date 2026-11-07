@@ -1055,3 +1055,15 @@ html body .settings-size-drum-col > .gender-overlay ~ .settings-size-gender,
 html body .settings-size-drum-col:has(.gender-overlay) > .settings-size-gender {
   opacity: 0;
 }
+/* Gender first: only the Gender button until one is chosen */
+html body .glass-sheet-card.is-gender-gate .settings-size-wheelbox,
+html body .glass-sheet-card.is-gender-gate .glass-sheet-plus {
+  visibility: hidden;
+}
+html body .glass-sheet-card.is-size-summary-page:not(.is-gender-gate) .settings-size-drum-col > .settings-size-gender {
+  position: fixed;
+  top: calc(env(safe-area-inset-top, 0px) + 22px);
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 1;
+}
