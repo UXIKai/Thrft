@@ -2126,6 +2126,17 @@ export default function SettingsScreen({
                       >
                         {sheetDraft.gender || 'Gender'}
                       </button>
+                      {genderOpen && (
+              <div className="gender-overlay">
+                <GenderDrum
+                  value={sheetDraft.gender || ''}
+                  onPick={(g) => {
+                    setSheetDraft((d) => ({ ...d, gender: g }))
+                    setGenderOpen(false)
+                  }}
+                />
+              </div>
+            )}
                       <div className="settings-size-wheelbox">
                       <div
                         className="settings-size-summary"
@@ -2243,25 +2254,6 @@ export default function SettingsScreen({
                   />
                 </label>
               ))
-            )}
-            {sheet === 'size' && genderOpen && (
-              <div className="gender-overlay">
-                <GenderDrum
-                  value={sheetDraft.gender || ''}
-                  onPick={(g) => {
-                    setSheetDraft((d) => ({ ...d, gender: g }))
-                    setGenderOpen(false)
-                  }}
-                />
-                <button
-                  type="button"
-                  className="gender-overlay-close is-bare"
-                  aria-label="Close"
-                  onClick={() => setGenderOpen(false)}
-                >
-                  <BackIcon />
-                </button>
-              </div>
             )}
             {sheet !== 'size' ||
             Object.values(sheetDraft.clothingSizes || {}).some(Boolean) ? (

@@ -973,3 +973,15 @@ html body .settings-size-gender {
 }
 html body .settings-size-gender { touch-action: none; user-select: none; -webkit-user-select: none; }
 .gender-overlay { pointer-events: none; }
+.settings-size-drum-col { position: relative; }
+html body .settings-size-drum-col > .gender-overlay {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 46px;
+  bottom: 0;
+  inset-inline: 0;
+  background: transparent;
+  z-index: 5;
+}
+.gender-overlay ~ .settings-size-wheelbox { visibility: hidden; }
