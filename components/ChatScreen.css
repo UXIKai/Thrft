@@ -2966,3 +2966,9 @@ html body button.chat-contact-nick-save {
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
 }
+
+.chat-row {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}

@@ -1511,6 +1511,37 @@ export default function ChatScreen({
     else closePeerProfile()
   }
 
+  const longPressRef = useRef({ timer: 0, x: 0, y: 0 })
+  const longPressFiredRef = useRef(false)
+
+  function cancelRowPress() {
+    window.clearTimeout(longPressRef.current.timer)
+  }
+
+  function moveRowPress(e) {
+    const p = longPressRef.current
+    if (Math.hypot(e.clientX - p.x, e.clientY - p.y) > 8) cancelRowPress()
+  }
+
+  function startRowPress(e, chatId) {
+    cancelRowPress()
+    longPressFiredRef.current = false
+    longPressRef.current = {
+      x: e.clientX,
+      y: e.clientY,
+      timer: window.setTimeout(() => {
+        longPressFiredRef.current = true
+        setMenuPos({
+          top: window.innerHeight / 2,
+          right: 0,
+          centerX: window.innerWidth / 2,
+          centered: true,
+        })
+        setMenuId(chatId)
+      }, 450),
+    }
+  }
+
   function openMenu(chatId) {
     if (menuId === chatId) {
       closeMenus()
@@ -1596,7 +1627,9 @@ export default function ChatScreen({
         <div
           className="chat-dm-menu-wrap"
           style={
-            peerProfile || activeChat
+            menuPos.centered
+              ? { top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }
+              : peerProfile || activeChat
               ? { top: menuPos.top, left: menuPos.centerX, transform: 'translateX(-50%)' }
               : { top: menuPos.top, right: menuPos.right }
           }
@@ -2617,7 +2650,19 @@ export default function ChatScreen({
               <button
                 type="button"
                 className="chat-row"
-                onClick={() => openThread(chat)}
+                onClick={() => {
+                  if (longPressFiredRef.current) {
+                    longPressFiredRef.current = false
+                    return
+                  }
+                  openThread(chat)
+                }}
+                onPointerDown={(e) => startRowPress(e, chat.id)}
+                onPointerMove={moveRowPress}
+                onPointerUp={cancelRowPress}
+                onPointerCancel={cancelRowPress}
+                onPointerLeave={cancelRowPress}
+                onContextMenu={(e) => e.preventDefault()}
               >
                 <span className="chat-avatar" aria-hidden>
                   {chat.initials}
@@ -2635,23 +2680,6 @@ export default function ChatScreen({
                   <span className="chat-row-preview">{chat.preview}</span>
                 </span>
               </button>
-              {chat.kind !== 'dm' && (
-                <div className="chat-menu-anchor">
-                  <button
-                    type="button"
-                    className="chat-dots"
-                    aria-label={`More options for ${chat.title}`}
-                    aria-expanded={menuId === chat.id}
-                    ref={(el) => {
-                      if (el) dotsRefs.current.set(chat.id, el)
-                      else dotsRefs.current.delete(chat.id)
-                    }}
-                    onClick={() => openMenu(chat.id)}
-                  >
-                    <DotsIcon />
-                  </button>
-                </div>
-              )}
             </li>
           ))}
           {filtered.all.length === 0 && (
@@ -2735,7 +2763,11 @@ export default function ChatScreen({
           ref={menuRef}
           className="chat-menu is-fixed"
           role="menu"
-          style={{ top: menuPos.top, right: menuPos.right }}
+          style={
+            menuPos.centered
+              ? { top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }
+              : { top: menuPos.top, right: menuPos.right }
+          }
         >
           {(() => {
             const chat = chats.find((c) => c.id === menuId)
