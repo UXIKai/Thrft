@@ -596,6 +596,8 @@ export default function ChatScreen({
   const threadScrollRef = useRef(null)
   const composeInputRef = useRef(null)
   const imageInputRef = useRef(null)
+  const [pendingImage, setPendingImage] = useState(null)
+  useEffect(() => setPendingImage(null), [activeChatId])
   const fileInputRef = useRef(null)
   const attachWrapRef = useRef(null)
   useEffect(() => {
@@ -1138,7 +1140,12 @@ export default function ChatScreen({
 
   function sendMessage() {
     const text = draftMessage.trim()
-    if (!text || !activeChatId) return
+    if (!activeChatId) return
+    if (pendingImage) {
+      sendImageFile(pendingImage.file, pendingImage.url)
+      setPendingImage(null)
+    }
+    if (!text) return
     pushThreadMessage(
       {
         id: `m-${Date.now()}`,
@@ -1160,9 +1167,13 @@ export default function ChatScreen({
     setLikedSelected([])
   }
 
-  function sendImageFile(file) {
+  function clearPendingImage() {
+    setPendingImage(null)
+  }
+
+  function sendImageFile(file, existingUrl) {
     if (!file || !activeChatId) return
-    const url = URL.createObjectURL(file)
+    const url = existingUrl || URL.createObjectURL(file)
     pushThreadMessage(
       {
         id: `m-${Date.now()}`,
@@ -1931,7 +1942,11 @@ export default function ChatScreen({
               onChange={(e) => {
                 const file = e.target.files?.[0]
                 e.target.value = ''
-                if (file) sendImageFile(file)
+                if (file) {
+                  setPendingImage({ file, url: URL.createObjectURL(file) })
+                  setAttachOpen(false)
+                  composeInputRef.current?.focus({ preventScroll: true })
+                }
               }}
             />
             <input
@@ -1946,6 +1961,19 @@ export default function ChatScreen({
                 if (file) sendFileAttachment(file)
               }}
             />
+            {pendingImage && (
+              <span className="chat-compose-preview">
+                <img src={pendingImage.url} alt="Photo to send" />
+                <button
+                  type="button"
+                  className="chat-compose-preview-x is-bare"
+                  aria-label="Remove photo"
+                  onClick={clearPendingImage}
+                >
+                  <CloseIcon />
+                </button>
+              </span>
+            )}
             <textarea
               id="chat-compose-input"
               ref={composeInputRef}
@@ -1971,7 +1999,7 @@ export default function ChatScreen({
               type="submit"
               className="chat-compose-send"
               aria-label="Send message"
-              disabled={!draftMessage.trim()}
+              disabled={!draftMessage.trim() && !pendingImage}
             >
               <SendIcon />
             </button>

@@ -2919,3 +2919,40 @@ html body button.chat-contact-nick-save {
   border-radius: 50%;
   color: #fff;
 }
+
+.chat-compose-preview {
+  position: relative;
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  overflow: visible;
+}
+
+.chat-compose-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+  display: block;
+}
+
+.chat-compose-preview-x {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.65);
+  color: #fff;
+}
+
+.chat-compose-preview-x svg {
+  width: 12px;
+  height: 12px;
+}
