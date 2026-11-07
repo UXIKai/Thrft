@@ -151,6 +151,7 @@ export default function App() {
     avatarUrl: '',
     clothingSizes: {},
     gender: '',
+    sizesByGender: {},
     favoredBrands: [],
     brandSizes: {},
     shippingAddress: '',

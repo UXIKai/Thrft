@@ -61,6 +61,7 @@ const DEFAULT_PROFILE = {
   avatarUrl: '',
   clothingSizes: {},
   gender: '',
+  sizesByGender: {},
   favoredBrands: [],
   brandSizes: {},
   shippingAddress: '',

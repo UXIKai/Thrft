@@ -1110,6 +1110,10 @@ export default function SettingsScreen({
     if (id === 'size') {
       draft.clothingSizes = { ...(userProfile?.clothingSizes || {}) }
       draft.gender = userProfile?.gender || ''
+      draft.sizesByGender = { ...(userProfile?.sizesByGender || {}) }
+      if (draft.gender && draft.sizesByGender[draft.gender]) {
+        draft.clothingSizes = { ...draft.sizesByGender[draft.gender] }
+      }
       draft.favoredBrands = [...(userProfile?.favoredBrands || [])]
       draft.brandSizes = JSON.parse(
         JSON.stringify(userProfile?.brandSizes || {}),
@@ -1220,6 +1224,12 @@ export default function SettingsScreen({
         await onSaveProfile?.({
           clothingSizes: { ...(sheetDraft.clothingSizes || {}) },
           gender: sheetDraft.gender || '',
+          sizesByGender: {
+            ...(sheetDraft.sizesByGender || {}),
+            ...(sheetDraft.gender
+              ? { [sheetDraft.gender]: { ...(sheetDraft.clothingSizes || {}) } }
+              : {}),
+          },
           favoredBrands: [...(sheetDraft.favoredBrands || [])],
           brandSizes: { ...(sheetDraft.brandSizes || {}) },
         })
@@ -2105,7 +2115,20 @@ export default function SettingsScreen({
                             const g = ev.type === 'pointerup'
                               ? drum.querySelector('.gender-drum-row.is-hot')?.dataset.opt
                               : null
-                            if (g) setSheetDraft((d) => ({ ...d, gender: g }))
+                            if (g) setSheetDraft((d) => {
+                              const by = { ...(d.sizesByGender || {}) }
+                              if (d.gender) by[d.gender] = d.clothingSizes || {}
+                              return {
+                                ...d,
+                                gender: g,
+                                sizesByGender: by,
+                                clothingSizes: by[g]
+                                  ? { ...by[g] }
+                                  : d.gender
+                                    ? {}
+                                    : d.clothingSizes || {},
+                              }
+                            })
                             setGenderOpen(false)
                           }
                           window.addEventListener('pointermove', mv)
@@ -2131,7 +2154,20 @@ export default function SettingsScreen({
                 <GenderDrum
                   value={sheetDraft.gender || ''}
                   onPick={(g) => {
-                    setSheetDraft((d) => ({ ...d, gender: g }))
+                    setSheetDraft((d) => {
+                              const by = { ...(d.sizesByGender || {}) }
+                              if (d.gender) by[d.gender] = d.clothingSizes || {}
+                              return {
+                                ...d,
+                                gender: g,
+                                sizesByGender: by,
+                                clothingSizes: by[g]
+                                  ? { ...by[g] }
+                                  : d.gender
+                                    ? {}
+                                    : d.clothingSizes || {},
+                              }
+                            })
                     setGenderOpen(false)
                   }}
                 />
