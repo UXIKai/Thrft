@@ -607,3 +607,24 @@ html body .glass-sheet-card.is-size-summary-page .settings-size-summary {
   color: inherit;
   text-align: left;
 }
+
+html body .glass-sheet-card.is-size-sheet .settings-size-chips[style*="--size-cols"] {
+  grid-template-columns: repeat(
+    var(--size-cols),
+    minmax(0, calc(var(--size-len) * 0.72em + 32px))
+  );
+  width: 100%;
+  max-width: 100%;
+  gap: 10px 8px;
+}
+html body .glass-sheet-card.is-size-sheet .settings-size-cats {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+html body .glass-sheet-card.is-size-sheet .settings-size-chip:not(.settings-size-add) {
+  padding-left: 4px;
+  padding-right: 4px;
+  min-width: 0;
+}
