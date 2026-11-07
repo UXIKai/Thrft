@@ -856,6 +856,7 @@ export default function SettingsScreen({
   const [addNew, setAddNew] = useState(null)
   const [wizStep, setWizStep] = useState(null)
   const [addrStep, setAddrStep] = useState(0)
+  const [addrEditing, setAddrEditing] = useState(true)
   const [confirmRemove, setConfirmRemove] = useState(null)
   const genderTimerRef = useRef(null)
   const [sizeFromSummary, setSizeFromSummary] = useState(false)
@@ -1246,6 +1247,7 @@ export default function SettingsScreen({
     }
     setSaveNote('')
     setAddrStep(0)
+    setAddrEditing(!(id === 'shipping' && userProfile?.shippingAddress))
     setSheetDraft(draft)
     setSheet(id)
   }
@@ -2398,6 +2400,27 @@ export default function SettingsScreen({
                   </>
                 )}
               </div>
+            ) : sheet === 'shipping' && !addrEditing ? (
+              <div className="settings-addr-card">
+                <span className="settings-addr-text">
+                  {userProfile?.shippingAddress}
+                </span>
+                <button
+                  type="button"
+                  className="settings-addr-reset is-bare"
+                  aria-label="Reset location"
+                  onClick={() => {
+                    setSheetDraft((d) => ({ ...d, address: '', city: '', state: '', zip: '' }))
+                    setAddrStep(0)
+                    setAddrEditing(true)
+                  }}
+                >
+                  <svg viewBox="0 0 24 24" aria-hidden>
+                    <path d="M17.2 9A6.4 6.4 0 1 0 18.4 14" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                    <path d="M17.6 4.8V9h-4.2" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </button>
+              </div>
             ) : (
               SHEET_COPY[sheet].fields
                 .filter((_, i) => sheet !== 'shipping' || i === addrStep)
@@ -2695,9 +2718,11 @@ export default function SettingsScreen({
               aria-label="Save"
               disabled={saveBusy}
               onClick={() =>
-                sheet === 'shipping' && addrStep < 3
-                  ? setAddrStep(addrStep + 1)
-                  : saveSheet()
+                sheet === 'shipping' && !addrEditing
+                  ? setSheet(null)
+                  : sheet === 'shipping' && addrStep < 3
+                    ? setAddrStep(addrStep + 1)
+                    : saveSheet()
               }
             >
               <svg viewBox="0 0 24 24" aria-hidden>
