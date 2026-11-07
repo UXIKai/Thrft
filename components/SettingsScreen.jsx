@@ -1576,7 +1576,7 @@ export default function SettingsScreen({
                 aria-label="Close"
                 onClick={() => setSheet(null)}
               >
-                <CloseIcon />
+                <BackIcon />
               </button>
             </div>
             {sheet === 'size' ? (
