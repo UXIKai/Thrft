@@ -342,3 +342,28 @@ html body .glass-sheet:not(.settings-wheel-sheet):not(.settings-palette-sheet) .
 html body .glass-sheet:not(.settings-wheel-sheet):not(.settings-palette-sheet) .glass-input {
   text-align: center;
 }
+
+/* Sizes sheet: back arrow top-left, plus top-right, sizes fill the middle */
+html body .glass-sheet-card.is-size-sheet {
+  position: relative;
+  justify-content: flex-start;
+  padding-top: calc(env(safe-area-inset-top, 0px) + 64px);
+}
+html body .glass-sheet-card.is-size-sheet .glass-sheet-head .glass-overlay-icon-btn,
+html body .glass-sheet-card.is-size-sheet .glass-sheet-plus {
+  position: absolute !important;
+  top: calc(env(safe-area-inset-top, 0px) + 12px);
+  order: 0 !important;
+  transform: none !important;
+  align-self: auto !important;
+  margin: 0 !important;
+  z-index: 3;
+}
+html body .glass-sheet-card.is-size-sheet .glass-sheet-head .glass-overlay-icon-btn {
+  left: 12px !important;
+  right: auto !important;
+}
+html body .glass-sheet-card.is-size-sheet .glass-sheet-plus {
+  right: 12px;
+  left: auto;
+}
