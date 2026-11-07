@@ -2108,7 +2108,6 @@ export default function ChatScreen({
                       saveNickname()
                     }}
                   >
-                    <span className="chat-contact-name-spacer" aria-hidden />
                     <input
                       ref={nickInputRef}
                       className="chat-contact-nick-input"
@@ -2117,13 +2116,6 @@ export default function ChatScreen({
                       onChange={(e) => setNickDraft(e.target.value)}
                       aria-label="Name"
                     />
-                    <button
-                      type="submit"
-                      className="chat-contact-nick-save is-bare"
-                      aria-label="Save name"
-                    >
-                      <FilterCheckIcon />
-                    </button>
                   </form>
                 ) : (
                   <>
@@ -2380,7 +2372,6 @@ export default function ChatScreen({
                       savePeerNickname()
                     }}
                   >
-                    <span className="chat-contact-name-spacer" aria-hidden />
                     <input
                       ref={nickInputRef}
                       className="chat-contact-nick-input"
@@ -2389,13 +2380,6 @@ export default function ChatScreen({
                       onChange={(e) => setNickDraft(e.target.value)}
                       aria-label="Name"
                     />
-                    <button
-                      type="submit"
-                      className="chat-contact-nick-save is-bare"
-                      aria-label="Save name"
-                    >
-                      <FilterCheckIcon />
-                    </button>
                   </form>
                 ) : (
                   <>
