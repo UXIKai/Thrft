@@ -697,6 +697,7 @@ export default function SettingsScreen({
   const [sizeBrandFocus, setSizeBrandFocus] = useState(null)
   const [sizeGarment, setSizeGarment] = useState(null)
   const [customSize, setCustomSize] = useState(null)
+  const [sizePicked, setSizePicked] = useState(null)
   const [sizeWheelId, setSizeWheelId] = useState(SIZE_GARMENTS[0]?.id)
   const sizeCatsRef = useRef(null)
   const sizeSheetCardRef = useRef(null)
@@ -798,6 +799,7 @@ export default function SettingsScreen({
 
   useEffect(() => {
     setCustomSize(null)
+    setSizePicked(null)
   }, [sizeGarment])
 
   function openHelpAssistant() {
@@ -1588,7 +1590,9 @@ export default function SettingsScreen({
                 aria-label="Close"
                 onClick={() =>
                   sheet === 'size' && sizeGarment
-                    ? setSizeGarment(null)
+                    ? sizePicked
+                      ? setSizePicked(null)
+                      : setSizeGarment(null)
                     : setSheet(null)
                 }
               >
@@ -1701,6 +1705,13 @@ export default function SettingsScreen({
                           if (v) setCategorySize(cat.id, v)
                           setCustomSize(null)
                         }
+                        if (sizePicked) {
+                          return (
+                            <div className="settings-size-picked" key={sizePicked}>
+                              {sizePicked}
+                            </div>
+                          )
+                        }
                         return (
                           <div className="settings-size-cat">
                             <p className="settings-size-section-label">
@@ -1710,7 +1721,10 @@ export default function SettingsScreen({
                               className="settings-size-chips"
                               role="listbox"
                               aria-label={`${cat.label} size`}
-                              style={{ '--size-cols': sizeCols }}
+                              style={{
+                                '--size-cols': sizeCols,
+                                '--size-len': longest,
+                              }}
                             >
                               {options.map((sz) => (
                                 <button
@@ -1719,7 +1733,10 @@ export default function SettingsScreen({
                                   role="option"
                                   aria-selected={selected === sz}
                                   className={`settings-size-chip${selected === sz ? ' is-on' : ''}`}
-                                  onClick={() => setCategorySize(cat.id, sz)}
+                                  onClick={() => {
+                                    setCategorySize(cat.id, sz)
+                                    setSizePicked(sz)
+                                  }}
                                 >
                                   {sz}
                                 </button>

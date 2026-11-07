@@ -478,3 +478,36 @@ html body .glass-sheet-card.is-size-sheet:not(.is-size-wheel) .glass-sheet-plus 
   margin: -44px 0 0 !important;
   transform: none !important;
 }
+
+/* Equal-size size chips with press feedback */
+html body .glass-sheet-card.is-size-sheet .settings-size-chips[style*="--size-cols"] {
+  grid-template-columns: repeat(
+    var(--size-cols),
+    min(calc(var(--size-len) * 0.72em + 32px), calc((100vw - 32px - 24px) / var(--size-cols)))
+  );
+}
+html body .glass-sheet-card.is-size-sheet .settings-size-chips[style*="--size-cols"] .settings-size-chip:not(.settings-size-add) {
+  width: 100%;
+  justify-content: center;
+  text-align: center;
+  transition: transform 0.14s ease, background 0.2s ease;
+}
+html body .glass-sheet-card.is-size-sheet .settings-size-chip:not(.settings-size-add):active {
+  transform: scale(0.92);
+}
+html body .glass-sheet-card.is-size-sheet .settings-size-add {
+  justify-self: center;
+}
+.settings-size-picked {
+  align-self: center;
+  text-align: center;
+  font-size: 3rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.02em;
+  animation: size-picked-in 0.34s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+@keyframes size-picked-in {
+  from { opacity: 0; transform: scale(0.7) translateY(24px); }
+  to { opacity: 1; transform: none; }
+}
