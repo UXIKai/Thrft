@@ -985,3 +985,8 @@ html body .settings-size-drum-col > .gender-overlay {
   z-index: 5;
 }
 .gender-overlay ~ .settings-size-wheelbox { visibility: hidden; }
+/* Gender button sits at the screen's vertical center; the drum hangs below it */
+html body .glass-sheet-card.is-size-summary-page .settings-size-cats {
+  align-items: flex-start;
+  padding-top: max(0px, calc(50dvh - env(safe-area-inset-top, 0px) - 36px));
+}
