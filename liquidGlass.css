@@ -1104,3 +1104,5 @@ html body .glass-sheet-card.is-size-summary-page .glass-sheet-add svg {
 html body .glass-sheet-card.is-size-summary-page:not(.is-gender-gate) .settings-size-drum-col > .settings-size-gender {
   top: calc(env(safe-area-inset-top, 0px) + 154px - 50dvh);
 }
+html body .settings-size-chip.settings-size-add { font-size: 1.5rem; }
+html body .glass-sheet-card.is-size-summary-page .glass-sheet-add svg { width: 20px; height: 20px; }
