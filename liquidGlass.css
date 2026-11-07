@@ -754,3 +754,23 @@ html body .glass-sheet-card.is-size-summary-page {
 html body .glass-sheet-card.is-size-summary-page .settings-size-summary {
   padding: 0 44px 0 56px;
 }
+
+/* Long saved-sizes list scrolls; back + check stay pinned at the bottom */
+html body .glass-sheet-card.is-size-summary-page .glass-sheet-head .glass-overlay-icon-btn,
+html body .glass-sheet-card.is-size-summary-page .glass-sheet-plus {
+  position: fixed !important;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 24px);
+  margin: 0 !important;
+  z-index: 5;
+}
+html body .glass-sheet-card.is-size-summary-page .glass-sheet-head .glass-overlay-icon-btn {
+  left: calc(50% - 21vw - 22px);
+  transform: none !important;
+}
+html body .glass-sheet-card.is-size-summary-page .glass-sheet-plus {
+  left: calc(50% - 22px);
+  transform: none !important;
+}
+html body .glass-sheet-card.is-size-summary-page .settings-size-summary {
+  padding-bottom: 110px;
+}

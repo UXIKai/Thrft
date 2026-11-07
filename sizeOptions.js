@@ -53,6 +53,11 @@ export const SHORT_SIZES = ['28', '29', '30', '31', '32', '33', '34', '36', '38'
 /** Casual / sport tops that run lettered */
 export const TOP_SIZES = LETTER_SIZES
 
+export const WAIST_SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL']
+export const SOCK_SIZES = ['S', 'M', 'L', 'XL']
+export const HAT_SIZES = ['S/M', 'L/XL', 'One size']
+export const BELT_SIZES = ['30', '32', '34', '36', '38', '40', '42']
+
 export const SIZE_GARMENTS = [
   {
     id: 'dress-shirts',
@@ -125,6 +130,90 @@ export const SIZE_GARMENTS = [
     label: 'Sneakers',
     hint: 'US size',
     sizes: SHOE_SIZES_US,
+  },
+  {
+    id: 'tank-tops',
+    label: 'Tank tops',
+    hint: 'Chest fit',
+    sizes: TOP_SIZES,
+  },
+  {
+    id: 'long-sleeves',
+    label: 'Long sleeves',
+    hint: 'Chest fit',
+    sizes: TOP_SIZES,
+  },
+  {
+    id: 'blazers',
+    label: 'Blazers',
+    hint: 'Chest / outer layer',
+    sizes: TOP_SIZES,
+  },
+  {
+    id: 'vests',
+    label: 'Vests',
+    hint: 'Chest fit',
+    sizes: TOP_SIZES,
+  },
+  {
+    id: 'joggers',
+    label: 'Joggers',
+    hint: 'Waist',
+    sizes: WAIST_SIZES,
+  },
+  {
+    id: 'sweatpants',
+    label: 'Sweatpants',
+    hint: 'Waist',
+    sizes: WAIST_SIZES,
+  },
+  {
+    id: 'swim-trunks',
+    label: 'Swim trunks',
+    hint: 'Waist',
+    sizes: SHORT_SIZES,
+  },
+  {
+    id: 'suits',
+    label: 'Suits',
+    hint: 'Chest / outer layer',
+    sizes: TOP_SIZES,
+  },
+  {
+    id: 'boots',
+    label: 'Boots',
+    hint: 'US size',
+    sizes: SHOE_SIZES_US,
+  },
+  {
+    id: 'sandals',
+    label: 'Sandals',
+    hint: 'US size',
+    sizes: SHOE_SIZES_US,
+  },
+  {
+    id: 'loafers',
+    label: 'Loafers',
+    hint: 'US size',
+    sizes: SHOE_SIZES_US,
+  },
+  {
+    id: 'socks',
+    label: 'Socks',
+    hint: 'Fit',
+    sizes: SOCK_SIZES,
+  },
+  {
+    id: 'hats',
+    label: 'Hats',
+    hint: 'Fit',
+    sizes: HAT_SIZES,
+  },
+  {
+    id: 'belts',
+    label: 'Belts',
+    hint: 'Waist',
+    sizes: BELT_SIZES,
   },
 ]
 

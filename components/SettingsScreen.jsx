@@ -703,6 +703,7 @@ export default function SettingsScreen({
   const [sizeFromSummary, setSizeFromSummary] = useState(false)
   const [sizeScrub, setSizeScrub] = useState(null)
   const scrubRef = useRef(null)
+  const scrubYRef = useRef(0)
   const summaryPressRef = useRef({ timer: null, x: 0, y: 0, fired: false })
   const peekTimerRef = useRef(null)
   const peekFiredRef = useRef(false)
@@ -808,6 +809,31 @@ export default function SettingsScreen({
       setSizeFromSummary(false)
     }
   }, [sheet])
+
+  useEffect(() => {
+    if (!sizeScrub) return undefined
+    const id = window.setInterval(() => {
+      const card = sizeSheetCardRef.current
+      if (!card || !scrubRef.current) return
+      const r = card.getBoundingClientRect()
+      const y = scrubYRef.current
+      const edge = 90
+      let dy = 0
+      if (y < r.top + edge + 60) dy = -10
+      else if (y > r.bottom - edge - 60) dy = 10
+      if (!dy) return
+      card.scrollTop += dy
+      const hit = document
+        .elementFromPoint(window.innerWidth * 0.4, y)
+        ?.closest?.('[data-gid]')
+      const gid = hit?.dataset.gid
+      if (gid && gid !== scrubRef.current) {
+        scrubRef.current = gid
+        setSizeScrub(gid)
+      }
+    }, 16)
+    return () => window.clearInterval(id)
+  }, [sizeScrub])
 
   useEffect(() => {
     setCustomSize(null)
@@ -1846,11 +1872,13 @@ export default function SettingsScreen({
                           const id = e.target.closest?.('[data-gid]')?.dataset.gid
                           if (!id) return
                           scrubRef.current = id
+                          scrubYRef.current = e.clientY
                           setSizeScrub(id)
                           e.currentTarget.setPointerCapture?.(e.pointerId)
                         }}
                         onPointerMove={(e) => {
                           if (!scrubRef.current) return
+                          scrubYRef.current = e.clientY
                           const el = document
                             .elementFromPoint(e.clientX, e.clientY)
                             ?.closest?.('[data-gid]')
