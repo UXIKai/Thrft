@@ -1134,3 +1134,4 @@ html body .glass-sheet-card.is-size-summary-page .glass-sheet-add svg { width: 2
   height: 44px;
   color: #fff;
 }
+.settings-new-page { background: var(--atmosphere-base, #050505); }
