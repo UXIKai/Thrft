@@ -990,3 +990,25 @@ html body .glass-sheet-card.is-size-summary-page .settings-size-cats {
   align-items: flex-start;
   padding-top: max(0px, calc(50dvh - env(safe-area-inset-top, 0px) - 36px));
 }
+/* Wheel fills the space between the Gender line and the bottom buttons */
+html body .glass-sheet-card.is-size-summary-page .settings-size-drum-col {
+  --wheel-h: max(176px, calc(50dvh - env(safe-area-inset-top, 0px) - 150px));
+  gap: 6px;
+}
+html body .glass-sheet-card.is-size-summary-page .settings-size-wheelbox {
+  height: var(--wheel-h);
+}
+html body .glass-sheet-card.is-size-summary-page .settings-size-summary,
+html body .glass-sheet-card.is-size-summary-page .gender-drum {
+  --row-h: 44px;
+  height: var(--wheel-h);
+  padding: calc((var(--wheel-h) - var(--row-h)) / 2) 0 !important;
+}
+html body .settings-size-drum-col > .gender-overlay {
+  top: auto;
+  bottom: 0;
+  height: var(--wheel-h);
+}
+html body .settings-size-drum-col .gender-drum {
+  width: 100%;
+}
