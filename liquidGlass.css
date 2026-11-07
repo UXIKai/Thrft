@@ -446,3 +446,15 @@ html body .settings-size-chip.settings-size-add-input {
   color: #fff;
   outline: none;
 }
+
+html body .settings-size-chip.settings-size-add {
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  min-height: 0;
+  padding: 0 14px;
+  font-size: 2rem;
+  font-weight: 300;
+  line-height: 1;
+  color: #fff;
+}
