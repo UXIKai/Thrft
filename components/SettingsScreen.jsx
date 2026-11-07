@@ -1831,7 +1831,16 @@ export default function SettingsScreen({
                           (g) => sheetDraft.clothingSizes?.[g.id],
                         ).map((g) => (
                           <div key={g.id} className="settings-size-summary-row">
-                            <span>{g.label}</span>
+                            <button
+                              type="button"
+                              className="settings-size-summary-label is-bare"
+                              onClick={() => {
+                                setSizeSummary(false)
+                                setSizeGarment(g.id)
+                              }}
+                            >
+                              {g.label}
+                            </button>
                             <strong>{sheetDraft.clothingSizes[g.id]}</strong>
                           </div>
                         ))}

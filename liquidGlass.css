@@ -600,3 +600,10 @@ html body .glass-sheet-card.is-size-summary-page .settings-size-summary {
 html body .glass-sheet-card.is-size-summary-page .settings-size-summary {
   width: 100%;
 }
+
+.settings-size-summary-label {
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+}
