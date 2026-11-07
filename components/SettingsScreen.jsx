@@ -699,7 +699,7 @@ export default function SettingsScreen({
   const [customSize, setCustomSize] = useState(null)
   const [sizePicked, setSizePicked] = useState(null)
   const [sizePeek, setSizePeek] = useState(null)
-  const [sizeSummary, setSizeSummary] = useState(false)
+  const [, setSizeSummary] = useState(false)
   const [sizeFromSummary, setSizeFromSummary] = useState(false)
   const [sizeScrub, setSizeScrub] = useState(null)
   const scrubRef = useRef(null)
@@ -813,6 +813,8 @@ export default function SettingsScreen({
       setSizeFromSummary(false)
     }
   }, [sheet])
+
+  const sizeSummary = sheet === 'size' && !sizeGarment && !sizeBrandFocus
 
   useEffect(() => {
     if (!sizeSummary) return undefined
@@ -1731,9 +1733,7 @@ export default function SettingsScreen({
                 className="glass-overlay-icon-btn"
                 aria-label="Close"
                 onClick={() =>
-                  sheet === 'size' && sizeSummary
-                    ? setSizeSummary(false)
-                    : sheet === 'size' && sizeGarment
+                  sheet === 'size' && sizeGarment
                     ? sizePicked
                       ? setSizePicked(null)
                       : (setSizeGarment(null),
