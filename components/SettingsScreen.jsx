@@ -2334,7 +2334,7 @@ export default function SettingsScreen({
                 type="button"
                 className="glass-sheet-add is-bare"
                 aria-label="Add gender or category"
-                onClick={() => setAddNew({ kind: 'category', text: '' })}
+                onClick={() => setAddNew({ kind: null, text: '' })}
               >
                 <svg viewBox="0 0 24 24" aria-hidden>
                   <path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
@@ -2342,9 +2342,9 @@ export default function SettingsScreen({
               </button>
             )}
             {sheet === 'size' && addNew && (
-              <div className="settings-size-add-dock settings-new-dock">
+              <div className="settings-new-page">
                 <div className="settings-new-kinds">
-                  {['category', 'gender'].map((k) => (
+                  {['gender', 'category'].map((k) => (
                     <button
                       key={k}
                       type="button"
@@ -2356,18 +2356,32 @@ export default function SettingsScreen({
                     </button>
                   ))}
                 </div>
-                <input
-                  className="settings-size-add-input"
-                  autoFocus
-                  value={addNew.text}
-                  maxLength={20}
-                  enterKeyHint="done"
-                  onChange={(e) => setAddNew((a) => ({ ...a, text: e.target.value }))}
-                  onBlur={commitAddNew}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') e.currentTarget.blur()
-                  }}
-                />
+                {addNew.kind && (
+                  <div className="settings-size-add-dock">
+                    <input
+                      className="settings-size-add-input"
+                      autoFocus
+                      value={addNew.text}
+                      maxLength={20}
+                      placeholder={addNew.kind === 'gender' ? 'New gender' : 'New category'}
+                      enterKeyHint="done"
+                      onChange={(e) => setAddNew((a) => ({ ...a, text: e.target.value }))}
+                      onBlur={commitAddNew}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') e.currentTarget.blur()
+                      }}
+                    />
+                  </div>
+                )}
+                <button
+                  type="button"
+                  className="settings-new-close is-bare"
+                  aria-label="Close"
+                  onPointerDown={(e) => e.preventDefault()}
+                  onClick={() => setAddNew(null)}
+                >
+                  <BackIcon />
+                </button>
               </div>
             )}
             {sheet !== 'size' ||
