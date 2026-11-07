@@ -632,3 +632,16 @@ html body .glass-sheet-card.is-size-sheet .settings-size-chip:not(.settings-size
   text-align: right;
   min-height: 1.2em;
 }
+.settings-size-summary-sizes {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.settings-size-summary-row {
+  align-items: baseline;
+}
+.settings-size-summary-label {
+  flex: 0 0 auto;
+}

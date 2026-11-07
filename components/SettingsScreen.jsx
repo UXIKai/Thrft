@@ -1847,8 +1847,10 @@ export default function SettingsScreen({
                             >
                               {g.label}
                             </button>
-                            <strong>
-                              {[].concat(sheetDraft.clothingSizes?.[g.id] || []).join(', ')}
+                            <strong className="settings-size-summary-sizes">
+                              {[].concat(sheetDraft.clothingSizes?.[g.id] || []).map((sz) => (
+                                <span key={sz}>{sz}</span>
+                              ))}
                             </strong>
                           </div>
                         ))}
