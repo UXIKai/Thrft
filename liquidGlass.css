@@ -291,22 +291,23 @@ html body .glass-sheet:not(.settings-wheel-sheet):not(.settings-palette-sheet) .
   border-radius: 0;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   padding: calc(env(safe-area-inset-top, 0px) + 24px) 20px calc(env(safe-area-inset-bottom, 0px) + 24px);
   box-sizing: border-box;
 }
-html body .glass-sheet:not(.settings-wheel-sheet):not(.settings-palette-sheet) html body .glass-sheet:not(.settings-wheel-sheet):not(.settings-palette-sheet) .glass-sheet-head {
+html body .glass-sheet:not(.settings-wheel-sheet):not(.settings-palette-sheet) .glass-sheet-head {
   display: contents;
 }
 html body .glass-sheet:not(.settings-wheel-sheet):not(.settings-palette-sheet) .glass-sheet-head .glass-overlay-icon-btn {
   order: 99;
   align-self: center;
-  margin: 18px auto auto;
+  margin: 8px auto 0;
   position: static;
   transform: none;
 }
 html body .glass-sheet:not(.settings-wheel-sheet):not(.settings-palette-sheet) .glass-sheet-title {
   order: -1;
-  margin-top: auto;
+  margin: 0 auto 8px;
 }
 
 /* Sheet save = bare plus; fields centered */
