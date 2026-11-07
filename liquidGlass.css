@@ -408,3 +408,7 @@ html body .glass-sheet-card.is-size-sheet .settings-size-chips[style*="--size-co
   gap: 10px 12px;
   margin: 0 auto;
 }
+
+html body .glass-sheet-card.is-size-sheet .settings-size-cat > .settings-size-section-label {
+  margin: 0 0 2px !important;
+}
