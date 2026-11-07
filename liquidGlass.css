@@ -904,3 +904,70 @@ html body .glass-sheet-card.is-size-summary-page .settings-size-summary-row.is-h
   color: #fff;
   text-shadow: 0 0 14px rgba(255, 255, 255, 0.55);
 }
+
+/* Gender button + drum */
+html body .glass-sheet-card.is-size-summary-page .settings-size-drum-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  width: 100%;
+}
+html body .settings-size-gender {
+  color: #fff;
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 8px 18px;
+}
+.gender-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(8, 8, 8, 0.94);
+}
+.gender-drum {
+  --row-h: 44px;
+  width: min(80vw, 320px);
+  height: calc(var(--row-h) * 5);
+  padding: calc(var(--row-h) * 2) 0;
+  box-sizing: border-box;
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+  perspective: 520px;
+  perspective-origin: 50% 50%;
+  scrollbar-width: none;
+  touch-action: pan-y;
+}
+.gender-drum::-webkit-scrollbar {
+  display: none;
+}
+.gender-drum-row {
+  height: var(--row-h);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  scroll-snap-align: center;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 1.3rem;
+}
+.gender-drum-row button {
+  color: inherit;
+  font: inherit;
+}
+.gender-drum-row.is-hot {
+  color: #fff;
+  text-shadow: 0 0 14px rgba(255, 255, 255, 0.55);
+}
+.gender-overlay-close {
+  position: absolute;
+  left: 12px;
+  top: calc(env(safe-area-inset-top, 0px) + 12px);
+  width: 44px;
+  height: 44px;
+  color: #fff;
+}

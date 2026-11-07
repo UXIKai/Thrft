@@ -77,6 +77,7 @@ function profileFromUser(user) {
     suppliers: [],
     avatarUrl: metaAvatar(user),
     clothingSizes: {},
+    gender: '',
     favoredBrands: [],
     brandSizes: {},
     shippingAddress: '',

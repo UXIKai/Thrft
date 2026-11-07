@@ -150,6 +150,7 @@ export default function App() {
     suppliers: [],
     avatarUrl: '',
     clothingSizes: {},
+    gender: '',
     favoredBrands: [],
     brandSizes: {},
     shippingAddress: '',

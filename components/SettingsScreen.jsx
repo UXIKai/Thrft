@@ -611,6 +611,105 @@ function PencilIcon() {
 /**
  * Settings — continuous scroll; row popups + Help pages; color wheel.
  */
+const GENDER_OPTIONS = ['Men', 'Women', 'Unisex']
+
+function GenderDrum({ value, onPick }) {
+  const ref = useRef(null)
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return undefined
+    const idx = Math.max(0, GENDER_OPTIONS.indexOf(value))
+    const rowH = el.firstElementChild?.offsetHeight || 44
+    el.scrollTop = idx * rowH
+    const update = () => {
+      const center = el.scrollTop + el.clientHeight / 2
+      el.querySelectorAll('.gender-drum-row').forEach((row) => {
+        const d = (row.offsetTop + row.offsetHeight / 2 - center) / row.offsetHeight
+        const a = Math.min(Math.abs(d), 4.5)
+        row.style.transform = `rotateX(${(-d * 16).toFixed(1)}deg) scale(${(1 - a * 0.06).toFixed(3)})`
+        row.style.opacity = String(Math.max(0.18, 1 - a * 0.19).toFixed(2))
+        row.classList.toggle('is-hot', Math.abs(d) < 0.5)
+      })
+    }
+    update()
+    el.addEventListener('scroll', update, { passive: true })
+    const st = { timer: null, on: false, startY: 0, startScroll: 0, moved: false, swallow: false, held: null }
+    const down = (e) => {
+      st.swallow = false
+      st.moved = false
+      st.held = e.target.closest?.('[data-opt]')?.dataset.opt || null
+      st.startY = e.clientY
+      window.clearTimeout(st.timer)
+      st.timer = window.setTimeout(() => {
+        if (!st.held) return
+        st.on = true
+        st.swallow = true
+        st.startScroll = el.scrollTop
+        el.style.scrollSnapType = 'none'
+        navigator.vibrate?.(8)
+      }, 300)
+    }
+    const move = (e) => {
+      if (st.on) {
+        if (Math.abs(e.clientY - st.startY) > 6) st.moved = true
+        if (st.moved) {
+          const r = el.getBoundingClientRect()
+          const k = (el.scrollHeight - el.clientHeight) / (r.height * 0.76)
+          el.scrollTop = st.startScroll + (e.clientY - st.startY) * k
+        }
+      } else if (Math.abs(e.clientY - st.startY) > 8) window.clearTimeout(st.timer)
+    }
+    const end = (e) => {
+      window.clearTimeout(st.timer)
+      if (!st.on) return
+      st.on = false
+      el.style.scrollSnapType = ''
+      if (e.type === 'pointercancel') return
+      const id = st.moved
+        ? el.querySelector('.gender-drum-row.is-hot')?.dataset.opt
+        : st.held
+      if (id) window.setTimeout(() => onPick(id), 60)
+    }
+    const touch = (e) => {
+      if (st.on && e.cancelable) e.preventDefault()
+    }
+    const click = (e) => {
+      if (st.swallow) {
+        st.swallow = false
+        e.stopPropagation()
+        e.preventDefault()
+      }
+    }
+    el.addEventListener('pointerdown', down)
+    el.addEventListener('pointermove', move)
+    el.addEventListener('pointerup', end)
+    el.addEventListener('pointercancel', end)
+    el.addEventListener('touchmove', touch, { passive: false })
+    el.addEventListener('click', click, true)
+    return () => {
+      window.clearTimeout(st.timer)
+      el.removeEventListener('scroll', update)
+      el.removeEventListener('pointerdown', down)
+      el.removeEventListener('pointermove', move)
+      el.removeEventListener('pointerup', end)
+      el.removeEventListener('pointercancel', end)
+      el.removeEventListener('touchmove', touch)
+      el.removeEventListener('click', click, true)
+    }
+  }, [value, onPick])
+  return (
+    <div className="gender-drum" ref={ref}>
+      {GENDER_OPTIONS.map((g) => (
+        <div key={g} data-opt={g} className="gender-drum-row">
+          <button type="button" className="is-bare" onClick={() => onPick(g)}>
+            {g}
+          </button>
+        </div>
+      ))}
+    </div>
+  )
+}
+
 export default function SettingsScreen({
   onBack,
   userProfile,
@@ -700,6 +799,8 @@ export default function SettingsScreen({
   const [sizePicked, setSizePicked] = useState(null)
   const [sizePeek, setSizePeek] = useState(null)
   const [, setSizeSummary] = useState(false)
+  const [genderOpen, setGenderOpen] = useState(false)
+  const genderTimerRef = useRef(null)
   const [sizeFromSummary, setSizeFromSummary] = useState(false)
   const [sizeScrub, setSizeScrub] = useState(null)
   const scrubRef = useRef(null)
@@ -1008,6 +1109,7 @@ export default function SettingsScreen({
     const draft = {}
     if (id === 'size') {
       draft.clothingSizes = { ...(userProfile?.clothingSizes || {}) }
+      draft.gender = userProfile?.gender || ''
       draft.favoredBrands = [...(userProfile?.favoredBrands || [])]
       draft.brandSizes = JSON.parse(
         JSON.stringify(userProfile?.brandSizes || {}),
@@ -1117,6 +1219,7 @@ export default function SettingsScreen({
       } else if (sheet === 'size') {
         await onSaveProfile?.({
           clothingSizes: { ...(sheetDraft.clothingSizes || {}) },
+          gender: sheetDraft.gender || '',
           favoredBrands: [...(sheetDraft.favoredBrands || [])],
           brandSizes: { ...(sheetDraft.brandSizes || {}) },
         })
@@ -1977,6 +2080,27 @@ export default function SettingsScreen({
                         )
                       })()
                     ) : sizeSummary ? (
+                      <div className="settings-size-drum-col">
+                      <button
+                        type="button"
+                        className="settings-size-gender is-bare"
+                        onPointerDown={() => {
+                          window.clearTimeout(genderTimerRef.current)
+                          genderTimerRef.current = window.setTimeout(
+                            () => setGenderOpen(true),
+                            300,
+                          )
+                        }}
+                        onPointerUp={() => window.clearTimeout(genderTimerRef.current)}
+                        onPointerLeave={() => window.clearTimeout(genderTimerRef.current)}
+                        onPointerCancel={() => window.clearTimeout(genderTimerRef.current)}
+                        onContextMenu={(e) => e.preventDefault()}
+                        onClick={(e) => {
+                          if (e.detail === 0) setGenderOpen(true)
+                        }}
+                      >
+                        {sheetDraft.gender || 'Gender'}
+                      </button>
                       <div className="settings-size-wheelbox">
                       <div
                         className="settings-size-summary"
@@ -2008,6 +2132,7 @@ export default function SettingsScreen({
                             </strong>
                           </div>
                         ))}
+                      </div>
                       </div>
                       </div>
                     ) : (
@@ -2093,6 +2218,25 @@ export default function SettingsScreen({
                   />
                 </label>
               ))
+            )}
+            {sheet === 'size' && genderOpen && (
+              <div className="gender-overlay">
+                <GenderDrum
+                  value={sheetDraft.gender || ''}
+                  onPick={(g) => {
+                    setSheetDraft((d) => ({ ...d, gender: g }))
+                    setGenderOpen(false)
+                  }}
+                />
+                <button
+                  type="button"
+                  className="gender-overlay-close is-bare"
+                  aria-label="Close"
+                  onClick={() => setGenderOpen(false)}
+                >
+                  <BackIcon />
+                </button>
+              </div>
             )}
             {sheet !== 'size' ||
             Object.values(sheetDraft.clothingSizes || {}).some(Boolean) ? (

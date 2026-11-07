@@ -60,6 +60,7 @@ const DEFAULT_PROFILE = {
   suppliers: [],
   avatarUrl: '',
   clothingSizes: {},
+  gender: '',
   favoredBrands: [],
   brandSizes: {},
   shippingAddress: '',
