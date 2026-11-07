@@ -532,3 +532,14 @@ html body .settings-size-chip {
   background: rgba(0, 0, 0, 0.55);
   animation: size-picked-in 0.2s ease both;
 }
+
+html body .settings-size-wheel.is-picked {
+  align-self: center;
+  width: 100%;
+}
+html body .settings-size-wheel.is-picked .type-box.is-wheel {
+  font-size: 3rem;
+}
+html body .settings-size-wheel.is-picked.is-compact-wheel .type-carousel.is-wheel {
+  height: 96px;
+}

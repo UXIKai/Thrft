@@ -1715,9 +1715,21 @@ export default function SettingsScreen({
                         ) : null
                         if (sizePicked) {
                           return (
-                            <div className="settings-size-picked" key={sizePicked}>
-                              {sizePicked}
-                            </div>
+                            <OrbitCarousel
+                              variant="wheel"
+                              compact
+                              smooth
+                              className="settings-size-wheel is-picked"
+                              items={options.map((o) => ({ id: o, label: String(o) }))}
+                              activeId={sizePicked}
+                              onSelect={(id) => {
+                                setSizePicked(id)
+                                setCategorySize(cat.id, id)
+                              }}
+                              ariaLabel={`${cat.label} size`}
+                              prevLabel="Previous size"
+                              nextLabel="Next size"
+                            />
                           )
                         }
                         return (
