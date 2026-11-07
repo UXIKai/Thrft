@@ -696,6 +696,7 @@ export default function SettingsScreen({
   /** null = garment + brand list; brand id = brand-specific size drill-down */
   const [sizeBrandFocus, setSizeBrandFocus] = useState(null)
   const [sizeGarment, setSizeGarment] = useState(null)
+  const [customSize, setCustomSize] = useState(null)
   const [sizeWheelId, setSizeWheelId] = useState(SIZE_GARMENTS[0]?.id)
   const sizeCatsRef = useRef(null)
   const sizeSheetCardRef = useRef(null)
@@ -794,6 +795,10 @@ export default function SettingsScreen({
   useEffect(() => {
     if (sheet !== 'size') setSizeGarment(null)
   }, [sheet])
+
+  useEffect(() => {
+    setCustomSize(null)
+  }, [sizeGarment])
 
   function openHelpAssistant() {
     setAssistantDraft('')
@@ -1673,8 +1678,29 @@ export default function SettingsScreen({
                       (() => {
                         const cat = SIZE_GARMENTS.find((g) => g.id === sizeGarment)
                         if (!cat) return null
-                        const options = sizesForCategory(cat.id)
                         const selected = sheetDraft.clothingSizes?.[cat.id] || ''
+                        const base = sizesForCategory(cat.id)
+                        const options =
+                          selected && !base.includes(selected)
+                            ? [...base, selected]
+                            : base
+                        const total = options.length + 1
+                        const longest = Math.max(
+                          0,
+                          ...options.map((o) => String(o).length),
+                        )
+                        const maxCols = longest > 4 ? 3 : 5
+                        const sizeCols = Math.ceil(
+                          total /
+                            (total <= Math.min(4, maxCols)
+                              ? 1
+                              : Math.max(2, Math.ceil(total / maxCols))),
+                        )
+                        const commitCustom = () => {
+                          const v = (customSize || '').trim()
+                          if (v) setCategorySize(cat.id, v)
+                          setCustomSize(null)
+                        }
                         return (
                           <div className="settings-size-cat">
                             <p className="settings-size-section-label">
@@ -1684,21 +1710,7 @@ export default function SettingsScreen({
                               className="settings-size-chips"
                               role="listbox"
                               aria-label={`${cat.label} size`}
-                              style={{
-                                '--size-cols': (() => {
-                                  const n = options.length
-                                  const longest = Math.max(
-                                    0,
-                                    ...options.map((o) => String(o).length),
-                                  )
-                                  const maxCols = longest > 4 ? 3 : 5
-                                  const rows =
-                                    n <= Math.min(4, maxCols)
-                                      ? 1
-                                      : Math.max(2, Math.ceil(n / maxCols))
-                                  return Math.ceil(n / rows)
-                                })(),
-                              }}
+                              style={{ '--size-cols': sizeCols }}
                             >
                               {options.map((sz) => (
                                 <button
@@ -1712,6 +1724,33 @@ export default function SettingsScreen({
                                   {sz}
                                 </button>
                               ))}
+                              {customSize === null ? (
+                                <button
+                                  type="button"
+                                  className="settings-size-chip settings-size-add"
+                                  aria-label="Add size"
+                                  style={
+                                    options.length % sizeCols === 0
+                                      ? { gridColumn: '1 / -1' }
+                                      : undefined
+                                  }
+                                  onClick={() => setCustomSize('')}
+                                >
+                                  +
+                                </button>
+                              ) : (
+                                <input
+                                  className="settings-size-chip settings-size-add-input"
+                                  autoFocus
+                                  value={customSize}
+                                  maxLength={12}
+                                  onChange={(e) => setCustomSize(e.target.value)}
+                                  onBlur={commitCustom}
+                                  onKeyDown={(e) => {
+                                    if (e.key === 'Enter') e.currentTarget.blur()
+                                  }}
+                                />
+                              )}
                             </div>
                           </div>
                         )
@@ -1772,7 +1811,7 @@ export default function SettingsScreen({
               onClick={saveSheet}
             >
               <svg viewBox="0 0 24 24" aria-hidden>
-                <path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                <path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </button>
           </div>

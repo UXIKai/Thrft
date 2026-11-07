@@ -438,3 +438,11 @@ html body .glass-sheet-card.is-size-sheet .settings-size-chips[style*="--size-co
 html body .glass-sheet-card.is-size-sheet .settings-size-cat > .settings-size-section-label {
   margin: 0 0 16px !important;
 }
+
+html body .settings-size-chip.settings-size-add-input {
+  width: 84px;
+  text-align: center;
+  font-size: 16px;
+  color: #fff;
+  outline: none;
+}
