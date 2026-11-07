@@ -1151,3 +1151,12 @@ html body .glass-sheet-card:has(.settings-new-page) .glass-sheet-add {
 .settings-new-page { flex-direction: column; gap: 28px; }
 .settings-new-page .settings-new-drum { width: 100%; display: flex; justify-content: center; }
 .settings-new-page .gender-drum { height: calc(var(--row-h, 44px) * 6); padding: calc(var(--row-h, 44px) * 2.5) 0; }
+html body .glass-sheet-card .settings-size-chip.settings-size-add-input.is-inline {
+  width: 100%;
+  max-width: 120px;
+  min-width: 0;
+  box-sizing: border-box;
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.22) !important;
+  border-radius: 16px;
+}
