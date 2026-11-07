@@ -881,3 +881,15 @@ html body .glass-sheet-card.is-size-summary-page .settings-size-wheelbox {
 html body .glass-sheet-card.is-size-summary-page {
   padding-top: calc(env(safe-area-inset-top, 0px) + 16px);
 }
+
+html body .glass-sheet-card.is-size-summary-page .settings-size-summary-row.is-hot > * {
+  transform: none;
+}
+html body .glass-sheet-card.is-size-summary-page .settings-size-summary-row.is-hot .settings-size-summary-label,
+html body .glass-sheet-card.is-size-summary-page .settings-size-summary-row.is-hot strong {
+  color: #fff;
+  text-shadow: 0 0 14px rgba(255, 255, 255, 0.55);
+}
+html body .glass-sheet-card.is-size-summary-page .settings-size-summary-row:not(.is-hot) .settings-size-summary-label {
+  color: rgba(255, 255, 255, 0.6);
+}

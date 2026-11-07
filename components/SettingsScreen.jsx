@@ -825,6 +825,7 @@ export default function SettingsScreen({
         const a = Math.min(Math.abs(d), 3)
         row.style.transform = `rotateX(${(-d * 24).toFixed(1)}deg) scale(${(1 - a * 0.09).toFixed(3)})`
         row.style.opacity = String(Math.max(0.12, 1 - a * 0.3).toFixed(2))
+        row.classList.toggle('is-hot', Math.abs(d) < 0.5)
       })
     }
     update()
@@ -1891,7 +1892,6 @@ export default function SettingsScreen({
                       })()
                     ) : sizeSummary ? (
                       <div className="settings-size-wheelbox">
-                      <div className="settings-size-wheelband" aria-hidden />
                       <div
                         className="settings-size-summary"
                         ref={summaryListRef}
