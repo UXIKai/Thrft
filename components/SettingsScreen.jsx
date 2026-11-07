@@ -700,6 +700,7 @@ export default function SettingsScreen({
   const [sizePicked, setSizePicked] = useState(null)
   const [sizePeek, setSizePeek] = useState(null)
   const [sizeSummary, setSizeSummary] = useState(false)
+  const [sizeFromSummary, setSizeFromSummary] = useState(false)
   const summaryPressRef = useRef({ timer: null, x: 0, y: 0, fired: false })
   const peekTimerRef = useRef(null)
   const peekFiredRef = useRef(false)
@@ -802,6 +803,7 @@ export default function SettingsScreen({
     if (sheet !== 'size') {
       setSizeGarment(null)
       setSizeSummary(false)
+      setSizeFromSummary(false)
     }
   }, [sheet])
 
@@ -1606,7 +1608,9 @@ export default function SettingsScreen({
                     : sheet === 'size' && sizeGarment
                     ? sizePicked
                       ? setSizePicked(null)
-                      : setSizeGarment(null)
+                      : (setSizeGarment(null),
+                        sizeFromSummary && setSizeSummary(true),
+                        setSizeFromSummary(false))
                     : setSheet(null)
                 }
               >
@@ -1835,13 +1839,16 @@ export default function SettingsScreen({
                       })()
                     ) : sizeSummary ? (
                       <div className="settings-size-summary">
-                        {SIZE_GARMENTS.map((g) => (
+                        {[...SIZE_GARMENTS]
+                          .sort((a, b) => a.label.length - b.label.length)
+                          .map((g) => (
                           <div key={g.id} className="settings-size-summary-row">
                             <button
                               type="button"
                               className="settings-size-summary-label is-bare"
                               onClick={() => {
                                 setSizeSummary(false)
+                                setSizeFromSummary(true)
                                 setSizeGarment(g.id)
                               }}
                             >
