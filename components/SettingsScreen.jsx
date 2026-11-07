@@ -1803,6 +1803,8 @@ export default function SettingsScreen({
                 </label>
               ))
             )}
+            {sheet !== 'size' ||
+            Object.values(sheetDraft.clothingSizes || {}).some(Boolean) ? (
             <button
               type="button"
               className="glass-sheet-plus is-bare"
@@ -1814,6 +1816,7 @@ export default function SettingsScreen({
                 <path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </button>
+            ) : null}
           </div>
         </div>
       )}
