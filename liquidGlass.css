@@ -1299,3 +1299,11 @@ html body .glass-sheet-card:has(.settings-remove-pop) .glass-sheet-head,
 html body .glass-sheet-card:has(.settings-remove-pop) .settings-size-reset {
   visibility: hidden !important;
 }
+
+/* Back sits between minus and check; Reset between check and plus */
+html body .glass-sheet-card.is-size-summary-page .glass-sheet-head .glass-overlay-icon-btn {
+  transform: translateX(-10.5vw) !important;
+}
+html body .glass-sheet-card .settings-size-reset {
+  transform: translateX(calc(10.5vw - 50%));
+}
