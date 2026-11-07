@@ -1769,11 +1769,14 @@ export default function SettingsScreen({
             )}
             <button
               type="button"
-              className="glass-cta"
+              className="glass-sheet-plus is-bare"
+              aria-label="Save"
               disabled={saveBusy}
               onClick={saveSheet}
             >
-              {saveBusy ? 'Saving…' : 'Save'}
+              <svg viewBox="0 0 24 24" aria-hidden>
+                <path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+              </svg>
             </button>
           </div>
         </div>

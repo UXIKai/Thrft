@@ -308,3 +308,36 @@ html body .glass-sheet:not(.settings-wheel-sheet):not(.settings-palette-sheet) .
   order: -1;
   margin-top: auto;
 }
+
+/* Sheet save = bare plus; fields centered */
+html body .glass-sheet-plus {
+  order: 50;
+  align-self: center;
+  width: 48px;
+  height: 48px;
+  margin: 8px auto 0;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+html body .glass-sheet-plus svg {
+  width: 28px;
+  height: 28px;
+}
+html body .glass-sheet:not(.settings-wheel-sheet):not(.settings-palette-sheet) .glass-field {
+  width: 100%;
+  max-width: 420px;
+  margin-left: auto;
+  margin-right: auto;
+  align-items: center;
+  text-align: center;
+}
+html body .glass-sheet:not(.settings-wheel-sheet):not(.settings-palette-sheet) .glass-input {
+  text-align: center;
+}
