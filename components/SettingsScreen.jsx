@@ -2470,6 +2470,33 @@ export default function SettingsScreen({
                 </div>
               )
             })()}
+            {sheet === 'size' && sizeSummary && wizStep === null && !addNew && (
+              <button
+                type="button"
+                className="settings-size-reset is-bare"
+                aria-label="Reset"
+                onClick={() => {
+                  setSheetDraft((d) => ({
+                    ...d,
+                    clothingSizes: {},
+                    sizesByGender: {},
+                    gender: '',
+                    age: '',
+                    sex: '',
+                    height: '',
+                    customGenders: [],
+                    customCategories: [],
+                  }))
+                  setWizStep(0)
+                }}
+              >
+                <svg viewBox="0 0 24 24" aria-hidden>
+                  <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" strokeWidth="1.6" />
+                  <path d="M15.5 9.5A4.6 4.6 0 1 0 16.6 13" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                  <path d="M16 6.5v3.2h-3.2" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
+            )}
             {sheet === 'size' && addNew && (
               <div className="settings-new-page">
                 <div className="settings-new-kinds">
