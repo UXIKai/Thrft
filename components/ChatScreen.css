@@ -2219,10 +2219,9 @@ html body .chat-friend-item {
   grid-template-columns: 52px 1fr;
   gap: 12px;
   align-items: start;
-  padding: 12px;
-  border-radius: 16px;
-  border: 1px solid var(--glass-border, rgba(168, 168, 168, 0.16));
-  background: var(--glass-clear-tint, rgba(36, 36, 36, 0.05));
+  padding: 4px 0;
+  border: none;
+  background: none;
 }
 
 .chat-member-avatar {
