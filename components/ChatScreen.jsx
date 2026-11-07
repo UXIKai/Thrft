@@ -2647,8 +2647,8 @@ export default function ChatScreen({
 
       <StageSlot>
       <div className={`chat-bottom-dock${composer ? ' is-sheet-open' : ''}${usersPickerOpen || memberGlobeVisible ? ' is-covered' : ''}`}>
-        {searchOpen || composer ? (
-          <div className={`chat-search-bar${composer ? ' is-sheet-open' : ''}`}>
+        <div className={`chat-search-bar${composer ? ' is-sheet-open' : ''}${searchOpen || composer ? '' : ' is-collapsed'}`}>
+          {searchOpen || composer ? (
             <button
               type="button"
               className="chat-dock-search chat-dock-new"
@@ -2658,6 +2658,8 @@ export default function ChatScreen({
             >
               <SearchIcon />
             </button>
+          ) : null}
+          {searchOpen || composer ? (
             <input
               id="chat-search-input"
               className={`chat-search-input${composer ? ' is-sheet-hidden' : ''}`}
@@ -2677,28 +2679,23 @@ export default function ChatScreen({
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />
-            <button
-              type="button"
-              className={`chat-search-add is-search-open${composer ? ' is-sheet-hidden' : ''}`}
-              aria-label="Close search"
-              onClick={() => {
-                setQuery('')
-                setSearchOpen(false)
-              }}
-            >
-              <PlusIcon />
-            </button>
-          </div>
-        ) : (
+          ) : null}
           <button
             type="button"
-            className="chat-search-add chat-dock-collapsed"
-            aria-label="Search chats"
-            onClick={() => setSearchOpen(true)}
+            className={`chat-search-add${searchOpen || composer ? ' is-search-open' : ''}${composer ? ' is-sheet-hidden' : ''}`}
+            aria-label={searchOpen || composer ? 'Close search' : 'Search chats'}
+            onClick={() => {
+              if (searchOpen || composer) {
+                setQuery('')
+                setSearchOpen(false)
+              } else {
+                setSearchOpen(true)
+              }
+            }}
           >
             <PlusIcon />
           </button>
-        )}
+        </div>
       </div>
       </StageSlot>
 

@@ -2823,10 +2823,20 @@ html body button.chat-contact-nick-save {
   height: 22px;
 }
 
-/* Collapsed + sits where the X lands; it turns into the X when search opens */
-.chat-dock-collapsed {
+/* Collapsed + sits where the X lands; same rules as the Liked page bar */
+.chat-search-bar.is-collapsed {
+  flex: 0 0 auto;
+  width: auto;
   height: 62px;
-  margin-right: 7px;
+  margin-left: auto;
+  padding: 0 7px 0 0;
+  gap: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 .chat-search-add.is-search-open {
