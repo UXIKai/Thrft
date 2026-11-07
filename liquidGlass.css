@@ -278,14 +278,33 @@ html body .glass-sheet .glass-sheet-head button {
   -webkit-backdrop-filter: none !important;
 }
 
-/* Settings sheets: popup fills the screen, card centered in the middle */
+/* Settings sheets: card fills the whole screen, content centered, X below Save */
 html body .glass-sheet:not(.settings-wheel-sheet):not(.settings-palette-sheet) {
-  align-items: center;
-  padding: 16px;
-  box-sizing: border-box;
+  padding: 0;
+  align-items: stretch;
 }
 html body .glass-sheet:not(.settings-wheel-sheet):not(.settings-palette-sheet) .glass-sheet-card {
-  border-radius: 22px;
-  border-bottom: 1px solid var(--glass-border, rgba(150, 150, 150, 0.2));
-  padding-bottom: 18px;
+  width: 100%;
+  max-height: none;
+  height: 100%;
+  border: 0;
+  border-radius: 0;
+  display: flex;
+  flex-direction: column;
+  padding: calc(env(safe-area-inset-top, 0px) + 24px) 20px calc(env(safe-area-inset-bottom, 0px) + 24px);
+  box-sizing: border-box;
+}
+html body .glass-sheet:not(.settings-wheel-sheet):not(.settings-palette-sheet) html body .glass-sheet:not(.settings-wheel-sheet):not(.settings-palette-sheet) .glass-sheet-head {
+  display: contents;
+}
+html body .glass-sheet:not(.settings-wheel-sheet):not(.settings-palette-sheet) .glass-sheet-head .glass-overlay-icon-btn {
+  order: 99;
+  align-self: center;
+  margin: 18px auto auto;
+  position: static;
+  transform: none;
+}
+html body .glass-sheet:not(.settings-wheel-sheet):not(.settings-palette-sheet) .glass-sheet-title {
+  order: -1;
+  margin-top: auto;
 }
