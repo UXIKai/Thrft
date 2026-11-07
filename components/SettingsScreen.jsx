@@ -1738,10 +1738,8 @@ export default function SettingsScreen({
                               className="settings-size-wheel is-picked"
                               items={options.map((o) => ({ id: o, label: String(o) }))}
                               activeId={sizePicked}
-                              onSelect={(id) => {
-                                setSizePicked(id)
-                                setCategorySize(cat.id, id)
-                              }}
+                              onSelect={setSizePicked}
+                              onActivate={(id) => setCategorySize(cat.id, id)}
                               ariaLabel={`${cat.label} size`}
                               prevLabel="Previous size"
                               nextLabel="Next size"
@@ -1775,7 +1773,7 @@ export default function SettingsScreen({
                                     window.clearTimeout(peekTimerRef.current)
                                     peekTimerRef.current = window.setTimeout(() => {
                                       peekFiredRef.current = true
-                                      setSizePeek(sz)
+                                      setSizePicked(sz)
                                     }, 350)
                                   }}
                                   onPointerUp={() => {
