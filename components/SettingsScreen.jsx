@@ -2285,43 +2285,6 @@ export default function SettingsScreen({
                 />
               </div>
             )}
-                      {confirmRemove && (
-                        <div className="settings-remove-confirm">
-                          <button
-                            type="button"
-                            className="is-bare"
-                            aria-label="Cancel"
-                            onClick={() => setConfirmRemove(null)}
-                          >
-                            <svg viewBox="0 0 24 24" aria-hidden>
-                              <path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                            </svg>
-                          </button>
-                          <button
-                            type="button"
-                            className="is-bare"
-                            aria-label="Remove category"
-                            onClick={() => {
-                              const gid = confirmRemove
-                              setSheetDraft((d) => {
-                                const cs = { ...(d.clothingSizes || {}) }
-                                delete cs[gid]
-                                return {
-                                  ...d,
-                                  clothingSizes: cs,
-                                  customCategories: (d.customCategories || []).filter((c) => c.id !== gid),
-                                  hiddenCategories: [...new Set([...(d.hiddenCategories || []), gid])],
-                                }
-                              })
-                              setConfirmRemove(null)
-                            }}
-                          >
-                            <svg viewBox="0 0 24 24" aria-hidden>
-                              <path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                            </svg>
-                          </button>
-                        </div>
-                      )}
                       <div className="settings-size-wheelbox">
                       <div
                         className="settings-size-summary"
@@ -2581,6 +2544,50 @@ export default function SettingsScreen({
                 </svg>
               </button>
             )}
+            {confirmRemove && (
+                        <div className="settings-remove-pop">
+                        <div className="settings-remove-confirm">
+                          <span className="settings-remove-title">
+                            {allGarments.find((g) => g.id === confirmRemove)?.label}
+                          </span>
+                          <div className="settings-remove-btns">
+                          <button
+                            type="button"
+                            className="is-bare"
+                            aria-label="Cancel"
+                            onClick={() => setConfirmRemove(null)}
+                          >
+                            <svg viewBox="0 0 24 24" aria-hidden>
+                              <path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                            </svg>
+                          </button>
+                          <button
+                            type="button"
+                            className="is-bare"
+                            aria-label="Remove category"
+                            onClick={() => {
+                              const gid = confirmRemove
+                              setSheetDraft((d) => {
+                                const cs = { ...(d.clothingSizes || {}) }
+                                delete cs[gid]
+                                return {
+                                  ...d,
+                                  clothingSizes: cs,
+                                  customCategories: (d.customCategories || []).filter((c) => c.id !== gid),
+                                  hiddenCategories: [...new Set([...(d.hiddenCategories || []), gid])],
+                                }
+                              })
+                              setConfirmRemove(null)
+                            }}
+                          >
+                            <svg viewBox="0 0 24 24" aria-hidden>
+                              <path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
+                          </button>
+                        </div>
+                          </div>
+                        </div>
+                      )}
             {sheet === 'size' && addNew && (
               <div className={`settings-new-page${addNew.kind ? ' has-kind' : ''}`}>
                 <div className="settings-new-kinds">

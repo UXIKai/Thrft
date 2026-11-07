@@ -1247,17 +1247,29 @@ html body .glass-sheet-card.is-size-summary-page .glass-sheet-head .glass-overla
   transform: translateX(-21vw) !important;
   z-index: 6;
 }
-.settings-remove-confirm {
-  position: absolute;
-  left: calc((100% - min(86vw, 360px)) / 2 + 18px);
-  top: calc(50% + 24px);
-  z-index: 8;
+.settings-remove-pop {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
   display: flex;
-  gap: 6px;
-  padding: 4px 8px;
-  border-radius: 16px;
-  background: rgba(var(--bg-color-rgb, 36, 36, 36), 0.85);
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.35);
+}
+.settings-remove-confirm {
+  min-width: 220px;
+  padding: 22px 28px 14px;
+  border-radius: 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.12), transparent 42%),
+    rgba(var(--bg-color-rgb, 36, 36, 36), 0.92);
   border: 1px solid rgba(255, 255, 255, 0.18);
 }
-.settings-remove-confirm button { width: 40px; height: 36px; color: #fff; display: flex; align-items: center; justify-content: center; }
-.settings-remove-confirm svg { width: 20px; height: 20px; }
+.settings-remove-title { color: #fff; font-size: 1.3rem; font-weight: 600; }
+.settings-remove-btns { display: flex; gap: 36px; }
+.settings-remove-btns button { width: 48px; height: 44px; color: #fff; display: flex; align-items: center; justify-content: center; }
+.settings-remove-btns svg { width: 22px; height: 22px; }
