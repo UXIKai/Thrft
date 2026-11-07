@@ -2500,7 +2500,7 @@ export default function SettingsScreen({
               </button>
             )}
             {sheet === 'size' && addNew && (
-              <div className="settings-new-page">
+              <div className={`settings-new-page${addNew.kind ? ' has-kind' : ''}`}>
                 <div className="settings-new-kinds">
                   {ADD_KINDS.map(([k, label]) => (
                     <button

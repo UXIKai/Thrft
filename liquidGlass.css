@@ -1200,3 +1200,24 @@ html body .glass-sheet-card.is-size-summary-page:not(.is-gender-gate) .settings-
 }
 .settings-size-reset svg { width: 28px; height: 28px; }
 .gender-drum { position: relative; }
+/* Exactly five rows; title pinned to the top */
+html body .settings-new-page .gender-drum,
+html body .glass-sheet-card.is-size-summary-page .settings-new-page .gender-drum {
+  --row-h: 44px;
+  height: 220px !important;
+  max-height: 220px;
+  padding: 88px 0 !important;
+  box-sizing: border-box;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 22%, #000 78%, transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0, #000 22%, #000 78%, transparent 100%);
+}
+html body .settings-new-page.settings-wiz-page .settings-new-kinds,
+html body .settings-new-page.has-kind .settings-new-kinds {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(env(safe-area-inset-top, 0px) + 22px);
+  padding-top: 0;
+}
