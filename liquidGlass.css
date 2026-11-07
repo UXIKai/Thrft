@@ -597,3 +597,6 @@ html body .glass-sheet-card.is-size-summary-page .settings-size-summary {
   padding: 0 44px 0 88px;
   box-sizing: border-box;
 }
+html body .glass-sheet-card.is-size-summary-page .settings-size-summary {
+  width: 100%;
+}
