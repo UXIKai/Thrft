@@ -2413,7 +2413,7 @@ export default function SettingsScreen({
               </button>
             )}
             {sheet === 'size' && wizStep !== null && sizeSummary && (() => {
-              const steps = ['age', 'height', 'sex', 'gender', 'category']
+              const steps = ['age', 'height', 'sex', 'gender']
               const kind = steps[wizStep]
               const label = ADD_KINDS.find(([k]) => k === kind)?.[1]
               const options =
@@ -2459,7 +2459,7 @@ export default function SettingsScreen({
                     ],
                   }))
                 }
-                setWizStep(wizStep >= 4 ? null : wizStep + 1)
+                setWizStep(wizStep >= 3 ? null : wizStep + 1)
               }
               return (
                 <div className="settings-new-page settings-wiz-page">
