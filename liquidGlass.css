@@ -1071,3 +1071,18 @@ html body .glass-sheet-card.is-size-summary-page:not(.is-gender-gate) .settings-
   position: absolute;
   top: calc(env(safe-area-inset-top, 0px) - 93px);
 }
+/* Keep the wheel clear of the bottom buttons so Back always works */
+html body .glass-sheet-card.is-size-summary-page .settings-size-drum-col {
+  --wheel-h: max(176px, calc(100dvh - 400px));
+  pointer-events: none;
+}
+html body .glass-sheet-card.is-size-summary-page .settings-size-drum-col > * {
+  pointer-events: auto;
+}
+html body .glass-sheet-card.is-size-summary-page .glass-sheet-head .glass-overlay-icon-btn {
+  position: relative !important;
+  z-index: 10;
+}
+html body .glass-sheet-card.is-size-summary-page:not(.is-gender-gate) .settings-size-drum-col > .settings-size-gender {
+  top: calc(env(safe-area-inset-top, 0px) - 193px);
+}
