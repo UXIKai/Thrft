@@ -2548,7 +2548,7 @@ export default function SettingsScreen({
                         <div className="settings-remove-pop">
                         <div className="settings-remove-confirm">
                           <svg className="settings-remove-trash" viewBox="0 0 24 24" aria-hidden>
-                            <path fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" d="M4 7h16M10 11v6M14 11v6M6 7l1 12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-12M9 7V4h6v3" />
+                            <path fill="currentColor" fillRule="evenodd" d="M9 3h6l1 2h4v2H4V5h4l1-2zM5.5 8h13l-1 11.2a2 2 0 0 1-2 1.8H8.5a2 2 0 0 1-2-1.8L5.5 8zm4 3v7h1.5v-7H9.500zm4 0v7H15v-7h-1.500z" />
                           </svg>
                           <span className="settings-remove-title">
                             {allGarments.find((g) => g.id === confirmRemove)?.label}
