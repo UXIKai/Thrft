@@ -2927,3 +2927,16 @@
   -webkit-backdrop-filter: none;
   box-shadow: none;
 }
+
+/* Account fields match the clear buttons */
+.profile-name-field {
+  border-radius: 16px;
+  background: var(--glass-tint, rgba(36, 36, 36, 0.06));
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
+}
+
+.profile-name-field input {
+  font-size: 16px;
+}
