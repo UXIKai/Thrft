@@ -645,6 +645,9 @@ const PRESET_CATEGORIES = [
 
 function GenderDrum({ value, onPick, options = GENDER_OPTIONS }) {
   const ref = useRef(null)
+  const pickRef = useRef(onPick)
+  pickRef.current = onPick
+  const optsKey = options.join('|')
   useEffect(() => {
     const el = ref.current
     if (!el) return undefined
@@ -698,7 +701,7 @@ function GenderDrum({ value, onPick, options = GENDER_OPTIONS }) {
       const id = st.moved
         ? el.querySelector('.gender-drum-row.is-hot')?.dataset.opt
         : st.held
-      if (id) window.setTimeout(() => onPick(id), 60)
+      if (id) window.setTimeout(() => pickRef.current?.(id), 60)
     }
     const touch = (e) => {
       if (st.on && e.cancelable) e.preventDefault()
@@ -726,12 +729,12 @@ function GenderDrum({ value, onPick, options = GENDER_OPTIONS }) {
       el.removeEventListener('touchmove', touch)
       el.removeEventListener('click', click, true)
     }
-  }, [value, onPick, options])
+  }, [value, optsKey])
   return (
     <div className="gender-drum" ref={ref}>
       {options.map((g) => (
         <div key={g} data-opt={g} className="gender-drum-row">
-          <button type="button" className="is-bare" onClick={() => onPick(g)}>
+          <button type="button" className="is-bare" onClick={() => pickRef.current?.(g)}>
             {g}
           </button>
         </div>
@@ -2491,9 +2494,8 @@ export default function SettingsScreen({
                 }}
               >
                 <svg viewBox="0 0 24 24" aria-hidden>
-                  <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" strokeWidth="1.6" />
-                  <path d="M15.5 9.5A4.6 4.6 0 1 0 16.6 13" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-                  <path d="M16 6.5v3.2h-3.2" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M17.2 9A6.4 6.4 0 1 0 18.4 14" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                  <path d="M17.6 4.8V9h-4.2" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </button>
             )}

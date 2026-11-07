@@ -1199,3 +1199,4 @@ html body .glass-sheet-card.is-size-summary-page:not(.is-gender-gate) .settings-
   z-index: 5;
 }
 .settings-size-reset svg { width: 28px; height: 28px; }
+.gender-drum { position: relative; }
