@@ -1135,3 +1135,16 @@ html body .glass-sheet-card.is-size-summary-page .glass-sheet-add svg { width: 2
   color: #fff;
 }
 .settings-new-page { background: var(--atmosphere-base, #050505); }
+html .settings-new-page {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.12), transparent 42%),
+    rgba(var(--bg-color-rgb, 36, 36, 36), 0.4) !important;
+  backdrop-filter: blur(28px) saturate(1.6);
+  -webkit-backdrop-filter: blur(28px) saturate(1.6);
+}
+html body .glass-sheet-card:has(.settings-new-page) .settings-size-cats,
+html body .glass-sheet-card:has(.settings-new-page) .glass-sheet-head,
+html body .glass-sheet-card:has(.settings-new-page) .glass-sheet-plus,
+html body .glass-sheet-card:has(.settings-new-page) .glass-sheet-add {
+  visibility: hidden;
+}
