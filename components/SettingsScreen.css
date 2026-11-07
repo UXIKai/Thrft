@@ -87,7 +87,7 @@
 }
 
 .settings-section {
-  margin-bottom: 22px;
+  margin-bottom: 18px;
 }
 
 .settings-label {
@@ -2478,6 +2478,7 @@
 
 .settings-section.is-sliders {
   margin-top: -8px;
+  margin-bottom: 18px;
 }
 
 .settings-slider-block {
