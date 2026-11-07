@@ -264,3 +264,21 @@ html body .settings-screen > .settings-scroll {
   flex: 1 1 auto;
   padding-top: calc(max(calc(env(safe-area-inset-top, 0px) + 2px), 28px) + 48px);
 }
+
+/* Settings help pages: same floating back button, content scrolls under it */
+html body .settings-help-page > .glass-overlay-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  pointer-events: none;
+  background: none;
+}
+html body .settings-help-page > .glass-overlay-top > * {
+  pointer-events: auto;
+}
+html body .settings-help-page > .settings-help-body {
+  flex: 1 1 auto;
+  padding-top: calc(max(calc(env(safe-area-inset-top, 0px) + 2px), 28px) + 48px);
+}
