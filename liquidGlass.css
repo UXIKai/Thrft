@@ -1328,3 +1328,4 @@ html body .glass-sheet-card .settings-size-reset {
 
 .settings-addr-wrap { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 18px; }
 .settings-addr-card { padding: 22px 18px; }
+.settings-addr-card { border: none; }
