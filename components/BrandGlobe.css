@@ -682,7 +682,7 @@
 /* Effect off: the center seat becomes a black hole with an illuminated white ring */
 html[data-bg-image='none'] .brand-globe-center-hole,
 html[data-bg-image='none'] .brand-globe-stage.is-choosing .brand-globe-center-hole {
-  background: #000;
+  background: color-mix(in srgb, rgb(var(--bg-color-rgb, 36, 36, 36)) 38%, var(--atmosphere-base, #050505));
   box-shadow:
     0 0 0 4px #fff,
     0 0 8px 5px rgba(255, 255, 255, 1),
