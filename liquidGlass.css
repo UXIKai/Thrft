@@ -246,3 +246,13 @@ html body .chat-dm-menu .chat-dm-menu-ico {
   width: 18px;
   height: 18px;
 }
+
+/* Help pages: header strip matches Settings (back button pinned, no container) */
+html body .settings-help-page > .glass-overlay-top {
+  position: relative;
+  z-index: 5;
+  min-height: 0;
+  padding-top: max(calc(env(safe-area-inset-top, 0px) + 2px), 28px);
+  padding-bottom: 4px;
+  background: none;
+}
