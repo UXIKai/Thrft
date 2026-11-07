@@ -1294,3 +1294,8 @@ html body .glass-sheet-card:has(.settings-remove-pop) .settings-size-drum-col {
   visibility: hidden;
 }
 .settings-remove-trash { width: 40px; height: 40px; color: #fff; }
+html body .glass-sheet-card:has(.settings-remove-pop) button:not(.settings-remove-btns button),
+html body .glass-sheet-card:has(.settings-remove-pop) .glass-sheet-head,
+html body .glass-sheet-card:has(.settings-remove-pop) .settings-size-reset {
+  visibility: hidden !important;
+}
