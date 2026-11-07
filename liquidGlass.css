@@ -663,3 +663,11 @@ html body .glass-sheet-card.is-size-summary-page .glass-sheet-plus {
   height: 44px !important;
   margin: -44px auto 0 !important;
 }
+html body .settings-size-wheel.is-picked:not(.is-chosen) .type-box.is-wheel.is-active {
+  color: rgba(255, 255, 255, 0.55);
+}
+html body .settings-size-wheel.is-picked.is-chosen .type-box.is-wheel.is-active {
+  color: #fff;
+  text-decoration: underline;
+  text-underline-offset: 10px;
+}

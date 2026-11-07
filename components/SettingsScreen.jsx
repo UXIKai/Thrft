@@ -1735,7 +1735,7 @@ export default function SettingsScreen({
                               variant="wheel"
                               compact
                               smooth
-                              className="settings-size-wheel is-picked"
+                              className={`settings-size-wheel is-picked${selectedList.includes(sizePicked) ? ' is-chosen' : ''}`}
                               items={options.map((o) => ({ id: o, label: String(o) }))}
                               activeId={sizePicked}
                               onSelect={setSizePicked}
