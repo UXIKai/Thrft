@@ -2917,3 +2917,13 @@
   top: 50%;
   transform: translateY(-50%);
 }
+
+/* Stat cards share the clear rounded button look */
+.profile-stat-card {
+  border-radius: 16px;
+  border: 1px solid var(--glass-border, rgba(168, 168, 168, 0.18));
+  background: var(--glass-clear-tint, rgba(36, 36, 36, 0.04));
+  backdrop-filter: blur(var(--glass-clear-blur, 2px)) saturate(var(--glass-sat, 1.55));
+  -webkit-backdrop-filter: blur(var(--glass-clear-blur, 2px)) saturate(var(--glass-sat, 1.55));
+  box-shadow: var(--glass-clear-depth);
+}
