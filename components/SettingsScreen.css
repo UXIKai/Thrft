@@ -956,39 +956,18 @@
   inset: 0;
   border-radius: 50%;
   background:
-    radial-gradient(circle at 50% 50%, transparent 34%, rgba(10, 10, 10, 0.55) 35%, transparent 36%),
-    conic-gradient(
-      from 0deg,
-      hsl(0 42% 36%),
-      hsl(35 38% 34%),
-      hsl(70 32% 32%),
-      hsl(130 30% 32%),
-      hsl(180 32% 34%),
-      hsl(220 36% 38%),
-      hsl(275 34% 36%),
-      hsl(325 38% 36%),
-      hsl(0 42% 36%)
-    );
+    radial-gradient(closest-side, #fff, rgba(255, 255, 255, 0)),
+    conic-gradient(from 90deg, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00);
   box-shadow:
-    inset 0 0 0 1px rgba(0, 0, 0, 0.55),
-    inset 0 0 24px rgba(0, 0, 0, 0.35),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.45),
     0 0 0 1px rgba(255, 255, 255, 0.06);
-}
-
-.settings-wheel-core {
-  position: absolute;
-  inset: 34%;
-  border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow:
-    inset 0 0 18px rgba(0, 0, 0, 0.45),
-    0 4px 16px rgba(0, 0, 0, 0.4);
 }
 
 .settings-wheel-knob {
   position: absolute;
   top: 50%;
   left: 50%;
+  translate: -50% -50%;
   width: 16px;
   height: 16px;
   border-radius: 50%;
@@ -1011,7 +990,7 @@
   height: 8px;
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  background: linear-gradient(90deg, #1a1a1a, #5a5a5a);
+  background: linear-gradient(90deg, #000, var(--tone-hi, #fff));
   outline: none;
 }
 
@@ -1104,6 +1083,12 @@
   color: rgba(255, 255, 255, 0.62);
   letter-spacing: 0.04em;
   text-transform: uppercase;
+  width: 7.5em;
+  border: 0;
+  background: none;
+  outline: none;
+  padding: 0;
+  font-size: 16px;
 }
 
 .settings-help-page {

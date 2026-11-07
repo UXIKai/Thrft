@@ -685,6 +685,7 @@ export default function SettingsScreen({
   const [wheelHsv, setWheelHsv] = useState(() => hexToHsv(readCustomColorHex()))
   const [recentColors, setRecentColors] = useState(() => readRecentColors())
   const wheelPadRef = useRef(null)
+  const [hexDraft, setHexDraft] = useState(null)
   const draggingWheel = useRef(false)
   const [idmeOpen, setIdmeOpen] = useState(false)
   const [idmeStep, setIdmeStep] = useState('intro') // intro | connecting | done | error
@@ -1061,11 +1062,9 @@ export default function SettingsScreen({
     const dy = clientY - cy
     const dist = Math.sqrt(dx * dx + dy * dy)
     const maxR = rect.width / 2 - 6
-    const minR = maxR * 0.34
-    if (dist < minR * 0.55) return
     const angle = (Math.atan2(dy, dx) * 180) / Math.PI
     const h = (angle + 360) % 360
-    const s = clamp((dist - minR) / (maxR - minR), 0.12, 1)
+    const s = clamp(dist / maxR, 0, 1)
     setWheelHsv((prev) => {
       const next = { ...prev, h, s }
       applyWheelHex(hsvToHex(next.h, next.s, next.v))
@@ -2164,21 +2163,25 @@ export default function SettingsScreen({
               }}
             >
               <span className="settings-wheel-ring" aria-hidden />
-              <span className="settings-wheel-core" aria-hidden style={{ background: wheelHex }} />
               <span
                 className="settings-wheel-knob"
                 aria-hidden
                 style={{
-                  transform: `translate(-50%, -50%) rotate(${wheelHsv.h}deg) translate(${42 + wheelHsv.s * 38}px) rotate(${-wheelHsv.h}deg)`,
+                  left: `calc(50% + (50% - 6px) * ${Math.cos((wheelHsv.h * Math.PI) / 180) * wheelHsv.s})`,
+                  top: `calc(50% + (50% - 6px) * ${Math.sin((wheelHsv.h * Math.PI) / 180) * wheelHsv.s})`,
+                  background: wheelHex,
                 }}
               />
             </div>
 
-            <label className="settings-wheel-tone">
+            <label
+              className="settings-wheel-tone"
+              style={{ '--tone-hi': hsvToHex(wheelHsv.h, wheelHsv.s, 1) }}
+            >
               <input
                 type="range"
-                min="18"
-                max="72"
+                min="0"
+                max="100"
                 value={Math.round(wheelHsv.v * 100)}
                 aria-label="Tone"
                 onChange={(e) => {
@@ -2195,7 +2198,28 @@ export default function SettingsScreen({
 
             <div className="settings-wheel-preview-row">
               <span className="settings-wheel-preview" style={{ background: wheelHex }} />
-              <span className="settings-wheel-hex">{wheelHex}</span>
+              <input
+                className="settings-wheel-hex"
+                aria-label="Hex color"
+                maxLength={7}
+                spellCheck={false}
+                autoCapitalize="characters"
+                autoCorrect="off"
+                value={hexDraft ?? wheelHex}
+                onChange={(e) => {
+                  let t = e.target.value.trim()
+                  if (t && !t.startsWith('#')) t = `#${t}`
+                  setHexDraft(t.toUpperCase())
+                  if (/^#[0-9a-f]{6}$/i.test(t)) {
+                    setWheelHsv(hexToHsv(t))
+                    applyWheelHex(t.toLowerCase())
+                  }
+                }}
+                onBlur={() => {
+                  setHexDraft(null)
+                  rememberColor(wheelHexRef.current)
+                }}
+              />
             </div>
 
             <div className="settings-recent" aria-label="Recent colors">
