@@ -713,3 +713,17 @@ html body .glass-sheet-card.is-size-sheet input {
   -webkit-user-select: text !important;
   user-select: text !important;
 }
+
+/* No text selection or callouts anywhere except real text fields */
+html body,
+html body * {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+html body input,
+html body textarea,
+html body [contenteditable="true"] {
+  -webkit-user-select: text !important;
+  user-select: text !important;
+}
