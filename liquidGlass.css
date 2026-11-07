@@ -747,3 +747,10 @@ html body [contenteditable="true"] {
 .settings-size-summary-label {
   pointer-events: none;
 }
+
+html body .glass-sheet-card.is-size-summary-page {
+  padding-top: calc(env(safe-area-inset-top, 0px) + 120px);
+}
+html body .glass-sheet-card.is-size-summary-page .settings-size-summary {
+  padding: 0 44px 0 56px;
+}
