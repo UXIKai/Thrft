@@ -626,7 +626,7 @@ function GenderDrum({ value, onPick }) {
       el.querySelectorAll('.gender-drum-row').forEach((row) => {
         const d = (row.offsetTop + row.offsetHeight / 2 - center) / row.offsetHeight
         const a = Math.min(Math.abs(d), 4.5)
-        row.style.transform = `rotateX(${(-d * 16).toFixed(1)}deg) scale(${(1 - a * 0.06).toFixed(3)})`
+        row.style.transform = `rotateX(${(-d * 7).toFixed(1)}deg) scale(${(1 - a * 0.06).toFixed(3)})`
         row.style.opacity = String(Math.max(0.18, 1 - a * 0.19).toFixed(2))
         row.classList.toggle('is-hot', Math.abs(d) < 0.5)
       })
@@ -926,7 +926,7 @@ export default function SettingsScreen({
       el.querySelectorAll('.settings-size-summary-row').forEach((row) => {
         const d = (row.offsetTop + row.offsetHeight / 2 - center) / row.offsetHeight
         const a = Math.min(Math.abs(d), 4.5)
-        row.style.transform = `rotateX(${(-d * 16).toFixed(1)}deg) scale(${(1 - a * 0.06).toFixed(3)})`
+        row.style.transform = `rotateX(${(-d * 7).toFixed(1)}deg) scale(${(1 - a * 0.06).toFixed(3)})`
         row.style.opacity = String(Math.max(0.18, 1 - a * 0.19).toFixed(2))
         row.classList.toggle('is-hot', Math.abs(d) < 0.5)
       })
@@ -2295,6 +2295,26 @@ export default function SettingsScreen({
                   />
                 </label>
               ))
+            )}
+            {sheet === 'size' && sizeSummary && sheetDraft.gender && (
+              <button
+                type="button"
+                className="glass-sheet-add is-bare"
+                aria-label="Add size"
+                onClick={() => {
+                  const gid = summaryListRef.current?.querySelector(
+                    '.settings-size-summary-row.is-hot [data-gid]',
+                  )?.dataset.gid
+                  if (!gid) return
+                  setSizeSummary(false)
+                  setSizeFromSummary(true)
+                  setSizeGarment(gid)
+                }}
+              >
+                <svg viewBox="0 0 24 24" aria-hidden>
+                  <path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                </svg>
+              </button>
             )}
             {sheet !== 'size' ||
             Object.values(sheetDraft.clothingSizes || {}).some(Boolean) ? (

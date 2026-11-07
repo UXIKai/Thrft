@@ -1086,3 +1086,25 @@ html body .glass-sheet-card.is-size-summary-page .glass-sheet-head .glass-overla
 html body .glass-sheet-card.is-size-summary-page:not(.is-gender-gate) .settings-size-drum-col > .settings-size-gender {
   top: calc(env(safe-area-inset-top, 0px) - 178px);
 }
+/* Six visible rows, flatter drum, plus beside the check */
+html body .glass-sheet-card.is-size-summary-page .settings-size-drum-col {
+  --wheel-h: 264px;
+}
+html body .glass-sheet-card.is-size-summary-page .glass-sheet-add {
+  order: 100 !important;
+  width: 44px;
+  height: 44px;
+  margin: -44px auto 0 !important;
+  transform: translateX(21vw);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+html body .glass-sheet-card.is-size-summary-page .glass-sheet-add svg {
+  width: 26px;
+  height: 26px;
+}
+html body .glass-sheet-card.is-size-summary-page:not(.is-gender-gate) .settings-size-drum-col > .settings-size-gender {
+  top: calc(env(safe-area-inset-top, 0px) - 86px);
+}
