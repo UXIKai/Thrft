@@ -703,7 +703,10 @@ export default function SettingsScreen({
   const [sizeFromSummary, setSizeFromSummary] = useState(false)
   const [sizeScrub, setSizeScrub] = useState(null)
   const scrubRef = useRef(null)
+  const [scrubOn, setScrubOn] = useState(false)
   const scrubYRef = useRef(0)
+  const scrubXRef = useRef(0)
+  const scrubActiveRef = useRef(false)
   const summaryListRef = useRef(null)
   const summaryPressRef = useRef({ timer: null, x: 0, y: 0, fired: false })
   const peekTimerRef = useRef(null)
@@ -812,9 +815,9 @@ export default function SettingsScreen({
   }, [sheet])
 
   useEffect(() => {
-    if (!sizeScrub) return undefined
+    if (!scrubOn) return undefined
     const id = window.setInterval(() => {
-      if (!scrubRef.current) return
+      if (!scrubActiveRef.current) return
       let card = summaryListRef.current?.parentElement
       while (card && card.scrollHeight <= card.clientHeight + 1)
         card = card.parentElement
@@ -828,16 +831,16 @@ export default function SettingsScreen({
       if (!dy) return
       card.scrollTop += dy
       const hit = document
-        .elementFromPoint(window.innerWidth * 0.4, y)
+        .elementFromPoint(scrubXRef.current, y)
         ?.closest?.('[data-gid]')
-      const gid = hit?.dataset.gid
-      if (gid && gid !== scrubRef.current) {
+      const gid = hit?.dataset.gid || null
+      if (gid !== scrubRef.current) {
         scrubRef.current = gid
         setSizeScrub(gid)
       }
     }, 16)
     return () => window.clearInterval(id)
-  }, [sizeScrub])
+  }, [scrubOn])
 
   useEffect(() => {
     setCustomSize(null)
@@ -1877,24 +1880,30 @@ export default function SettingsScreen({
                           const id = e.target.closest?.('[data-gid]')?.dataset.gid
                           if (!id) return
                           scrubRef.current = id
+                          scrubActiveRef.current = true
+                          setScrubOn(true)
                           scrubYRef.current = e.clientY
+                          scrubXRef.current = e.clientX
                           setSizeScrub(id)
                           e.currentTarget.setPointerCapture?.(e.pointerId)
                         }}
                         onPointerMove={(e) => {
-                          if (!scrubRef.current) return
+                          if (!scrubActiveRef.current) return
                           scrubYRef.current = e.clientY
-                          const el = document
-                            .elementFromPoint(e.clientX, e.clientY)
-                            ?.closest?.('[data-gid]')
-                          const id = el?.dataset.gid
-                          if (id && id !== scrubRef.current) {
+                          scrubXRef.current = e.clientX
+                          const id =
+                            document
+                              .elementFromPoint(e.clientX, e.clientY)
+                              ?.closest?.('[data-gid]')?.dataset.gid || null
+                          if (id !== scrubRef.current) {
                             scrubRef.current = id
                             setSizeScrub(id)
                           }
                         }}
                         onPointerUp={() => {
                           const id = scrubRef.current
+                          scrubActiveRef.current = false
+                          setScrubOn(false)
                           scrubRef.current = null
                           setSizeScrub(null)
                           if (!id) return
@@ -1903,6 +1912,8 @@ export default function SettingsScreen({
                           setSizeGarment(id)
                         }}
                         onPointerCancel={() => {
+                          scrubActiveRef.current = false
+                          setScrubOn(false)
                           scrubRef.current = null
                           setSizeScrub(null)
                         }}
@@ -1912,11 +1923,11 @@ export default function SettingsScreen({
                           .map((g) => (
                           <div
                             key={g.id}
-                            data-gid={g.id}
                             className={`settings-size-summary-row${sizeScrub === g.id ? ' is-hot' : ''}`}
                           >
                             <button
                               type="button"
+                              data-gid={g.id}
                               className="settings-size-summary-label is-bare"
                               onClick={(e) => {
                                 if (e.detail !== 0) return
@@ -1927,7 +1938,7 @@ export default function SettingsScreen({
                             >
                               {g.label}
                             </button>
-                            <strong className="settings-size-summary-sizes">
+                            <strong data-gid={g.id} className="settings-size-summary-sizes">
                               {[].concat(sheetDraft.clothingSizes?.[g.id] || []).map((sz) => (
                                 <span key={sz}>{sz}</span>
                               ))}
