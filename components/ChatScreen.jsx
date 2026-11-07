@@ -1721,26 +1721,7 @@ export default function ChatScreen({
               <DotsIcon />
             </button>
           ) : activeChat.kind === 'dm' ? (
-            <button
-              type="button"
-              className="chat-top-btn is-bare"
-              aria-label="More"
-              ref={(el) => {
-                if (el) dotsRefs.current.set(activeChat.id, el)
-                else dotsRefs.current.delete(activeChat.id)
-              }}
-              onClick={() => openMenu(activeChat.id)}
-            >
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                aria-hidden
-                style={{ transform: menuId ? 'rotate(45deg)' : 'none', transition: 'transform 0.25s ease' }}
-              >
-                <path fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" d="M12 5v14M5 12h14" />
-              </svg>
-            </button>
+            <span className="chat-top-btn" aria-hidden />
           ) : (
             <button
               type="button"

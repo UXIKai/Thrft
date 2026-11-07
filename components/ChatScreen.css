@@ -1284,6 +1284,7 @@
   color: #f4f4f2;
   font-family: var(--font-sans);
   overflow: hidden;
+  background: #000;
 }
 
 .chat-thread-top {
