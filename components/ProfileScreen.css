@@ -2917,3 +2917,10 @@
   top: 50%;
   transform: translateY(-50%);
 }
+
+.profile-panel.is-orders .profile-panel-back {
+  position: fixed;
+  left: 14px;
+  bottom: calc(8px + max(env(safe-area-inset-bottom, 0px) - 22px, 0px));
+  z-index: 6;
+}
