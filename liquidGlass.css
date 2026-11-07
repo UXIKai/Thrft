@@ -823,3 +823,42 @@ html body .glass-sheet-card.is-size-summary-page .settings-size-summary-row.is-h
 html body .glass-sheet-card.is-size-summary-page .settings-size-summary-row.is-hot > * {
   transform: scale(1.1);
 }
+
+/* Real drum: native drag/momentum scroll, 7 rows, center pill */
+html body .glass-sheet-card.is-size-summary-page .settings-size-wheelbox {
+  position: relative;
+  width: min(86vw, 360px);
+  margin: 0 0 0 16px;
+}
+html body .glass-sheet-card.is-size-summary-page .settings-size-wheelband {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 44px;
+  transform: translateY(-50%);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.09);
+  pointer-events: none;
+}
+html body .glass-sheet-card.is-size-summary-page .settings-size-summary {
+  --row-h: 44px;
+  width: 100%;
+  height: calc(var(--row-h) * 7);
+  margin: 0;
+  padding: calc(var(--row-h) * 3) 0 !important;
+  box-sizing: border-box;
+  touch-action: pan-y;
+  scroll-snap-type: y mandatory;
+  -webkit-overflow-scrolling: touch;
+  position: relative;
+  z-index: 1;
+}
+html body .glass-sheet-card.is-size-summary-page .settings-size-summary-row {
+  padding: 0 18px;
+  box-sizing: border-box;
+}
+html body .glass-sheet-card.is-size-summary-page .settings-size-summary-label {
+  pointer-events: auto;
+  font-size: 1.15rem;
+}

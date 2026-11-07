@@ -1890,64 +1890,24 @@ export default function SettingsScreen({
                         )
                       })()
                     ) : sizeSummary ? (
+                      <div className="settings-size-wheelbox">
+                      <div className="settings-size-wheelband" aria-hidden />
                       <div
                         className="settings-size-summary"
                         ref={summaryListRef}
-                        onPointerDown={(e) => {
-                          const id = e.target.closest?.('[data-gid]')?.dataset.gid
-                          if (!id) return
-                          scrubRef.current = id
-                          scrubActiveRef.current = true
-                          setScrubOn(true)
-                          scrubYRef.current = e.clientY
-                          scrubXRef.current = e.clientX
-                          setSizeScrub(id)
-                          e.currentTarget.setPointerCapture?.(e.pointerId)
-                        }}
-                        onPointerMove={(e) => {
-                          if (!scrubActiveRef.current) return
-                          scrubYRef.current = e.clientY
-                          scrubXRef.current = e.clientX
-                          const id =
-                            document
-                              .elementFromPoint(e.clientX, e.clientY)
-                              ?.closest?.('[data-gid]')?.dataset.gid || null
-                          if (id !== scrubRef.current) {
-                            scrubRef.current = id
-                            setSizeScrub(id)
-                          }
-                        }}
-                        onPointerUp={() => {
-                          const id = scrubRef.current
-                          scrubActiveRef.current = false
-                          setScrubOn(false)
-                          scrubRef.current = null
-                          setSizeScrub(null)
-                          if (!id) return
-                          setSizeSummary(false)
-                          setSizeFromSummary(true)
-                          setSizeGarment(id)
-                        }}
-                        onPointerCancel={() => {
-                          scrubActiveRef.current = false
-                          setScrubOn(false)
-                          scrubRef.current = null
-                          setSizeScrub(null)
-                        }}
                       >
                         {[...SIZE_GARMENTS]
                           .sort((a, b) => a.label.length - b.label.length)
                           .map((g) => (
                           <div
                             key={g.id}
-                            className={`settings-size-summary-row${sizeScrub === g.id ? ' is-hot' : ''}`}
+                            className="settings-size-summary-row"
                           >
                             <button
                               type="button"
                               data-gid={g.id}
                               className="settings-size-summary-label is-bare"
-                              onClick={(e) => {
-                                if (e.detail !== 0) return
+                              onClick={() => {
                                 setSizeSummary(false)
                                 setSizeFromSummary(true)
                                 setSizeGarment(g.id)
@@ -1962,6 +1922,7 @@ export default function SettingsScreen({
                             </strong>
                           </div>
                         ))}
+                      </div>
                       </div>
                     ) : (
                       <div
