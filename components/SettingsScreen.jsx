@@ -831,6 +831,7 @@ export default function SettingsScreen({
   const [, setSizeSummary] = useState(false)
   const [genderOpen, setGenderOpen] = useState(false)
   const [addNew, setAddNew] = useState(null)
+  const [wizStep, setWizStep] = useState(null)
   const genderTimerRef = useRef(null)
   const [sizeFromSummary, setSizeFromSummary] = useState(false)
   const [sizeScrub, setSizeScrub] = useState(null)
@@ -1190,6 +1191,7 @@ export default function SettingsScreen({
         JSON.stringify(userProfile?.brandSizes || {}),
       )
       setSizeBrandFocus(null)
+      setWizStep(userProfile?.gender ? null : 0)
     } else {
       conf.fields.forEach((f) => {
         if (id === 'displayName' && f.key === 'name') draft[f.key] = displayName
@@ -2384,6 +2386,88 @@ export default function SettingsScreen({
                 </svg>
               </button>
             )}
+            {sheet === 'size' && wizStep !== null && sizeSummary && (() => {
+              const steps = ['age', 'sex', 'gender', 'category']
+              const kind = steps[wizStep]
+              const label = ADD_KINDS.find(([k]) => k === kind)?.[1]
+              const options =
+                kind === 'age'
+                  ? PRESET_AGES
+                  : kind === 'sex'
+                    ? PRESET_SEX
+                    : kind === 'gender'
+                      ? [...allGenders, ...PRESET_GENDERS.filter((x) => !allGenders.includes(x))]
+                      : PRESET_CATEGORIES.filter(
+                          (x) => !allGarments.some((g) => g.label === x),
+                        )
+              const next = () => {
+                const hot = document.querySelector(
+                  '.settings-new-page .gender-drum-row.is-hot',
+                )?.dataset.opt
+                if (!hot) return
+                if (kind === 'age' || kind === 'sex') {
+                  setSheetDraft((d) => ({ ...d, [kind]: hot }))
+                } else if (kind === 'gender') {
+                  setSheetDraft((d) => {
+                    const by = { ...(d.sizesByGender || {}) }
+                    if (d.gender) by[d.gender] = d.clothingSizes || {}
+                    const custom = allGenders.includes(hot)
+                      ? d.customGenders || []
+                      : [...(d.customGenders || []), hot]
+                    return {
+                      ...d,
+                      gender: hot,
+                      customGenders: custom,
+                      sizesByGender: by,
+                      clothingSizes: by[hot] ? { ...by[hot] } : d.clothingSizes || {},
+                    }
+                  })
+                } else if (!allGarments.some((g) => g.label === hot)) {
+                  setSheetDraft((d) => ({
+                    ...d,
+                    customCategories: [
+                      ...(d.customCategories || []),
+                      { id: `custom-${Date.now().toString(36)}`, label: hot },
+                    ],
+                  }))
+                }
+                setWizStep(wizStep >= 3 ? null : wizStep + 1)
+              }
+              return (
+                <div className="settings-new-page settings-wiz-page">
+                  <div className="settings-new-kinds">
+                    <span className="settings-wiz-title">{label}</span>
+                  </div>
+                  <div className="settings-new-drum">
+                    <GenderDrum
+                      key={kind}
+                      value={sheetDraft[kind] || (kind === 'age' ? '25' : '')}
+                      options={options}
+                      onPick={(x) =>
+                        document
+                          .querySelector(`.settings-new-page [data-opt="${CSS.escape(x)}"]`)
+                          ?.scrollIntoView({ block: 'center', behavior: 'smooth' })
+                      }
+                    />
+                  </div>
+                  <div className="settings-new-actions">
+                    <button
+                      type="button"
+                      className="is-bare"
+                      aria-label="Back"
+                      onClick={() => (wizStep === 0 ? setSheet(null) : setWizStep(wizStep - 1))}
+                    >
+                      <BackIcon />
+                    </button>
+                    <button type="button" className="is-bare" aria-label="Next" onClick={next}>
+                      <svg viewBox="0 0 24 24" aria-hidden>
+                        <path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              )
+            })()}
             {sheet === 'size' && addNew && (
               <div className="settings-new-page">
                 <div className="settings-new-kinds">

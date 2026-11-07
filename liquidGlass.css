@@ -1177,3 +1177,4 @@ html body .glass-sheet-card .settings-size-chip.settings-size-add-input.is-inlin
 .settings-new-actions button:first-child { transform: translateX(-21vw); }
 .settings-new-actions button + button { position: absolute; left: 50%; margin-left: -22px; }
 .settings-new-actions svg { width: 24px; height: 24px; }
+.settings-wiz-title { color: #fff; font-size: 1.5rem; font-weight: 600; }
