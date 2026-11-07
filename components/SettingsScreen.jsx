@@ -888,10 +888,14 @@ export default function SettingsScreen({
 
   function setCategorySize(categoryId, size) {
     setSheetDraft((d) => {
-      const cur = d.clothingSizes?.[categoryId]
+      const raw = d.clothingSizes?.[categoryId]
+      const cur = Array.isArray(raw) ? raw : raw ? [raw] : []
       const next = { ...(d.clothingSizes || {}) }
-      if (cur === size) delete next[categoryId]
-      else next[categoryId] = size
+      const list = cur.includes(size)
+        ? cur.filter((x) => x !== size)
+        : [...cur, size]
+      if (!list.length) delete next[categoryId]
+      else next[categoryId] = list.length === 1 ? list[0] : list
       return { ...d, clothingSizes: next }
     })
   }
@@ -1692,12 +1696,17 @@ export default function SettingsScreen({
                       (() => {
                         const cat = SIZE_GARMENTS.find((g) => g.id === sizeGarment)
                         if (!cat) return null
-                        const selected = sheetDraft.clothingSizes?.[cat.id] || ''
+                        const rawSel = sheetDraft.clothingSizes?.[cat.id]
+                        const selectedList = Array.isArray(rawSel)
+                          ? rawSel
+                          : rawSel
+                            ? [rawSel]
+                            : []
                         const base = sizesForCategory(cat.id)
-                        const options =
-                          selected && !base.includes(selected)
-                            ? [...base, selected]
-                            : base
+                        const options = [
+                          ...base,
+                          ...selectedList.filter((x) => !base.includes(x)),
+                        ]
                         const total = options.length + 1
                         const longest = Math.max(
                           0,
@@ -1759,8 +1768,8 @@ export default function SettingsScreen({
                                   key={sz}
                                   type="button"
                                   role="option"
-                                  aria-selected={selected === sz}
-                                  className={`settings-size-chip${selected === sz ? ' is-on' : ''}`}
+                                  aria-selected={selectedList.includes(sz)}
+                                  className={`settings-size-chip${selectedList.includes(sz) ? ' is-on' : ''}`}
                                   onPointerDown={() => {
                                     peekFiredRef.current = false
                                     window.clearTimeout(peekTimerRef.current)
@@ -1788,7 +1797,6 @@ export default function SettingsScreen({
                                       return
                                     }
                                     setCategorySize(cat.id, sz)
-                                    setSizePicked(sz)
                                   }}
                                 >
                                   {sz}
@@ -1841,7 +1849,9 @@ export default function SettingsScreen({
                             >
                               {g.label}
                             </button>
-                            <strong>{sheetDraft.clothingSizes[g.id]}</strong>
+                            <strong>
+                              {[].concat(sheetDraft.clothingSizes[g.id]).join(', ')}
+                            </strong>
                           </div>
                         ))}
                         {!Object.values(sheetDraft.clothingSizes || {}).some(

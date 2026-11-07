@@ -104,6 +104,9 @@ function garmentMatchesHomeType(garmentId, homeType) {
   return (HOME_TYPE_TO_GARMENTS[homeType] || []).includes(garmentId)
 }
 
+const hasSize = (pref, size) =>
+  Array.isArray(pref) ? pref.includes(size) : pref === size
+
 function scoreProduct(product, ctx) {
   const {
     interest,
@@ -132,14 +135,14 @@ function scoreProduct(product, ctx) {
   else if (brandPreferred && product.size) score += 1.5
 
   const preferred = clothingSizes?.[product.clothingType]
-  if (preferred && product.size === preferred) score += 5
+  if (preferred && hasSize(preferred, product.size)) score += 5
   else if (preferred && product.size) score += 0.5
 
   for (const [homeType, size] of Object.entries(clothingSizes || {})) {
     if (!size || homeType === product.clothingType) continue
     if (
       garmentMatchesHomeType(product.clothingType, homeType) &&
-      product.size === size
+      hasSize(size, product.size)
     ) {
       score += 3
     }
