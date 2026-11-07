@@ -420,3 +420,21 @@ html body .glass-sheet-card.is-size-sheet:not(.is-size-wheel) .glass-sheet-head 
   align-self: center !important;
   margin: 16px auto 0 !important;
 }
+
+html body .glass-sheet-card.is-size-sheet .settings-size-chips[style*="--size-cols"] {
+  grid-template-columns: repeat(var(--size-cols), minmax(0, max-content));
+  width: 100%;
+  max-width: calc(100vw - 32px);
+  box-sizing: border-box;
+  overflow: visible;
+}
+html body .glass-sheet-card.is-size-sheet .settings-size-chips[style*="--size-cols"] .settings-size-chip {
+  min-width: 0;
+  max-width: 100%;
+  padding-left: 12px;
+  padding-right: 12px;
+  white-space: nowrap;
+}
+html body .glass-sheet-card.is-size-sheet .settings-size-cat > .settings-size-section-label {
+  margin: 0 0 16px !important;
+}

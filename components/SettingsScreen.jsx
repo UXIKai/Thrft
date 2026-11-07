@@ -1685,12 +1685,19 @@ export default function SettingsScreen({
                               role="listbox"
                               aria-label={`${cat.label} size`}
                               style={{
-                                '--size-cols': Math.ceil(
-                                  options.length /
-                                    (options.length <= 4
+                                '--size-cols': (() => {
+                                  const n = options.length
+                                  const longest = Math.max(
+                                    0,
+                                    ...options.map((o) => String(o).length),
+                                  )
+                                  const maxCols = longest > 4 ? 3 : 5
+                                  const rows =
+                                    n <= Math.min(4, maxCols)
                                       ? 1
-                                      : Math.max(2, Math.ceil(options.length / 5))),
-                                ),
+                                      : Math.max(2, Math.ceil(n / maxCols))
+                                  return Math.ceil(n / rows)
+                                })(),
                               }}
                             >
                               {options.map((sz) => (
