@@ -465,7 +465,7 @@
   align-items: center;
   justify-content: flex-end;
   width: var(--dock-bar-width);
-  max-width: calc(100% - 20px);
+  max-width: calc(100% - 26px);
   padding: 0;
   box-sizing: border-box;
   transform: translateX(-50%);

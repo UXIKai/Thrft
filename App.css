@@ -54,7 +54,7 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.78),
     inset 0 -0.5px 0 rgba(255, 255, 255, 0.16);
   /* Chat message bar is the size reference: 560px column minus 20px. */
-  --dock-bar-width: min(540px, calc(100% - 20px));
+  --dock-bar-width: min(calc(420px + 4in), calc(100% - 26px));
 }
 
 .stage {
