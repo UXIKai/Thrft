@@ -840,29 +840,38 @@ export default function SettingsScreen({
     if (!sizeSummary) return undefined
     const el = summaryListRef.current
     if (!el) return undefined
-    const st = { timer: null, on: false, x: 0, y: 0, swallow: false }
+    const st = { timer: null, on: false, x: 0, y: 0, swallow: false, startY: 0, startScroll: 0, held: null, moved: false, heldRow: null }
     const scrubTo = (y) => {
       const r = el.getBoundingClientRect()
-      const frac = Math.min(1, Math.max(0, (y - r.top - r.height * 0.12) / (r.height * 0.76)))
-      el.scrollTop = frac * (el.scrollHeight - el.clientHeight)
+      const k = (el.scrollHeight - el.clientHeight) / (r.height * 0.76)
+      el.scrollTop = st.startScroll + (y - st.startY) * k
     }
     const down = (e) => {
       st.x = e.clientX
       st.y = e.clientY
       st.swallow = false
+      st.moved = false
+      st.held = e.target.closest?.('[data-gid]')?.dataset.gid || null
+      st.heldRow = e.target.closest?.('.settings-size-summary-row') || null
       window.clearTimeout(st.timer)
       st.timer = window.setTimeout(() => {
+        if (!st.held) return
         st.on = true
         st.swallow = true
+        st.startY = st.y
+        st.startScroll = el.scrollTop
         el.style.scrollSnapType = 'none'
+        st.heldRow?.classList.add('is-held')
         navigator.vibrate?.(8)
-        scrubTo(st.y)
       }, 300)
     }
     const move = (e) => {
-      st.y = e.clientY
       if (st.on) {
-        scrubTo(e.clientY)
+        if (Math.abs(e.clientY - st.startY) > 6) {
+          st.moved = true
+          st.heldRow?.classList.remove('is-held')
+        }
+        if (st.moved) scrubTo(e.clientY)
         return
       }
       if (Math.abs(e.clientX - st.x) > 8 || Math.abs(e.clientY - st.y) > 8)
@@ -873,9 +882,11 @@ export default function SettingsScreen({
       if (!st.on) return
       st.on = false
       el.style.scrollSnapType = ''
+      st.heldRow?.classList.remove('is-held')
       if (e.type === 'pointercancel') return
-      const id = el.querySelector('.settings-size-summary-row.is-hot [data-gid]')
-        ?.dataset.gid
+      const id = st.moved
+        ? el.querySelector('.settings-size-summary-row.is-hot [data-gid]')?.dataset.gid
+        : st.held
       if (!id) return
       window.setTimeout(() => {
         setSizeSummary(false)

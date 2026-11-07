@@ -898,3 +898,9 @@ html body .glass-sheet-card.is-size-summary-page .settings-size-summary {
   height: calc(var(--row-h) * 9);
   padding: calc(var(--row-h) * 4) 0 !important;
 }
+
+html body .glass-sheet-card.is-size-summary-page .settings-size-summary-row.is-held .settings-size-summary-label,
+html body .glass-sheet-card.is-size-summary-page .settings-size-summary-row.is-held strong {
+  color: #fff;
+  text-shadow: 0 0 14px rgba(255, 255, 255, 0.55);
+}
