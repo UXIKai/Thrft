@@ -2433,10 +2433,12 @@ export default function SettingsScreen({
                 )}
               </div>
             ) : sheet === 'shipping' && !addrEditing ? (
-              <div className="settings-addr-card">
-                <span className="settings-addr-text">
-                  {userProfile?.shippingAddress}
-                </span>
+              <div className="settings-addr-wrap">
+                <div className="settings-addr-card">
+                  <span className="settings-addr-text">
+                    {userProfile?.shippingAddress}
+                  </span>
+                </div>
                 <button
                   type="button"
                   className="settings-addr-reset is-bare"
