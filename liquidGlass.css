@@ -1067,3 +1067,7 @@ html body .glass-sheet-card.is-size-summary-page:not(.is-gender-gate) .settings-
   transform: translateX(-50%);
   opacity: 1;
 }
+html body .glass-sheet-card.is-size-summary-page:not(.is-gender-gate) .settings-size-drum-col > .settings-size-gender {
+  position: absolute;
+  top: calc(env(safe-area-inset-top, 0px) - 93px);
+}
