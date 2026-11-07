@@ -762,3 +762,42 @@ html body .glass-sheet-card.is-size-summary-page .settings-size-cats {
   flex: 0 0 auto;
   height: auto;
 }
+
+/* Saved sizes: six-word wheel on the left, vertically centered */
+html body .glass-sheet-card.is-size-summary-page {
+  padding-top: calc(env(safe-area-inset-top, 0px) + 72px);
+}
+html body .glass-sheet-card.is-size-summary-page .settings-size-cats {
+  flex: 1 1 auto !important;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 0;
+}
+html body .glass-sheet-card.is-size-summary-page .settings-size-summary {
+  --row-h: 52px;
+  width: min(66vw, 300px);
+  height: calc(var(--row-h) * 6);
+  margin: 0 0 0 24px;
+  padding: 0 !important;
+  gap: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  scroll-snap-type: y proximity;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 18%, #000 82%, transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0, #000 18%, #000 82%, transparent 100%);
+}
+html body .glass-sheet-card.is-size-summary-page .settings-size-summary::-webkit-scrollbar {
+  display: none;
+}
+html body .glass-sheet-card.is-size-summary-page .settings-size-summary-row {
+  flex: 0 0 var(--row-h);
+  height: var(--row-h);
+  padding: 0;
+  align-items: center;
+  scroll-snap-align: center;
+}
+html body .glass-sheet-card.is-size-summary-page .glass-sheet-head .glass-overlay-icon-btn {
+  margin: 8px 0 0 !important;
+}

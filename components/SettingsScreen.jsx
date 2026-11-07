@@ -818,16 +818,15 @@ export default function SettingsScreen({
     if (!scrubOn) return undefined
     const id = window.setInterval(() => {
       if (!scrubActiveRef.current) return
-      let card = summaryListRef.current?.parentElement
+      let card = summaryListRef.current
       while (card && card.scrollHeight <= card.clientHeight + 1)
         card = card.parentElement
       if (!card) return
       const r = card.getBoundingClientRect()
       const y = scrubYRef.current
-      const edge = 90
       let dy = 0
-      if (y < r.top + edge + 60) dy = -10
-      else if (y > r.bottom - edge - 60) dy = 10
+      if (y < r.top + 56) dy = -6
+      else if (y > r.bottom - 56) dy = 6
       if (!dy) return
       card.scrollTop += dy
       const hit = document
