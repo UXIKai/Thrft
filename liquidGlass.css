@@ -801,3 +801,25 @@ html body .glass-sheet-card.is-size-summary-page .settings-size-summary-row {
 html body .glass-sheet-card.is-size-summary-page .glass-sheet-head .glass-overlay-icon-btn {
   margin: 8px 0 0 !important;
 }
+
+/* Apple-timer style drum */
+html body .glass-sheet-card.is-size-summary-page .settings-size-summary {
+  position: relative;
+  perspective: 520px;
+  perspective-origin: 50% 50%;
+  padding: calc(var(--row-h) * 2.5) 0 !important;
+  scroll-snap-type: y mandatory;
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+html body .glass-sheet-card.is-size-summary-page .settings-size-summary-row {
+  transition: none;
+  transform-origin: center center;
+  scroll-snap-align: center;
+}
+html body .glass-sheet-card.is-size-summary-page .settings-size-summary-row.is-hot {
+  transform: none;
+}
+html body .glass-sheet-card.is-size-summary-page .settings-size-summary-row.is-hot > * {
+  transform: scale(1.1);
+}

@@ -815,6 +815,24 @@ export default function SettingsScreen({
   }, [sheet])
 
   useEffect(() => {
+    if (!sizeSummary) return undefined
+    const el = summaryListRef.current
+    if (!el) return undefined
+    const update = () => {
+      const center = el.scrollTop + el.clientHeight / 2
+      el.querySelectorAll('.settings-size-summary-row').forEach((row) => {
+        const d = (row.offsetTop + row.offsetHeight / 2 - center) / row.offsetHeight
+        const a = Math.min(Math.abs(d), 3)
+        row.style.transform = `rotateX(${(-d * 24).toFixed(1)}deg) scale(${(1 - a * 0.09).toFixed(3)})`
+        row.style.opacity = String(Math.max(0.12, 1 - a * 0.3).toFixed(2))
+      })
+    }
+    update()
+    el.addEventListener('scroll', update, { passive: true })
+    return () => el.removeEventListener('scroll', update)
+  }, [sizeSummary])
+
+  useEffect(() => {
     if (!scrubOn) return undefined
     const id = window.setInterval(() => {
       if (!scrubActiveRef.current) return
