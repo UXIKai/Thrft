@@ -100,33 +100,48 @@ export default function CartScreen({
           <ul className="cart-list">
             {items.map((item) => (
               <li key={item.id} className="cart-line">
+                <div className="cart-line-head">
+                  <button
+                    type="button"
+                    className="cart-line-main"
+                    onClick={() => onOpenProduct?.(item)}
+                  >
+                    <span className="cart-line-title">
+                      {item.title}
+                      {item.qty > 1 ? ` ×${item.qty}` : ''}
+                    </span>
+                  </button>
+                  <button
+                    type="button"
+                    className="cart-line-remove"
+                    aria-label={`Remove ${item.title}`}
+                    onClick={() => remove(item.id)}
+                    disabled={busy}
+                  >
+                    <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden>
+                      <path
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.8"
+                        strokeLinecap="round"
+                        d="M6 12h12"
+                      />
+                    </svg>
+                  </button>
+                </div>
                 <button
                   type="button"
-                  className="cart-line-main"
+                  className="cart-line-photo"
+                  aria-label={item.title}
                   onClick={() => onOpenProduct?.(item)}
                 >
-                  <span className="cart-line-title">
-                    {item.title}
-                    {item.qty > 1 ? ` ×${item.qty}` : ''}
-                  </span>
+                  {item.photoUrl ? <img src={item.photoUrl} alt="" /> : null}
                 </button>
-                <button
-                  type="button"
-                  className="cart-line-remove"
-                  aria-label={`Remove ${item.title}`}
-                  onClick={() => remove(item.id)}
-                  disabled={busy}
-                >
-                  <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden>
-                    <path
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.8"
-                      strokeLinecap="round"
-                      d="M6 12h12"
-                    />
-                  </svg>
-                </button>
+                <span className="cart-line-price">
+                  {typeof item.price === 'number'
+                    ? bag.formatMoney(item.price)
+                    : item.price}
+                </span>
               </li>
             ))}
           </ul>

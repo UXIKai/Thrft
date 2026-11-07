@@ -248,3 +248,52 @@
   font-weight: 600;
   color: rgba(255, 170, 160, 0.92);
 }
+
+/* Each bag item: title, framed tile, price — same look as the product page */
+.cart-screen .glass-overlay-body.cart-body {
+  justify-content: flex-start;
+  overflow-y: auto;
+  padding-top: calc(env(safe-area-inset-top, 0px) + 24px);
+}
+.cart-screen .cart-list {
+  position: static;
+  transform: none;
+  width: 100%;
+  max-width: none;
+  gap: 28px;
+}
+.cart-screen .cart-line {
+  flex-direction: column;
+  gap: 14px;
+  padding: 0;
+}
+.cart-line-head {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+.cart-line-photo {
+  appearance: none;
+  display: block;
+  width: min(56vw, 220px);
+  aspect-ratio: 1 / 1.2;
+  margin: 0;
+  padding: 0;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.28));
+  background: var(--glass-tint, rgba(255, 255, 255, 0.04));
+  cursor: pointer;
+}
+.cart-line-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.cart-line-price {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #fff;
+}
