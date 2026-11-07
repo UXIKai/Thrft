@@ -704,6 +704,7 @@ export default function SettingsScreen({
   const [sizeScrub, setSizeScrub] = useState(null)
   const scrubRef = useRef(null)
   const scrubYRef = useRef(0)
+  const summaryListRef = useRef(null)
   const summaryPressRef = useRef({ timer: null, x: 0, y: 0, fired: false })
   const peekTimerRef = useRef(null)
   const peekFiredRef = useRef(false)
@@ -813,8 +814,11 @@ export default function SettingsScreen({
   useEffect(() => {
     if (!sizeScrub) return undefined
     const id = window.setInterval(() => {
-      const card = sizeSheetCardRef.current
-      if (!card || !scrubRef.current) return
+      if (!scrubRef.current) return
+      let card = summaryListRef.current?.parentElement
+      while (card && card.scrollHeight <= card.clientHeight + 1)
+        card = card.parentElement
+      if (!card) return
       const r = card.getBoundingClientRect()
       const y = scrubYRef.current
       const edge = 90
@@ -1868,6 +1872,7 @@ export default function SettingsScreen({
                     ) : sizeSummary ? (
                       <div
                         className="settings-size-summary"
+                        ref={summaryListRef}
                         onPointerDown={(e) => {
                           const id = e.target.closest?.('[data-gid]')?.dataset.gid
                           if (!id) return

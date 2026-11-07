@@ -759,3 +759,9 @@ html body .glass-sheet-card.is-size-summary-page .settings-size-summary {
 html body .glass-sheet-card.is-size-summary-page .settings-size-summary {
   padding-bottom: 24px;
 }
+
+html body .glass-sheet-card.is-size-summary-page .settings-size-cats {
+  overflow: visible !important;
+  flex: 0 0 auto;
+  height: auto;
+}
