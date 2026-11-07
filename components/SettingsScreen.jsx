@@ -833,6 +833,81 @@ export default function SettingsScreen({
     return () => el.removeEventListener('scroll', update)
   }, [sizeSummary])
 
+  // Hold a word: the finger becomes the scroll bar; release opens the centered word.
+  useEffect(() => {
+    if (!sizeSummary) return undefined
+    const el = summaryListRef.current
+    if (!el) return undefined
+    const st = { timer: null, on: false, x: 0, y: 0, swallow: false }
+    const scrubTo = (y) => {
+      const r = el.getBoundingClientRect()
+      const frac = Math.min(1, Math.max(0, (y - r.top - r.height * 0.12) / (r.height * 0.76)))
+      el.scrollTop = frac * (el.scrollHeight - el.clientHeight)
+    }
+    const down = (e) => {
+      st.x = e.clientX
+      st.y = e.clientY
+      st.swallow = false
+      window.clearTimeout(st.timer)
+      st.timer = window.setTimeout(() => {
+        st.on = true
+        st.swallow = true
+        el.style.scrollSnapType = 'none'
+        navigator.vibrate?.(8)
+        scrubTo(st.y)
+      }, 300)
+    }
+    const move = (e) => {
+      st.y = e.clientY
+      if (st.on) {
+        scrubTo(e.clientY)
+        return
+      }
+      if (Math.abs(e.clientX - st.x) > 8 || Math.abs(e.clientY - st.y) > 8)
+        window.clearTimeout(st.timer)
+    }
+    const end = (e) => {
+      window.clearTimeout(st.timer)
+      if (!st.on) return
+      st.on = false
+      el.style.scrollSnapType = ''
+      if (e.type === 'pointercancel') return
+      const id = el.querySelector('.settings-size-summary-row.is-hot [data-gid]')
+        ?.dataset.gid
+      if (!id) return
+      window.setTimeout(() => {
+        setSizeSummary(false)
+        setSizeFromSummary(true)
+        setSizeGarment(id)
+      }, 60)
+    }
+    const touch = (e) => {
+      if (st.on && e.cancelable) e.preventDefault()
+    }
+    const click = (e) => {
+      if (st.swallow) {
+        st.swallow = false
+        e.stopPropagation()
+        e.preventDefault()
+      }
+    }
+    el.addEventListener('pointerdown', down)
+    el.addEventListener('pointermove', move)
+    el.addEventListener('pointerup', end)
+    el.addEventListener('pointercancel', end)
+    el.addEventListener('touchmove', touch, { passive: false })
+    el.addEventListener('click', click, true)
+    return () => {
+      window.clearTimeout(st.timer)
+      el.removeEventListener('pointerdown', down)
+      el.removeEventListener('pointermove', move)
+      el.removeEventListener('pointerup', end)
+      el.removeEventListener('pointercancel', end)
+      el.removeEventListener('touchmove', touch)
+      el.removeEventListener('click', click, true)
+    }
+  }, [sizeSummary])
+
   useEffect(() => {
     if (!scrubOn) return undefined
     const id = window.setInterval(() => {
