@@ -1213,7 +1213,8 @@
   margin: 0;
   padding: 10px 0;
   border: none;
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 0;
+  box-shadow: none;
   background: transparent;
   color: #fff;
   font: inherit;

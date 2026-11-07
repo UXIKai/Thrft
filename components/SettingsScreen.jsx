@@ -1811,7 +1811,7 @@ export default function SettingsScreen({
                   <button
                     key={question}
                     type="button"
-                    className="settings-assistant-prompt"
+                    className="settings-assistant-prompt is-bare"
                     onClick={() => askAssistant(question)}
                   >
                     {question}
