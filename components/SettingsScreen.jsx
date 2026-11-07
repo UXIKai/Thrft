@@ -1835,9 +1835,7 @@ export default function SettingsScreen({
                       })()
                     ) : sizeSummary ? (
                       <div className="settings-size-summary">
-                        {SIZE_GARMENTS.filter(
-                          (g) => sheetDraft.clothingSizes?.[g.id],
-                        ).map((g) => (
+                        {SIZE_GARMENTS.map((g) => (
                           <div key={g.id} className="settings-size-summary-row">
                             <button
                               type="button"
@@ -1850,15 +1848,10 @@ export default function SettingsScreen({
                               {g.label}
                             </button>
                             <strong>
-                              {[].concat(sheetDraft.clothingSizes[g.id]).join(', ')}
+                              {[].concat(sheetDraft.clothingSizes?.[g.id] || []).join(', ')}
                             </strong>
                           </div>
                         ))}
-                        {!Object.values(sheetDraft.clothingSizes || {}).some(
-                          Boolean,
-                        ) && (
-                          <p className="settings-size-empty">No saved sizes yet</p>
-                        )}
                       </div>
                     ) : (
                       <div

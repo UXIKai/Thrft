@@ -628,3 +628,7 @@ html body .glass-sheet-card.is-size-sheet .settings-size-chip:not(.settings-size
   padding-right: 4px;
   min-width: 0;
 }
+.settings-size-summary-row strong {
+  text-align: right;
+  min-height: 1.2em;
+}
