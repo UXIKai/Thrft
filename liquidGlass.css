@@ -679,3 +679,25 @@ html body .glass-sheet-card.is-size-sheet .settings-size-chip.is-on {
   box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.28) !important;
   text-shadow: none !important;
 }
+
+.settings-size-add-dock {
+  position: fixed;
+  left: 16px;
+  right: 16px;
+  bottom: calc(max(env(safe-area-inset-bottom, 0px), var(--kb-height, 0px)) + 12px);
+  z-index: 70;
+  display: flex;
+  justify-content: center;
+}
+html body .settings-size-add-dock .settings-size-add-input {
+  width: min(100%, 320px);
+  height: 46px;
+  padding: 0 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(20, 20, 20, 0.92);
+  color: #fff;
+  font-size: 16px;
+  text-align: center;
+  outline: none;
+}

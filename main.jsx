@@ -11,7 +11,7 @@ initAppearance()
 let maxHeight = 0
 let lastLandscape = null
 
-const DOCKED = '.chat-compose, .settings-assistant-dock'
+const DOCKED = '.chat-compose, .settings-assistant-dock, .settings-size-add-dock'
 let lastKb = 0
 let kbShift = 0
 

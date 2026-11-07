@@ -1800,32 +1800,34 @@ export default function SettingsScreen({
                                   {sz}
                                 </button>
                               ))}
-                              {customSize === null ? (
-                                <button
-                                  type="button"
-                                  className="settings-size-chip settings-size-add"
-                                  aria-label="Add size"
-                                  style={
-                                    options.length % sizeCols === 0
-                                      ? { gridColumn: '1 / -1' }
-                                      : undefined
-                                  }
-                                  onClick={() => setCustomSize('')}
-                                >
-                                  +
-                                </button>
-                              ) : (
-                                <input
-                                  className="settings-size-chip settings-size-add-input"
-                                  autoFocus
-                                  value={customSize}
-                                  maxLength={12}
-                                  onChange={(e) => setCustomSize(e.target.value)}
-                                  onBlur={commitCustom}
-                                  onKeyDown={(e) => {
-                                    if (e.key === 'Enter') e.currentTarget.blur()
-                                  }}
-                                />
+                              <button
+                                type="button"
+                                className="settings-size-chip settings-size-add"
+                                aria-label="Add size"
+                                style={
+                                  options.length % sizeCols === 0
+                                    ? { gridColumn: '1 / -1' }
+                                    : undefined
+                                }
+                                onClick={() => setCustomSize('')}
+                              >
+                                +
+                              </button>
+                              {customSize !== null && (
+                                <div className="settings-size-add-dock">
+                                  <input
+                                    className="settings-size-add-input"
+                                    autoFocus
+                                    value={customSize}
+                                    maxLength={12}
+                                    enterKeyHint="done"
+                                    onChange={(e) => setCustomSize(e.target.value)}
+                                    onBlur={commitCustom}
+                                    onKeyDown={(e) => {
+                                      if (e.key === 'Enter') e.currentTarget.blur()
+                                    }}
+                                  />
+                                </div>
                               )}
                             </div>
                           </div>
