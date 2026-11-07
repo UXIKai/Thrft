@@ -2956,3 +2956,13 @@ html body button.chat-contact-nick-save {
   width: 12px;
   height: 12px;
 }
+
+/* Photos sit directly on the page — no bubble container */
+.chat-thread-bubble.is-image {
+  padding: 0;
+  background: none;
+  border: 0;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
