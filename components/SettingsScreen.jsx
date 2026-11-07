@@ -1828,7 +1828,17 @@ export default function SettingsScreen({
               </div>
             ))}
           </div>
-          <div className="settings-assistant-dock">
+          <div
+            className="settings-assistant-dock"
+            onFocus={() =>
+              [0, 120, 300, 600].forEach((ms) =>
+                setTimeout(() => {
+                  const el = assistantListRef.current
+                  if (el) el.scrollTop = el.scrollHeight
+                }, ms),
+              )
+            }
+          >
             <label
               className="settings-assistant-bar"
               htmlFor="settings-assistant-input"
