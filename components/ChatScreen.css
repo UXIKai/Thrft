@@ -2283,16 +2283,16 @@ html body .chat-friend-item {
   display: grid;
   place-items: center;
   min-height: 40px;
-  border-radius: 12px;
-  border: 1px solid var(--glass-border, rgba(168, 168, 168, 0.18));
-  background: var(--glass-clear-tint, rgba(36, 36, 36, 0.05));
+  border: none;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
   color: #fff;
   cursor: pointer;
 }
 
 .chat-member-action.is-danger {
   color: #ff6b6b;
-  border-color: rgba(255, 107, 107, 0.35);
 }
 
 .chat-member-action-ico {

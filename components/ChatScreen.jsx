@@ -2270,7 +2270,7 @@ export default function ChatScreen({
                           >
                             <button
                               type="button"
-                              className="chat-member-action"
+                              className="chat-member-action is-bare"
                               aria-label={`Message ${member}`}
                               title="Chat"
                               onClick={() => messageGroupMember(member)}
@@ -2279,7 +2279,7 @@ export default function ChatScreen({
                             </button>
                             <button
                               type="button"
-                              className="chat-member-action"
+                              className="chat-member-action is-bare"
                               aria-label={`Remove ${member}`}
                               title="Remove"
                               onClick={() =>
@@ -2290,7 +2290,7 @@ export default function ChatScreen({
                             </button>
                             <button
                               type="button"
-                              className="chat-member-action is-danger"
+                              className="chat-member-action is-bare is-danger"
                               aria-label={`Block ${member}`}
                               title="Block"
                               onClick={() =>
