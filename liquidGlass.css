@@ -671,3 +671,11 @@ html body .settings-size-wheel.is-picked.is-chosen .type-box.is-wheel.is-active 
   text-decoration: underline;
   text-underline-offset: 10px;
 }
+
+html body .glass-sheet-card.is-size-sheet .settings-size-chip.is-on {
+  background: rgba(255, 255, 255, 0.92) !important;
+  color: #0b0b0b !important;
+  border-color: #fff !important;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.28) !important;
+  text-shadow: none !important;
+}
