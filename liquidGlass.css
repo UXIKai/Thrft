@@ -1160,3 +1160,5 @@ html body .glass-sheet-card .settings-size-chip.settings-size-add-input.is-inlin
   border: 1px solid rgba(255, 255, 255, 0.22) !important;
   border-radius: 16px;
 }
+.settings-new-page .settings-new-kinds { flex-wrap: wrap; gap: 14px 26px; padding: 0 6vw; }
+.settings-new-page .settings-new-kinds button { font-size: 1.25rem; }

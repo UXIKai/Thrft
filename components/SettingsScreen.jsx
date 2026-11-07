@@ -612,6 +612,22 @@ function PencilIcon() {
  * Settings — continuous scroll; row popups + Help pages; color wheel.
  */
 const GENDER_OPTIONS = ['Men', 'Women', 'Unisex']
+const PRESET_SEX = ['Male', 'Female', 'Intersex']
+const PRESET_AGES = Array.from({ length: 99 }, (_, i) => String(i + 1))
+const PRESET_HEIGHTS = (() => {
+  const out = []
+  for (let ft = 3; ft <= 7; ft += 1) {
+    for (let inch = 0; inch < 12; inch += 1) out.push(`${ft}'${inch}"`)
+  }
+  return out
+})()
+const ADD_KINDS = [
+  ['age', 'Age'],
+  ['sex', 'Sex'],
+  ['gender', 'Gender'],
+  ['height', 'Height'],
+  ['category', 'Category'],
+]
 const PRESET_GENDERS = [
   'Boys', 'Girls', 'Kids', 'Toddler', 'Baby', 'Infant', 'Teen', 'Non-binary',
   'Genderfluid', 'Women Plus', 'Men Big & Tall', 'Petite', 'Tall',
@@ -938,7 +954,10 @@ export default function SettingsScreen({
   const allGenders = [...GENDER_OPTIONS, ...(sheetDraft.customGenders || [])]
   const commitAddNew = (picked) => {
     const text = (typeof picked === 'string' ? picked : addNew?.text || '').trim().slice(0, 20)
-    if (text) {
+    if (text && ['age', 'sex', 'height'].includes(addNew?.kind)) {
+      const key = addNew.kind
+      setSheetDraft((d) => ({ ...d, [key]: text }))
+    } else if (text) {
       if (addNew.kind === 'gender') {
         if (!allGenders.some((x) => x.toLowerCase() === text.toLowerCase())) {
           setSheetDraft((d) => ({
@@ -1159,6 +1178,9 @@ export default function SettingsScreen({
       draft.gender = userProfile?.gender || ''
       draft.sizesByGender = { ...(userProfile?.sizesByGender || {}) }
       draft.customGenders = [...(userProfile?.customGenders || [])]
+      draft.age = userProfile?.age || ''
+      draft.sex = userProfile?.sex || ''
+      draft.height = userProfile?.height || ''
       draft.customCategories = [...(userProfile?.customCategories || [])]
       if (draft.gender && draft.sizesByGender[draft.gender]) {
         draft.clothingSizes = { ...draft.sizesByGender[draft.gender] }
@@ -1274,6 +1296,9 @@ export default function SettingsScreen({
           clothingSizes: { ...(sheetDraft.clothingSizes || {}) },
           gender: sheetDraft.gender || '',
           customGenders: [...(sheetDraft.customGenders || [])],
+          age: sheetDraft.age || '',
+          sex: sheetDraft.sex || '',
+          height: sheetDraft.height || '',
           customCategories: [...(sheetDraft.customCategories || [])],
           sizesByGender: {
             ...(sheetDraft.sizesByGender || {}),
@@ -2362,7 +2387,7 @@ export default function SettingsScreen({
             {sheet === 'size' && addNew && (
               <div className="settings-new-page">
                 <div className="settings-new-kinds">
-                  {['gender', 'category'].map((k) => (
+                  {ADD_KINDS.map(([k, label]) => (
                     <button
                       key={k}
                       type="button"
@@ -2370,7 +2395,7 @@ export default function SettingsScreen({
                       onPointerDown={(e) => e.preventDefault()}
                       onClick={() => setAddNew((a) => ({ ...a, kind: k }))}
                     >
-                      {k === 'category' ? 'Category' : 'Gender'}
+                      {label}
                     </button>
                   ))}
                 </div>
@@ -2378,15 +2403,20 @@ export default function SettingsScreen({
                   <div className="settings-new-drum">
                     <GenderDrum
                       key={addNew.kind}
-                      value=""
-                      options={(addNew.kind === 'gender'
-                        ? PRESET_GENDERS
-                        : PRESET_CATEGORIES
-                      ).filter((x) =>
-                        addNew.kind === 'gender'
-                          ? !allGenders.includes(x)
-                          : !allGarments.some((g) => g.label === x),
-                      )}
+                      value={sheetDraft[addNew.kind] || ''}
+                      options={
+                        addNew.kind === 'age'
+                          ? PRESET_AGES
+                          : addNew.kind === 'sex'
+                            ? PRESET_SEX
+                            : addNew.kind === 'height'
+                              ? PRESET_HEIGHTS
+                              : addNew.kind === 'gender'
+                                ? PRESET_GENDERS.filter((x) => !allGenders.includes(x))
+                                : PRESET_CATEGORIES.filter(
+                                    (x) => !allGarments.some((g) => g.label === x),
+                                  )
+                      }
                       onPick={(x) => commitAddNew(x)}
                     />
                   </div>
