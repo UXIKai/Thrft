@@ -2905,3 +2905,15 @@
   gap: 10px;
   width: 100%;
 }
+
+.is-orders .profile-label-row.is-panel-title {
+  position: relative;
+  justify-content: center;
+}
+
+.is-orders .profile-label-row.is-panel-title .profile-live {
+  position: absolute;
+  left: calc(50% + 2.4rem);
+  top: 50%;
+  transform: translateY(-50%);
+}
