@@ -1221,3 +1221,19 @@ html body .settings-new-page.has-kind .settings-new-kinds {
   top: calc(env(safe-area-inset-top, 0px) + 22px);
   padding-top: 0;
 }
+/* Minus takes Back's old spot; Back drops to the Reset row */
+html body .glass-sheet-card.is-size-summary-page .glass-sheet-minus {
+  order: 100 !important;
+  width: 44px;
+  height: 44px;
+  margin: -44px auto 0 !important;
+  transform: translateX(-21vw);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+html body .glass-sheet-card.is-size-summary-page .glass-sheet-minus svg { width: 20px; height: 20px; }
+html body .glass-sheet-card.is-size-summary-page .glass-sheet-head .glass-overlay-icon-btn {
+  transform: translate(-21vw, 56px) !important;
+}

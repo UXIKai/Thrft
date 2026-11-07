@@ -2496,6 +2496,32 @@ export default function SettingsScreen({
                 </div>
               )
             })()}
+            {sheet === 'size' && sizeSummary && sheetDraft.gender && wizStep === null && (
+              <button
+                type="button"
+                className="glass-sheet-minus is-bare"
+                aria-label="Remove"
+                onClick={() => {
+                  const gid = summaryListRef.current?.querySelector(
+                    '.settings-size-summary-row.is-hot [data-gid]',
+                  )?.dataset.gid
+                  if (!gid) return
+                  setSheetDraft((d) => {
+                    const cs = { ...(d.clothingSizes || {}) }
+                    delete cs[gid]
+                    return {
+                      ...d,
+                      clothingSizes: cs,
+                      customCategories: (d.customCategories || []).filter((c) => c.id !== gid),
+                    }
+                  })
+                }}
+              >
+                <svg viewBox="0 0 24 24" aria-hidden>
+                  <path d="M5 12h14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                </svg>
+              </button>
+            )}
             {sheet === 'size' && sizeSummary && wizStep === null && !addNew && (
               <button
                 type="button"
