@@ -1237,3 +1237,13 @@ html body .glass-sheet-card.is-size-summary-page .glass-sheet-minus svg { width:
 html body .glass-sheet-card.is-size-summary-page .glass-sheet-head .glass-overlay-icon-btn {
   transform: translate(-21vw, 56px) !important;
 }
+/* Back and Reset share the exact same bottom line */
+html body .glass-sheet-card.is-size-summary-page .glass-sheet-head .glass-overlay-icon-btn {
+  position: absolute !important;
+  left: 50% !important;
+  margin: 0 0 0 -22px !important;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 5dvh - 2px) !important;
+  top: auto !important;
+  transform: translateX(-21vw) !important;
+  z-index: 6;
+}
