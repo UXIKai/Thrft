@@ -651,7 +651,6 @@ export default function SettingsScreen({
   const paletteSlotRef = useRef(0)
   const [photoMenuOpen, setPhotoMenuOpen] = useState(false)
   const [hasPhoto, setHasPhoto] = useState(() => Boolean(readBackgroundPhoto()))
-  const cameraInputRef = useRef(null)
   const galleryInputRef = useRef(null)
   const [paletteTarget, setPaletteTarget] = useState('app')
   const [paletteResetPending, setPaletteResetPending] = useState(false)
@@ -981,6 +980,7 @@ export default function SettingsScreen({
   }
 
   function chooseBgColor(id) {
+    if (hasPhoto) clearPhoto()
     setBgColor(applyBgColor(id))
     rememberPaletteId(id)
   }
@@ -1237,20 +1237,10 @@ export default function SettingsScreen({
                       className="settings-palette-edit"
                       aria-label="Background photo"
                       title="Background photo"
-                      aria-haspopup="dialog"
-                      aria-expanded={photoMenuOpen}
-                      onClick={() => setPhotoMenuOpen((v) => !v)}
+                      onClick={() => galleryInputRef.current?.click()}
                     >
                       <ImageIcon />
                     </button>
-                    <input
-                      ref={cameraInputRef}
-                      type="file"
-                      accept="image/*"
-                      capture="environment"
-                      hidden
-                      onChange={onPhotoFile}
-                    />
                     <input
                       ref={galleryInputRef}
                       type="file"
@@ -1263,53 +1253,6 @@ export default function SettingsScreen({
               </div>
 
             </div>
-            {photoMenuOpen && (
-              <div
-                className="settings-photo-fill"
-                role="dialog"
-                aria-label="Background photo"
-              >
-                <button
-                  type="button"
-                  className="settings-photo-fill-close"
-                  aria-label="Close"
-                  onClick={() => setPhotoMenuOpen(false)}
-                >
-                  <CloseIcon />
-                </button>
-                <div className="settings-photo-grid">
-                  <button
-                    type="button"
-                    className="settings-photo-btn"
-                    aria-label="Take a photo"
-                    onClick={() => cameraInputRef.current?.click()}
-                  >
-                    <svg viewBox="0 0 24 24" aria-hidden>
-                      <path d="M4 8.5A1.5 1.5 0 015.5 7H8l1.2-2h5.6L16 7h2.5A1.5 1.5 0 0120 8.5v9a1.5 1.5 0 01-1.5 1.5h-13A1.5 1.5 0 014 17.5z" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
-                      <circle cx="12" cy="13" r="3.2" fill="none" stroke="currentColor" strokeWidth="1.7" />
-                    </svg>
-                  </button>
-                  <button
-                    type="button"
-                    className="settings-photo-btn"
-                    aria-label="Choose from gallery"
-                    onClick={() => galleryInputRef.current?.click()}
-                  >
-                    <ImageIcon />
-                  </button>
-                  {hasPhoto && (
-                    <button
-                      type="button"
-                      className="settings-photo-btn"
-                      aria-label="Remove photo background"
-                      onClick={clearPhoto}
-                    >
-                      <CloseIcon />
-                    </button>
-                  )}
-                </div>
-              </div>
-            )}
           </div>
 
 
