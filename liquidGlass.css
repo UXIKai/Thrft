@@ -727,3 +727,23 @@ html body [contenteditable="true"] {
   -webkit-user-select: text !important;
   user-select: text !important;
 }
+
+.settings-size-summary {
+  touch-action: none;
+}
+.settings-size-summary-row {
+  padding: 6px 0;
+  transition: transform 0.16s ease, color 0.16s ease;
+  transform-origin: left center;
+}
+.settings-size-summary-row.is-hot {
+  transform: scale(1.12) translateX(8px);
+}
+.settings-size-summary-row.is-hot .settings-size-summary-label,
+.settings-size-summary-row.is-hot strong {
+  color: #fff;
+  text-shadow: 0 0 14px rgba(255, 255, 255, 0.55);
+}
+.settings-size-summary-label {
+  pointer-events: none;
+}

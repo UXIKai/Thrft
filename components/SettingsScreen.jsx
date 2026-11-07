@@ -701,6 +701,8 @@ export default function SettingsScreen({
   const [sizePeek, setSizePeek] = useState(null)
   const [sizeSummary, setSizeSummary] = useState(false)
   const [sizeFromSummary, setSizeFromSummary] = useState(false)
+  const [sizeScrub, setSizeScrub] = useState(null)
+  const scrubRef = useRef(null)
   const summaryPressRef = useRef({ timer: null, x: 0, y: 0, fired: false })
   const peekTimerRef = useRef(null)
   const peekFiredRef = useRef(false)
@@ -1838,15 +1840,53 @@ export default function SettingsScreen({
                         )
                       })()
                     ) : sizeSummary ? (
-                      <div className="settings-size-summary">
+                      <div
+                        className="settings-size-summary"
+                        onPointerDown={(e) => {
+                          const id = e.target.closest?.('[data-gid]')?.dataset.gid
+                          if (!id) return
+                          scrubRef.current = id
+                          setSizeScrub(id)
+                          e.currentTarget.setPointerCapture?.(e.pointerId)
+                        }}
+                        onPointerMove={(e) => {
+                          if (!scrubRef.current) return
+                          const el = document
+                            .elementFromPoint(e.clientX, e.clientY)
+                            ?.closest?.('[data-gid]')
+                          const id = el?.dataset.gid
+                          if (id && id !== scrubRef.current) {
+                            scrubRef.current = id
+                            setSizeScrub(id)
+                          }
+                        }}
+                        onPointerUp={() => {
+                          const id = scrubRef.current
+                          scrubRef.current = null
+                          setSizeScrub(null)
+                          if (!id) return
+                          setSizeSummary(false)
+                          setSizeFromSummary(true)
+                          setSizeGarment(id)
+                        }}
+                        onPointerCancel={() => {
+                          scrubRef.current = null
+                          setSizeScrub(null)
+                        }}
+                      >
                         {[...SIZE_GARMENTS]
                           .sort((a, b) => a.label.length - b.label.length)
                           .map((g) => (
-                          <div key={g.id} className="settings-size-summary-row">
+                          <div
+                            key={g.id}
+                            data-gid={g.id}
+                            className={`settings-size-summary-row${sizeScrub === g.id ? ' is-hot' : ''}`}
+                          >
                             <button
                               type="button"
                               className="settings-size-summary-label is-bare"
-                              onClick={() => {
+                              onClick={(e) => {
+                                if (e.detail !== 0) return
                                 setSizeSummary(false)
                                 setSizeFromSummary(true)
                                 setSizeGarment(g.id)
