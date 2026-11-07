@@ -931,10 +931,15 @@ export default function SettingsScreen({
         row.classList.toggle('is-hot', Math.abs(d) < 0.5)
       })
     }
+    const rows = el.querySelectorAll('.settings-size-summary-row')
+    if (el.scrollTop < 2 && rows.length) {
+      const mid = rows[Math.floor((rows.length - 1) / 2)]
+      el.scrollTop = mid.offsetTop + mid.offsetHeight / 2 - el.clientHeight / 2
+    }
     update()
     el.addEventListener('scroll', update, { passive: true })
     return () => el.removeEventListener('scroll', update)
-  }, [sizeSummary])
+  }, [sizeSummary, sheetDraft.gender])
 
   // Hold a word: the finger becomes the scroll bar; release opens the centered word.
   useEffect(() => {
