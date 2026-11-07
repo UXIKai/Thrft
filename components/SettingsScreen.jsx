@@ -699,6 +699,8 @@ export default function SettingsScreen({
   const [customSize, setCustomSize] = useState(null)
   const [sizePicked, setSizePicked] = useState(null)
   const [sizePeek, setSizePeek] = useState(null)
+  const [sizeSummary, setSizeSummary] = useState(false)
+  const summaryPressRef = useRef({ timer: null, x: 0, y: 0, fired: false })
   const peekTimerRef = useRef(null)
   const peekFiredRef = useRef(false)
   const [sizeWheelId, setSizeWheelId] = useState(SIZE_GARMENTS[0]?.id)
@@ -797,7 +799,10 @@ export default function SettingsScreen({
   }, [sheet, sizeBrandFocus])
 
   useEffect(() => {
-    if (sheet !== 'size') setSizeGarment(null)
+    if (sheet !== 'size') {
+      setSizeGarment(null)
+      setSizeSummary(false)
+    }
   }, [sheet])
 
   useEffect(() => {
@@ -1592,7 +1597,9 @@ export default function SettingsScreen({
                 className="glass-overlay-icon-btn"
                 aria-label="Close"
                 onClick={() =>
-                  sheet === 'size' && sizeGarment
+                  sheet === 'size' && sizeSummary
+                    ? setSizeSummary(false)
+                    : sheet === 'size' && sizeGarment
                     ? sizePicked
                       ? setSizePicked(null)
                       : setSizeGarment(null)
@@ -1818,7 +1825,58 @@ export default function SettingsScreen({
                           </div>
                         )
                       })()
+                    ) : sizeSummary ? (
+                      <div className="settings-size-summary">
+                        {SIZE_GARMENTS.filter(
+                          (g) => sheetDraft.clothingSizes?.[g.id],
+                        ).map((g) => (
+                          <div key={g.id} className="settings-size-summary-row">
+                            <span>{g.label}</span>
+                            <strong>{sheetDraft.clothingSizes[g.id]}</strong>
+                          </div>
+                        ))}
+                        {!Object.values(sheetDraft.clothingSizes || {}).some(
+                          Boolean,
+                        ) && (
+                          <p className="settings-size-empty">No saved sizes yet</p>
+                        )}
+                      </div>
                     ) : (
+                      <div
+                        className="settings-size-wheel-hold"
+                        onPointerDown={(e) => {
+                          const r = summaryPressRef.current
+                          r.fired = false
+                          r.x = e.clientX
+                          r.y = e.clientY
+                          window.clearTimeout(r.timer)
+                          r.timer = window.setTimeout(() => {
+                            r.fired = true
+                            setSizeSummary(true)
+                          }, 450)
+                        }}
+                        onPointerMove={(e) => {
+                          const r = summaryPressRef.current
+                          if (
+                            Math.abs(e.clientX - r.x) > 8 ||
+                            Math.abs(e.clientY - r.y) > 8
+                          )
+                            window.clearTimeout(r.timer)
+                        }}
+                        onPointerUp={() =>
+                          window.clearTimeout(summaryPressRef.current.timer)
+                        }
+                        onPointerCancel={() =>
+                          window.clearTimeout(summaryPressRef.current.timer)
+                        }
+                        onContextMenu={(e) => e.preventDefault()}
+                        onClickCapture={(e) => {
+                          if (summaryPressRef.current.fired) {
+                            summaryPressRef.current.fired = false
+                            e.stopPropagation()
+                          }
+                        }}
+                      >
                       <OrbitCarousel
                         variant="wheel"
                         compact
@@ -1832,6 +1890,7 @@ export default function SettingsScreen({
                         prevLabel="Previous garment"
                         nextLabel="Next garment"
                       />
+                      </div>
                     )}
                   </>
                 )}

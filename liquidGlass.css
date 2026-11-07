@@ -543,3 +543,28 @@ html body .settings-size-wheel.is-picked .type-box.is-wheel {
 html body .settings-size-wheel.is-picked.is-compact-wheel .type-carousel.is-wheel {
   height: 96px;
 }
+
+.settings-size-wheel-hold {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  width: 100%;
+}
+.settings-size-summary {
+  width: min(80vw, 320px);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  animation: size-picked-in 0.3s ease both;
+}
+.settings-size-summary-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1.05rem;
+}
+.settings-size-summary-row strong {
+  color: #fff;
+}
