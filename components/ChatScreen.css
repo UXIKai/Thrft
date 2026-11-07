@@ -2251,14 +2251,14 @@ html body .chat-friend-item {
 .chat-member-name-input {
   width: 100%;
   min-height: 40px;
-  padding: 0 12px;
-  border-radius: 12px;
-  border: 1px solid var(--glass-border, rgba(150, 150, 150, 0.22));
-  background: var(--glass-clear-tint, rgba(36, 36, 36, 0.06));
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: none;
   color: #fff;
   outline: none;
   font-family: inherit;
-  font-size: 0.95rem;
+  font-size: 16px;
   font-weight: 700;
   box-sizing: border-box;
 }
@@ -2268,8 +2268,7 @@ html body .chat-friend-item {
 }
 
 .chat-member-name-input:focus {
-  border-color: color-mix(in srgb, var(--settings-accent, #3dd68c) 55%, transparent);
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--settings-accent, #3dd68c) 22%, transparent);
+  box-shadow: none;
 }
 
 .chat-member-actions {
