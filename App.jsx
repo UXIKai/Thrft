@@ -685,7 +685,7 @@ export default function App() {
                 ? 'Color'
                 : 'Category'
           }
-          snug={homePicker !== 'brands'}
+          snug={homePicker === 'category'}
           previewColors={homePicker === 'colors'}
           searchValue={homePickerQuery}
           onSearchChange={setHomePickerQuery}
