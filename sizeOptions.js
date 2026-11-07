@@ -6,11 +6,12 @@
 /** Letter sizes used by knits / outer layers */
 export const LETTER_SIZES = ['XXS', 'XS', 'S', 'M', 'L', 'XL', 'XXL', '3XL']
 
-/** US men's shoe sizes including halves */
-export const SHOE_SIZES_US = [
-  '6', '6.5', '7', '7.5', '8', '8.5', '9', '9.5',
-  '10', '10.5', '11', '11.5', '12', '12.5', '13', '14',
-]
+/** US shoe sizes 1–14 including halves */
+export const SHOE_SIZES_US = (() => {
+  const out = []
+  for (let n = 1; n <= 14; n += 1) out.push(String(n), `${n}.5`)
+  return out.filter((x) => x !== '14.5')
+})()
 
 /** Dress shirt: neck / sleeve */
 export const DRESS_SHIRT_SIZES = [
