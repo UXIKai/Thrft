@@ -1084,5 +1084,5 @@ html body .glass-sheet-card.is-size-summary-page .glass-sheet-head .glass-overla
   z-index: 10;
 }
 html body .glass-sheet-card.is-size-summary-page:not(.is-gender-gate) .settings-size-drum-col > .settings-size-gender {
-  top: calc(env(safe-area-inset-top, 0px) - 193px);
+  top: calc(env(safe-area-inset-top, 0px) - 178px);
 }
