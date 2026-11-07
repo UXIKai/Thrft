@@ -1875,7 +1875,7 @@ export default function SettingsScreen({
           <header className="glass-overlay-top">
             <button
               type="button"
-              className={`glass-overlay-back${helpPage === 'started' ? ' is-bare' : ''}`}
+              className="glass-overlay-back is-bare"
               aria-label="Back"
               onClick={() => setHelpPage(null)}
             >
