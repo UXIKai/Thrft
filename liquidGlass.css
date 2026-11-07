@@ -511,3 +511,24 @@ html body .glass-sheet-card.is-size-sheet .settings-size-add {
   from { opacity: 0; transform: scale(0.7) translateY(24px); }
   to { opacity: 1; transform: none; }
 }
+
+html body .settings-size-chip {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.settings-size-peek {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  font-size: 3rem;
+  font-weight: 700;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.55);
+  animation: size-picked-in 0.2s ease both;
+}

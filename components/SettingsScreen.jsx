@@ -698,6 +698,9 @@ export default function SettingsScreen({
   const [sizeGarment, setSizeGarment] = useState(null)
   const [customSize, setCustomSize] = useState(null)
   const [sizePicked, setSizePicked] = useState(null)
+  const [sizePeek, setSizePeek] = useState(null)
+  const peekTimerRef = useRef(null)
+  const peekFiredRef = useRef(false)
   const [sizeWheelId, setSizeWheelId] = useState(SIZE_GARMENTS[0]?.id)
   const sizeCatsRef = useRef(null)
   const sizeSheetCardRef = useRef(null)
@@ -1705,6 +1708,11 @@ export default function SettingsScreen({
                           if (v) setCategorySize(cat.id, v)
                           setCustomSize(null)
                         }
+                        const peek = sizePeek ? (
+                          <div className="settings-size-peek" aria-hidden>
+                            {sizePeek}
+                          </div>
+                        ) : null
                         if (sizePicked) {
                           return (
                             <div className="settings-size-picked" key={sizePicked}>
@@ -1714,6 +1722,7 @@ export default function SettingsScreen({
                         }
                         return (
                           <div className="settings-size-cat">
+                            {peek}
                             <p className="settings-size-section-label">
                               {cat.label}
                             </p>
@@ -1733,7 +1742,32 @@ export default function SettingsScreen({
                                   role="option"
                                   aria-selected={selected === sz}
                                   className={`settings-size-chip${selected === sz ? ' is-on' : ''}`}
+                                  onPointerDown={() => {
+                                    peekFiredRef.current = false
+                                    window.clearTimeout(peekTimerRef.current)
+                                    peekTimerRef.current = window.setTimeout(() => {
+                                      peekFiredRef.current = true
+                                      setSizePeek(sz)
+                                    }, 350)
+                                  }}
+                                  onPointerUp={() => {
+                                    window.clearTimeout(peekTimerRef.current)
+                                    setSizePeek(null)
+                                  }}
+                                  onPointerCancel={() => {
+                                    window.clearTimeout(peekTimerRef.current)
+                                    setSizePeek(null)
+                                  }}
+                                  onPointerLeave={() => {
+                                    window.clearTimeout(peekTimerRef.current)
+                                    setSizePeek(null)
+                                  }}
+                                  onContextMenu={(e) => e.preventDefault()}
                                   onClick={() => {
+                                    if (peekFiredRef.current) {
+                                      peekFiredRef.current = false
+                                      return
+                                    }
                                     setCategorySize(cat.id, sz)
                                     setSizePicked(sz)
                                   }}
