@@ -31,6 +31,7 @@ import {
   fetchIdmeConfig,
   startIdmeAuthorize,
 } from '../api.js'
+import OrbitCarousel from './OrbitCarousel.jsx'
 import StageSlot from './StageSlot.jsx'
 import { LISTING_BRANDS } from '../listingCatalog.js'
 import {
@@ -694,6 +695,8 @@ export default function SettingsScreen({
   const [idBusy, setIdBusy] = useState(false)
   /** null = garment + brand list; brand id = brand-specific size drill-down */
   const [sizeBrandFocus, setSizeBrandFocus] = useState(null)
+  const [sizeGarment, setSizeGarment] = useState(null)
+  const [sizeWheelId, setSizeWheelId] = useState(SIZE_GARMENTS[0]?.id)
   const sizeCatsRef = useRef(null)
   const sizeSheetCardRef = useRef(null)
 
@@ -787,6 +790,10 @@ export default function SettingsScreen({
     const id = window.requestAnimationFrame(reset)
     return () => window.cancelAnimationFrame(id)
   }, [sheet, sizeBrandFocus])
+
+  useEffect(() => {
+    if (sheet !== 'size') setSizeGarment(null)
+  }, [sheet])
 
   function openHelpAssistant() {
     setAssistantDraft('')
@@ -1561,7 +1568,7 @@ export default function SettingsScreen({
             onClick={() => setSheet(null)}
           />
           <div
-            className={`glass-sheet-card${sheet === 'size' ? ' is-size-sheet' : ''}`}
+            className={`glass-sheet-card${sheet === 'size' ? ` is-size-sheet${sizeGarment ? '' : ' is-size-wheel'}` : ''}`}
             ref={sheet === 'size' ? sizeSheetCardRef : undefined}
           >
             <div className="glass-sheet-head">
@@ -1574,7 +1581,11 @@ export default function SettingsScreen({
                 type="button"
                 className="glass-overlay-icon-btn"
                 aria-label="Close"
-                onClick={() => setSheet(null)}
+                onClick={() =>
+                  sheet === 'size' && sizeGarment
+                    ? setSizeGarment(null)
+                    : setSheet(null)
+                }
               >
                 <BackIcon />
               </button>
@@ -1658,82 +1669,51 @@ export default function SettingsScreen({
                   </>
                 ) : (
                   <>
-                    <p className="settings-size-section-label">Garments</p>
-                    {SIZE_GARMENTS.map((cat) => {
-                      const options = sizesForCategory(cat.id)
-                      const selected = sheetDraft.clothingSizes?.[cat.id] || ''
-                      return (
-                        <div key={cat.id} className="settings-size-cat">
-                          <div className="settings-size-cat-head">
-                            <p className="settings-size-cat-label">
+                    {sizeGarment ? (
+                      (() => {
+                        const cat = SIZE_GARMENTS.find((g) => g.id === sizeGarment)
+                        if (!cat) return null
+                        const options = sizesForCategory(cat.id)
+                        const selected = sheetDraft.clothingSizes?.[cat.id] || ''
+                        return (
+                          <div className="settings-size-cat">
+                            <p className="settings-size-section-label">
                               {cat.label}
                             </p>
-                            {cat.hint ? (
-                              <span className="settings-size-cat-hint">
-                                {cat.hint}
-                              </span>
-                            ) : null}
-                          </div>
-                          <div
-                            className="settings-size-chips"
-                            role="listbox"
-                            aria-label={`${cat.label} size`}
-                          >
-                            {options.map((sz) => (
-                              <button
-                                key={sz}
-                                type="button"
-                                role="option"
-                                aria-selected={selected === sz}
-                                className={`settings-size-chip${selected === sz ? ' is-on' : ''}`}
-                                onClick={() => setCategorySize(cat.id, sz)}
-                              >
-                                {sz}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                      )
-                    })}
-
-                    <div className="settings-size-brands" role="list">
-                      {likedSizeBrands.length === 0 ? (
-                        <p className="settings-size-empty">
-                          Liked brands from Favorites will show here so you can
-                          set their sizes.
-                        </p>
-                      ) : (
-                        likedSizeBrands.map((brand) => {
-                          const brandMap =
-                            sheetDraft.brandSizes?.[brand.id] || {}
-                          const filled = Object.keys(brandMap).length
-                          return (
                             <div
-                              key={brand.id}
-                              className="settings-size-brand"
-                              role="listitem"
+                              className="settings-size-chips"
+                              role="listbox"
+                              aria-label={`${cat.label} size`}
                             >
-                              <button
-                                type="button"
-                                className="settings-size-brand-main"
-                                aria-label={`${brand.name} sizes`}
-                                onClick={() => setSizeBrandFocus(brand.id)}
-                              >
-                                <span className="settings-size-brand-name">
-                                  {brand.name}
-                                </span>
-                                <span className="settings-size-brand-meta">
-                                  {filled
-                                    ? `${filled} size${filled === 1 ? '' : 's'}`
-                                    : 'Set sizes'}
-                                </span>
-                                <Chevron />
-                              </button>
+                              {options.map((sz) => (
+                                <button
+                                  key={sz}
+                                  type="button"
+                                  role="option"
+                                  aria-selected={selected === sz}
+                                  className={`settings-size-chip${selected === sz ? ' is-on' : ''}`}
+                                  onClick={() => setCategorySize(cat.id, sz)}
+                                >
+                                  {sz}
+                                </button>
+                              ))}
                             </div>
-                          )
-                        })
-                      )}
-                    </div>
+                          </div>
+                        )
+                      })()
+                    ) : (
+                      <OrbitCarousel
+                        variant="wheel"
+                        className="settings-size-wheel"
+                        items={SIZE_GARMENTS.map((g) => ({ id: g.id, label: g.label }))}
+                        activeId={sizeWheelId}
+                        onSelect={setSizeWheelId}
+                        onActivate={setSizeGarment}
+                        ariaLabel="Garments"
+                        prevLabel="Previous garment"
+                        nextLabel="Next garment"
+                      />
+                    )}
                   </>
                 )}
               </div>
