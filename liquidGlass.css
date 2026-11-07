@@ -1328,3 +1328,22 @@ html body .glass-sheet-card .settings-size-reset {
 
 .settings-addr-wrap { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 18px; }
 .settings-addr-card { padding: 22px 18px; }
+
+/* Field label sits inside the container, above the text */
+html body .glass-sheet:not(.settings-wheel-sheet):not(.settings-palette-sheet) .glass-field {
+  position: relative;
+  gap: 0;
+}
+html body .glass-sheet:not(.settings-wheel-sheet):not(.settings-palette-sheet) .glass-field-label {
+  position: absolute;
+  top: 10px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  pointer-events: none;
+  z-index: 1;
+}
+html body .glass-sheet:not(.settings-wheel-sheet):not(.settings-palette-sheet) .glass-field .glass-input {
+  min-height: 72px;
+  padding: 26px 14px 8px;
+}
