@@ -612,6 +612,20 @@ function PencilIcon() {
  * Settings — continuous scroll; row popups + Help pages; color wheel.
  */
 const GENDER_OPTIONS = ['Men', 'Women', 'Unisex']
+const PRESET_GENDERS = [
+  'Boys', 'Girls', 'Kids', 'Toddler', 'Baby', 'Infant', 'Teen', 'Non-binary',
+  'Genderfluid', 'Women Plus', 'Men Big & Tall', 'Petite', 'Tall',
+  'Maternity', 'Youth', 'Adult', 'Senior', 'Pets',
+]
+const PRESET_CATEGORIES = [
+  'Dresses', 'Skirts', 'Leggings', 'Coats', 'Cardigans', 'Overalls',
+  'Jumpsuits', 'Rompers', 'Pajamas', 'Underwear', 'Bras', 'Swimwear',
+  'Activewear', 'Gloves', 'Scarves', 'Ties', 'Watches', 'Sunglasses',
+  'Bags', 'Jewelry', 'Sneakers', 'Heels', 'Flats', 'Slippers', 'Cleats',
+  'Raincoats', 'Parkas', 'Windbreakers', 'Crop tops', 'Bodysuits', 'Tracksuits',
+  'Capris', 'Chinos', 'Cargo pants', 'Beanies', 'Caps', 'Wallets', 'Robes',
+  'Tuxedos', 'Gowns', 'Kimonos', 'Ponchos', 'Leotards', 'Wetsuits',
+]
 
 function GenderDrum({ value, onPick, options = GENDER_OPTIONS }) {
   const ref = useRef(null)
@@ -922,8 +936,8 @@ export default function SettingsScreen({
     ...(sheetDraft.customCategories || []),
   ]
   const allGenders = [...GENDER_OPTIONS, ...(sheetDraft.customGenders || [])]
-  const commitAddNew = () => {
-    const text = (addNew?.text || '').trim().slice(0, 20)
+  const commitAddNew = (picked) => {
+    const text = (typeof picked === 'string' ? picked : addNew?.text || '').trim().slice(0, 20)
     if (text) {
       if (addNew.kind === 'gender') {
         if (!allGenders.some((x) => x.toLowerCase() === text.toLowerCase())) {
@@ -2357,19 +2371,19 @@ export default function SettingsScreen({
                   ))}
                 </div>
                 {addNew.kind && (
-                  <div className="settings-size-add-dock">
-                    <input
-                      className="settings-size-add-input"
-                      autoFocus
-                      value={addNew.text}
-                      maxLength={20}
-                      placeholder={addNew.kind === 'gender' ? 'New gender' : 'New category'}
-                      enterKeyHint="done"
-                      onChange={(e) => setAddNew((a) => ({ ...a, text: e.target.value }))}
-                      onBlur={commitAddNew}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter') e.currentTarget.blur()
-                      }}
+                  <div className="settings-new-drum">
+                    <GenderDrum
+                      key={addNew.kind}
+                      value=""
+                      options={(addNew.kind === 'gender'
+                        ? PRESET_GENDERS
+                        : PRESET_CATEGORIES
+                      ).filter((x) =>
+                        addNew.kind === 'gender'
+                          ? !allGenders.includes(x)
+                          : !allGarments.some((g) => g.label === x),
+                      )}
+                      onPick={(x) => commitAddNew(x)}
                     />
                   </div>
                 )}
@@ -2377,7 +2391,6 @@ export default function SettingsScreen({
                   type="button"
                   className="settings-new-close is-bare"
                   aria-label="Close"
-                  onPointerDown={(e) => e.preventDefault()}
                   onClick={() => setAddNew(null)}
                 >
                   <BackIcon />

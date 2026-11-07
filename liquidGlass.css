@@ -1148,3 +1148,6 @@ html body .glass-sheet-card:has(.settings-new-page) .glass-sheet-plus,
 html body .glass-sheet-card:has(.settings-new-page) .glass-sheet-add {
   visibility: hidden;
 }
+.settings-new-page { flex-direction: column; gap: 28px; }
+.settings-new-page .settings-new-drum { width: 100%; display: flex; justify-content: center; }
+.settings-new-page .gender-drum { height: calc(var(--row-h, 44px) * 6); padding: calc(var(--row-h, 44px) * 2.5) 0; }
