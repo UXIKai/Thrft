@@ -2015,6 +2015,7 @@ export default function SettingsScreen({
               ) : (
                 <h2 className="glass-sheet-title" aria-hidden="true" />
               )}
+              {!(sheet === 'shipping' && !addrEditing) && (
               <button
                 type="button"
                 className="glass-overlay-icon-btn"
@@ -2033,6 +2034,7 @@ export default function SettingsScreen({
               >
                 <BackIcon />
               </button>
+              )}
             </div>
             {sheet === 'size' ? (
               <div className="settings-size-cats" ref={sizeCatsRef}>
