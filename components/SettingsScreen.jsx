@@ -1249,6 +1249,7 @@ export default function SettingsScreen({
     setAddrStep(0)
     setAddrEditing(!(id === 'shipping' && userProfile?.shippingAddress))
     setSheetDraft(draft)
+    if (id === 'shipping' && !userProfile?.shippingAddress) locateAddress()
     setSheet(id)
   }
 
@@ -1306,6 +1307,37 @@ export default function SettingsScreen({
         brandSizes,
       }
     })
+  }
+
+  async function locateAddress() {
+    if (!navigator.geolocation) return
+    try {
+      const pos = await new Promise((resolve, reject) =>
+        navigator.geolocation.getCurrentPosition(resolve, reject, {
+          enableHighAccuracy: true,
+          timeout: 15000,
+        }),
+      )
+      const { latitude, longitude } = pos.coords
+      const res = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=jsonv2&addressdetails=1&lat=${latitude}&lon=${longitude}`,
+      )
+      if (!res.ok) return
+      const a = (await res.json())?.address || {}
+      const street = [a.house_number, a.road].filter(Boolean).join(' ')
+      const city = a.city || a.town || a.village || a.hamlet || ''
+      const state = (a['ISO3166-2-lvl4'] || '').split('-')[1] || a.state || ''
+      const zip = a.postcode || ''
+      if (!street || !city) return
+      const full = [street, city, [state, zip].filter(Boolean).join(' ')]
+        .filter(Boolean)
+        .join(', ')
+      await onSaveProfile?.({ shippingAddress: full })
+      setSheetDraft((d) => ({ ...d, address: street, city, state, zip }))
+      setAddrEditing(false)
+    } catch {
+      // Denied or unavailable: the manual steps stay available
+    }
   }
 
   async function saveSheet() {
