@@ -862,3 +862,11 @@ html body .glass-sheet-card.is-size-summary-page .settings-size-summary-label {
   pointer-events: auto;
   font-size: 1.15rem;
 }
+
+/* Keep the drum straight: scale/tilt around the left edge */
+html body .glass-sheet-card.is-size-summary-page .settings-size-summary {
+  perspective-origin: 0% 50%;
+}
+html body .glass-sheet-card.is-size-summary-page .settings-size-summary-row {
+  transform-origin: left center;
+}
