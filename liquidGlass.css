@@ -1178,3 +1178,10 @@ html body .glass-sheet-card .settings-size-chip.settings-size-add-input.is-inlin
 .settings-new-actions button + button { position: absolute; left: 50%; margin-left: -22px; }
 .settings-new-actions svg { width: 24px; height: 24px; }
 .settings-wiz-title { color: #fff; font-size: 1.5rem; font-weight: 600; }
+/* Every slider shows five rows */
+html body .glass-sheet-card.is-size-summary-page .settings-size-drum-col {
+  --wheel-h: 220px;
+}
+html body .glass-sheet-card.is-size-summary-page:not(.is-gender-gate) .settings-size-drum-col > .settings-size-gender {
+  top: calc(env(safe-area-inset-top, 0px) + 132px - 50dvh);
+}
