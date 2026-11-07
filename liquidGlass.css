@@ -412,3 +412,11 @@ html body .glass-sheet-card.is-size-sheet .settings-size-chips[style*="--size-co
 html body .glass-sheet-card.is-size-sheet .settings-size-cat > .settings-size-section-label {
   margin: 0 0 2px !important;
 }
+
+/* Garment size page: back arrow centered below the sizes */
+html body .glass-sheet-card.is-size-sheet:not(.is-size-wheel) .glass-sheet-head .glass-overlay-icon-btn {
+  position: static !important;
+  order: 99 !important;
+  align-self: center !important;
+  margin: 16px auto 0 !important;
+}
