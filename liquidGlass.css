@@ -1012,3 +1012,46 @@ html body .settings-size-drum-col > .gender-overlay {
 html body .settings-size-drum-col .gender-drum {
   width: 100%;
 }
+/* Wheel centered on the screen; Gender sits on its middle line */
+html body .glass-sheet-card.is-size-summary-page .settings-size-cats {
+  padding-top: 0;
+}
+html body .glass-sheet-card.is-size-summary-page .settings-size-drum-col {
+  --wheel-h: max(176px, calc(100dvh - 230px));
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 50dvh;
+  transform: translateY(-50%);
+  height: var(--wheel-h);
+  width: auto;
+  display: block;
+  z-index: 3;
+}
+html body .glass-sheet-card.is-size-summary-page .settings-size-wheelbox {
+  margin: 0 auto;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: min(86vw, 360px);
+}
+html body .settings-size-drum-col > .settings-size-gender {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 6;
+  padding: 8px 18px;
+}
+html body .settings-size-drum-col > .gender-overlay {
+  top: 0;
+  bottom: 0;
+  height: 100%;
+  background: transparent;
+}
+html body .settings-size-drum-col > .gender-overlay ~ .settings-size-gender,
+html body .settings-size-drum-col:has(.gender-overlay) > .settings-size-gender {
+  opacity: 0;
+}
