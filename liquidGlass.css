@@ -387,3 +387,15 @@ html body .glass-sheet-card.is-size-wheel .settings-size-cats {
 html body .glass-sheet-card.is-size-sheet .settings-size-section-label {
   text-align: center;
 }
+
+html body .settings-size-wheel.is-compact-wheel .type-carousel.is-wheel {
+  height: 64px;
+  width: min(80vw, 320px);
+  margin: 0 auto;
+}
+html body .settings-size-wheel .type-box.is-wheel {
+  font-size: 1.6rem;
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
+}

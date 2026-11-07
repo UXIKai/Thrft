@@ -63,6 +63,8 @@ export default function OrbitCarousel({
   variant = 'orbit',
   /** Closet-style: short drum that only reveals the centered word. */
   compact = false,
+  /** Keep each word mounted so it glides between slots. */
+  smooth = false,
 }) {
   const isStrip = variant === 'strip'
   const isWheel = variant === 'wheel'
@@ -243,7 +245,7 @@ export default function OrbitCarousel({
             }
             return (
               <button
-                key={`${item.id ?? 'none'}-${offset}`}
+                key={smooth ? `${item.id ?? 'none'}` : `${item.id ?? 'none'}-${offset}`}
                 type="button"
                 className={`type-box type-box-orbit${
                   isStrip ? ' is-strip' : ''

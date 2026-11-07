@@ -1704,6 +1704,8 @@ export default function SettingsScreen({
                     ) : (
                       <OrbitCarousel
                         variant="wheel"
+                        compact
+                        smooth
                         className="settings-size-wheel"
                         items={SIZE_GARMENTS.map((g) => ({ id: g.id, label: g.label }))}
                         activeId={sizeWheelId}
