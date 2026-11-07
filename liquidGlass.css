@@ -971,3 +971,5 @@ html body .settings-size-gender {
   height: 44px;
   color: #fff;
 }
+html body .settings-size-gender { touch-action: none; user-select: none; -webkit-user-select: none; }
+.gender-overlay { pointer-events: none; }

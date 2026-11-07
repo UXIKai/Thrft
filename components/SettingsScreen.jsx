@@ -2084,20 +2084,45 @@ export default function SettingsScreen({
                       <button
                         type="button"
                         className="settings-size-gender is-bare"
-                        onPointerDown={() => {
-                          window.clearTimeout(genderTimerRef.current)
-                          genderTimerRef.current = window.setTimeout(
-                            () => setGenderOpen(true),
-                            300,
-                          )
+                        onPointerDown={(e) => {
+                          const y0 = e.clientY
+                          let drum = null
+                          let base = 0
+                          const stop = () => {
+                            window.clearTimeout(genderTimerRef.current)
+                            window.removeEventListener('pointermove', mv)
+                            window.removeEventListener('pointerup', up)
+                            window.removeEventListener('pointercancel', up)
+                          }
+                          const mv = (ev) => {
+                            if (!drum) return
+                            const k = (drum.scrollHeight - drum.clientHeight) / 160
+                            drum.scrollTop = base + (ev.clientY - y0) * k
+                          }
+                          const up = (ev) => {
+                            stop()
+                            if (!drum) return
+                            const g = ev.type === 'pointerup'
+                              ? drum.querySelector('.gender-drum-row.is-hot')?.dataset.opt
+                              : null
+                            if (g) setSheetDraft((d) => ({ ...d, gender: g }))
+                            setGenderOpen(false)
+                          }
+                          window.addEventListener('pointermove', mv)
+                          window.addEventListener('pointerup', up)
+                          window.addEventListener('pointercancel', up)
+                          genderTimerRef.current = window.setTimeout(() => {
+                            setGenderOpen(true)
+                            navigator.vibrate?.(8)
+                            window.setTimeout(() => {
+                              drum = document.querySelector('.gender-drum')
+                              if (!drum) return
+                              drum.style.scrollSnapType = 'none'
+                              base = drum.scrollTop
+                            }, 30)
+                          }, 300)
                         }}
-                        onPointerUp={() => window.clearTimeout(genderTimerRef.current)}
-                        onPointerLeave={() => window.clearTimeout(genderTimerRef.current)}
-                        onPointerCancel={() => window.clearTimeout(genderTimerRef.current)}
                         onContextMenu={(e) => e.preventDefault()}
-                        onClick={(e) => {
-                          if (e.detail === 0) setGenderOpen(true)
-                        }}
                       >
                         {sheetDraft.gender || 'Gender'}
                       </button>
