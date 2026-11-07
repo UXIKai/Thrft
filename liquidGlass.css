@@ -399,3 +399,12 @@ html body .settings-size-wheel .type-box.is-wheel {
     opacity 0.35s ease,
     transform 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
+
+html body .glass-sheet-card.is-size-sheet .settings-size-chips[style*="--size-cols"] {
+  display: grid;
+  grid-template-columns: repeat(var(--size-cols), max-content);
+  justify-content: center;
+  justify-items: center;
+  gap: 10px 12px;
+  margin: 0 auto;
+}

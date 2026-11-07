@@ -1684,6 +1684,14 @@ export default function SettingsScreen({
                               className="settings-size-chips"
                               role="listbox"
                               aria-label={`${cat.label} size`}
+                              style={{
+                                '--size-cols': Math.ceil(
+                                  options.length /
+                                    (options.length <= 4
+                                      ? 1
+                                      : Math.max(2, Math.ceil(options.length / 5))),
+                                ),
+                              }}
                             >
                               {options.map((sz) => (
                                 <button
