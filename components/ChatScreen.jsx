@@ -538,6 +538,9 @@ export default function ChatScreen({
   onThreadActiveChange,
 } = {}) {
   const [chats, setChats] = useState(() => readStoredChats())
+  const [isDesktop, setIsDesktop] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia('(min-width: 720px)').matches,
+  )
   const [memberDraft, setMemberDraft] = useState('')
   const [menuId, setMenuId] = useState(null)
   const [dmRenaming, setDmRenaming] = useState(false)
@@ -559,6 +562,14 @@ export default function ChatScreen({
   const [groupNameStep, setGroupNameStep] = useState(false)
   const memberGlobeVisible =
     memberGlobeOpen && memberGlobePhase !== 'closed'
+
+  useEffect(() => {
+    const media = window.matchMedia('(min-width: 720px)')
+    const updateDesktop = () => setIsDesktop(media.matches)
+    updateDesktop()
+    media.addEventListener('change', updateDesktop)
+    return () => media.removeEventListener('change', updateDesktop)
+  }, [])
 
   // Hide the bottom nav while the group-members globe is up.
   useEffect(() => {
@@ -1723,7 +1734,8 @@ export default function ChatScreen({
     )
   }
 
-  if (activeChat) {
+  function renderThread() {
+    if (!activeChat) return null
     return (
       <div className="chat-thread" role="dialog" aria-label={activeChat.title}>
         {menuId &&
@@ -2505,8 +2517,10 @@ export default function ChatScreen({
     )
   }
 
+  if (activeChat && !isDesktop) return renderThread()
+
   return (
-    <div className="chat-screen">
+    <div className={`chat-screen${isDesktop ? ' is-desktop' : ''}`}>
       {menuId && chats.find((c) => c.id === menuId)?.kind !== 'dm' && (
         <button
           type="button"
@@ -2640,7 +2654,7 @@ export default function ChatScreen({
         </div>
       </section>
 
-      <section className="chat-section" aria-label="Chats">
+      <section className="chat-section chat-list-section" aria-label="Chats">
         <ul className="chat-list">
           {filtered.all.map((chat) => (
             <li
@@ -2688,58 +2702,68 @@ export default function ChatScreen({
         </ul>
       </section>
 
-      <StageSlot>
-      <div className={`chat-bottom-dock${composer ? ' is-sheet-open' : ''}${usersPickerOpen || memberGlobeVisible ? ' is-covered' : ''}`}>
-        <div className={`chat-search-bar${composer ? ' is-sheet-open' : ''}${searchOpen || composer ? '' : ' is-collapsed'}`}>
-          {searchOpen || composer ? (
-            <button
-              type="button"
-              className="chat-dock-search chat-dock-new"
-              aria-label={composer ? 'Close' : 'New chat'}
-              aria-pressed={Boolean(composer)}
-              onClick={onDockPlusClick}
-            >
-              <SearchIcon />
-            </button>
-          ) : null}
-          {searchOpen || composer ? (
-            <input
-              id="chat-search-input"
-              className={`chat-search-input${composer ? ' is-sheet-hidden' : ''}`}
-              type="text"
-              inputMode="search"
-              name="thrft_chat_search"
-              autoComplete="off"
-              autoCorrect="off"
-              spellCheck={false}
-              data-lpignore="true"
-              data-1p-ignore="true"
-              data-form-type="other"
-              placeholder=""
-              aria-label="Search chats"
-              aria-hidden={composer ? true : undefined}
-              tabIndex={composer ? -1 : undefined}
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-            />
-          ) : null}
-          <button
-            type="button"
-            className={`chat-search-add${searchOpen || composer ? ' is-search-open' : ''}${composer ? ' is-sheet-hidden' : ''}`}
-            aria-label={searchOpen || composer ? 'Close search' : 'Search chats'}
-            onClick={() => {
-              if (searchOpen || composer) {
-                setQuery('')
-                setSearchOpen(false)
-              } else {
-                setSearchOpen(true)
-              }
-            }}
-          >
-            <PlusIcon />
-          </button>
-        </div>
-      </div>
+      {isDesktop ? (
+        <section className="chat-desktop-thread" aria-label="Conversation">
+          {activeChat ? (
+            renderThread()
+          ) : (
+            <p className="chat-desktop-empty">Select a chat to view the conversation</p>
+          )}
+        </section>
+      ) : null}
+
+      <StageSlot active={!isDesktop}>
+          <div className={`chat-bottom-dock${isDesktop ? ' is-desktop' : ''}${composer ? ' is-sheet-open' : ''}${usersPickerOpen || memberGlobeVisible ? ' is-covered' : ''}`}>
+            <div className={`chat-search-bar${composer ? ' is-sheet-open' : ''}${searchOpen || composer ? '' : ' is-collapsed'}`}>
+              {searchOpen || composer ? (
+                <button
+                  type="button"
+                  className="chat-dock-search chat-dock-new"
+                  aria-label={composer ? 'Close' : 'New chat'}
+                  aria-pressed={Boolean(composer)}
+                  onClick={onDockPlusClick}
+                >
+                  <SearchIcon />
+                </button>
+              ) : null}
+              {searchOpen || composer ? (
+                <input
+                  id="chat-search-input"
+                  className={`chat-search-input${composer ? ' is-sheet-hidden' : ''}`}
+                  type="text"
+                  inputMode="search"
+                  name="thrft_chat_search"
+                  autoComplete="off"
+                  autoCorrect="off"
+                  spellCheck={false}
+                  data-lpignore="true"
+                  data-1p-ignore="true"
+                  data-form-type="other"
+                  placeholder=""
+                  aria-label="Search chats"
+                  aria-hidden={composer ? true : undefined}
+                  tabIndex={composer ? -1 : undefined}
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                />
+              ) : null}
+              <button
+                type="button"
+                className={`chat-search-add${searchOpen || composer ? ' is-search-open' : ''}${composer ? ' is-sheet-hidden' : ''}`}
+                aria-label={searchOpen || composer ? 'Close search' : 'Search chats'}
+                onClick={() => {
+                  if (searchOpen || composer) {
+                    setQuery('')
+                    setSearchOpen(false)
+                  } else {
+                    setSearchOpen(true)
+                  }
+                }}
+              >
+                <PlusIcon />
+              </button>
+            </div>
+          </div>
       </StageSlot>
 
       {menuId &&
