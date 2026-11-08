@@ -131,9 +131,9 @@ export default function CartScreen({
                     ? bag.formatMoney(item.price)
                     : item.price}
                 </span>
-                {item.qty > 1 ? (
+                {true ? (
                   <div className="cart-line-qty">
-                    <button type="button" className="cart-line-act is-bare" aria-label="Fewer" onClick={() => setQty(item, item.qty - 1)}>
+                    <button type="button" className="cart-line-act is-bare" aria-label="Fewer" disabled={item.qty <= 1} onClick={() => setQty(item, item.qty - 1)}>
                       <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden><path fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" d="M6 12h12" /></svg>
                     </button>
                     <span className="cart-line-count">{item.qty}</span>
