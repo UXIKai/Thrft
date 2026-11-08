@@ -1,7 +1,6 @@
 import { createPortal } from 'react-dom'
 import { useEffect, useState } from 'react'
 import { useBag } from '../BagContext.jsx'
-import { addToCart } from '../cart.js'
 import './GlassOverlay.css'
 import './ProductDetail.css'
 
@@ -28,21 +27,6 @@ function PlusIcon() {
   )
 }
 
-function CheckIcon() {
-  return (
-    <svg className="product-detail-plus" viewBox="0 0 24 24" aria-hidden>
-      <path
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2.2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M5 12.8 10 17.5 19 7.5"
-      />
-    </svg>
-  )
-}
-
 function productPhoto(product) {
   const photo = product?.photoUrl || product?.imageUrl || product?.image_url || ''
   if (!photo || /^placeholder$/i.test(photo)) return ''
@@ -57,16 +41,10 @@ export default function ProductDetail({
   onClose,
 }) {
   const [stageEl, setStageEl] = useState(null)
-  const { items, replaceItems } = useBag()
+  const { items, addItem, replaceItems, removeItem } = useBag()
   const inBag = items.find((row) => row.id === product?.id)?.qty || 0
-  const [picking, setPicking] = useState(false)
-  const [qty, setQty] = useState(1)
-  const added = picking
-
-  useEffect(() => {
-    setPicking(false)
-    setQty(1)
-  }, [product?.id])
+  const qty = inBag
+  const added = inBag > 0
 
   useEffect(() => {
     setStageEl(document.querySelector('.stage'))
@@ -75,31 +53,22 @@ export default function ProductDetail({
     return () => stage?.classList.remove('is-overlay-open')
   }, [])
 
+  // Every change goes straight to the bag; there is no separate confirm step.
   function start() {
-    setQty(1)
-    setPicking(true)
+    if (product) addItem(product)
   }
 
   function step(next) {
+    if (!product) return
     if (next <= 0) {
-      setPicking(false)
-      setQty(1)
+      removeItem(product.id)
       return
     }
-    setQty(Math.min(next, 99))
-  }
-
-  // The check confirms: add the chosen amount on top of what's already in the bag.
-  function confirm() {
-    if (!product) return
-    const list = addToCart(product)
     replaceItems(
-      list.map((row) =>
-        row.id === product.id ? { ...row, qty: inBag + qty } : row,
+      items.map((row) =>
+        row.id === product.id ? { ...row, qty: Math.min(next, 99) } : row,
       ),
     )
-    setPicking(false)
-    setQty(1)
   }
 
   if (!product || !stageEl) return null
@@ -168,15 +137,6 @@ export default function ProductDetail({
             onClick={() => step(qty + 1)}
           >
             <PlusIcon />
-          </button>
-          <button
-            type="button"
-            className="product-detail-step product-detail-confirm is-bare"
-            aria-label="Add selected to bag"
-            tabIndex={added ? 0 : -1}
-            onClick={confirm}
-          >
-            <CheckIcon />
           </button>
         </div>
       </div>
