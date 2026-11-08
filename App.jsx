@@ -468,7 +468,7 @@ export default function App() {
       </div>
 
       <div
-        className={`app-column${tab === 'home' && signedIn ? ' is-home-wide' : ''}`}
+        className={`app-column${tab === 'home' && signedIn ? ' is-home-wide' : ''}${tab === 'chat' ? ' is-chat-wide' : ''}`}
         ref={columnRef}
       >
       {signedIn && (

@@ -126,6 +126,10 @@
 }
 
 @media (min-width: 720px) {
+  .app-column.is-chat-wide {
+    width: 100%;
+  }
+
   .brand-row .product-box {
     width: clamp(118px, 10vw, 176px);
     height: calc(clamp(118px, 10vw, 176px) * 1.2034);
