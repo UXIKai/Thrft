@@ -77,6 +77,7 @@ export function addToCart(product) {
         product.catalog_variant_id ||
         null,
       placements: product.placements || null,
+      size: product.size || '',
       qty: 1,
     })
   }

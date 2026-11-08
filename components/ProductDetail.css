@@ -342,3 +342,14 @@ html body .product-detail .glass-overlay-back {
 .product-detail-buy.is-added .product-detail-add {
   transform: translate(-50%, -50%) scale(0.5);
 }
+
+.product-detail-buy[hidden] { display: none; }
+.product-detail-sizes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px 22px;
+  max-width: 300px;
+  margin-top: 8px;
+}
+.product-detail-size { min-width: 36px; height: 40px; color: #fff; font-size: 1.15rem; font-weight: 700; }

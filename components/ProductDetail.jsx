@@ -1,6 +1,7 @@
 import { createPortal } from 'react-dom'
 import { useEffect, useState } from 'react'
 import { useBag } from '../BagContext.jsx'
+import { LETTER_SIZES } from '../sizeOptions.js'
 import './GlassOverlay.css'
 import './ProductDetail.css'
 
@@ -53,9 +54,31 @@ export default function ProductDetail({
     return () => stage?.classList.remove('is-overlay-open')
   }, [])
 
-  // Every change goes straight to the bag; there is no separate confirm step.
+  const [sizing, setSizing] = useState(false)
+
+  useEffect(() => {
+    setSizing(false)
+  }, [product?.id])
+
+  // Plus opens the size list; picking a size adds one and brings the stepper back.
   function start() {
-    if (product) addItem(product)
+    setSizing(true)
+  }
+
+  function pickSize(size) {
+    if (!product) return
+    if (inBag) {
+      replaceItems(
+        items.map((row) =>
+          row.id === product.id
+            ? { ...row, size, qty: Math.min(inBag + 1, 99) }
+            : row,
+        ),
+      )
+    } else {
+      addItem({ ...product, size })
+    }
+    setSizing(false)
   }
 
   function step(next) {
@@ -105,7 +128,24 @@ export default function ProductDetail({
           )}
         </div>
         <p className="product-detail-price">{product.price}</p>
-        <div className={`product-detail-buy${added ? ' is-added' : ''}`}>
+        {sizing && (
+          <div className="product-detail-sizes" role="listbox" aria-label="Size">
+            {(product.sizes?.length ? product.sizes : LETTER_SIZES).map((size) => (
+              <button
+                key={size}
+                type="button"
+                className="product-detail-size is-bare"
+                onClick={() => pickSize(size)}
+              >
+                {size}
+              </button>
+            ))}
+          </div>
+        )}
+        <div
+          className={`product-detail-buy${added ? ' is-added' : ''}`}
+          hidden={sizing}
+        >
           <button
             type="button"
             className="product-detail-add"
@@ -134,7 +174,7 @@ export default function ProductDetail({
             className="product-detail-step product-detail-plus-btn is-bare"
             aria-label="Add one"
             tabIndex={added ? 0 : -1}
-            onClick={() => step(qty + 1)}
+            onClick={start}
           >
             <PlusIcon />
           </button>
