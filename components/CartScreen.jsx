@@ -51,6 +51,7 @@ export default function CartScreen({
   const [stageEl, setStageEl] = useState(null)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
+  const [confirmId, setConfirmId] = useState(null)
 
   useEffect(() => {
     setStageEl(document.querySelector('.stage'))
@@ -125,6 +126,22 @@ export default function CartScreen({
                     ? bag.formatMoney(item.price)
                     : item.price}
                 </span>
+                <div className="cart-line-actions">
+                  {confirmId === item.id ? (
+                    <>
+                      <button type="button" className="cart-line-act is-bare" aria-label="Keep" onClick={() => setConfirmId(null)}>
+                        <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden><path fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" d="M6 6l12 12M18 6L6 18" /></svg>
+                      </button>
+                      <button type="button" className="cart-line-act is-bare" aria-label="Remove" disabled={busy} onClick={() => { setConfirmId(null); remove(item.id) }}>
+                        <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden><path fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" d="M5 12.5l4.5 4.5L19 7.5" /></svg>
+                      </button>
+                    </>
+                  ) : (
+                    <button type="button" className="cart-line-act is-bare" aria-label={`Remove ${item.title}`} onClick={() => setConfirmId(item.id)}>
+                      <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden><path fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" d="M6 12h12" /></svg>
+                    </button>
+                  )}
+                </div>
               </li>
             ))}
           </ul>

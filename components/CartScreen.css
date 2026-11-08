@@ -297,3 +297,6 @@
   font-weight: 700;
   color: #fff;
 }
+
+.cart-line-actions { display: flex; justify-content: center; align-items: center; gap: 56px; min-height: 40px; }
+.cart-line-act { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; color: #fff; }
