@@ -300,3 +300,5 @@
 
 .cart-line-actions { display: flex; justify-content: center; align-items: center; gap: 56px; min-height: 40px; }
 .cart-line-act { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; color: #fff; }
+.cart-line-actions { gap: 28px; }
+.cart-line-trash { color: #fff; flex: none; }

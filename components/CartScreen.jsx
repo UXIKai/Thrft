@@ -132,6 +132,7 @@ export default function CartScreen({
                       <button type="button" className="cart-line-act is-bare" aria-label="Keep" onClick={() => setConfirmId(null)}>
                         <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden><path fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" d="M6 6l12 12M18 6L6 18" /></svg>
                       </button>
+                      <svg className="cart-line-trash" width="26" height="26" viewBox="0 0 24 24" aria-hidden><path fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" d="M4 7h16M10 11v6M14 11v6M6 7l1 12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-12M9 7V4h6v3" /></svg>
                       <button type="button" className="cart-line-act is-bare" aria-label="Remove" disabled={busy} onClick={() => { setConfirmId(null); remove(item.id) }}>
                         <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden><path fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" d="M5 12.5l4.5 4.5L19 7.5" /></svg>
                       </button>
