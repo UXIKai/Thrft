@@ -63,6 +63,12 @@ export default function CartScreen({
   const total = bag.total
   const totalLabel = bag.formatMoney(total)
 
+  function setQty(item, qty) {
+    bag.replaceItems(
+      items.map((it) => (it.id === item.id ? { ...it, qty } : it)),
+    )
+  }
+
   function remove(id) {
     bag.removeItem(id)
   }
@@ -109,7 +115,6 @@ export default function CartScreen({
                   >
                     <span className="cart-line-title">
                       {item.title}
-                      {item.qty > 1 ? ` ×${item.qty}` : ''}
                     </span>
                   </button>
                 </div>
@@ -126,6 +131,20 @@ export default function CartScreen({
                     ? bag.formatMoney(item.price)
                     : item.price}
                 </span>
+                {item.qty > 1 ? (
+                  <div className="cart-line-qty">
+                    <button type="button" className="cart-line-act is-bare" aria-label="Fewer" onClick={() => setQty(item, item.qty - 1)}>
+                      <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden><path fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" d="M6 12h12" /></svg>
+                    </button>
+                    <span className="cart-line-count">{item.qty}</span>
+                    <button type="button" className="cart-line-act is-bare" aria-label="More" onClick={() => setQty(item, item.qty + 1)}>
+                      <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden><path fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" d="M12 5v14M5 12h14" /></svg>
+                    </button>
+                    <button type="button" className="cart-line-act cart-line-qty-trash is-bare" aria-label={`Remove ${item.title}`} onClick={() => remove(item.id)}>
+                      <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden><path fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" d="M4 7h16M10 11v6M14 11v6M6 7l1 12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-12M9 7V4h6v3" /></svg>
+                    </button>
+                  </div>
+                ) : (
                 <div className="cart-line-actions">
                   {confirmId === item.id ? (
                     <>
@@ -143,6 +162,7 @@ export default function CartScreen({
                     </button>
                   )}
                 </div>
+                )}
               </li>
             ))}
           </ul>

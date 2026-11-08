@@ -302,3 +302,16 @@
 .cart-line-act { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; color: #fff; }
 .cart-line-actions { gap: 28px; }
 .cart-line-trash { color: #fff; flex: none; }
+
+.cart-line-qty {
+  display: grid;
+  grid-template-columns: 40px 40px 40px;
+  grid-template-areas: 'minus count plus' '. trash .';
+  justify-content: center;
+  align-items: center;
+  gap: 4px 28px;
+}
+.cart-line-qty > :nth-child(1) { grid-area: minus; }
+.cart-line-count { grid-area: count; text-align: center; color: #fff; font-size: 1.2rem; font-weight: 700; }
+.cart-line-qty > :nth-child(3) { grid-area: plus; }
+.cart-line-qty-trash { grid-area: trash; }
