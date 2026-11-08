@@ -38,7 +38,9 @@ function fitScreen() {
   maxHeight = Math.max(maxHeight, measured, standalone ? screenH : 0)
   // In a browser tab the toolbar legitimately changes the height; only the
   // installed app keeps the largest value.
-  const height = standalone ? maxHeight : measured
+  // The keyboard shrinks the viewport; keep the full-height background behind it.
+  const kbOpen = vv ? window.innerHeight - vv.height > 120 || measured < maxHeight - 120 : false
+  const height = standalone || kbOpen ? maxHeight : measured
   // Never follow the visual viewport's offset: the keyboard must not slide the page.
   const top = 0
   const left = 0
