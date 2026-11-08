@@ -334,9 +334,8 @@ html body .product-detail .glass-overlay-back {
   transform: translate(calc(-50% + 44px), -50%);
 }
 .product-detail-buy .product-detail-add {
-  left: 50%;
-  right: auto;
   inset: auto;
+  left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
 }
