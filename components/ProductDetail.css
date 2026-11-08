@@ -303,3 +303,43 @@ html body .product-detail .glass-overlay-back {
   justify-content: center;
   padding-top: 0;
 }
+
+/* In the bag: minus, number, plus in one row (the number replaces the add plus) */
+.product-detail-buy {
+  width: 150px;
+  height: 40px;
+}
+.product-detail-buy .product-detail-stepper {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(0.6);
+}
+.product-detail-buy.is-added .product-detail-stepper {
+  transform: translate(-50%, -50%) scale(1);
+}
+.product-detail-buy .product-detail-qty {
+  font-size: 1.3rem;
+}
+.product-detail-buy .product-detail-minus {
+  transform: translate(calc(-50% - 44px), -50%) scale(0.6);
+}
+.product-detail-buy .product-detail-plus-btn {
+  transform: translate(calc(-50% + 44px), -50%) scale(0.6);
+}
+.product-detail-buy.is-added .product-detail-minus {
+  transform: translate(calc(-50% - 44px), -50%);
+}
+.product-detail-buy.is-added .product-detail-plus-btn {
+  transform: translate(calc(-50% + 44px), -50%);
+}
+.product-detail-buy .product-detail-add {
+  left: 50%;
+  right: auto;
+  inset: auto;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+.product-detail-buy.is-added .product-detail-add {
+  transform: translate(-50%, -50%) scale(0.5);
+}
