@@ -2972,3 +2972,67 @@ html body button.chat-contact-nick-save {
   -webkit-user-select: none;
   user-select: none;
 }
+
+@media (min-width: 720px) {
+  .chat-screen.is-desktop {
+    display: grid;
+    grid-template-columns: minmax(260px, 340px) minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+    column-gap: clamp(24px, 4vw, 64px);
+    row-gap: 16px;
+    width: min(100%, 1440px);
+    margin: 0 auto;
+    padding: calc(max(16px, env(safe-area-inset-top, 0px)) + 24px)
+      clamp(24px, 4vw, 56px) 20px;
+  }
+
+  .chat-screen.is-desktop > .chat-pins-section {
+    grid-column: 1;
+    grid-row: 1;
+    min-width: 0;
+  }
+
+  .chat-screen.is-desktop > .chat-list-section {
+    grid-column: 1;
+    grid-row: 2;
+    min-width: 0;
+    overflow-y: auto;
+    padding-bottom: 88px;
+  }
+
+  .chat-screen.is-desktop .chat-list-toolbar {
+    margin-top: 6px;
+  }
+
+  .chat-screen.is-desktop .chat-bottom-dock {
+    left: 0;
+    bottom: 20px;
+    width: min(340px, calc(100% - 24px));
+    max-width: none;
+    transform: none;
+  }
+
+  .chat-desktop-thread {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+    border-left: 1px solid rgba(255, 255, 255, 0.18);
+  }
+
+  .chat-desktop-thread .chat-thread {
+    width: 100%;
+    background: transparent;
+    padding: 18px 24px 0;
+  }
+
+  .chat-desktop-empty {
+    display: grid;
+    height: 100%;
+    margin: 0;
+    place-items: center;
+    color: rgba(255, 255, 255, 0.45);
+    font-size: 0.9rem;
+  }
+}
