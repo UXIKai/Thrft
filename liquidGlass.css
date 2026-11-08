@@ -171,7 +171,7 @@ html body :is(.settings-block, .profile-credits-card, .profile-music-card, .list
 
 html body button.settings-effect-switch,
 html[data-bg-color='none'] body button.settings-effect-switch {
-  background: #fff !important;
+  background: #000 !important;
   border: 0 !important;
   border-radius: 999px !important;
   backdrop-filter: none !important;
@@ -182,7 +182,7 @@ html[data-bg-color='none'] body button.settings-effect-switch {
 }
 html body button.settings-effect-switch.is-on,
 html[data-bg-color='none'] body button.settings-effect-switch.is-on {
-  background: #000 !important;
+  background: #fff !important;
   box-shadow: none !important;
 }
 html body button.settings-effect-switch .settings-effect-knob {
@@ -191,12 +191,12 @@ html body button.settings-effect-switch .settings-effect-knob {
   left: 3px;
   width: 22px;
   height: 22px;
-  background: #000;
+  background: #fff;
   border: 0;
   box-shadow: none;
 }
 html body button.settings-effect-switch.is-on .settings-effect-knob {
-  background: #fff;
+  background: #000;
   transform: translateX(18px);
 }
 
