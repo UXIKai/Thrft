@@ -316,3 +316,4 @@
 .cart-line-qty > :nth-child(3) { grid-area: plus; }
 .cart-line-qty-trash { grid-area: trash; }
 .cart-line-act:disabled { opacity: 0.35; }
+.cart-line-qty { grid-template-areas: 'minus count plus'; }
