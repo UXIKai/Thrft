@@ -682,15 +682,16 @@
 /* Keep the eclipse ring lit throughout orbital browsing and dragging. */
 html .brand-globe .brand-globe-center-hole,
 html .brand-globe .brand-globe-stage.is-choosing .brand-globe-center-hole {
+  --eclipse-color: var(--globe-tint, #fff);
   background: color-mix(in srgb, rgb(var(--bg-color-rgb, 36, 36, 36)) 38%, var(--atmosphere-base, #050505));
   box-shadow:
-    0 0 0 4px #fff,
-    0 0 8px 5px rgba(255, 255, 255, 1),
-    0 0 22px 9px rgba(255, 255, 255, 0.75),
-    0 0 48px 18px rgba(255, 255, 255, 0.4),
-    0 0 90px 34px rgba(255, 255, 255, 0.18),
-    inset 0 0 0 2px #fff,
-    inset 0 0 16px 2px rgba(255, 255, 255, 0.45);
+    0 0 0 4px var(--eclipse-color),
+    0 0 8px 5px var(--eclipse-color),
+    0 0 22px 9px color-mix(in srgb, var(--eclipse-color) 75%, transparent),
+    0 0 48px 18px color-mix(in srgb, var(--eclipse-color) 40%, transparent),
+    0 0 90px 34px color-mix(in srgb, var(--eclipse-color) 18%, transparent),
+    inset 0 0 0 2px var(--eclipse-color),
+    inset 0 0 16px 2px color-mix(in srgb, var(--eclipse-color) 45%, transparent);
 }
 
 /* Color picker: tint the backdrop and label, keeping the center black. */
