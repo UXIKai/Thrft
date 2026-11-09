@@ -42,7 +42,7 @@ Wire real profiles later by setting `avatarUrl` (and labels) on entries in `src/
 - Hold a chat for 450ms to open Pin, Mark as Unread, Hide Alerts, and Delete actions. Moving or releasing early cancels the hold; unread and alert preferences persist with the chat.
 - Holding also shows a scrollable preview of recent messages above the actions, without opening or marking the conversation as read.
 - The edit menu sits above the list. Select shows selection circles and a bulk-delete button below the filter. Edit pins shows minus controls on pinned row avatars to unpin chats without deleting them; the check mark finishes editing.
-- The filter menu uses evenly spaced rows, aligned checkmarks, icons and labels, and a dark blurred surface.
+- The filter menu matches the edit menu's compact 140px width, 34px minimum row height and 12px corners, with aligned icons, wrapping labels and a dark blurred surface.
 - During chat selection, the edit button becomes a check mark that finishes selection without deleting chats.
 - Desktop chat uses the full window width, with a left-aligned conversation list and the open conversation filling the remaining space.
 - Focusing desktop chat search keeps the page in place; keyboard lifting is reserved for touch-primary devices or a visible software keyboard.
