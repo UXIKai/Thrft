@@ -32,15 +32,13 @@ Wire real profiles later by setting `avatarUrl` (and labels) on entries in `src/
 
 ### Profile settings
 - Garment sizes use equal-sized buttons in centered rows, with the add-size control centered below them.
-- The settings gear beside the profile name opens only Profile, Settings & privacy, QR code, and Notifications. Profile opens the full-page editor; QR code encodes the account username, and Notifications explains chat alert controls and current push availability.
-- On wide screens, the gear menu opens to the right with its top aligned to the button's center; narrow screens keep it below the name.
-- The gear menu renders outside the profile scroll container so its rounded edges are not clipped, and stays within the viewport when scrolling or resizing.
+- The settings gear beside the profile name opens Settings & privacy directly, without an intermediate popup.
 - The profile shows only the username. Account editing keeps the person, @ and lock icons for username, email and password; email changes require authentication-provider confirmation.
-- Music and Media appear above Money, forming centered rows that widen toward the bottom.
+- The Links editor has one centered Media heading above the music-service buttons and social-media buttons.
 - Money controls and sales statistics use matching tile sizes, spacing, and glass styling.
 
 Settings & privacy starts with Profile followed by the active account. Other account and support options come next, followed by colors, sliders, and the four shop-tool buttons at the bottom.
-Links and Money rows sit immediately below ID verification. Profile contains only username, email and password; Links contains Music and Media; Money contains the financial controls. Each page centers its content and section headings above the controls, retaining scrolling on shorter screens.
+Links and Money rows sit immediately below ID verification. Profile contains only username, email and password; Links contains music services and social handles under Media; Money contains the financial controls. Each page centers its content and section headings above the controls, retaining scrolling on shorter screens.
 
 ### Chat
 - Pinned chats appear first in the regular conversation list, without separate pinned cards. The Messages heading sits in the upper-left corner with search and the desktop sidebar toggle on the right. Search opens the bottom input; the bottom plus opens a chooser with two-person group and one-person friend buttons. Collapsing leaves only the top-left toggle to restore the list.
