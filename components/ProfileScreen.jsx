@@ -1299,7 +1299,7 @@ export default function ProfileScreen({
           </button>
           {profileMenuOpen && createPortal(
             <div className="profile-settings-menu" style={profileMenuPosition} role="menu" aria-label="Profile options" ref={profileMenuRef}>
-              {['Profile', 'Settings & privacy', 'QR code', 'Notifications'].map((label) => (
+              {['Profile', 'QR code', 'Notifications', 'Settings & privacy'].map((label) => (
                 <button key={label} type="button" className="is-bare" role="menuitem" onClick={() => {
                   setProfileMenuOpen(false)
                   if (label === 'Profile') openProfileEditor()
