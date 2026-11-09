@@ -679,9 +679,9 @@
   cursor: grab;
 }
 
-/* Effect off: the center seat becomes a black hole with an illuminated white ring */
-html[data-bg-image='none'] .brand-globe-center-hole,
-html[data-bg-image='none'] .brand-globe-stage.is-choosing .brand-globe-center-hole {
+/* Keep the eclipse ring lit throughout orbital browsing and dragging. */
+html .brand-globe .brand-globe-center-hole,
+html .brand-globe .brand-globe-stage.is-choosing .brand-globe-center-hole {
   background: color-mix(in srgb, rgb(var(--bg-color-rgb, 36, 36, 36)) 38%, var(--atmosphere-base, #050505));
   box-shadow:
     0 0 0 4px #fff,

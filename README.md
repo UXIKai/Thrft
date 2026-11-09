@@ -61,6 +61,7 @@ Links and Money rows sit immediately below ID verification. Profile contains onl
 
 ### Product rows
 - The orbital color picker keeps its center circle black and displays the focused color's name in that color. Its flowing background previews each focused color at 70% brightness while gliding.
+- The orbital center's eclipse glow stays lit while browsing and dragging, regardless of the background-effect setting.
 - The home search backdrop reuses the app's flowing atmosphere at 70% brightness behind the always-black filter panel. Choosing a color updates the backdrop, its flowing effect, and the panel text to that color; the panel itself does not animate.
 - Saved edit and filter menus open below their buttons, close each other, and dismiss when clicking outside.
 - A check mark below the product quantity returns to the previous page, including the cart, brand or clothing-type page when opened there.
