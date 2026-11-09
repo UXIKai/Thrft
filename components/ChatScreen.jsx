@@ -2518,6 +2518,20 @@ export default function ChatScreen({
       >
         <div className="chat-sidebar-header">
           <h1 className="chat-sidebar-title">Messages</h1>
+          <button
+            type="button"
+            className="chat-sidebar-control is-bare"
+            aria-label="Search conversations"
+            aria-expanded={searchOpen}
+            onClick={() => {
+              setSearchOpen(true)
+              requestAnimationFrame(() => {
+                document.getElementById('chat-search-input')?.focus({ preventScroll: true })
+              })
+            }}
+          >
+            <SearchIcon />
+          </button>
           {isDesktop && (
             <button
               type="button"
@@ -2736,9 +2750,11 @@ export default function ChatScreen({
                 <button
                   type="button"
                   className="chat-dock-search chat-dock-new"
-                  aria-label={composer ? 'Close' : 'New chat'}
-                  aria-pressed={Boolean(composer)}
-                  onClick={onDockPlusClick}
+                  aria-label="Close search"
+                  onClick={() => {
+                    setQuery('')
+                    setSearchOpen(false)
+                  }}
                 >
                   <SearchIcon />
                 </button>
@@ -2766,16 +2782,9 @@ export default function ChatScreen({
               ) : null}
               <button
                 type="button"
-                className={`chat-search-add${searchOpen || composer ? ' is-search-open' : ''}${composer ? ' is-sheet-hidden' : ''}`}
-                aria-label={searchOpen || composer ? 'Close search' : 'Search chats'}
-                onClick={() => {
-                  if (searchOpen || composer) {
-                    setQuery('')
-                    setSearchOpen(false)
-                  } else {
-                    setSearchOpen(true)
-                  }
-                }}
+                className={`chat-search-add${composer ? ' is-sheet-hidden' : ''}`}
+                aria-label="New chat"
+                onClick={onDockPlusClick}
               >
                 <PlusIcon />
               </button>
@@ -2993,7 +3002,7 @@ export default function ChatScreen({
                   aria-pressed={usersPickerOpen || (findUsersOpen && !groupSelected)}
                   onClick={openFindUsers}
                 >
-                  <PlusIcon />
+                  <PersonIcon />
                 </button>
               </div>
             ) : (

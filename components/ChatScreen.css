@@ -3134,6 +3134,7 @@ html body button.chat-contact-nick-save {
 
   .chat-screen.is-sidebar-collapsed .chat-list-toolbar,
   .chat-screen.is-sidebar-collapsed .chat-sidebar-title,
+  .chat-screen.is-sidebar-collapsed .chat-sidebar-control[aria-label='Search conversations'],
   .chat-screen.is-sidebar-collapsed .chat-list-section,
   .chat-screen.is-sidebar-collapsed .chat-bottom-dock {
     display: none;
