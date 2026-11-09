@@ -769,6 +769,8 @@ export default function SettingsScreen({
   onSaveProfile,
   onSignOut,
   onEditProfile,
+  onEditLinks,
+  onEditMoney,
 }) {
   const [appColor, setAppColor] = useState(() => readAppColor())
   const [customHex, setCustomHex] = useState(() => readCustomColorHex())
@@ -1868,6 +1870,14 @@ export default function SettingsScreen({
               setIdmeOpen(true)
             }}
           />
+        </Section>
+
+        <Section label="Links">
+          <Row icon={<AtIcon />} title="Links" onClick={onEditLinks} />
+        </Section>
+
+        <Section label="Money">
+          <Row icon={<BoxIcon />} title="Money" onClick={onEditMoney} />
         </Section>
 
         <Section label="Give Back">

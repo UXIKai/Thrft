@@ -719,6 +719,7 @@ export default function ProfileScreen({
   const [musicDraft, setMusicDraft] = useState('')
   const [musicLinks, setMusicLinks] = useState({ spotify: null, apple: null })
   const [atOpen, setAtOpen] = useState(false)
+  const [editorPage, setEditorPage] = useState('Profile')
   const [linksSheetOpen, setLinksSheetOpen] = useState(false)
   const [socialDraft, setSocialDraft] = useState('')
   const [activeSocial, setActiveSocial] = useState(null)
@@ -1080,7 +1081,8 @@ export default function ProfileScreen({
     }
   }
 
-  function openProfileEditor() {
+  function openProfileEditor(page = 'Profile') {
+    setEditorPage(page)
     setAccountEmailDraft(userProfile?.email || '')
     setAccountUsernameDraft(
       String(account?.username || userProfile?.username || '').replace(/^@+/, ''),
@@ -1928,7 +1930,7 @@ export default function ProfileScreen({
             className="profile-panel profile-links-card profile-edit-card"
             role="dialog"
             aria-modal="true"
-            aria-label="Edit profile"
+            aria-label={editorPage === 'Profile' ? 'Edit profile' : editorPage}
           >
             <header className="profile-panel-top">
               <button
@@ -1939,11 +1941,11 @@ export default function ProfileScreen({
               >
                 <BackIcon />
               </button>
-              <h2 className="profile-suppliers-title">Profile</h2>
+              <h2 className="profile-suppliers-title">{editorPage}</h2>
               <span className="profile-panel-spacer" aria-hidden />
             </header>
             <div className="profile-panel-body profile-at-body">
-              <section className="profile-block is-panel-section" aria-labelledby="account-edit-label">
+              {editorPage === 'Profile' && <section className="profile-block is-panel-section" aria-labelledby="account-edit-label">
                 <h2 id="account-edit-label" className="profile-label">
                   Account
                 </h2>
@@ -2008,6 +2010,8 @@ export default function ProfileScreen({
                 ) : null}
               </section>
 
+              }
+              {editorPage === 'Links' && <>
               <section className="profile-block is-panel-section" aria-labelledby="music-label">
                 <h2 id="music-label" className="profile-label">
                   Music
@@ -2111,7 +2115,8 @@ export default function ProfileScreen({
                 ) : null}
               </section>
 
-              <section className="profile-block is-panel-section" aria-label="Money">
+              </>}
+              {editorPage === 'Money' && <section className="profile-block is-panel-section" aria-label="Money">
                 <h2 className="profile-label">Money</h2>
                 <div className="profile-money-grid" role="group" aria-label="Money">
                   <button
@@ -2210,7 +2215,7 @@ export default function ProfileScreen({
                   )}
                 </div>
               </section>
-
+              }
               
             </div>
           </div>
@@ -2329,7 +2334,9 @@ export default function ProfileScreen({
             userProfile={userProfile}
             onSaveProfile={onSaveProfile}
             onSignOut={onSignOut}
-            onEditProfile={openProfileEditor}
+            onEditProfile={() => openProfileEditor('Profile')}
+            onEditLinks={() => openProfileEditor('Links')}
+            onEditMoney={() => openProfileEditor('Money')}
           />,
           stageEl,
         )}

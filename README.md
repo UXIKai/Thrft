@@ -39,6 +39,7 @@ Wire real profiles later by setting `avatarUrl` (and labels) on entries in `src/
 - Money controls and sales statistics use matching tile sizes, spacing, and glass styling.
 
 Settings & privacy starts with Profile followed by the active account. Other account and support options come next, followed by colors, sliders, and the four shop-tool buttons at the bottom.
+Links and Money rows sit immediately below ID verification. Profile contains only username, email and password; Links contains Music and Media; Money contains the financial controls. Each page centers its content, retaining scrolling on shorter screens.
 
 ### Chat
 - Pinned chats appear first in the regular conversation list, without separate pinned cards. The Messages heading sits in the upper-left corner with search and the desktop sidebar toggle on the right. Search opens the bottom input; the bottom plus opens a chooser with two-person group and one-person friend buttons. Collapsing leaves only the top-left toggle to restore the list.

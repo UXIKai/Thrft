@@ -2074,6 +2074,7 @@
 .profile-edit-card .profile-at-body {
   padding: 12px 20px calc(36px + env(safe-area-inset-bottom, 0px));
   gap: 28px;
+  justify-content: safe center;
 }
 
 .profile-edit-card .profile-at-body .profile-block {
