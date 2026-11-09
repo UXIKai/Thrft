@@ -738,7 +738,7 @@ export default function ProfileScreen({
   const [photoSheetOpen, setPhotoSheetOpen] = useState(false)
   const [nameSheetOpen, setNameSheetOpen] = useState(false)
   const [nameDraft, setNameDraft] = useState('')
-  const [accountNameDraft, setAccountNameDraft] = useState('')
+  const [accountEmailDraft, setAccountEmailDraft] = useState('')
   const [accountUsernameDraft, setAccountUsernameDraft] = useState('')
   const [accountPasswordDraft, setAccountPasswordDraft] = useState('')
   const [accountEditNote, setAccountEditNote] = useState('')
@@ -1081,9 +1081,7 @@ export default function ProfileScreen({
   }
 
   function openProfileEditor() {
-    setAccountNameDraft(
-      userProfile?.displayName || userProfile?.email?.split('@')[0] || '',
-    )
+    setAccountEmailDraft(userProfile?.email || '')
     setAccountUsernameDraft(
       String(account?.username || userProfile?.username || '').replace(/^@+/, ''),
     )
@@ -1098,14 +1096,21 @@ export default function ProfileScreen({
 
   async function saveAccountEdit() {
     if (accountEditBusy) return
-    const displayName = accountNameDraft.trim()
+    const email = accountEmailDraft.trim()
     const username = accountUsernameDraft
       .trim()
       .replace(/^@+/, '')
       .toLowerCase()
       .replace(/[^a-z0-9._]/g, '')
     const nextPassword = accountPasswordDraft.trim()
-    if (!displayName && !username && !nextPassword) return
+    if (!username) {
+      setAccountEditNote('Enter a username')
+      return
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setAccountEditNote('Enter a valid email address')
+      return
+    }
     if (nextPassword && nextPassword.length < 6) {
       setAccountEditNote('Password needs at least 6 characters')
       return
@@ -1113,26 +1118,25 @@ export default function ProfileScreen({
     setAccountEditBusy(true)
     setAccountEditNote('')
     try {
-      if (displayName || username) {
-        await onSaveProfile?.({
-          ...(displayName ? { displayName } : {}),
-          ...(username ? { username } : {}),
-        })
-      }
-      if (nextPassword) {
+      const emailChanged = email !== (userProfile?.email || '')
+      if (nextPassword || emailChanged) {
         const supabase = getSupabase()
         if (!supabase) {
-          setAccountEditNote('Sign in to change your password')
+          setAccountEditNote('Sign in to change your email or password')
           return
         }
-        const { error } = await supabase.auth.updateUser({ password: nextPassword })
+        const { error } = await supabase.auth.updateUser({
+          ...(emailChanged ? { email } : {}),
+          ...(nextPassword ? { password: nextPassword } : {}),
+        })
         if (error) {
-          setAccountEditNote(error.message || 'Could not update password')
+          setAccountEditNote(error.message || 'Could not update email or password')
           return
         }
         setAccountPasswordDraft('')
       }
-      setAccountEditNote('Saved')
+      await onSaveProfile?.({ username })
+      setAccountEditNote(emailChanged ? 'Saved. Check your email to confirm the email change.' : 'Saved')
     } catch (err) {
       setAccountEditNote(err?.message || 'Could not save')
     } finally {
@@ -1251,9 +1255,11 @@ export default function ProfileScreen({
         </div>
         <div className="profile-name-row">
           <p className="profile-name">
-            {userProfile?.displayName ||
-              userProfile?.email?.split('@')[0] ||
-              'Member'}
+            {(account?.username || userProfile?.username) ? (
+              <button type="button" className="profile-username-link is-bare" onClick={() => onOpenAccountPage?.()}>
+                @{account?.username || userProfile?.username}
+              </button>
+            ) : 'Member'}
             {userProfile?.identityStatus === 'verified' && (
               <span className="profile-id-badge" title="Identity verified with ID.me">
                 ID
@@ -1285,15 +1291,7 @@ export default function ProfileScreen({
             </div>
           )}
         </div>
-        {(account?.username || userProfile?.username) ? (
-          <button
-            type="button"
-            className="profile-username-link"
-            onClick={() => onOpenAccountPage?.()}
-          >
-            @{account?.username || userProfile?.username}
-          </button>
-        ) : (
+        {!(account?.username || userProfile?.username) && (
           <button
             type="button"
             className="profile-username-link is-empty"
@@ -1954,11 +1952,14 @@ export default function ProfileScreen({
                     <PersonIcon />
                   </span>
                   <input
-                    value={accountNameDraft}
-                    aria-label="Name"
-                    autoCapitalize="words"
+                    value={accountUsernameDraft}
+                    aria-label="Username"
+                    placeholder="Username"
+                    autoComplete="username"
+                    autoCapitalize="none"
                     autoCorrect="off"
-                    onChange={(e) => setAccountNameDraft(e.target.value)}
+                    spellCheck={false}
+                    onChange={(e) => setAccountUsernameDraft(e.target.value.replace(/^@+/, ''))}
                   />
                 </label>
                 <label className="profile-name-field">
@@ -1966,13 +1967,16 @@ export default function ProfileScreen({
                     @
                   </span>
                   <input
-                    value={accountUsernameDraft}
-                    aria-label="Username"
+                    type="email"
+                    value={accountEmailDraft}
+                    aria-label="Email"
+                    placeholder="Email"
+                    autoComplete="email"
                     autoCapitalize="none"
                     autoCorrect="off"
                     spellCheck={false}
                     onChange={(e) =>
-                      setAccountUsernameDraft(e.target.value.replace(/^@+/, ''))
+                      setAccountEmailDraft(e.target.value)
                     }
                   />
                 </label>

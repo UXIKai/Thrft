@@ -34,6 +34,7 @@ Wire real profiles later by setting `avatarUrl` (and labels) on entries in `src/
 - Garment sizes use equal-sized buttons in centered rows, with the add-size control centered below them.
 - The settings gear beside the profile name opens only Profile, Settings & privacy, QR code, and Notifications. Profile opens the full-page editor; QR code encodes the account username, and Notifications explains chat alert controls and current push availability.
 - On wide screens, the gear menu opens to the right with its top aligned to the button's center; narrow screens keep it below the name.
+- The profile shows only the username. Account editing keeps the person, @ and lock icons for username, email and password; email changes require authentication-provider confirmation.
 - Music and Media appear above Money, forming centered rows that widen toward the bottom.
 - Money controls and sales statistics use matching tile sizes, spacing, and glass styling.
 
