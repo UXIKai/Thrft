@@ -2732,11 +2732,10 @@
 
 /* Keep the name centered with the settings control beside it. */
 .profile-settings-menu {
-  position: absolute;
-  top: calc(100% + 12px);
-  right: -36px;
-  z-index: 30;
-  width: min(220px, calc(100vw - 32px));
+  position: fixed;
+  z-index: 1000;
+  box-sizing: border-box;
+  width: min(234px, calc(100vw - 32px));
   padding: 6px;
   border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 16px;
@@ -2753,14 +2752,6 @@
   color: #fff;
   text-align: left;
   font: inherit;
-}
-
-@media (min-width: 1000px) {
-  .profile-settings-menu {
-    top: 50%;
-    left: calc(100% + 44px);
-    right: auto;
-  }
 }
 
 .profile-settings-menu button:focus-visible {

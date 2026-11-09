@@ -673,6 +673,7 @@ export default function ProfileScreen({
   const [closetPostError, setClosetPostError] = useState('')
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [profileMenuOpen, setProfileMenuOpen] = useState(false)
+  const [profileMenuPosition, setProfileMenuPosition] = useState({ top: 0, left: 0 })
   const [profileMenuPage, setProfileMenuPage] = useState(null)
   const [profileQr, setProfileQr] = useState('')
   const [profileQrError, setProfileQrError] = useState('')
@@ -681,6 +682,20 @@ export default function ProfileScreen({
 
   useEffect(() => {
     if (!profileMenuOpen) return undefined
+    const positionMenu = () => {
+      const button = settingsButtonRef.current?.getBoundingClientRect()
+      if (!button) return
+      const width = Math.min(234, window.innerWidth - 32)
+      const height = profileMenuRef.current?.offsetHeight || 190
+      const wide = window.innerWidth >= 1000
+      setProfileMenuPosition({
+        left: Math.max(16, Math.min(wide ? button.right + 8 : button.right - width, window.innerWidth - width - 16)),
+        top: Math.max(16, Math.min(wide ? button.top + button.height / 2 : button.bottom + 12, window.innerHeight - height - 16)),
+      })
+    }
+    positionMenu()
+    window.addEventListener('resize', positionMenu)
+    window.addEventListener('scroll', positionMenu, true)
     profileMenuRef.current?.querySelector('button')?.focus()
     const dismiss = (event) => {
       if (event.type === 'keydown') {
@@ -694,6 +709,8 @@ export default function ProfileScreen({
     document.addEventListener('pointerdown', dismiss)
     document.addEventListener('keydown', dismiss)
     return () => {
+      window.removeEventListener('resize', positionMenu)
+      window.removeEventListener('scroll', positionMenu, true)
       document.removeEventListener('pointerdown', dismiss)
       document.removeEventListener('keydown', dismiss)
     }
@@ -1280,8 +1297,8 @@ export default function ProfileScreen({
           >
             <GearIcon />
           </button>
-          {profileMenuOpen && (
-            <div className="profile-settings-menu" role="menu" aria-label="Profile options" ref={profileMenuRef}>
+          {profileMenuOpen && createPortal(
+            <div className="profile-settings-menu" style={profileMenuPosition} role="menu" aria-label="Profile options" ref={profileMenuRef}>
               {['Profile', 'Settings & privacy', 'QR code', 'Notifications'].map((label) => (
                 <button key={label} type="button" className="is-bare" role="menuitem" onClick={() => {
                   setProfileMenuOpen(false)
@@ -1291,7 +1308,7 @@ export default function ProfileScreen({
                 }}>{label}</button>
               ))}
             </div>
-          )}
+          , document.body)}
         </div>
         {!(account?.username || userProfile?.username) && (
           <button

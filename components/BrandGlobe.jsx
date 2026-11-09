@@ -26,13 +26,13 @@ function GlobePlusIcon() {
   )
 }
 
-function GlobePersonIcon() {
+function GlobePeopleIcon() {
   return (
     <svg className="brand-globe-dock-ico" viewBox="0 0 24 24" aria-hidden>
       <circle
-        cx="12"
+        cx="9"
         cy="8.2"
-        r="3.6"
+        r="3"
         fill="none"
         stroke="currentColor"
         strokeWidth="1.8"
@@ -42,8 +42,9 @@ function GlobePersonIcon() {
         stroke="currentColor"
         strokeWidth="1.8"
         strokeLinecap="round"
-        d="M5 19.5c.8-3.6 3.5-5.4 7-5.4s6.2 1.8 7 5.4"
+        d="M3 19.5c.7-3.4 3-5.2 6-5.2s5.3 1.8 6 5.2M17 14.5c2.3.4 3.7 2.1 4 5"
       />
+      <circle cx="17" cy="8.8" r="2.5" fill="none" stroke="currentColor" strokeWidth="1.8" />
     </svg>
   )
 }
@@ -1500,7 +1501,7 @@ function BrandGlobeView({
                 }}
               >
                 {typeof onSearchConfirm === 'function' ? (
-                  <GlobePersonIcon />
+                  <GlobePeopleIcon />
                 ) : (
                   <GlobeBackIcon />
                 )}
