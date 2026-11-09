@@ -60,6 +60,7 @@ Links and Money rows sit immediately below ID verification. Profile contains onl
 - Climb swaps orbit around each other (yin-yang), opposite-side only.
 
 ### Product rows
+- The orbital color picker keeps its center circle black and displays the focused color's name in that color.
 - The home search backdrop reuses the app's flowing atmosphere at 70% brightness behind the always-black filter panel. Choosing a color updates the backdrop, its flowing effect, and the panel text to that color; the panel itself does not animate.
 - Saved edit and filter menus open below their buttons, close each other, and dismiss when clicking outside.
 - A check mark below the product quantity returns to the previous page, including the cart, brand or clothing-type page when opened there.

@@ -693,15 +693,25 @@ html[data-bg-image='none'] .brand-globe-stage.is-choosing .brand-globe-center-ho
     inset 0 0 16px 2px rgba(255, 255, 255, 0.45);
 }
 
-/* Color picker: the color under the seat floods the backdrop and fills the seat */
+/* Color picker: tint the backdrop and label, keeping the center black. */
 .brand-globe.has-tint .brand-globe-scrim {
   background: color-mix(in srgb, var(--globe-tint) 75%, #000);
 }
 
-.brand-globe.has-tint .brand-globe-center-hole,
-html[data-bg-image='none'] .brand-globe.has-tint .brand-globe-center-hole,
-html[data-bg-image='none'] .brand-globe.has-tint .brand-globe-stage.is-choosing .brand-globe-center-hole {
-  background: var(--globe-tint);
+html .brand-globe.is-color-picker .brand-globe-center-hole,
+html[data-bg-image='none'] .brand-globe.is-color-picker .brand-globe-stage .brand-globe-center-hole {
+  background: #000;
+}
+
+.brand-globe.is-color-picker .brand-globe-focus {
+  background: #000;
+  color: var(--globe-tint, #fff);
+  filter: none;
+}
+
+.brand-globe.is-color-picker .brand-globe-focus-text {
+  color: var(--globe-tint, #fff);
+  text-shadow: none;
 }
 
 .brand-globe-scrim {

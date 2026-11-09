@@ -1346,6 +1346,8 @@ function BrandGlobeView({
       }${veryDense ? ' is-very-dense' : ''}${
         compact || snug ? ' is-compact' : ''
       }${rotating ? ' is-rotating' : ''}${
+        previewColors ? ' is-color-picker' : ''
+      }${
         seatTint ? ' has-tint' : ''
       }`}
       style={originStyle}
