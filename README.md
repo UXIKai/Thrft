@@ -32,6 +32,7 @@ Wire real profiles later by setting `avatarUrl` (and labels) on entries in `src/
 
 ### Profile settings
 - The pencil editor opens full-page, with account fields and settings centered in a column capped at 460px.
+- Music and Media appear above Money, forming centered rows that widen toward the bottom.
 - Money controls and sales statistics use matching tile sizes, spacing, and glass styling.
 
 ### Chat

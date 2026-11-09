@@ -2125,21 +2125,21 @@
 
   .profile-edit-card .profile-social-row,
   .profile-edit-card .profile-music-row {
-    justify-content: space-between;
+    justify-content: center;
     flex-wrap: nowrap;
     gap: 10px;
     width: 100%;
   }
 
   .profile-edit-card .profile-social-btn {
-    flex: 1 1 0;
+    flex: 0 1 52px;
     width: auto;
     min-width: 0;
     max-width: 58px;
   }
 
   .profile-edit-card .profile-music-btn {
-    flex: 1 1 0;
+    flex: 0 1 88px;
     width: auto;
     max-width: 120px;
   }

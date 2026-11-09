@@ -1969,105 +1969,6 @@ export default function ProfileScreen({
                 ) : null}
               </section>
 
-              <section className="profile-block is-panel-section" aria-label="Money">
-                <h2 className="profile-label">Money</h2>
-                <div className="profile-money-grid" role="group" aria-label="Money">
-                  <button
-                    type="button"
-                    className={`profile-money-tile is-bank${connections.bank?.connected ? ' is-active' : ''}`}
-                    aria-label={
-                      connections.bank?.connected ? 'Disconnect bank' : 'Connect bank'
-                    }
-                    disabled={connectBusy === 'bank'}
-                    onClick={() =>
-                      handleConnect(
-                        'bank',
-                        connections.bank?.connected ? 'disconnect' : 'connect',
-                      )
-                    }
-                  >
-                    <MoneyIcon className="profile-money-tile-ico" />
-                  </button>
-                  {MONEY_TABS.map(({ id, label, Icon }) => (
-                    <button
-                      key={id}
-                      type="button"
-                      role="tab"
-                      aria-selected={moneyTab === id}
-                      className={`profile-money-tile${moneyTab === id ? ' is-active' : ''}`}
-                      onClick={() => selectMoneyTab(id)}
-                    >
-                      {id === 'wallet' ? (
-                        <WalletIcon className="profile-money-tile-ico" />
-                      ) : id === 'points' ? (
-                        <span className="profile-money-tile-ico is-sparkle">
-                          <SparkleIcon />
-                        </span>
-                      ) : (
-                        <Icon />
-                      )}
-                      <span className="profile-money-tile-label">{label}</span>
-                    </button>
-                  ))}
-                </div>
-                <div className="profile-money-detail">
-                  {moneyTab === 'points' && (
-                    <section className="profile-money-section is-points" aria-label="Points">
-                      <div className="profile-credits-card is-half">
-                        <div className="profile-credits-row">
-                          <SparkleIcon />
-                          <span className="profile-credits-n">-</span>
-                        </div>
-                      </div>
-                    </section>
-                  )}
-                  {moneyTab === 'wallet' && (
-                    <section className="profile-money-section" aria-label="Wallet">
-                      <div className="profile-credits-card is-half">
-                        <div className="profile-credits-row">
-                          <WalletIcon />
-                          <span className="profile-credits-n">-</span>
-                        </div>
-                      </div>
-                    </section>
-                  )}
-                  {moneyTab === 'sales' && (
-                    <section className="profile-money-section" aria-label="Sales">
-                      <div className="profile-sales-grid">
-                        {[
-                          [
-                            salesStats.gross == null
-                              ? '…'
-                              : formatListingPrice(salesStats.gross),
-                            'Gross',
-                          ],
-                          [
-                            salesStats.net == null
-                              ? '…'
-                              : formatListingPrice(salesStats.net),
-                            'Net',
-                          ],
-                          [
-                            salesStats.sold == null ? '…' : String(salesStats.sold),
-                            'Sold',
-                          ],
-                          [
-                            salesStats.active == null
-                              ? '…'
-                              : String(salesStats.active),
-                            'Active',
-                          ],
-                        ].map(([value, label]) => (
-                          <div key={label} className="profile-stat-card">
-                            <span className="profile-stat-value">{value}</span>
-                            <span className="profile-stat-label">{label}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </section>
-                  )}
-                </div>
-              </section>
               <section className="profile-block is-panel-section" aria-labelledby="music-label">
                 <h2 id="music-label" className="profile-label">
                   Music
@@ -2169,6 +2070,106 @@ export default function ProfileScreen({
                 </button>
                   </div>
                 ) : null}
+              </section>
+
+              <section className="profile-block is-panel-section" aria-label="Money">
+                <h2 className="profile-label">Money</h2>
+                <div className="profile-money-grid" role="group" aria-label="Money">
+                  <button
+                    type="button"
+                    className={`profile-money-tile is-bank${connections.bank?.connected ? ' is-active' : ''}`}
+                    aria-label={
+                      connections.bank?.connected ? 'Disconnect bank' : 'Connect bank'
+                    }
+                    disabled={connectBusy === 'bank'}
+                    onClick={() =>
+                      handleConnect(
+                        'bank',
+                        connections.bank?.connected ? 'disconnect' : 'connect',
+                      )
+                    }
+                  >
+                    <MoneyIcon className="profile-money-tile-ico" />
+                  </button>
+                  {MONEY_TABS.map(({ id, label, Icon }) => (
+                    <button
+                      key={id}
+                      type="button"
+                      role="tab"
+                      aria-selected={moneyTab === id}
+                      className={`profile-money-tile${moneyTab === id ? ' is-active' : ''}`}
+                      onClick={() => selectMoneyTab(id)}
+                    >
+                      {id === 'wallet' ? (
+                        <WalletIcon className="profile-money-tile-ico" />
+                      ) : id === 'points' ? (
+                        <span className="profile-money-tile-ico is-sparkle">
+                          <SparkleIcon />
+                        </span>
+                      ) : (
+                        <Icon />
+                      )}
+                      <span className="profile-money-tile-label">{label}</span>
+                    </button>
+                  ))}
+                </div>
+                <div className="profile-money-detail">
+                  {moneyTab === 'points' && (
+                    <section className="profile-money-section is-points" aria-label="Points">
+                      <div className="profile-credits-card is-half">
+                        <div className="profile-credits-row">
+                          <SparkleIcon />
+                          <span className="profile-credits-n">-</span>
+                        </div>
+                      </div>
+                    </section>
+                  )}
+                  {moneyTab === 'wallet' && (
+                    <section className="profile-money-section" aria-label="Wallet">
+                      <div className="profile-credits-card is-half">
+                        <div className="profile-credits-row">
+                          <WalletIcon />
+                          <span className="profile-credits-n">-</span>
+                        </div>
+                      </div>
+                    </section>
+                  )}
+                  {moneyTab === 'sales' && (
+                    <section className="profile-money-section" aria-label="Sales">
+                      <div className="profile-sales-grid">
+                        {[
+                          [
+                            salesStats.gross == null
+                              ? '…'
+                              : formatListingPrice(salesStats.gross),
+                            'Gross',
+                          ],
+                          [
+                            salesStats.net == null
+                              ? '…'
+                              : formatListingPrice(salesStats.net),
+                            'Net',
+                          ],
+                          [
+                            salesStats.sold == null ? '…' : String(salesStats.sold),
+                            'Sold',
+                          ],
+                          [
+                            salesStats.active == null
+                              ? '…'
+                              : String(salesStats.active),
+                            'Active',
+                          ],
+                        ].map(([value, label]) => (
+                          <div key={label} className="profile-stat-card">
+                            <span className="profile-stat-value">{value}</span>
+                            <span className="profile-stat-label">{label}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </section>
+                  )}
+                </div>
               </section>
 
               
