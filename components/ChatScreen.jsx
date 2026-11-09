@@ -294,6 +294,14 @@ function FilterCheckIcon() {
   )
 }
 
+function MutedBellIcon() {
+  return (
+    <svg className="chat-menu-ico" viewBox="0 0 24 24" aria-hidden>
+      <path d="M18 8a6 6 0 0 0-10-4M6 8v5l-2 4h13M10 21h4M3 3l18 18" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
 function FilterMessagesIcon() {
   return (
     <svg className="chat-filter-menu-ico" viewBox="0 0 24 24" aria-hidden>
@@ -735,7 +743,6 @@ export default function ChatScreen({
     const id = requestAnimationFrame(() => {
       const el = threadScrollRef.current
       if (el) el.scrollTop = el.scrollHeight
-      composeInputRef.current?.focus({ preventScroll: true })
     })
     return () => cancelAnimationFrame(id)
   }, [activeChatId, threadMessages.length])
@@ -782,7 +789,7 @@ export default function ChatScreen({
       const el = dotsRefs.current.get(menuId)
       if (!el) return
       const r = el.getBoundingClientRect()
-      setMenuPos({
+      setMenuPos((prev) => prev?.context ? prev : {
         top: Math.min(r.bottom + 4, window.innerHeight - 220),
         right: Math.max(8, window.innerWidth - r.right),
         centerX: r.left + r.width / 2,
@@ -1540,6 +1547,8 @@ export default function ChatScreen({
   const longPressRef = useRef({ timer: 0, x: 0, y: 0 })
   const longPressFiredRef = useRef(false)
 
+  useEffect(() => () => window.clearTimeout(longPressRef.current.timer), [])
+
   function cancelRowPress() {
     window.clearTimeout(longPressRef.current.timer)
   }
@@ -1550,6 +1559,7 @@ export default function ChatScreen({
   }
 
   function startRowPress(e, chatId) {
+    if (e.button !== 0) return
     cancelRowPress()
     longPressFiredRef.current = false
     longPressRef.current = {
@@ -1562,6 +1572,7 @@ export default function ChatScreen({
           right: 0,
           centerX: window.innerWidth / 2,
           centered: true,
+          context: true,
         })
         setMenuId(chatId)
       }, 450),
@@ -1585,12 +1596,20 @@ export default function ChatScreen({
   }
 
   function openThread(chat) {
+    setChats((prev) => prev.map((row) => row.id === chat.id ? { ...row, unread: false } : row))
     setActiveChatId(chat.id)
     setDraftMessage('')
     setContactSheetOpen(false)
     setMembersSheetOpen(false)
     setEditingNick(false)
     setNickDraft(chat.title)
+    closeMenus()
+  }
+
+  function toggleChatFlag(id, flag) {
+    setChats((prev) => prev.map((chat) =>
+      chat.id === id ? { ...chat, [flag]: !chat[flag] } : chat,
+    ))
     closeMenus()
   }
 
@@ -2737,6 +2756,8 @@ export default function ChatScreen({
                   <span className="chat-row-top">
                     <span className="chat-row-title">
                       {chat.title}
+                      {chat.unread && <span className="chat-unread-dot" aria-label="Unread" />}
+                      {chat.muted && <span aria-label="Alerts hidden"><MutedBellIcon /></span>}
                       {chat.kind === 'group' && (
                         <span className="chat-group-tag">Group</span>
                       )}
@@ -2820,6 +2841,7 @@ export default function ChatScreen({
 
       {menuId &&
         menuPos &&
+        !menuPos.context &&
         chats.find((c) => c.id === menuId)?.kind === 'dm' &&
         createPortal(
           <div className="chat-dm-portal">
@@ -2834,7 +2856,36 @@ export default function ChatScreen({
           document.body,
         )}
 
-      {menuId && menuPos && chats.find((c) => c.id === menuId)?.kind !== 'dm' && (
+      {menuId && menuPos?.context && createPortal(
+        <div className="chat-dm-portal">
+          <button type="button" className="chat-dm-portal-scrim" aria-label="Dismiss chat actions" onClick={closeMenus} />
+          <div className="chat-hold-menu" role="menu" aria-label="Chat actions">
+            {(() => {
+              const chat = chats.find((row) => row.id === menuId)
+              if (!chat) return null
+              return (
+                <>
+                  <button type="button" role="menuitem" className="chat-hold-action is-bare" onClick={() => togglePin(chat.id)}>
+                    <PinIcon /><span>{chat.pinned ? 'Unpin' : 'Pin'}</span>
+                  </button>
+                  <button type="button" role="menuitem" className="chat-hold-action is-bare" onClick={() => toggleChatFlag(chat.id, 'unread')}>
+                    <ChatBubbleIcon className="chat-menu-ico" /><span>{chat.unread ? 'Mark as Read' : 'Mark as Unread'}</span>
+                  </button>
+                  <button type="button" role="menuitem" className="chat-hold-action is-bare" onClick={() => toggleChatFlag(chat.id, 'muted')}>
+                    <MutedBellIcon /><span>{chat.muted ? 'Show Alerts' : 'Hide Alerts'}</span>
+                  </button>
+                  <button type="button" role="menuitem" className="chat-hold-action is-bare is-danger" onClick={() => deleteChat(chat.id)}>
+                    <TrashIcon className="chat-menu-ico" /><span>Delete</span>
+                  </button>
+                </>
+              )
+            })()}
+          </div>
+        </div>,
+        document.body,
+      )}
+
+      {menuId && menuPos && !menuPos.context && chats.find((c) => c.id === menuId)?.kind !== 'dm' && (
         <div
           ref={menuRef}
           className="chat-menu is-fixed"

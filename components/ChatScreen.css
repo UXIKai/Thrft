@@ -2832,6 +2832,58 @@ html body button.chat-contact-nick-save {
   pointer-events: none;
 }
 
+.chat-hold-menu {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(320px, calc(100% - 32px));
+  box-sizing: border-box;
+  padding: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 30px;
+  background: rgba(36, 36, 38, 0.85);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3);
+  pointer-events: auto;
+}
+
+.chat-hold-action {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  width: 100%;
+  min-height: 54px;
+  padding: 8px 18px;
+  color: #fff;
+  font-size: 1.05rem;
+  text-align: left;
+}
+
+.chat-hold-action.is-danger {
+  color: #ff5b63;
+}
+
+.chat-hold-action:focus-visible {
+  outline: 1px solid currentColor;
+  border-radius: 12px;
+}
+
+.chat-hold-action svg {
+  flex: 0 0 24px;
+  width: 24px;
+  height: 24px;
+}
+
+.chat-unread-dot {
+  flex: 0 0 8px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #64b5ff;
+}
+
 .chat-dm-portal-scrim {
   position: absolute;
   inset: 0;
