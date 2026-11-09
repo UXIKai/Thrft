@@ -34,9 +34,7 @@ function productPhoto(product) {
   return photo
 }
 
-/**
- * Product page — name, image, price, and a bare add plus.
- */
+/** Product page with a size picker and bag controls. */
 export default function ProductDetail({
   product,
   onClose,
@@ -119,7 +117,9 @@ export default function ProductDetail({
         <span className="glass-overlay-spacer" aria-hidden />
       </header>
       <div className="glass-overlay-body product-detail-body">
-        <h1 className="product-detail-title">{name}</h1>
+        {product.brandName && (
+          <p className="product-detail-brand">{product.brandName}</p>
+        )}
         <div className="product-detail-photo">
           {photo ? (
             <img src={photo} alt="" />
@@ -127,19 +127,22 @@ export default function ProductDetail({
             <span className="product-detail-photo-empty" aria-hidden />
           )}
         </div>
+        <h1 className="product-detail-title">{name}</h1>
         <p className="product-detail-price">{product.price}</p>
         {sizing && (
-          <div className="product-detail-sizes" role="listbox" aria-label="Size">
-            {(product.sizes?.length ? product.sizes : LETTER_SIZES).map((size) => (
-              <button
-                key={size}
-                type="button"
-                className="product-detail-size is-bare"
-                onClick={() => pickSize(size)}
-              >
-                {size}
-              </button>
-            ))}
+          <div className="product-detail-sizes-reveal">
+            <div className="product-detail-sizes" role="listbox" aria-label="Size">
+              {(product.sizes?.length ? product.sizes : LETTER_SIZES).map((size) => (
+                <button
+                  key={size}
+                  type="button"
+                  className="product-detail-size is-bare"
+                  onClick={() => pickSize(size)}
+                >
+                  {size}
+                </button>
+              ))}
+            </div>
           </div>
         )}
         <div
@@ -150,6 +153,7 @@ export default function ProductDetail({
             type="button"
             className="product-detail-add"
             aria-label="Choose amount"
+            aria-expanded={sizing}
             tabIndex={added ? -1 : 0}
             onClick={start}
           >
