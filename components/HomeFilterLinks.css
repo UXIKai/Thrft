@@ -231,7 +231,7 @@
   animation: home-search-shine 5s linear infinite;
 }
 
-/* Card follows the picked color (white by default) on a black backdrop */
+/* Keep the flowing atmosphere behind, never on, the solid color card. */
 html body .home-search-blur {
   /* Black by default; a deep shade of the picked color otherwise */
   background: color-mix(in srgb, var(--search-tint, #000) 38%, #000) !important;
@@ -240,6 +240,15 @@ html body .home-search-blur {
   animation: none;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
+}
+
+html body .home-search-blur > .atmosphere {
+  position: absolute;
+  inset: 0;
+  display: block;
+  opacity: 1;
+  --atmosphere-base: var(--search-tint, #000);
+  background: var(--search-tint, #000);
 }
 
 html body .home-search-blur::after {

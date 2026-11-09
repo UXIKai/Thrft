@@ -82,6 +82,8 @@ export default function HomeFilterLinks({
     '--card-bg': cardHex,
     '--card-ink': inkFor(cardHex),
   }
+  const searchColor = (draftColor && colorHex(draftColor)) || '#000000'
+  const searchRgb = searchColor.match(/[a-f0-9]{2}/gi)?.map((part) => parseInt(part, 16)).join(', ')
 
   return (
     <div className="home-search">
@@ -101,8 +103,23 @@ export default function HomeFilterLinks({
         <div
           className="home-search-blur"
           aria-hidden
-          style={{ '--search-tint': (draftColor && colorHex(draftColor)) || '#000000' }}
-        />
+          style={{
+            '--search-tint': searchColor,
+            ...(draftColor && searchRgb ? {
+              '--atmosphere-base-rgb': searchRgb,
+              '--atmosphere-effect-a-rgb': searchRgb,
+              '--atmosphere-effect-b-rgb': searchRgb,
+              '--atmosphere-effect-c-rgb': searchRgb,
+            } : {}),
+          }}
+        >
+          <div className="atmosphere" aria-hidden>
+            <span className="atmosphere-bloom atmosphere-bloom-a" />
+            <span className="atmosphere-bloom atmosphere-bloom-b" />
+            <span className="atmosphere-bloom atmosphere-bloom-c" />
+            <span className="atmosphere-bloom atmosphere-bloom-d" />
+          </div>
+        </div>
       )}
       {open && (
         <div
