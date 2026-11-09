@@ -1163,6 +1163,33 @@ html body .glass-sheet-card:has(.settings-new-page) .glass-sheet-add {
 .settings-new-page { flex-direction: column; gap: 28px; }
 .settings-new-page .settings-new-drum { width: 100%; display: flex; justify-content: center; }
 .settings-new-page .gender-drum { height: calc(var(--row-h, 44px) * 6); padding: calc(var(--row-h, 44px) * 2.5) 0; }
+html body .glass-sheet-card.is-size-sheet .settings-size-chips.is-even {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px 8px;
+  width: min(100%, 440px);
+  margin: 0 auto;
+}
+
+html body .glass-sheet-card.is-size-sheet .settings-size-chips.is-even .settings-size-chip:not(.settings-size-add) {
+  flex: 0 0 calc((100% - (var(--size-cols) - 1) * 8px) / var(--size-cols));
+  width: calc((100% - (var(--size-cols) - 1) * 8px) / var(--size-cols));
+  height: 40px;
+  min-height: 40px;
+  max-width: none;
+  box-sizing: border-box;
+  display: grid;
+  place-items: center;
+  padding: 6px 4px;
+}
+
+html body .glass-sheet-card.is-size-sheet .settings-size-chips.is-even .settings-size-add {
+  flex: 0 0 100%;
+  height: 40px;
+  margin: 0 auto;
+}
+
 html body .glass-sheet-card .settings-size-chip.settings-size-add-input.is-inline {
   width: 100%;
   max-width: 120px;

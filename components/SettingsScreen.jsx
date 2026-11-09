@@ -2130,12 +2130,12 @@ export default function SettingsScreen({
                           ...base,
                           ...selectedList.filter((x) => !base.includes(x)),
                         ]
-                        const total = options.length + 1
+                        const total = options.length
                         const longest = Math.max(
                           0,
                           ...options.map((o) => String(o).length),
                         )
-                        const maxCols = longest > 4 ? 3 : 5
+                        const maxCols = longest > 4 ? 3 : 4
                         const sizeCols = Math.ceil(
                           total /
                             (total <= Math.min(4, maxCols)
@@ -2176,7 +2176,7 @@ export default function SettingsScreen({
                               {cat.label}
                             </p>
                             <div
-                              className="settings-size-chips"
+                              className="settings-size-chips is-even"
                               role="listbox"
                               aria-label={`${cat.label} size`}
                               style={{
