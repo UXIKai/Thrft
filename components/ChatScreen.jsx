@@ -2517,7 +2517,7 @@ export default function ChatScreen({
         aria-label="Chat controls"
       >
         <div className="chat-sidebar-header">
-          <h1 className="chat-sidebar-title">Messages</h1>
+          <h1 className="chat-sidebar-title">Chats</h1>
           <button
             type="button"
             className="chat-sidebar-control is-bare"

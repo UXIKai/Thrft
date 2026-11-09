@@ -862,7 +862,7 @@
   transition: transform 0.38s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.chat-search-add.is-sheet-open {
+.chat-search-add.is-sheet-open .chat-ico {
   transform: rotate(45deg);
 }
 
@@ -2958,9 +2958,9 @@ html body button.chat-contact-nick-save {
   width: auto;
   height: 62px;
   margin-left: auto;
-  padding: 0 7px 0 0;
+  padding: 6px;
   gap: 0;
-  border: none;
+  border: 1px solid transparent;
   border-radius: 0;
   background: transparent;
   box-shadow: none;
@@ -2968,7 +2968,7 @@ html body button.chat-contact-nick-save {
   -webkit-backdrop-filter: none;
 }
 
-.chat-search-add.is-search-open {
+.chat-search-add.is-search-open .chat-ico {
   transform: rotate(45deg);
 }
 
