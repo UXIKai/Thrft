@@ -32,7 +32,7 @@ Wire real profiles later by setting `avatarUrl` (and labels) on entries in `src/
 
 ### Profile settings
 - Garment sizes use equal-sized buttons in centered rows, with the add-size control centered below them.
-- The settings gear sits beside the profile name. The profile editor opens full-page, with account fields and settings centered in a column capped at 460px.
+- The settings gear beside the profile name opens only Profile, Settings & privacy, QR code, and Notifications. Profile opens the full-page editor; QR code encodes the account username, and Notifications explains chat alert controls and current push availability.
 - Music and Media appear above Money, forming centered rows that widen toward the bottom.
 - Money controls and sales statistics use matching tile sizes, spacing, and glass styling.
 

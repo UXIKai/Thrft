@@ -2730,6 +2730,68 @@
 }
 
 /* Keep the name centered with the settings control beside it. */
+.profile-settings-menu {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: -36px;
+  z-index: 30;
+  width: min(220px, calc(100vw - 32px));
+  padding: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 16px;
+  background: rgba(28, 28, 30, 0.94);
+  backdrop-filter: blur(24px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+}
+
+.profile-settings-menu button {
+  display: block;
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  color: #fff;
+  text-align: left;
+  font: inherit;
+}
+
+.profile-settings-menu button:focus-visible {
+  outline: 1px solid #fff;
+  border-radius: 10px;
+}
+
+.profile-options-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+}
+
+.profile-options-scrim {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.profile-options-card {
+  position: relative;
+  width: min(100%, 360px);
+  box-sizing: border-box;
+  padding: 24px;
+  border-radius: 20px;
+  background: #242424;
+  color: #fff;
+  text-align: center;
+}
+
+.profile-options-card img {
+  max-width: 100%;
+  height: auto;
+}
+
 .profile-name-row .profile-name-edit {
   position: absolute;
   left: 100%;

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
+import QRCode from 'qrcode'
 import {
   connectProvider,
   fetchMyProducts,
@@ -671,6 +672,48 @@ export default function ProfileScreen({
   const [closetPosting, setClosetPosting] = useState(false)
   const [closetPostError, setClosetPostError] = useState('')
   const [settingsOpen, setSettingsOpen] = useState(false)
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false)
+  const [profileMenuPage, setProfileMenuPage] = useState(null)
+  const [profileQr, setProfileQr] = useState('')
+  const [profileQrError, setProfileQrError] = useState('')
+  const settingsButtonRef = useRef(null)
+  const profileMenuRef = useRef(null)
+
+  useEffect(() => {
+    if (!profileMenuOpen) return undefined
+    profileMenuRef.current?.querySelector('button')?.focus()
+    const dismiss = (event) => {
+      if (event.type === 'keydown') {
+        if (event.key !== 'Escape') return
+        settingsButtonRef.current?.focus()
+      } else if (profileMenuRef.current?.contains(event.target) || settingsButtonRef.current?.contains(event.target)) {
+        return
+      }
+      setProfileMenuOpen(false)
+    }
+    document.addEventListener('pointerdown', dismiss)
+    document.addEventListener('keydown', dismiss)
+    return () => {
+      document.removeEventListener('pointerdown', dismiss)
+      document.removeEventListener('keydown', dismiss)
+    }
+  }, [profileMenuOpen])
+
+  useEffect(() => {
+    if (profileMenuPage !== 'QR code') return undefined
+    let active = true
+    setProfileQr('')
+    setProfileQrError('')
+    const username = account?.username || userProfile?.username
+    if (!username) {
+      setProfileQrError('Add a username in Profile to create your QR code.')
+      return undefined
+    }
+    QRCode.toDataURL(`@${String(username).replace(/^@+/, '')}`, { width: 240, margin: 2 })
+      .then((url) => { if (active) setProfileQr(url) })
+      .catch(() => { if (active) setProfileQrError('Unable to generate your QR code. Please try again.') })
+    return () => { active = false }
+  }, [profileMenuPage, account?.username, userProfile?.username])
   const [shipOpen, setShipOpen] = useState(false)
   const [musicSheet, setMusicSheet] = useState(null) // 'spotify' | 'apple'
   const [musicDraft, setMusicDraft] = useState('')
@@ -1221,11 +1264,26 @@ export default function ProfileScreen({
             type="button"
             className="profile-name-edit"
             aria-label="Settings"
+            ref={settingsButtonRef}
+            aria-haspopup="menu"
+            aria-expanded={profileMenuOpen}
             onMouseDown={holdScroll}
-            onClick={() => setSettingsOpen(true)}
+            onClick={() => setProfileMenuOpen((open) => !open)}
           >
             <GearIcon />
           </button>
+          {profileMenuOpen && (
+            <div className="profile-settings-menu" role="menu" aria-label="Profile options" ref={profileMenuRef}>
+              {['Profile', 'Settings & privacy', 'QR code', 'Notifications'].map((label) => (
+                <button key={label} type="button" className="is-bare" role="menuitem" onClick={() => {
+                  setProfileMenuOpen(false)
+                  if (label === 'Profile') openProfileEditor()
+                  else if (label === 'Settings & privacy') setSettingsOpen(true)
+                  else setProfileMenuPage(label)
+                }}>{label}</button>
+              ))}
+            </div>
+          )}
         </div>
         {(account?.username || userProfile?.username) ? (
           <button
@@ -2247,6 +2305,18 @@ export default function ProfileScreen({
           stageEl,
         )}
 
+      {stageEl && profileMenuPage && createPortal(
+        <div className="profile-options-overlay" role="dialog" aria-modal="true" aria-label={profileMenuPage}>
+          <button type="button" className="profile-options-scrim is-bare" aria-label="Close" onClick={() => setProfileMenuPage(null)} />
+          <div className="profile-options-card">
+            <h2>{profileMenuPage}</h2>
+            {profileMenuPage === 'QR code' ? (
+              profileQrError ? <p role="alert">{profileQrError}</p> : profileQr ? <img src={profileQr} alt="QR code for your username" width="240" height="240" /> : <p role="status">Creating QR code...</p>
+            ) : <p>Chat alerts can be muted or unmuted by holding a conversation and choosing Hide Alerts or Show Alerts. Push notifications are not currently available.</p>}
+            <button type="button" onClick={() => setProfileMenuPage(null)}>Close</button>
+          </div>
+        </div>, stageEl,
+      )}
       {stageEl &&
         settingsOpen &&
         createPortal(
