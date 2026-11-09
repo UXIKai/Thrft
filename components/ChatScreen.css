@@ -47,7 +47,7 @@
   gap: 8px;
   width: 100%;
   min-height: 36px;
-  margin: 10px 0 4px;
+  margin: 10px 0 100px;
   background: transparent;
 }
 
@@ -332,7 +332,7 @@
   box-sizing: border-box;
   position: absolute;
   top: calc(100% + 8px);
-  left: 0;
+  left: 12px;
   z-index: 22;
   display: flex;
   flex-direction: column;
@@ -488,6 +488,36 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+
+.chat-select-circle {
+  flex: 0 0 22px;
+  width: 22px;
+  height: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+}
+
+.chat-select-circle.is-selected {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.chat-select-circle svg {
+  width: 16px;
+  height: 16px;
+}
+
+.chat-delete-selected {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 52px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  color: #fff;
 }
 
 .chat-row-wrap {

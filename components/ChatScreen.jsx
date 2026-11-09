@@ -1319,7 +1319,22 @@ export default function ChatScreen({
   function setPinsEditMode(mode) {
     setPinsMode((prev) => (prev === mode ? null : mode))
     setPinsMenuOpen(false)
-    if (mode !== 'select') setPinSelectedIds([])
+    setPinSelectedIds([])
+  }
+
+  function toggleChatSelection(id) {
+    setPinSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((selectedId) => selectedId !== id) : [...prev, id],
+    )
+  }
+
+  function deleteSelectedChats() {
+    if (pinSelectedIds.includes(activeChatId)) {
+      deleteChat(activeChatId)
+    }
+    setChats((prev) => prev.filter((chat) => !pinSelectedIds.includes(chat.id)))
+    setPinSelectedIds([])
+    setPinsMode(null)
   }
 
   function onPinnedSlotClick(cell) {
@@ -2590,10 +2605,10 @@ export default function ChatScreen({
                 <button
                   type="button"
                   role="menuitem"
-                  className={`chat-pins-menu-btn${pinsMode === 'pins' ? ' is-on' : ''}`}
-                  aria-label="Edit pins"
-                  aria-pressed={pinsMode === 'pins'}
-                  onClick={() => setPinsEditMode('pins')}
+                  className={`chat-pins-menu-btn${pinsMode === 'select' ? ' is-on' : ''}`}
+                  aria-label="Edit chats"
+                  aria-pressed={pinsMode === 'select'}
+                  onClick={() => setPinsEditMode('select')}
                 >
                   <PinIcon className="chat-pins-menu-ico" />
                   <span className="chat-pins-menu-label">Edit</span>
@@ -2612,6 +2627,16 @@ export default function ChatScreen({
             >
               <FilterIcon className="chat-filter-ico" />
             </button>
+            {pinsMode === 'select' && pinSelectedIds.length > 0 && (
+              <button
+                type="button"
+                className="chat-delete-selected is-bare"
+                aria-label={`Delete ${pinSelectedIds.length} selected chats`}
+                onClick={deleteSelectedChats}
+              >
+                <TrashIcon />
+              </button>
+            )}
             {listFilterOpen ? (
               <div
                 className="chat-filter-menu"
@@ -2664,20 +2689,35 @@ export default function ChatScreen({
               <button
                 type="button"
                 className="chat-row"
+                aria-pressed={pinsMode === 'select' ? pinSelectedIds.includes(chat.id) : undefined}
                 onClick={() => {
+                  if (pinsMode === 'select') {
+                    toggleChatSelection(chat.id)
+                    return
+                  }
                   if (longPressFiredRef.current) {
                     longPressFiredRef.current = false
                     return
                   }
                   openThread(chat)
                 }}
-                onPointerDown={(e) => startRowPress(e, chat.id)}
+                onPointerDown={(e) => {
+                  if (pinsMode !== 'select') startRowPress(e, chat.id)
+                }}
                 onPointerMove={moveRowPress}
                 onPointerUp={cancelRowPress}
                 onPointerCancel={cancelRowPress}
                 onPointerLeave={cancelRowPress}
                 onContextMenu={(e) => e.preventDefault()}
               >
+                {pinsMode === 'select' && (
+                  <span
+                    className={`chat-select-circle${pinSelectedIds.includes(chat.id) ? ' is-selected' : ''}`}
+                    aria-hidden
+                  >
+                    {pinSelectedIds.includes(chat.id) ? <FilterCheckIcon /> : null}
+                  </span>
+                )}
                 <span className="chat-avatar" aria-hidden>
                   {chat.initials}
                 </span>
