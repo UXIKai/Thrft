@@ -247,6 +247,7 @@ html body .home-search-blur > .atmosphere {
   inset: 0;
   display: block;
   opacity: 1;
+  filter: brightness(0.7);
   --atmosphere-base: var(--search-tint, #000);
   background: var(--search-tint, #000);
 }
