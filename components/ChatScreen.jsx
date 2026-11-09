@@ -2857,8 +2857,39 @@ export default function ChatScreen({
         )}
 
       {menuId && menuPos?.context && createPortal(
-        <div className="chat-dm-portal">
+        <div className="chat-dm-portal chat-hold-portal">
           <button type="button" className="chat-dm-portal-scrim" aria-label="Dismiss chat actions" onClick={closeMenus} />
+          <div className="chat-hold-stack">
+            {(() => {
+              const chat = chats.find((row) => row.id === menuId)
+              if (!chat) return null
+              return (
+                <section className="chat-hold-preview" aria-label={`Preview of ${chat.title}`}>
+                  <header className="chat-hold-preview-heading">{chat.title}</header>
+                  <div
+                    className="chat-hold-preview-messages"
+                    ref={(el) => {
+                      if (el) el.scrollTop = el.scrollHeight
+                    }}
+                  >
+                    {chat.messages.length ? chat.messages.slice(-12).map((msg) => (
+                      <div key={msg.id} className={`chat-thread-bubble ${msg.from === 'me' ? 'is-me' : 'is-them'}`}>
+                        {msg.kind === 'image' && msg.imageUrl ? (
+                          <img className="chat-thread-bubble-image" src={msg.imageUrl} alt={msg.fileName || 'Photo'} />
+                        ) : (
+                          <p className="chat-thread-bubble-text">
+                            {msg.kind === 'file' ? msg.fileName || msg.text : msg.text}
+                          </p>
+                        )}
+                        {msg.at ? <span className="chat-thread-bubble-time">{formatMsgTime(msg.at)}</span> : null}
+                      </div>
+                    )) : (
+                      <p className="chat-thread-empty">Message {chat.title}</p>
+                    )}
+                  </div>
+                </section>
+              )
+            })()}
           <div className="chat-hold-menu" role="menu" aria-label="Chat actions">
             {(() => {
               const chat = chats.find((row) => row.id === menuId)
@@ -2880,6 +2911,7 @@ export default function ChatScreen({
                 </>
               )
             })()}
+          </div>
           </div>
         </div>,
         document.body,
