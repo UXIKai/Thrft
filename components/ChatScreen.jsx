@@ -247,10 +247,6 @@ function PeopleIcon() {
   )
 }
 
-function emptyPinnedSlots(count) {
-  return Array.from({ length: count }, (_, i) => ({ id: `slot-${i}`, empty: true }))
-}
-
 function PencilIcon() {
   return (
     <svg className="chat-ico" viewBox="0 0 24 24" aria-hidden>
@@ -603,7 +599,7 @@ export default function ChatScreen({
   const [likedQuery, setLikedQuery] = useState('')
   const [likedSelected, setLikedSelected] = useState([]) // item keys, max 10
   const [pinsMenuOpen, setPinsMenuOpen] = useState(false)
-  const [pinsMode, setPinsMode] = useState(null) // null | 'select' | 'pins' | 'profile'
+  const [pinsMode, setPinsMode] = useState(null) // null | 'select' | 'pins'
   const [pinSelectedIds, setPinSelectedIds] = useState([])
   const [listFilterOpen, setListFilterOpen] = useState(false)
   const [listFilter, setListFilter] = useState('messages')
@@ -630,7 +626,6 @@ export default function ChatScreen({
     return (activeChat.members || []).filter((m) => m && m !== 'You')
   }, [activeChat])
 
-  const pinned = useMemo(() => chats.filter((c) => c.pinned), [chats])
 
   const allMemberNames = useMemo(() => {
     const names = new Set()
@@ -676,11 +671,9 @@ export default function ChatScreen({
       c.title.toLowerCase().includes(q) ||
       c.preview.toLowerCase().includes(q)
     return {
-      pinned: pinned.filter(match),
-      // Keep pinned rows in the list too so ··· can unpin
-      all: chats.filter(match),
+      all: chats.filter(match).sort((a, b) => Number(Boolean(b.pinned)) - Number(Boolean(a.pinned))),
     }
-  }, [chats, pinned, query])
+  }, [chats, query])
 
   const filteredLikedItems = useMemo(() => {
     const q = likedQuery.trim().toLowerCase()
@@ -712,18 +705,6 @@ export default function ChatScreen({
     if (!q) return []
     return userDirectory.filter((n) => n.toLowerCase().includes(q))
   }, [userDirectory, usersQuery])
-
-  const pinnedCells = useMemo(() => {
-    if (filtered.pinned.length === 0) return emptyPinnedSlots(3)
-    const cells = [...filtered.pinned]
-    const rem = cells.length % 3
-    if (rem !== 0) {
-      for (let i = 0; i < 3 - rem; i += 1) {
-        cells.push({ id: `pad-${cells.length}`, empty: true })
-      }
-    }
-    return cells
-  }, [filtered.pinned])
 
   useEffect(() => {
     writeStoredChats(chats)
@@ -1343,40 +1324,6 @@ export default function ChatScreen({
     setChats((prev) => prev.filter((chat) => !pinSelectedIds.includes(chat.id)))
     setPinSelectedIds([])
     setPinsMode(null)
-  }
-
-  function onPinnedSlotClick(cell) {
-    if (cell.empty) return
-    if (pinsMode === 'select') {
-      setPinSelectedIds((prev) =>
-        prev.includes(cell.id)
-          ? prev.filter((id) => id !== cell.id)
-          : [...prev, cell.id],
-      )
-      return
-    }
-    if (pinsMode === 'pins') {
-      togglePin(cell.id)
-      return
-    }
-    if (pinsMode === 'profile') {
-      setPinsMode(null)
-      if (cell.kind === 'group') {
-        setActiveChatId(cell.id)
-        setDraftMessage('')
-        openMembersSheet(cell)
-        return
-      }
-      setActiveChatId(cell.id)
-      setDraftMessage('')
-      setNickDraft(cell.title)
-      setEditingNick(false)
-      setPeerProfile(null)
-      setMembersSheetOpen(false)
-      setContactSheetOpen(true)
-      return
-    }
-    openThread(cell)
   }
 
   function initialsFromTitle(name) {
@@ -2567,7 +2514,7 @@ export default function ChatScreen({
 
       <section
         className={`chat-section chat-pins-section${pinsMode ? ` is-mode-${pinsMode}` : ''}`}
-        aria-label="Pinned"
+        aria-label="Chat controls"
       >
         {isDesktop && (
           <div className="chat-sidebar-header">
@@ -2589,57 +2536,23 @@ export default function ChatScreen({
             </button>
           </div>
         )}
-        <div className="chat-pinned-grid">
-          {pinnedCells.map((cell) =>
-            cell.empty ? (
-              <div key={cell.id} className="chat-pin-slot is-empty" aria-hidden>
-                <span className="chat-pin-slot-dash">—</span>
-              </div>
-            ) : (
-              <button
-                key={cell.id}
-                type="button"
-                className={`chat-pin-slot${
-                  pinSelectedIds.includes(cell.id) ? ' is-selected' : ''
-                }`}
-                aria-pressed={
-                  pinsMode === 'select'
-                    ? pinSelectedIds.includes(cell.id)
-                    : undefined
-                }
-                aria-label={pinsMode === 'pins' ? `Unpin ${cell.title}` : undefined}
-                onClick={() => onPinnedSlotClick(cell)}
-              >
-                <span className="chat-pin-avatar" aria-hidden>
-                  {pinsMode === 'pins' && (
-                    <span className="chat-pin-remove">
-                      <MinusIcon />
-                    </span>
-                  )}
-                  {cell.initials}
-                </span>
-                <span className="chat-pin-name">{cell.title}</span>
-              </button>
-            ),
-          )}
-        </div>
         <div className="chat-list-toolbar" ref={pinsMenuRef}>
           <div className={`chat-pins-edit${pinsMenuOpen ? ' is-open' : ''}`}>
             <button
               type="button"
               className={`chat-pins-pencil${pinsMode || pinsMenuOpen ? ' is-active' : ''}`}
-              aria-label={pinsMode === 'select' ? 'Done selecting chats' : 'Edit'}
-              aria-expanded={pinsMode === 'select' ? undefined : pinsMenuOpen}
-              aria-haspopup={pinsMode === 'select' ? undefined : 'menu'}
+              aria-label={pinsMode === 'select' ? 'Done selecting chats' : pinsMode === 'pins' ? 'Done editing pins' : 'Edit'}
+              aria-expanded={pinsMode ? undefined : pinsMenuOpen}
+              aria-haspopup={pinsMode ? undefined : 'menu'}
               onClick={() => {
-                if (pinsMode === 'select') {
-                  setPinsEditMode('select')
+                if (pinsMode) {
+                  setPinsEditMode(pinsMode)
                 } else {
                   setPinsMenuOpen((open) => !open)
                 }
               }}
             >
-              {pinsMode === 'select' ? <FilterCheckIcon /> : <PencilIcon />}
+              {pinsMode ? <FilterCheckIcon /> : <PencilIcon />}
             </button>
             {pinsMenuOpen ? (
               <div className="chat-pins-menu" role="menu" aria-label="Pinned chat actions">
@@ -2741,10 +2654,15 @@ export default function ChatScreen({
               <button
                 type="button"
                 className="chat-row"
+                aria-label={pinsMode === 'pins' && chat.pinned ? `Unpin ${chat.title}` : undefined}
                 aria-pressed={pinsMode === 'select' ? pinSelectedIds.includes(chat.id) : undefined}
                 onClick={() => {
                   if (pinsMode === 'select') {
                     toggleChatSelection(chat.id)
+                    return
+                  }
+                  if (pinsMode === 'pins') {
+                    if (chat.pinned) togglePin(chat.id)
                     return
                   }
                   if (longPressFiredRef.current) {
@@ -2754,7 +2672,7 @@ export default function ChatScreen({
                   openThread(chat)
                 }}
                 onPointerDown={(e) => {
-                  if (pinsMode !== 'select') startRowPress(e, chat.id)
+                  if (!pinsMode) startRowPress(e, chat.id)
                 }}
                 onPointerMove={moveRowPress}
                 onPointerUp={cancelRowPress}
@@ -2771,12 +2689,16 @@ export default function ChatScreen({
                   </span>
                 )}
                 <span className="chat-avatar" aria-hidden>
+                  {pinsMode === 'pins' && chat.pinned && (
+                    <span className="chat-pin-remove"><MinusIcon /></span>
+                  )}
                   {chat.initials}
                 </span>
                 <span className="chat-row-copy">
                   <span className="chat-row-top">
                     <span className="chat-row-title">
                       {chat.title}
+                      {chat.pinned && <span className="chat-row-pin" aria-label="Pinned"><PinIcon /></span>}
                       {chat.unread && <span className="chat-unread-dot" aria-label="Unread" />}
                       {chat.muted && <span aria-label="Alerts hidden"><MutedBellIcon /></span>}
                       {chat.kind === 'group' && (
