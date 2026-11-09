@@ -990,6 +990,20 @@
   margin-bottom: 18px;
 }
 
+.profile-edit-card .profile-money-grid,
+.profile-edit-card .profile-money-detail {
+  width: 100%;
+}
+
+.profile-edit-card :is(.profile-money-tile, .profile-stat-card) {
+  width: 100%;
+  min-width: 0;
+  min-height: 88px;
+  aspect-ratio: 1 / 1.05;
+  padding: 14px 4px;
+  border-radius: 16px;
+}
+
 .profile-money-tile {
   display: flex;
   flex-direction: column;

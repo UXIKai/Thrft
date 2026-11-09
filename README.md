@@ -30,6 +30,9 @@ Wire real profiles later by setting `avatarUrl` (and labels) on entries in `src/
 
 ## Layout & motion
 
+### Profile settings
+- Money controls and sales statistics use matching tile sizes, spacing, and glass styling.
+
 ### Chat
 - Desktop chat uses the full window width, with a left-aligned conversation list and the open conversation filling the remaining space.
 - Focusing desktop chat search keeps the page in place; keyboard lifting is reserved for touch-primary devices or a visible software keyboard.
