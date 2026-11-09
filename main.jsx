@@ -85,7 +85,14 @@ function isTextField(t) {
 
 // Fields outside the chat bar: lift the page just enough to keep the field above the keyboard.
 function liftForKeyboard(el) {
-  if (!el || el.closest(DOCKED)) {
+  const vv = window.visualViewport
+  const keyboardVisible = vv && window.innerHeight - vv.height > 120
+  // Only anticipate a software keyboard on touch-primary devices.
+  if (
+    !el ||
+    el.closest(DOCKED) ||
+    (!window.matchMedia('(pointer: coarse)').matches && !keyboardVisible)
+  ) {
     kbShift = 0
     return
   }

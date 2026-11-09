@@ -32,7 +32,7 @@ Wire real profiles later by setting `avatarUrl` (and labels) on entries in `src/
 
 ### Chat
 - Desktop chat uses the full window width, with a left-aligned conversation list and the open conversation filling the remaining space.
-- Expanding desktop chat search shows the field and controls without a background container.
+- Focusing desktop chat search keeps the page in place; keyboard lifting is reserved for touch-primary devices or a visible software keyboard.
 - Phone layouts continue to show the conversation list or the open conversation one at a time.
 
 ### Leaderboard
