@@ -2056,21 +2056,31 @@
 }
 
 .profile-panel.profile-edit-card {
-  inset: auto;
-  top: 50%;
-  left: 50%;
+  inset: 0;
   z-index: 1;
-  width: min(460px, calc(100% - 32px));
+  width: 100%;
   height: auto;
-  max-height: min(78vh, 720px);
-  transform: translate(-50%, -50%);
-  border-radius: 22px;
+  max-height: none;
+  transform: none;
+  border-radius: 0;
   overflow: hidden;
-  border: 1px solid var(--glass-border, rgba(168, 168, 168, 0.22));
-  background: var(--glass-clear-tint, rgba(36, 36, 36, 0.08));
+  border: none;
+  background: rgba(8, 8, 8, 0.22);
   backdrop-filter: blur(18px) saturate(1.55);
   -webkit-backdrop-filter: blur(18px) saturate(1.55);
-  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.22);
+  box-shadow: none;
+}
+
+.profile-edit-card .profile-at-body {
+  padding: 12px 20px calc(36px + env(safe-area-inset-bottom, 0px));
+  gap: 28px;
+}
+
+.profile-edit-card .profile-at-body .profile-block {
+  flex: 0 0 auto;
+  width: min(460px, 100%);
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* Phone: full screen so sections aren't clipped by a floating card. */
@@ -2110,7 +2120,7 @@
   }
 
   .profile-edit-card .profile-at-body .profile-block {
-    width: 100%;
+    width: min(460px, 100%);
   }
 
   .profile-edit-card .profile-social-row,
