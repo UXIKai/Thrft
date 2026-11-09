@@ -1329,11 +1329,19 @@ function BrandGlobeView({
 
   const seatTint =
     previewColors && focusBrand ? colorHex(focusBrand.id) : null
+  const seatRgb = seatTint?.match(/[a-f0-9]{2}/gi)?.map((part) => parseInt(part, 16)).join(', ')
   const originStyle = {
     ...(origin && typeof origin.dx === 'number'
       ? { '--globe-dx': `${origin.dx}px`, '--globe-dy': `${origin.dy}px` }
       : null),
-    ...(seatTint ? { '--globe-tint': seatTint } : null),
+    ...(seatTint ? {
+      '--globe-tint': seatTint,
+      '--atmosphere-base': seatTint,
+      '--atmosphere-base-rgb': seatRgb,
+      '--atmosphere-effect-a-rgb': seatRgb,
+      '--atmosphere-effect-b-rgb': seatRgb,
+      '--atmosphere-effect-c-rgb': seatRgb,
+    } : null),
   }
 
   return (
@@ -1361,6 +1369,14 @@ function BrandGlobeView({
         aria-label="Close brands"
         onClick={onClose}
       />
+      {previewColors && (
+        <div className="brand-globe-color-atmosphere atmosphere" aria-hidden>
+          <span className="atmosphere-bloom atmosphere-bloom-a" />
+          <span className="atmosphere-bloom atmosphere-bloom-b" />
+          <span className="atmosphere-bloom atmosphere-bloom-c" />
+          <span className="atmosphere-bloom atmosphere-bloom-d" />
+        </div>
+      )}
       <div className={`brand-globe-panel${isDock ? ' is-dock is-blend' : ''}`}>
         {!isDock && (
           <header className="brand-globe-head">
