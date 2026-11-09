@@ -2567,9 +2567,15 @@ export default function ChatScreen({
                     ? pinSelectedIds.includes(cell.id)
                     : undefined
                 }
+                aria-label={pinsMode === 'pins' ? `Unpin ${cell.title}` : undefined}
                 onClick={() => onPinnedSlotClick(cell)}
               >
                 <span className="chat-pin-avatar" aria-hidden>
+                  {pinsMode === 'pins' && (
+                    <span className="chat-pin-remove">
+                      <MinusIcon />
+                    </span>
+                  )}
                   {cell.initials}
                 </span>
                 <span className="chat-pin-name">{cell.title}</span>
@@ -2605,13 +2611,13 @@ export default function ChatScreen({
                 <button
                   type="button"
                   role="menuitem"
-                  className={`chat-pins-menu-btn${pinsMode === 'select' ? ' is-on' : ''}`}
-                  aria-label="Edit chats"
-                  aria-pressed={pinsMode === 'select'}
-                  onClick={() => setPinsEditMode('select')}
+                  className={`chat-pins-menu-btn${pinsMode === 'pins' ? ' is-on' : ''}`}
+                  aria-label="Edit pins"
+                  aria-pressed={pinsMode === 'pins'}
+                  onClick={() => setPinsEditMode('pins')}
                 >
                   <PinIcon className="chat-pins-menu-ico" />
-                  <span className="chat-pins-menu-label">Edit</span>
+                  <span className="chat-pins-menu-label">Edit pins</span>
                 </button>
               </div>
             ) : null}

@@ -36,7 +36,7 @@ Wire real profiles later by setting `avatarUrl` (and labels) on entries in `src/
 - Money controls and sales statistics use matching tile sizes, spacing, and glass styling.
 
 ### Chat
-- The edit menu sits between pinned chats and the list. Edit shows selection circles; selecting chats reveals a bulk-delete button below the filter.
+- The edit menu sits between pinned chats and the list. Select shows selection circles and a bulk-delete button below the filter. Edit pins shows minus controls on pinned avatars to unpin chats without deleting them.
 - Desktop chat uses the full window width, with a left-aligned conversation list and the open conversation filling the remaining space.
 - Focusing desktop chat search keeps the page in place; keyboard lifting is reserved for touch-primary devices or a visible software keyboard.
 - Phone layouts continue to show the conversation list or the open conversation one at a time.
