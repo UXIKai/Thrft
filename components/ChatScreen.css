@@ -3178,10 +3178,6 @@ html body button.chat-contact-nick-save {
     margin: 0;
   }
 
-  .chat-screen.is-sidebar-collapsed .chat-sidebar-control[aria-label='Search conversations'] {
-    display: none;
-  }
-
   .chat-screen.is-sidebar-collapsed .chat-pinned-grid,
   .chat-screen.is-sidebar-collapsed .chat-list-toolbar,
   .chat-screen.is-sidebar-collapsed .chat-list-section,

@@ -2569,23 +2569,8 @@ export default function ChatScreen({
         className={`chat-section chat-pins-section${pinsMode ? ` is-mode-${pinsMode}` : ''}`}
         aria-label="Pinned"
       >
-        <div className="chat-sidebar-header">
-          <button
-            type="button"
-            className="chat-sidebar-control is-bare"
-            aria-label="Search conversations"
-            aria-expanded={searchOpen}
-            onClick={() => {
-              setSidebarCollapsed(false)
-              setSearchOpen(true)
-              requestAnimationFrame(() => {
-                document.getElementById('chat-search-input')?.focus({ preventScroll: true })
-              })
-            }}
-          >
-            <SearchIcon />
-          </button>
-          {isDesktop && (
+        {isDesktop && (
+          <div className="chat-sidebar-header">
             <button
               type="button"
               className="chat-sidebar-control is-bare"
@@ -2602,8 +2587,8 @@ export default function ChatScreen({
                 <path d="M9 4v16" fill="none" stroke="currentColor" strokeWidth="1.7" />
               </svg>
             </button>
-          )}
-        </div>
+          </div>
+        )}
         <div className="chat-pinned-grid">
           {pinnedCells.map((cell) =>
             cell.empty ? (
