@@ -7,16 +7,6 @@ import './HomeFilterLinks.css'
  * Home search: magnifier button (top-left) opens a centered popup holding the
  * Brands / Category buttons, which launch the orbital picker.
  */
-// Black or white text, whichever reads better on the card color.
-function inkFor(hex) {
-  const m = /^#?([0-9a-f]{6})$/i.exec(String(hex || '').trim())
-  if (!m) return '#000'
-  const n = parseInt(m[1], 16)
-  const lum =
-    0.299 * ((n >> 16) & 255) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255)
-  return lum > 150 ? '#000' : '#fff'
-}
-
 export default function HomeFilterLinks({
   brands = [],
   categories = [],
@@ -79,8 +69,7 @@ export default function HomeFilterLinks({
 
   const cardHex = draftColor ? colorHex(draftColor) || '#ffffff' : '#ffffff'
   const cardStyle = {
-    '--card-bg': cardHex,
-    '--card-ink': inkFor(cardHex),
+    '--card-ink': draftColor ? cardHex : '#ffffff',
   }
   const searchColor = (draftColor && colorHex(draftColor)) || '#000000'
   const searchRgb = searchColor.match(/[a-f0-9]{2}/gi)?.map((part) => parseInt(part, 16)).join(', ')

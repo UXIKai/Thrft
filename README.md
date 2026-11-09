@@ -60,7 +60,7 @@ Links and Money rows sit immediately below ID verification. Profile contains onl
 - Climb swaps orbit around each other (yin-yang), opposite-side only.
 
 ### Product rows
-- The home search backdrop reuses the app's flowing atmosphere behind the solid color filter panel. Choosing a color updates the backdrop and its flowing effect to that color; the panel itself does not animate.
+- The home search backdrop reuses the app's flowing atmosphere behind the always-black filter panel. Choosing a color updates the backdrop, its flowing effect, and the panel text to that color; the panel itself does not animate.
 - Saved edit and filter menus open below their buttons, close each other, and dismiss when clicking outside.
 - A check mark below the product quantity returns to the previous page, including the cart, brand or clothing-type page when opened there.
 - Open products show the brand above the image, then the title and price below it. The plus reveals a centered four-column size picker with a smooth expansion.

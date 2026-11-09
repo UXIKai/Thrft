@@ -260,7 +260,7 @@ html body .home-search-backdrop {
 }
 
 html body .home-search-modal {
-  background: var(--card-bg, #fff) !important;
+  background: #000 !important;
   background-image: none !important;
   isolation: isolate;
   opacity: 1;
@@ -270,7 +270,7 @@ html body .home-search-modal {
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
   box-shadow: 0 14px 36px rgba(0, 0, 0, 0.5);
-  transition: background-color 0.4s ease;
+  transition: none;
 }
 
 html body .home-search-modal .home-search-label {
