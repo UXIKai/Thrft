@@ -3152,14 +3152,13 @@ html body button.chat-contact-nick-save {
 @media (min-width: 720px) {
   .chat-screen.is-desktop {
     display: grid;
-    grid-template-columns: minmax(260px, 340px) minmax(0, 1fr);
+    grid-template-columns: minmax(308px, 388px) minmax(0, 1fr);
     grid-template-rows: auto minmax(0, 1fr);
     column-gap: 16px;
     row-gap: 16px;
     width: 100%;
     margin: 0;
-    padding: calc(max(16px, env(safe-area-inset-top, 0px)) + 24px)
-      16px 20px;
+    padding: max(16px, env(safe-area-inset-top, 0px)) 16px 20px;
   }
 
   .chat-screen.is-desktop.is-sidebar-collapsed {
@@ -3186,9 +3185,30 @@ html body button.chat-contact-nick-save {
   }
 
   .chat-screen.is-desktop > .chat-pins-section {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 36px;
+    column-gap: 12px;
+    align-content: start;
     grid-column: 1;
     grid-row: 1;
     min-width: 0;
+  }
+
+  .chat-screen.is-desktop .chat-sidebar-header {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: start;
+    margin: 0;
+  }
+
+  .chat-screen.is-desktop .chat-pinned-grid {
+    grid-column: 1;
+    grid-row: 1;
+    min-width: 0;
+  }
+
+  .chat-screen.is-sidebar-collapsed .chat-sidebar-header {
+    grid-column: 1;
   }
 
   .chat-screen.is-desktop > .chat-list-section {
@@ -3200,13 +3220,15 @@ html body button.chat-contact-nick-save {
   }
 
   .chat-screen.is-desktop .chat-list-toolbar {
+    grid-column: 1 / -1;
     margin-top: 6px;
+    margin-bottom: 76px;
   }
 
   .chat-screen.is-desktop .chat-bottom-dock {
     left: 16px;
     bottom: 20px;
-    width: min(340px, calc(100% - 24px));
+    width: min(388px, calc(100% - 24px));
     max-width: none;
     transform: none;
   }
