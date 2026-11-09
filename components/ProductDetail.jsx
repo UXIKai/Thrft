@@ -191,6 +191,17 @@ export default function ProductDetail({
           >
             <PlusIcon />
           </button>
+          <button
+            type="button"
+            className="product-detail-step product-detail-confirm is-bare"
+            aria-label="Done, return to previous page"
+            tabIndex={added ? 0 : -1}
+            onClick={onClose}
+          >
+            <svg viewBox="0 0 24 24" aria-hidden>
+              <path d="m5 12 4 4L19 6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
         </div>
       </div>
     </div>,

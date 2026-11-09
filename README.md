@@ -60,6 +60,7 @@ Links and Money rows sit immediately below ID verification. Profile contains onl
 - Climb swaps orbit around each other (yin-yang), opposite-side only.
 
 ### Product rows
+- A check mark below the product quantity returns to the previous page, including the cart, brand or clothing-type page when opened there.
 - Open products show the brand above the image, then the title and price below it. The plus reveals a centered four-column size picker with a smooth expansion.
 - Product titles omit a repeated leading brand name below the image.
 - 10 brand rows × 10 product boxes (mock codes/prices).

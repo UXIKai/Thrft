@@ -128,6 +128,7 @@ export default function App() {
   // Bumped when the user logs in so a slow boot check can't overwrite a fresh login.
   const authVersionRef = useRef(0)
   const [activeProduct, setActiveProduct] = useState(null)
+  const productReturnRef = useRef(null)
   const [activeBrand, setActiveBrand] = useState(null)
   const [activeAccount, setActiveAccount] = useState(null) // { username, isOwn }
   const [account, setAccount] = useState(null)
@@ -619,7 +620,14 @@ export default function App() {
       {activeProduct && (
         <ProductDetail
           product={activeProduct}
-          onClose={() => setActiveProduct(null)}
+          onClose={() => {
+            setActiveProduct(null)
+            const source = productReturnRef.current
+            productReturnRef.current = null
+            if (source?.cart) setCartOpen(true)
+            if (source?.brand) setActiveBrand(source.brand)
+            if (source?.type) setActiveTypePage(source.type)
+          }}
           onOpenBrand={(brandId, brandName) => {
             setActiveProduct(null)
             setActiveBrand({ brandId, brandName })
@@ -637,6 +645,7 @@ export default function App() {
           onClose={() => setCartOpen(false)}
           onChange={replaceItems}
           onOpenProduct={(product) => {
+            productReturnRef.current = { cart: true }
             setCartOpen(false)
             setActiveProduct(product)
           }}
@@ -649,6 +658,7 @@ export default function App() {
           brandName={activeBrand.brandName}
           onClose={() => setActiveBrand(null)}
           onOpenProduct={(product) => {
+            productReturnRef.current = { brand: activeBrand }
             setActiveBrand(null)
             setActiveProduct(product)
           }}
@@ -660,6 +670,7 @@ export default function App() {
           typeId={activeTypePage}
           onClose={() => setActiveTypePage(null)}
           onOpenProduct={(product) => {
+            productReturnRef.current = { type: activeTypePage }
             setActiveTypePage(null)
             setActiveProduct(product)
           }}

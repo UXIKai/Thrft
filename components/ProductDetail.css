@@ -345,6 +345,10 @@ html body .product-detail .glass-overlay-back {
 }
 
 .product-detail-buy[hidden] { display: none; }
+.product-detail-buy.is-added {
+  margin-bottom: 36px;
+}
+
 .product-detail-sizes-reveal {
   display: grid;
   grid-template-rows: 1fr;
