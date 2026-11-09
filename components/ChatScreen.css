@@ -3012,6 +3012,15 @@ html body button.chat-contact-nick-save {
     transform: none;
   }
 
+  .chat-screen.is-desktop .chat-search-bar {
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    box-shadow: none;
+  }
+
   .chat-desktop-thread {
     grid-column: 2;
     grid-row: 1 / span 2;
