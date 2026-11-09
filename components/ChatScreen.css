@@ -3163,11 +3163,23 @@ html body button.chat-contact-nick-save {
   }
 
   .chat-screen.is-desktop.is-sidebar-collapsed {
-    grid-template-columns: 36px minmax(0, 1fr);
+    grid-template-columns: 0 minmax(0, 1fr);
+    column-gap: 0;
+  }
+
+  .chat-screen.is-sidebar-collapsed > .chat-pins-section {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 20;
   }
 
   .chat-screen.is-sidebar-collapsed .chat-sidebar-header {
-    flex-direction: column;
+    margin: 0;
+  }
+
+  .chat-screen.is-sidebar-collapsed .chat-sidebar-control[aria-label='Search conversations'] {
+    display: none;
   }
 
   .chat-screen.is-sidebar-collapsed .chat-pinned-grid,
@@ -3210,6 +3222,10 @@ html body button.chat-contact-nick-save {
     min-height: 0;
     overflow: hidden;
     border-left: 1px solid rgba(255, 255, 255, 0.18);
+  }
+
+  .chat-screen.is-sidebar-collapsed .chat-desktop-thread {
+    border-left: none;
   }
 
   .chat-desktop-thread .chat-thread {
