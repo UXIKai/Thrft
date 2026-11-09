@@ -2754,6 +2754,14 @@
   font: inherit;
 }
 
+@media (min-width: 1000px) {
+  .profile-settings-menu {
+    top: 50%;
+    left: calc(100% + 44px);
+    right: auto;
+  }
+}
+
 .profile-settings-menu button:focus-visible {
   outline: 1px solid #fff;
   border-radius: 10px;
