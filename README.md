@@ -37,6 +37,7 @@ Wire real profiles later by setting `avatarUrl` (and labels) on entries in `src/
 
 ### Chat
 - The edit menu sits between pinned chats and the list. Select shows selection circles and a bulk-delete button below the filter. Edit pins shows minus controls on pinned avatars to unpin chats without deleting them.
+- During chat selection, the edit button becomes a check mark that finishes selection without deleting chats.
 - Desktop chat uses the full window width, with a left-aligned conversation list and the open conversation filling the remaining space.
 - Focusing desktop chat search keeps the page in place; keyboard lifting is reserved for touch-primary devices or a visible software keyboard.
 - Phone layouts continue to show the conversation list or the open conversation one at a time.

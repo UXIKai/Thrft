@@ -2588,12 +2588,18 @@ export default function ChatScreen({
             <button
               type="button"
               className={`chat-pins-pencil${pinsMode || pinsMenuOpen ? ' is-active' : ''}`}
-              aria-label="Edit"
-              aria-expanded={pinsMenuOpen}
-              aria-haspopup="menu"
-              onClick={() => setPinsMenuOpen((open) => !open)}
+              aria-label={pinsMode === 'select' ? 'Done selecting chats' : 'Edit'}
+              aria-expanded={pinsMode === 'select' ? undefined : pinsMenuOpen}
+              aria-haspopup={pinsMode === 'select' ? undefined : 'menu'}
+              onClick={() => {
+                if (pinsMode === 'select') {
+                  setPinsEditMode('select')
+                } else {
+                  setPinsMenuOpen((open) => !open)
+                }
+              }}
             >
-              <PencilIcon />
+              {pinsMode === 'select' ? <FilterCheckIcon /> : <PencilIcon />}
             </button>
             {pinsMenuOpen ? (
               <div className="chat-pins-menu" role="menu" aria-label="Pinned chat actions">
