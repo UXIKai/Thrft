@@ -37,6 +37,7 @@ Wire real profiles later by setting `avatarUrl` (and labels) on entries in `src/
 - Money controls and sales statistics use matching tile sizes, spacing, and glass styling.
 
 ### Chat
+- Search and desktop sidebar-toggle controls sit above pinned chats. Collapsing the sidebar expands the conversation; search restores the list.
 - Opening a conversation does not automatically focus the message field or summon the keyboard.
 - Hold a chat for 450ms to open Pin, Mark as Unread, Hide Alerts, and Delete actions. Moving or releasing early cancels the hold; unread and alert preferences persist with the chat.
 - Holding also shows a scrollable preview of recent messages above the actions, without opening or marking the conversation as read.

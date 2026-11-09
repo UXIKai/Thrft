@@ -555,6 +555,7 @@ export default function ChatScreen({
   const [dmNameDraft, setDmNameDraft] = useState('')
   const [query, setQuery] = useState('')
   const [searchOpen, setSearchOpen] = useState(false)
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [composer, setComposer] = useState(null) // null | { mode: 'create'|'edit', chatId? }
   const [draftName, setDraftName] = useState('')
   const [draftMembers, setDraftMembers] = useState([])
@@ -2554,7 +2555,7 @@ export default function ChatScreen({
   if (activeChat && !isDesktop) return renderThread()
 
   return (
-    <div className={`chat-screen${isDesktop ? ' is-desktop' : ''}`}>
+    <div className={`chat-screen${isDesktop ? ' is-desktop' : ''}${isDesktop && sidebarCollapsed ? ' is-sidebar-collapsed' : ''}`}>
       {menuId && chats.find((c) => c.id === menuId)?.kind !== 'dm' && (
         <button
           type="button"
@@ -2568,6 +2569,41 @@ export default function ChatScreen({
         className={`chat-section chat-pins-section${pinsMode ? ` is-mode-${pinsMode}` : ''}`}
         aria-label="Pinned"
       >
+        <div className="chat-sidebar-header">
+          <button
+            type="button"
+            className="chat-sidebar-control is-bare"
+            aria-label="Search conversations"
+            aria-expanded={searchOpen}
+            onClick={() => {
+              setSidebarCollapsed(false)
+              setSearchOpen(true)
+              requestAnimationFrame(() => {
+                document.getElementById('chat-search-input')?.focus({ preventScroll: true })
+              })
+            }}
+          >
+            <SearchIcon />
+          </button>
+          {isDesktop && (
+            <button
+              type="button"
+              className="chat-sidebar-control is-bare"
+              aria-label={sidebarCollapsed ? 'Show chats' : 'Hide chats'}
+              aria-expanded={!sidebarCollapsed}
+              onClick={() => {
+                setSidebarCollapsed((collapsed) => !collapsed)
+                setPinsMenuOpen(false)
+                setListFilterOpen(false)
+              }}
+            >
+              <svg viewBox="0 0 24 24" aria-hidden>
+                <rect x="3" y="4" width="18" height="16" rx="3" fill="none" stroke="currentColor" strokeWidth="1.7" />
+                <path d="M9 4v16" fill="none" stroke="currentColor" strokeWidth="1.7" />
+              </svg>
+            </button>
+          )}
+        </div>
         <div className="chat-pinned-grid">
           {pinnedCells.map((cell) =>
             cell.empty ? (

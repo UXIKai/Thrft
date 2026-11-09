@@ -278,6 +278,27 @@
   position: relative;
 }
 
+.chat-sidebar-header {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.chat-sidebar-control {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  color: #fff;
+}
+
+.chat-sidebar-control svg {
+  width: 20px;
+  height: 20px;
+}
+
 .chat-pins-edit {
   --pins-edit-h: 36px;
   --pins-edit-w: 52px;
@@ -3139,6 +3160,21 @@ html body button.chat-contact-nick-save {
     margin: 0;
     padding: calc(max(16px, env(safe-area-inset-top, 0px)) + 24px)
       16px 20px;
+  }
+
+  .chat-screen.is-desktop.is-sidebar-collapsed {
+    grid-template-columns: 36px minmax(0, 1fr);
+  }
+
+  .chat-screen.is-sidebar-collapsed .chat-sidebar-header {
+    flex-direction: column;
+  }
+
+  .chat-screen.is-sidebar-collapsed .chat-pinned-grid,
+  .chat-screen.is-sidebar-collapsed .chat-list-toolbar,
+  .chat-screen.is-sidebar-collapsed .chat-list-section,
+  .chat-screen.is-sidebar-collapsed .chat-bottom-dock {
+    display: none;
   }
 
   .chat-screen.is-desktop > .chat-pins-section {
