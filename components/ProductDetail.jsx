@@ -96,6 +96,15 @@ export default function ProductDetail({
 
   const photo = productPhoto(product)
   const name = product.title || product.brandName || 'Product'
+  const brand = String(product.brandName || '').trim()
+  const title = String(name).trim()
+  const hasBrandPrefix =
+    brand &&
+    title.slice(0, brand.length).toLowerCase() === brand.toLowerCase() &&
+    (title.length === brand.length || /^[\s:|-]/.test(title.slice(brand.length)))
+  const displayTitle = hasBrandPrefix
+    ? title.slice(brand.length).replace(/^[\s:|-]+/, '')
+    : title
 
   return createPortal(
     <div
@@ -127,7 +136,7 @@ export default function ProductDetail({
             <span className="product-detail-photo-empty" aria-hidden />
           )}
         </div>
-        <h1 className="product-detail-title">{name}</h1>
+        {displayTitle && <h1 className="product-detail-title">{displayTitle}</h1>}
         <p className="product-detail-price">{product.price}</p>
         {sizing && (
           <div className="product-detail-sizes-reveal">

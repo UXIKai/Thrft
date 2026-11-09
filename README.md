@@ -46,6 +46,7 @@ Wire real profiles later by setting `avatarUrl` (and labels) on entries in `src/
 
 ### Product rows
 - Open products show the brand above the image, then the title and price below it. The plus reveals a centered four-column size picker with a smooth expansion.
+- Product titles omit a repeated leading brand name below the image.
 - 10 brand rows × 10 product boxes (mock codes/prices).
 - Vertical scroll progress `p = scrollTop / maxScroll` moves each row horizontally:
   - even rows → left (`translateX(-p · 120px)`)
