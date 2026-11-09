@@ -2084,6 +2084,10 @@
   margin-right: auto;
 }
 
+.profile-edit-card .profile-at-body .profile-label {
+  text-align: center;
+}
+
 /* Phone: full screen so sections aren't clipped by a floating card. */
 @media (max-width: 719px) {
   .profile-links-layer.is-edit .profile-links-scrim {
