@@ -15,6 +15,7 @@ export const CUSTOM_COLOR_KEY = 'thrft-app-color-hex'
 export const BG_COLOR_KEY = 'thrft-bg-color-v1'
 export const CUSTOM_BG_COLOR_KEY = 'thrft-bg-color-hex-v1'
 export const BG_IMAGE_KEY = 'thrft-bg-image-v2'
+export const THEME_KEY = 'thrft-theme-v1'
 export const UI_SCALE_KEY = 'thrft-ui-scale-v1'
 export const DEFAULT_UI_SCALE = 100
 export const BG_PHOTO_KEY = 'thrft-bg-photo-v1'
@@ -66,6 +67,33 @@ let currentCustomBgHex = '#6a7a8a'
 let currentGlassPct = DEFAULT_BAR_TRANSPARENCY
 let currentBg = DEFAULT_BG_IMAGE
 let currentBgEffects = [...DEFAULT_BG_EFFECTS]
+let currentTheme = 'dark'
+
+export function readTheme() {
+  try {
+    return localStorage.getItem(THEME_KEY) === 'light' ? 'light' : 'dark'
+  } catch (error) {
+    console.warn('Unable to read display mode.', error)
+    return 'dark'
+  }
+}
+
+export function applyTheme(theme) {
+  if (theme !== 'dark' && theme !== 'light') {
+    throw new Error('Display mode must be dark or light.')
+  }
+  currentTheme = theme
+  document.documentElement.dataset.theme = theme
+  document.documentElement.style.colorScheme = theme
+  applyGlassTokens()
+  applyBgAtmosphereTokens()
+  try {
+    localStorage.setItem(THEME_KEY, theme)
+  } catch (error) {
+    console.warn('Unable to save display mode.', error)
+  }
+  return theme
+}
 
 function hexToRgb(hex) {
   const m = /^#?([0-9a-f]{6})$/i.exec(String(hex || '').trim())
@@ -317,10 +345,11 @@ export function applyGlassTokens() {
   // Colored glass, not a painted plate. The swatch hue stays in the film,
   // lifted just enough that a dark swatch still reads through the pane.
   // Alpha stays low so the atmosphere shows through. None is the only colorless state.
-  const frostBase = hasColor ? color.rgb : [255, 255, 255]
-  const base = hasColor ? liftRgb(frostBase, 0.42) : [255, 255, 255]
-  const rim = hasColor ? liftRgb(frostBase, 0.28) : [255, 255, 255]
-  const sheen = hasColor ? liftRgb(frostBase, 0.7) : [255, 255, 255]
+  const neutral = currentTheme === 'light' ? [20, 20, 20] : [255, 255, 255]
+  const frostBase = hasColor ? color.rgb : neutral
+  const base = hasColor ? liftRgb(frostBase, 0.42) : neutral
+  const rim = hasColor ? liftRgb(frostBase, 0.28) : neutral
+  const sheen = hasColor ? liftRgb(frostBase, 0.7) : neutral
 
   const clearTint = hasColor ? lerp(0.16, 0.34, opaque) : lerp(0, 0.22, opaque)
   const clearTintActive = hasColor ? lerp(0.22, 0.42, opaque) : lerp(0, 0.3, opaque)
@@ -430,7 +459,9 @@ export function applyBgAtmosphereTokens() {
   root.style.setProperty('--bg-color-rgb', base.join(', '))
 
   // Deep void keeps the wash readable; hue lives in the flowing clouds.
-  const voidRgb = hasColor
+  const voidRgb = currentTheme === 'light'
+    ? (hasColor ? base.map((channel) => Math.round(238 + channel * 0.06)) : [250, 250, 250])
+    : hasColor
     ? [
         Math.round(base[0] * 0.12),
         Math.round(base[1] * 0.12),
@@ -796,6 +827,9 @@ export function applyContainerEdge(pct) {
 }
 
 export function initAppearance() {
+  currentTheme = readTheme()
+  document.documentElement.dataset.theme = currentTheme
+  document.documentElement.style.colorScheme = currentTheme
   applyUiScale(readUiScale())
   applyContainerEdge(readContainerEdge())
   readPalette()

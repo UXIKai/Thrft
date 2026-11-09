@@ -15,7 +15,7 @@
   font-size: 1.2rem;
   font-weight: 700;
   line-height: 1.25;
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
 }
 
 .product-detail-photo {
@@ -23,8 +23,8 @@
   aspect-ratio: 1 / 1.2;
   border-radius: 16px;
   overflow: hidden;
-  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.28));
-  background: var(--glass-tint, rgba(255, 255, 255, 0.04));
+  border: 1px solid var(--glass-border, light-dark(rgba(0, 0, 0, 0.28), rgba(255, 255, 255, 0.28)));
+  background: var(--glass-tint, light-dark(rgba(0, 0, 0, 0.04), rgba(255, 255, 255, 0.04)));
 }
 
 .product-detail-photo img,
@@ -42,7 +42,7 @@
   margin: 0;
   font-size: 1.05rem;
   font-weight: 700;
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
 }
 
 .product-detail-add {
@@ -57,7 +57,7 @@
   border-radius: 0;
   background: transparent;
   box-shadow: none;
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
   cursor: pointer;
 }
 
@@ -68,7 +68,7 @@
 }
 
 .product-detail-add[aria-pressed='true'] {
-  color: rgba(255, 255, 255, 0.45);
+  color: light-dark(rgba(0, 0, 0, 0.45), rgba(255, 255, 255, 0.45));
 }
 
 /* Plus morphs into a check; the quantity stepper slides out beside it */
@@ -110,7 +110,7 @@
 }
 
 .product-detail-add[aria-pressed='true'] {
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
 }
 
 .product-detail-stepper {
@@ -144,7 +144,7 @@
   padding: 0;
   border: none;
   background: transparent;
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
   cursor: pointer;
 }
 
@@ -160,7 +160,7 @@
   text-align: center;
   font-size: 1.05rem;
   font-weight: 700;
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
 }
 
 .product-detail-cancel {
@@ -364,7 +364,7 @@ html body .product-detail .glass-overlay-back {
   min-height: 0;
   overflow: hidden;
 }
-.product-detail-size { min-width: 36px; height: 40px; color: #fff; font-size: 1.15rem; font-weight: 700; }
+.product-detail-size { min-width: 36px; height: 40px; color: light-dark(rgb(0, 0, 0), #fff); font-size: 1.15rem; font-weight: 700; }
 
 @keyframes product-detail-sizes-open {
   from {

@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import {
+  applyTheme,
+  readTheme,
   applyAppColor,
   applyBackgroundImage,
   readBackgroundImage,
@@ -772,6 +774,7 @@ export default function SettingsScreen({
   onEditLinks,
   onEditMoney,
 }) {
+  const [theme, setTheme] = useState(() => readTheme())
   const [appColor, setAppColor] = useState(() => readAppColor())
   const [customHex, setCustomHex] = useState(() => readCustomColorHex())
   const [bgColor, setBgColor] = useState(() => readBgColor())
@@ -1816,12 +1819,24 @@ export default function SettingsScreen({
         <h1 className="settings-title" aria-label="Settings" />
         <span className="settings-top-spacer" aria-hidden />
       </header>
-        <Section label="Account Settings">
+        <Section label="Account Settings" className="is-profile-controls">
           <Row
             icon={<ProfileIcon />}
             title="Profile"
             onClick={onEditProfile}
           />
+          <button
+            type="button"
+            className="settings-theme-toggle is-bare"
+            aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+            aria-pressed={theme === 'dark'}
+            onClick={() => setTheme(applyTheme(theme === 'dark' ? 'light' : 'dark'))}
+          >
+            <svg className="settings-row-ico" viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" strokeWidth="1.6" />
+              <path d="M12 4a8 8 0 0 0 0 16Z" fill="currentColor" />
+            </svg>
+          </button>
         </Section>
 
         <Section label="Accounts">

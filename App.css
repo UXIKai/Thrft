@@ -1,7 +1,7 @@
 :root {
-  --ink: #f4f4f2;
-  --void: #050505;
-  --ring: rgba(244, 244, 242, 0.7);
+  --ink: light-dark(rgb(11, 11, 13), #f4f4f2);
+  --void: light-dark(rgb(250, 250, 250), #050505);
+  --ring: light-dark(rgba(11, 11, 13, 0.7), rgba(244, 244, 242, 0.7));
   --bubble-size: 68px;
   /*
    * Apple Liquid Glass (Clear) — tint + light blur/saturate + refractive rim.
@@ -9,21 +9,21 @@
    */
   /* Overridden live by appAppearance.js — defaults = Clear water glass */
   --app-color-rgb: 36, 36, 36;
-  --app-panel: rgba(5, 5, 5, 0.96);
-  --app-scrim: rgba(5, 5, 5, 0.48);
-  --type-chip-fill: rgba(255, 255, 255, 0.01);
-  --type-chip-fill-active: rgba(255, 255, 255, 0.028);
-  --type-chip-border: rgba(255, 255, 255, 0.4);
-  --type-chip-border-active: rgba(255, 255, 255, 0.52);
+  --app-panel: light-dark(rgba(250, 250, 250, 0.96), rgba(5, 5, 5, 0.96));
+  --app-scrim: light-dark(rgba(250, 250, 250, 0.48), rgba(5, 5, 5, 0.48));
+  --type-chip-fill: light-dark(rgba(0, 0, 0, 0.01), rgba(255, 255, 255, 0.01));
+  --type-chip-fill-active: light-dark(rgba(0, 0, 0, 0.028), rgba(255, 255, 255, 0.028));
+  --type-chip-border: light-dark(rgba(0, 0, 0, 0.4), rgba(255, 255, 255, 0.4));
+  --type-chip-border-active: light-dark(rgba(0, 0, 0, 0.52), rgba(255, 255, 255, 0.52));
   --settings-wash: transparent;
   --settings-accent: #3dd68c;
   --glass-transparency: 100;
-  --glass-tint: rgba(255, 255, 255, 0.01);
-  --glass-tint-active: rgba(255, 255, 255, 0.028);
+  --glass-tint: light-dark(rgba(0, 0, 0, 0.01), rgba(255, 255, 255, 0.01));
+  --glass-tint-active: light-dark(rgba(0, 0, 0, 0.028), rgba(255, 255, 255, 0.028));
   /* Water-clear panes — near-empty fill + bright rim (not charcoal stain) */
-  --glass-clear-tint: rgba(255, 255, 255, 0.004);
-  --glass-clear-tint-active: rgba(255, 255, 255, 0.018);
-  --glass-border: rgba(255, 255, 255, 0.4);
+  --glass-clear-tint: light-dark(rgba(0, 0, 0, 0.004), rgba(255, 255, 255, 0.004));
+  --glass-clear-tint-active: light-dark(rgba(0, 0, 0, 0.018), rgba(255, 255, 255, 0.018));
+  --glass-border: light-dark(rgba(0, 0, 0, 0.4), rgba(255, 255, 255, 0.4));
   --glass-blur: 1.6px;
   --glass-clear-blur: 1.25px;
   --glass-sat: 1.78;
@@ -33,26 +33,26 @@
   --glass-specular-blend: screen;
   --glass-specular: linear-gradient(
     125deg,
-    rgba(255, 255, 255, 0.5) 0%,
-    rgba(255, 255, 255, 0.1) 16%,
+    light-dark(rgba(0, 0, 0, 0.5), rgba(255, 255, 255, 0.5)) 0%,
+    light-dark(rgba(0, 0, 0, 0.1), rgba(255, 255, 255, 0.1)) 16%,
     transparent 36%
   );
   --glass-clear-specular: linear-gradient(
     180deg,
-    rgba(255, 255, 255, 0.55) 0%,
-    rgba(255, 255, 255, 0.1) 10%,
+    light-dark(rgba(0, 0, 0, 0.55), rgba(255, 255, 255, 0.55)) 0%,
+    light-dark(rgba(0, 0, 0, 0.1), rgba(255, 255, 255, 0.1)) 10%,
     transparent 26%
   );
   --glass-depth:
-    0 10px 36px rgba(0, 0, 0, 0.1),
-    inset 0 1px 1px rgba(255, 255, 255, 0.7),
-    inset 0 -1px 1px rgba(255, 255, 255, 0.16),
-    inset 1px 0 1px rgba(255, 255, 255, 0.14),
-    inset -1px 0 1px rgba(255, 255, 255, 0.14);
+    0 10px 36px light-dark(rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.1)),
+    inset 0 1px 1px light-dark(rgba(0, 0, 0, 0.7), rgba(255, 255, 255, 0.7)),
+    inset 0 -1px 1px light-dark(rgba(0, 0, 0, 0.16), rgba(255, 255, 255, 0.16)),
+    inset 1px 0 1px light-dark(rgba(0, 0, 0, 0.14), rgba(255, 255, 255, 0.14)),
+    inset -1px 0 1px light-dark(rgba(0, 0, 0, 0.14), rgba(255, 255, 255, 0.14));
   --glass-clear-depth:
-    0 8px 28px rgba(0, 0, 0, 0.07),
-    inset 0 1px 0 rgba(255, 255, 255, 0.78),
-    inset 0 -0.5px 0 rgba(255, 255, 255, 0.16);
+    0 8px 28px light-dark(rgba(255, 255, 255, 0.07), rgba(0, 0, 0, 0.07)),
+    inset 0 1px 0 light-dark(rgba(0, 0, 0, 0.78), rgba(255, 255, 255, 0.78)),
+    inset 0 -0.5px 0 light-dark(rgba(0, 0, 0, 0.16), rgba(255, 255, 255, 0.16));
   /* Chat message bar is the size reference: 560px column minus 20px. */
   --dock-bar-width: min(calc(420px + 4in), calc(100% - 26px));
 }
@@ -210,7 +210,7 @@
    * Stage-fixed so logo → products → tabs share one moving wash.
    * Tinted by Background color (Appearance bottom row) via --atmosphere-* tokens.
    */
-  background: var(--atmosphere-base, var(--void, #050505));
+  background: var(--atmosphere-base, var(--void, light-dark(rgb(250, 250, 250), #050505)));
 }
 
 .stage.is-bg-none .atmosphere {
@@ -220,7 +220,7 @@
 }
 
 html[data-bg-color='none'] .stage.is-bg-none .atmosphere {
-  background: #000;
+  background: light-dark(rgb(255, 255, 255), #000);
 }
 
 .stage.is-bg-none .atmosphere-bloom,
@@ -259,7 +259,7 @@ html[data-bg-color='none'] .stage.is-bg-none .atmosphere {
       rgba(var(--atmosphere-base-rgb, 70, 70, 70), 0.55),
       transparent 52%
     ),
-    var(--atmosphere-base, var(--void, #050505));
+    var(--atmosphere-base, var(--void, light-dark(rgb(250, 250, 250), #050505)));
   animation: atmosphere-mesh 7s ease-in-out infinite alternate;
   will-change: transform;
 }
@@ -394,14 +394,14 @@ html[data-bg-color='none'] .stage.is-bg-none .atmosphere {
   margin: 0 16px 10px;
   padding: 10px 14px;
   border-radius: 12px;
-  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.18));
-  background: var(--glass-clear-tint, rgba(36, 36, 36, 0.28));
+  border: 1px solid var(--glass-border, light-dark(rgba(0, 0, 0, 0.18), rgba(255, 255, 255, 0.18)));
+  background: var(--glass-clear-tint, light-dark(rgba(219, 219, 219, 0.28), rgba(36, 36, 36, 0.28)));
   backdrop-filter: blur(var(--glass-clear-blur)) saturate(var(--glass-sat))
     brightness(var(--glass-clear-bright));
   -webkit-backdrop-filter: blur(var(--glass-clear-blur)) saturate(var(--glass-sat))
     brightness(var(--glass-clear-bright));
   box-shadow: var(--glass-clear-depth);
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
   font-size: 0.82rem;
   font-weight: 600;
   text-align: center;
@@ -441,7 +441,7 @@ html[data-bg-color='none'] .stage.is-bg-none .atmosphere {
   border: none;
   background: transparent;
   box-shadow: none;
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
   cursor: pointer;
   transition: filter 0.2s ease;
 }
@@ -454,8 +454,8 @@ html[data-bg-color='none'] .stage.is-bg-none .atmosphere {
   height: 16px;
   padding: 0 4px;
   border-radius: 999px;
-  background: #fff;
-  color: #111;
+  background: light-dark(rgb(0, 0, 0), #fff);
+  color: light-dark(rgb(238, 238, 238), #111);
   font-size: 0.62rem;
   font-weight: 800;
   line-height: 16px;
@@ -524,7 +524,7 @@ html[data-bg-color='none'] .stage.is-bg-none .atmosphere {
   margin: 48px 16px;
   padding: 36px 24px;
   text-align: center;
-  color: rgba(244, 244, 242, 0.72);
+  color: light-dark(rgba(11, 11, 13, 0.72), rgba(244, 244, 242, 0.72));
   font-family: var(--font-sans);
   font-size: 0.9rem;
   letter-spacing: 0.06em;
@@ -558,7 +558,7 @@ html[data-bg-color='none'] .stage.is-bg-none .atmosphere {
   -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat))
     brightness(var(--glass-bright));
   box-shadow: var(--glass-depth);
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
 }
 
 /* Clothing-type circular carousel between leaderboard and product rows */
@@ -591,15 +591,15 @@ html[data-bg-color='none'] .stage.is-bg-none .atmosphere {
   border: none;
   border-radius: 999px;
   background: transparent;
-  color: rgba(244, 244, 242, 0.55);
+  color: light-dark(rgba(11, 11, 13, 0.55), rgba(244, 244, 242, 0.55));
   cursor: pointer;
   transition: color 0.15s ease, background 0.15s ease, transform 0.15s ease;
 }
 
 .type-strip-arrow:hover,
 .type-strip-arrow:focus-visible {
-  color: #fff;
-  background: rgba(255, 255, 255, 0.08);
+  color: light-dark(rgb(0, 0, 0), #fff);
+  background: light-dark(rgba(0, 0, 0, 0.08), rgba(255, 255, 255, 0.08));
   outline: none;
 }
 
@@ -701,7 +701,7 @@ html[data-bg-color='none'] .stage.is-bg-none .atmosphere {
   border-radius: 0;
   background: transparent;
   box-shadow: none;
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
   font-size: 1.05rem;
   font-weight: 500;
   line-height: 1;
@@ -741,7 +741,7 @@ html[data-bg-color='none'] .stage.is-bg-none .atmosphere {
   border: none;
   background: transparent;
   box-shadow: none;
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -754,9 +754,9 @@ html[data-bg-color='none'] .stage.is-bg-none .atmosphere {
   box-sizing: border-box;
   padding: 12px 14px;
   border-radius: 16px;
-  border: 1px solid var(--glass-border, rgba(168, 168, 168, 0.18));
-  background: rgba(36, 36, 36, 0.35);
-  color: #fff;
+  border: 1px solid var(--glass-border, light-dark(rgba(87, 87, 87, 0.18), rgba(168, 168, 168, 0.18)));
+  background: light-dark(rgba(219, 219, 219, 0.35), rgba(36, 36, 36, 0.35));
+  color: light-dark(rgb(0, 0, 0), #fff);
   font-family: var(--font-sans);
   font-size: 0.9rem;
   outline: none;
@@ -766,10 +766,10 @@ html[data-bg-color='none'] .stage.is-bg-none .atmosphere {
 .home-type-add-save {
   width: 100%;
   min-height: 48px;
-  border: 1px solid var(--glass-border, rgba(168, 168, 168, 0.18));
+  border: 1px solid var(--glass-border, light-dark(rgba(87, 87, 87, 0.18), rgba(168, 168, 168, 0.18)));
   border-radius: 22px;
-  background: rgba(255, 255, 255, 0.08);
-  color: #fff;
+  background: light-dark(rgba(0, 0, 0, 0.08), rgba(255, 255, 255, 0.08));
+  color: light-dark(rgb(0, 0, 0), #fff);
   font-family: var(--font-sans);
   font-size: 1.35rem;
   font-weight: 500;
@@ -846,7 +846,7 @@ html[data-bg-color='none'] .stage.is-bg-none .atmosphere {
   font-weight: 700;
   letter-spacing: 0.02em;
   text-align: center;
-  color: rgba(255, 255, 255, 0.55);
+  color: light-dark(rgba(0, 0, 0, 0.55), rgba(255, 255, 255, 0.55));
   text-shadow: none;
 }
 
@@ -854,7 +854,7 @@ html[data-bg-color='none'] .stage.is-bg-none .atmosphere {
   background: transparent !important;
   border: none !important;
   box-shadow: none !important;
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
 }
 
 .type-box {
@@ -866,8 +866,8 @@ html[data-bg-color='none'] .stage.is-bg-none .atmosphere {
   max-width: 148px;
   padding: 12px 18px;
   border-radius: 18px;
-  border: 1px solid var(--type-chip-border, rgba(255, 255, 255, 0.12));
-  color: #fff;
+  border: 1px solid var(--type-chip-border, light-dark(rgba(0, 0, 0, 0.12), rgba(255, 255, 255, 0.12)));
+  color: light-dark(rgb(0, 0, 0), #fff);
   font-family: var(--font-sans);
   font-size: 0.78rem;
   font-weight: 700;
@@ -875,7 +875,7 @@ html[data-bg-color='none'] .stage.is-bg-none .atmosphere {
   white-space: nowrap;
   text-overflow: ellipsis;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
-  background: var(--type-chip-fill, rgba(255, 255, 255, 0.07));
+  background: var(--type-chip-fill, light-dark(rgba(0, 0, 0, 0.07), rgba(255, 255, 255, 0.07)));
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
   box-shadow: none;
@@ -903,13 +903,13 @@ html[data-bg-color='none'] .stage.is-bg-none .atmosphere {
 }
 
 .type-box.is-active {
-  background: var(--type-chip-fill-active, rgba(255, 255, 255, 0.14));
-  border-color: var(--type-chip-border-active, rgba(255, 255, 255, 0.22));
+  background: var(--type-chip-fill-active, light-dark(rgba(0, 0, 0, 0.14), rgba(255, 255, 255, 0.14)));
+  border-color: var(--type-chip-border-active, light-dark(rgba(0, 0, 0, 0.22), rgba(255, 255, 255, 0.22)));
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
 }
 
 .type-box:active {
-  background: var(--type-chip-fill-active, rgba(255, 255, 255, 0.12));
+  background: var(--type-chip-fill-active, light-dark(rgba(0, 0, 0, 0.12), rgba(255, 255, 255, 0.12)));
 }
 
 /* Brand product rows (slow one-direction crawl; first row goes right) */
@@ -928,7 +928,7 @@ html[data-bg-color='none'] .stage.is-bg-none .atmosphere {
   text-align: center;
   font-size: 0.92rem;
   letter-spacing: 0.02em;
-  color: rgba(255, 255, 255, 0.45);
+  color: light-dark(rgba(0, 0, 0, 0.45), rgba(255, 255, 255, 0.45));
 }
 
 .brand-row {
@@ -965,7 +965,7 @@ html[data-bg-color='none'] .stage.is-bg-none .atmosphere {
   font-family: var(--font-sans);
   font-size: 0.72rem;
   letter-spacing: 0.03em;
-  color: rgba(244, 244, 242, 0.42);
+  color: light-dark(rgba(11, 11, 13, 0.42), rgba(244, 244, 242, 0.42));
 }
 
 .brand-row-track-wrap {
@@ -1044,10 +1044,10 @@ html[data-bg-color='none'] .stage.is-bg-none .atmosphere {
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   /* Visible display containers under the leaderboard */
-  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.28));
+  border: 1px solid var(--glass-border, light-dark(rgba(0, 0, 0, 0.28), rgba(255, 255, 255, 0.28)));
   outline: none;
   box-shadow: var(--glass-depth, 0 8px 24px rgba(0, 0, 0, 0.28));
-  background: var(--glass-tint, rgba(255, 255, 255, 0.04));
+  background: var(--glass-tint, light-dark(rgba(0, 0, 0, 0.04), rgba(255, 255, 255, 0.04)));
   backdrop-filter: blur(var(--glass-blur, 3px)) saturate(var(--glass-sat, 1.55))
     brightness(var(--glass-bright, 1));
   -webkit-backdrop-filter: blur(var(--glass-blur, 3px)) saturate(var(--glass-sat, 1.55))
@@ -1078,7 +1078,7 @@ html[data-bg-color='none'] .stage.is-bg-none .atmosphere {
 /* Same glass for every product — no color stain */
 .product-box.tone-charcoal,
 .product-box.tone-olive {
-  background: var(--glass-tint, rgba(255, 255, 255, 0.04));
+  background: var(--glass-tint, light-dark(rgba(0, 0, 0, 0.04), rgba(255, 255, 255, 0.04)));
 }
 
 .product-code {
@@ -1089,7 +1089,7 @@ html[data-bg-color='none'] .stage.is-bg-none .atmosphere {
   font-weight: 700;
   font-size: 1.35rem;
   letter-spacing: 0.04em;
-  color: rgba(244, 244, 242, 0.55);
+  color: light-dark(rgba(11, 11, 13, 0.55), rgba(244, 244, 242, 0.55));
 }
 
 .product-meta {
@@ -1104,7 +1104,7 @@ html[data-bg-color='none'] .stage.is-bg-none .atmosphere {
   font-family: var(--font-sans);
   font-size: 0.58rem;
   letter-spacing: 0.02em;
-  color: rgba(244, 244, 242, 0.75);
+  color: light-dark(rgba(11, 11, 13, 0.75), rgba(244, 244, 242, 0.75));
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1114,7 +1114,7 @@ html[data-bg-color='none'] .stage.is-bg-none .atmosphere {
 .product-price {
   font-family: var(--font-sans);
   font-size: 0.58rem;
-  color: rgba(244, 244, 242, 0.55);
+  color: light-dark(rgba(11, 11, 13, 0.55), rgba(244, 244, 242, 0.55));
 }
 
 .bubble-slot {
@@ -1216,7 +1216,7 @@ html[data-bg-color='none'] .stage.is-bg-none .atmosphere {
   z-index: 0;
   border-radius: inherit;
   pointer-events: none;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.62), transparent 34%);
+  background: linear-gradient(180deg, light-dark(rgba(0, 0, 0, 0.62), rgba(255, 255, 255, 0.62)), transparent 34%);
   mix-blend-mode: screen;
   opacity: 0.55;
   -webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 48%);
@@ -1249,7 +1249,7 @@ html[data-bg-color='none'] .stage.is-bg-none .atmosphere {
   padding: 6px 2px;
   border-radius: 28px;
   border: none;
-  color: rgba(255, 255, 255, 0.55);
+  color: light-dark(rgba(0, 0, 0, 0.55), rgba(255, 255, 255, 0.55));
   background: transparent;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
   transition:
@@ -1267,7 +1267,7 @@ html[data-bg-color='none'] .stage.is-bg-none .atmosphere {
   left: calc(var(--tab-i, 0) * 20%);
   border-radius: 28px;
   pointer-events: none;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02));
+  background: linear-gradient(180deg, light-dark(rgba(0, 0, 0, 0.1), rgba(255, 255, 255, 0.1)), light-dark(rgba(0, 0, 0, 0.02), rgba(255, 255, 255, 0.02)));
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.45),
     inset 0 0 0 0.5px rgba(255, 255, 255, 0.18);
@@ -1276,7 +1276,7 @@ html[data-bg-color='none'] .stage.is-bg-none .atmosphere {
 }
 
 .tab-item.is-active {
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
 }
 
 .tab-item.is-active .tab-icon {
@@ -1318,7 +1318,7 @@ html[data-bg-color='none'] .stage.is-bg-none .atmosphere {
   font-size: 0.72rem;
   letter-spacing: 0.06em;
   font-weight: 700;
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
   background: var(--glass-tint);
   backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat))
@@ -1345,7 +1345,7 @@ html[data-bg-color='none'] .stage.is-bg-none .atmosphere {
   background:
     radial-gradient(
       120px circle at var(--mx, 30%) var(--my, 18%),
-      rgba(180, 180, 180, 0.22),
+      light-dark(rgba(75, 75, 75, 0.22), rgba(180, 180, 180, 0.22)),
       transparent 62%
     ),
     var(--glass-specular);
@@ -1377,7 +1377,7 @@ html[data-bg-color='none'] .stage.is-bg-none .atmosphere {
 .ctrl-ghost {
   border: none;
   min-width: 88px;
-  color: rgba(255, 255, 255, 0.9);
+  color: light-dark(rgba(0, 0, 0, 0.9), rgba(255, 255, 255, 0.9));
   background: var(--glass-tint);
 }
 
@@ -1488,7 +1488,7 @@ html .profile-panel.profile-links-card,
 html .profile-panel.profile-money-card,
 html .profile-panel.profile-edit-card {
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.12), transparent 42%),
+    linear-gradient(180deg, light-dark(rgba(0, 0, 0, 0.12), rgba(255, 255, 255, 0.12)), transparent 42%),
     rgba(var(--bg-color-rgb, 36, 36, 36), 0.4) !important;
   backdrop-filter: blur(28px) saturate(1.6);
   -webkit-backdrop-filter: blur(28px) saturate(1.6);
@@ -1507,11 +1507,11 @@ html .profile-panel.profile-edit-card {
 /* Apple Music–style liquid glass nav: smoky capsule, bright rim, darker active lens */
 .tab-bar {
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.02) 45%, rgba(255, 255, 255, 0.1)),
-    rgba(34, 34, 36, 0.5);
+    linear-gradient(180deg, light-dark(rgba(0, 0, 0, 0.14), rgba(255, 255, 255, 0.14)), light-dark(rgba(0, 0, 0, 0.02), rgba(255, 255, 255, 0.02)) 45%, light-dark(rgba(0, 0, 0, 0.1), rgba(255, 255, 255, 0.1))),
+    light-dark(rgba(221, 221, 219, 0.5), rgba(34, 34, 36, 0.5));
   backdrop-filter: blur(20px) saturate(1.9) brightness(0.95);
   -webkit-backdrop-filter: blur(20px) saturate(1.9) brightness(0.95);
-  border: 1px solid rgba(255, 255, 255, 0.28);
+  border: 1px solid light-dark(rgba(0, 0, 0, 0.28), rgba(255, 255, 255, 0.28));
   box-shadow:
     0 10px 28px rgba(0, 0, 0, 0.35),
     inset 0 1.5px 1px rgba(255, 255, 255, 0.55),
@@ -1528,8 +1528,8 @@ html .profile-panel.profile-edit-card {
 }
 
 .tab-pill {
-  background: rgba(10, 10, 12, 0.32);
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: light-dark(rgba(245, 245, 243, 0.32), rgba(10, 10, 12, 0.32));
+  border: 1px solid light-dark(rgba(0, 0, 0, 0.14), rgba(255, 255, 255, 0.14));
   box-shadow:
     inset 0 1px 1px rgba(255, 255, 255, 0.25),
     inset 0 -1px 1px rgba(255, 255, 255, 0.18),
@@ -1537,17 +1537,17 @@ html .profile-panel.profile-edit-card {
 }
 
 .tab-item {
-  color: rgba(255, 255, 255, 0.92);
+  color: light-dark(rgba(0, 0, 0, 0.92), rgba(255, 255, 255, 0.92));
 }
 
 .tab-item.is-active {
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
 }
 
 /* Liquid Glass nav: clear as water, draggable magnifying lens */
 .tab-bar {
   overflow: visible;
-  background: rgba(255, 255, 255, 0.015);
+  background: light-dark(rgba(0, 0, 0, 0.015), rgba(255, 255, 255, 0.015));
   backdrop-filter: blur(0.5px);
   -webkit-backdrop-filter: blur(0.5px);
   border: 0;
@@ -1601,7 +1601,7 @@ html .profile-panel.profile-edit-card {
   justify-items: center;
   transform: scale(1);
   transform-origin: calc((var(--tab-i, 0) + 0.5) * 20%) 50%;
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
   pointer-events: none;
 }
 
@@ -1706,7 +1706,7 @@ html .profile-panel.profile-edit-card {
 }
 
 .tab-lens-inner {
-  color: rgba(255, 255, 255, 0.92);
+  color: light-dark(rgba(0, 0, 0, 0.92), rgba(255, 255, 255, 0.92));
   filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.55));
 }
 
@@ -1738,7 +1738,7 @@ html .profile-panel.profile-edit-card {
 
 /* Liquid Glass lens while held: colorless edge refraction, icons untouched */
 .tab-bar.is-dragging .tab-pill {
-  background: rgba(255, 255, 255, 0.015);
+  background: light-dark(rgba(0, 0, 0, 0.015), rgba(255, 255, 255, 0.015));
   box-shadow:
     inset 0 0 16px rgba(255, 255, 255, 0.1);
 }
@@ -1763,8 +1763,8 @@ html .profile-panel.profile-edit-card {
 /* light caught on the curved edges */
 .tab-bar.is-dragging .tab-pill::after {
   background:
-    radial-gradient(ellipse 70% 40% at 30% 8%, rgba(255, 255, 255, 0.28), transparent 70%),
-    radial-gradient(ellipse 70% 40% at 72% 94%, rgba(255, 255, 255, 0.14), transparent 70%);
+    radial-gradient(ellipse 70% 40% at 30% 8%, light-dark(rgba(0, 0, 0, 0.28), rgba(255, 255, 255, 0.28)), transparent 70%),
+    radial-gradient(ellipse 70% 40% at 72% 94%, light-dark(rgba(0, 0, 0, 0.14), rgba(255, 255, 255, 0.14)), transparent 70%);
 }
 
 /* Apple Music-style liquid bubble: clear center, lens warp, neutral light edge */
@@ -1776,7 +1776,7 @@ html body .tab-bar.is-dragging .tab-pill {
   animation: none;
   backdrop-filter: blur(0.4px);
   -webkit-backdrop-filter: blur(0.4px);
-  border: 0.5px solid rgba(255, 255, 255, 0.18);
+  border: 0.5px solid light-dark(rgba(0, 0, 0, 0.18), rgba(255, 255, 255, 0.18));
   box-shadow: none;
 }
 
@@ -1813,7 +1813,7 @@ html body .tab-bar .tab-pill,
 html body .tab-bar.is-dragging .tab-pill {
   background: transparent;
   box-shadow: none;
-  border: 0.5px solid rgba(255, 255, 255, 0.15);
+  border: 0.5px solid light-dark(rgba(0, 0, 0, 0.15), rgba(255, 255, 255, 0.15));
   filter: none;
   backdrop-filter: blur(2px);
   -webkit-backdrop-filter: blur(2px);
@@ -1852,7 +1852,7 @@ html body .tab-bar.is-pressed .tab-pill {
   transition: transform 0.28s cubic-bezier(0.3, 0.9, 0.3, 1.2);
   backdrop-filter: blur(1px) brightness(1.1) contrast(1.06);
   -webkit-backdrop-filter: blur(1px) brightness(1.1) contrast(1.06);
-  border: 0.5px solid rgba(255, 255, 255, 0.3);
+  border: 0.5px solid light-dark(rgba(0, 0, 0, 0.3), rgba(255, 255, 255, 0.3));
   box-shadow: none;
 }
 

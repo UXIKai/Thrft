@@ -28,7 +28,7 @@
   position: absolute;
   inset: 0;
   border: none;
-  background: rgba(0, 0, 0, 0.42);
+  background: light-dark(rgba(255, 255, 255, 0.42), rgba(0, 0, 0, 0.42));
   cursor: pointer;
   backdrop-filter: blur(18px) saturate(1.1);
   -webkit-backdrop-filter: blur(18px) saturate(1.1);
@@ -36,7 +36,7 @@
 
 .brand-globe.is-blend .brand-globe-scrim {
   /* Soft blur so ring words stay readable over home content. */
-  background: rgba(8, 8, 8, 0.2);
+  background: light-dark(rgba(247, 247, 247, 0.2), rgba(8, 8, 8, 0.2));
   backdrop-filter: blur(22px) saturate(1.12);
   -webkit-backdrop-filter: blur(22px) saturate(1.12);
 }
@@ -47,12 +47,12 @@
   width: 100%;
   padding: 14px 12px calc(16px + env(safe-area-inset-bottom, 0px));
   border-radius: 22px 22px 0 0;
-  border: 1px solid var(--glass-border, rgba(150, 150, 150, 0.22));
+  border: 1px solid var(--glass-border, light-dark(rgba(105, 105, 105, 0.22), rgba(150, 150, 150, 0.22)));
   border-bottom: none;
-  background: var(--glass-clear-tint, rgba(28, 28, 28, 0.55));
+  background: var(--glass-clear-tint, light-dark(rgba(227, 227, 227, 0.55), rgba(28, 28, 28, 0.55)));
   backdrop-filter: blur(16px) saturate(1.35);
   -webkit-backdrop-filter: blur(16px) saturate(1.35);
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -170,7 +170,7 @@
   border: none;
   border-radius: 10px;
   background: transparent;
-  color: rgba(255, 255, 255, 0.75);
+  color: light-dark(rgba(0, 0, 0, 0.75), rgba(255, 255, 255, 0.75));
   font-size: 1.35rem;
   line-height: 1;
   cursor: pointer;
@@ -245,8 +245,8 @@
   z-index: 1;
   background: radial-gradient(
     circle at 50% 50%,
-    rgba(0, 0, 0, 0.2) 0%,
-    rgba(0, 0, 0, 0.06) 58%,
+    light-dark(rgba(255, 255, 255, 0.2), rgba(0, 0, 0, 0.2)) 0%,
+    light-dark(rgba(255, 255, 255, 0.06), rgba(0, 0, 0, 0.06)) 58%,
     transparent 74%
   );
   box-shadow:
@@ -262,8 +262,8 @@
   transform: translate(-50%, -50%) scale(0.9) translateY(4px);
   background: radial-gradient(
     circle at 50% 42%,
-    rgba(0, 0, 0, 0.38) 0%,
-    rgba(0, 0, 0, 0.14) 58%,
+    light-dark(rgba(255, 255, 255, 0.38), rgba(0, 0, 0, 0.38)) 0%,
+    light-dark(rgba(255, 255, 255, 0.14), rgba(0, 0, 0, 0.14)) 58%,
     transparent 78%
   );
   box-shadow:
@@ -310,7 +310,7 @@
   border-radius: 0;
   background: transparent;
   box-shadow: none;
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
   font-family: var(--font-sans);
   font-size: 0.84rem;
   font-weight: 400;
@@ -398,7 +398,7 @@
   border-radius: 0;
   background: transparent;
   box-shadow: none;
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
   cursor: pointer;
 }
 
@@ -418,7 +418,7 @@
   -webkit-backdrop-filter: none;
   box-shadow: none;
   outline: none;
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
   cursor: pointer;
 }
 
@@ -439,12 +439,12 @@
   padding: 6px;
   box-sizing: border-box;
   border-radius: 28px;
-  background: var(--glass-clear-tint, rgba(36, 36, 36, 0.04));
+  background: var(--glass-clear-tint, light-dark(rgba(219, 219, 219, 0.04), rgba(36, 36, 36, 0.04)));
   backdrop-filter: blur(var(--glass-blur, 3px)) saturate(var(--glass-sat, 1.55));
   -webkit-backdrop-filter: blur(var(--glass-blur, 3px))
     saturate(var(--glass-sat, 1.55));
   box-shadow: var(--glass-depth);
-  border: 1px solid var(--glass-border, rgba(150, 150, 150, 0.18));
+  border: 1px solid var(--glass-border, light-dark(rgba(105, 105, 105, 0.18), rgba(150, 150, 150, 0.18)));
 }
 
 .brand-globe-search-input {
@@ -458,19 +458,19 @@
   border-radius: 0;
   background: transparent;
   box-shadow: none;
-  color: #fff;
-  caret-color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
+  caret-color: light-dark(rgb(0, 0, 0), #fff);
   font-family: inherit;
   font-size: 0.86rem;
   outline: none;
   box-sizing: border-box;
-  color-scheme: dark;
+  color-scheme: inherit;
   -webkit-appearance: none;
   appearance: none;
 }
 
 .brand-globe-search-input::placeholder {
-  color: rgba(255, 255, 255, 0.35);
+  color: light-dark(rgba(0, 0, 0, 0.35), rgba(255, 255, 255, 0.35));
 }
 
 .brand-globe-search-input::-webkit-search-cancel-button,
@@ -483,8 +483,8 @@
 .brand-globe-search-input:-webkit-autofill,
 .brand-globe-search-input:-webkit-autofill:hover,
 .brand-globe-search-input:-webkit-autofill:focus {
-  -webkit-text-fill-color: #fff;
-  caret-color: #fff;
+  -webkit-text-fill-color: light-dark(rgb(0, 0, 0), #fff);
+  caret-color: light-dark(rgb(0, 0, 0), #fff);
   box-shadow: 0 0 0 1000px rgba(var(--app-color-rgb, 36, 36, 36), 0.42) inset;
   transition: background-color 99999s ease-out;
 }
@@ -547,11 +547,11 @@
 }
 
 .brand-globe-label.is-active:not(.is-focus) {
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
 }
 
 .brand-globe-label:hover:not(.is-focus) {
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
 }
 
 /* Center seat — display + hold-to-choose control (full circle hit target). */
@@ -567,7 +567,7 @@
   border: none;
   border-radius: 50%;
   background: transparent;
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
   font-family: var(--font-sans);
   font-size: 1.55rem;
   font-weight: 700;
@@ -671,7 +671,7 @@
 
 .brand-globe-label:focus-visible,
 .brand-globe-focus:focus-visible {
-  outline: 1px solid rgba(255, 255, 255, 0.4);
+  outline: 1px solid light-dark(rgba(0, 0, 0, 0.4), rgba(255, 255, 255, 0.4));
   outline-offset: 4px;
 }
 
@@ -682,8 +682,8 @@
 /* Keep the eclipse ring lit throughout orbital browsing and dragging. */
 html .brand-globe .brand-globe-center-hole,
 html .brand-globe .brand-globe-stage.is-choosing .brand-globe-center-hole {
-  --eclipse-color: var(--globe-tint, #fff);
-  background: color-mix(in srgb, rgb(var(--bg-color-rgb, 36, 36, 36)) 38%, var(--atmosphere-base, #050505));
+  --eclipse-color: var(--globe-tint, light-dark(rgb(0, 0, 0), #fff));
+  background: color-mix(in srgb, rgb(var(--bg-color-rgb, 36, 36, 36)) 38%, var(--atmosphere-base, light-dark(rgb(250, 250, 250), #050505)));
   box-shadow:
     0 0 0 4px var(--eclipse-color),
     0 0 8px 5px var(--eclipse-color),

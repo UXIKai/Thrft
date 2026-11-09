@@ -895,6 +895,10 @@ export default function ChatScreen({
         return {
           ...c,
           members: c.members.map((m) => (m === oldName ? clean : m)),
+          memberUsernames: {
+            ...c.memberUsernames,
+            [clean]: c.memberUsernames?.[oldName] || usernameForName(oldName),
+          },
         }
       }),
     )
@@ -1085,6 +1089,7 @@ export default function ChatScreen({
             .map((w) => w[0]?.toUpperCase() || '')
             .join(''),
           members,
+          memberUsernames: Object.fromEntries(draftMembers.map((member) => [member, usernameForName(member)])),
           pinned: false,
           addedAt: 'Just now',
           messages: [],
@@ -1351,13 +1356,16 @@ export default function ChatScreen({
     setPeerProfile(null)
   }
 
-  /**
-   * Profile link — always opens the full contact card (edit name, pin,
-   * delete, block). Used for DM titles and every group-member name.
-   */
   function openPeerProfile(name) {
     const clean = String(name || '').trim()
     if (!clean || clean === 'You') return
+    if (activeChat?.kind === 'group') {
+      setMembersSheetOpen(false)
+      setContactSheetOpen(false)
+      setPeerProfile(null)
+      onOpenAccount?.(activeChat.memberUsernames?.[clean] || usernameForName(clean))
+      return
+    }
     setMembersSheetOpen(false)
     setContactSheetOpen(false)
     setEditingNick(false)

@@ -2,7 +2,7 @@
   position: relative;
   z-index: 1;
   padding: 12px 16px 36px;
-  color: #f4f4f2;
+  color: light-dark(rgb(11, 11, 13), #f4f4f2);
   background: transparent;
   overflow: hidden;
 }
@@ -35,14 +35,14 @@
   min-height: 48px;
   padding: 12px;
   border-radius: 22px;
-  border: 1px solid var(--glass-border, rgba(168, 168, 168, 0.14));
-  background: var(--glass-clear-tint, rgba(36, 36, 36, 0.04));
+  border: 1px solid var(--glass-border, light-dark(rgba(87, 87, 87, 0.14), rgba(168, 168, 168, 0.14)));
+  background: var(--glass-clear-tint, light-dark(rgba(219, 219, 219, 0.04), rgba(36, 36, 36, 0.04)));
   backdrop-filter: blur(var(--glass-clear-blur, 2px)) saturate(var(--glass-sat, 1.55))
     brightness(var(--glass-clear-bright, 0.97));
   -webkit-backdrop-filter: blur(var(--glass-clear-blur, 2px))
     saturate(var(--glass-sat, 1.55)) brightness(var(--glass-clear-bright, 0.97));
   box-shadow: var(--glass-clear-depth);
-  color: rgba(244, 244, 242, 0.72);
+  color: light-dark(rgba(11, 11, 13, 0.72), rgba(244, 244, 242, 0.72));
   transition:
     background 0.2s ease,
     color 0.2s ease,
@@ -52,14 +52,14 @@
 
 .listing-seg-btn:hover,
 .listing-seg-btn:focus-visible {
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
   filter: brightness(1.35);
   outline: none;
 }
 
 .listing-seg-btn.is-active {
-  background: var(--glass-clear-tint-active, rgba(255, 255, 255, 0.06));
-  color: #fff;
+  background: var(--glass-clear-tint-active, light-dark(rgba(0, 0, 0, 0.06), rgba(255, 255, 255, 0.06)));
+  color: light-dark(rgb(0, 0, 0), #fff);
   box-shadow: var(--glass-clear-depth);
   filter: brightness(1.2);
 }
@@ -78,8 +78,8 @@
   margin-bottom: 18px;
   padding: 24px 16px;
   border-radius: 24px;
-  border: 1.5px dashed rgba(255, 255, 255, 0.22);
-  background: var(--glass-clear-tint, rgba(36, 36, 36, 0.04));
+  border: 1.5px dashed light-dark(rgba(0, 0, 0, 0.22), rgba(255, 255, 255, 0.22));
+  background: var(--glass-clear-tint, light-dark(rgba(219, 219, 219, 0.04), rgba(36, 36, 36, 0.04)));
   backdrop-filter: blur(var(--glass-clear-blur, 2px)) saturate(var(--glass-sat, 1.55))
     brightness(var(--glass-clear-bright, 0.97));
   -webkit-backdrop-filter: blur(var(--glass-clear-blur, 2px))
@@ -90,7 +90,7 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
   text-align: center;
   transition: filter 0.2s ease, border-color 0.2s ease;
 }
@@ -155,7 +155,7 @@
   padding: 0;
   border: none;
   border-radius: 0;
-  background: rgba(6, 6, 6, 0.28);
+  background: light-dark(rgba(249, 249, 249, 0.28), rgba(6, 6, 6, 0.28));
   backdrop-filter: blur(28px) saturate(1.1);
   -webkit-backdrop-filter: blur(28px) saturate(1.1);
   cursor: pointer;
@@ -191,14 +191,14 @@
   padding: 12px 14px;
   box-sizing: border-box;
   border-radius: 22px;
-  border: 1px solid var(--glass-border, rgba(168, 168, 168, 0.14));
-  background: var(--glass-clear-tint-active, rgba(255, 255, 255, 0.06));
+  border: 1px solid var(--glass-border, light-dark(rgba(87, 87, 87, 0.14), rgba(168, 168, 168, 0.14)));
+  background: var(--glass-clear-tint-active, light-dark(rgba(0, 0, 0, 0.06), rgba(255, 255, 255, 0.06)));
   backdrop-filter: blur(var(--glass-clear-blur, 2px)) saturate(var(--glass-sat, 1.55))
     brightness(var(--glass-clear-bright, 0.97));
   -webkit-backdrop-filter: blur(var(--glass-clear-blur, 2px))
     saturate(var(--glass-sat, 1.55)) brightness(var(--glass-clear-bright, 0.97));
   box-shadow: var(--glass-clear-depth);
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
   font-family: var(--font-sans);
   font-size: 0.95rem;
   font-weight: 700;
@@ -226,14 +226,14 @@
   padding: 0 18px;
   box-sizing: border-box;
   border-radius: 22px;
-  border: 1px solid var(--glass-border, rgba(168, 168, 168, 0.14));
-  background: var(--glass-clear-tint, rgba(36, 36, 36, 0.04));
+  border: 1px solid var(--glass-border, light-dark(rgba(87, 87, 87, 0.14), rgba(168, 168, 168, 0.14)));
+  background: var(--glass-clear-tint, light-dark(rgba(219, 219, 219, 0.04), rgba(36, 36, 36, 0.04)));
   backdrop-filter: blur(var(--glass-clear-blur, 2px)) saturate(var(--glass-sat, 1.55))
     brightness(var(--glass-clear-bright, 0.97));
   -webkit-backdrop-filter: blur(var(--glass-clear-blur, 2px))
     saturate(var(--glass-sat, 1.55)) brightness(var(--glass-clear-bright, 0.97));
   box-shadow: var(--glass-clear-depth);
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
   font-family: var(--font-sans);
   font-size: 1.2rem;
   font-weight: 500;
@@ -245,7 +245,7 @@
 .listing-add-save:hover,
 .listing-add-save:focus-visible {
   filter: brightness(1.12);
-  border-color: rgba(255, 255, 255, 0.22);
+  border-color: light-dark(rgba(0, 0, 0, 0.22), rgba(255, 255, 255, 0.22));
   outline: none;
 }
 
@@ -270,8 +270,8 @@
   margin-bottom: 18px;
   padding: 24px 16px;
   border-radius: 24px;
-  border: 1.5px dashed rgba(255, 255, 255, 0.22);
-  background: var(--glass-clear-tint, rgba(36, 36, 36, 0.04));
+  border: 1.5px dashed light-dark(rgba(0, 0, 0, 0.22), rgba(255, 255, 255, 0.22));
+  background: var(--glass-clear-tint, light-dark(rgba(219, 219, 219, 0.04), rgba(36, 36, 36, 0.04)));
   backdrop-filter: blur(var(--glass-clear-blur, 2px)) saturate(var(--glass-sat, 1.55))
     brightness(var(--glass-clear-bright, 0.97));
   -webkit-backdrop-filter: blur(var(--glass-clear-blur, 2px))
@@ -282,7 +282,7 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
   text-align: center;
   transition: filter 0.2s ease, border-color 0.2s ease;
 }
@@ -300,10 +300,10 @@
   justify-content: center;
   border-style: solid;
   background:
-    linear-gradient(45deg, rgba(255, 255, 255, 0.06) 25%, transparent 25%),
-    linear-gradient(-45deg, rgba(255, 255, 255, 0.06) 25%, transparent 25%),
-    linear-gradient(45deg, transparent 75%, rgba(255, 255, 255, 0.06) 75%),
-    linear-gradient(-45deg, transparent 75%, rgba(255, 255, 255, 0.06) 75%);
+    linear-gradient(45deg, light-dark(rgba(0, 0, 0, 0.06), rgba(255, 255, 255, 0.06)) 25%, transparent 25%),
+    linear-gradient(-45deg, light-dark(rgba(0, 0, 0, 0.06), rgba(255, 255, 255, 0.06)) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, light-dark(rgba(0, 0, 0, 0.06), rgba(255, 255, 255, 0.06)) 75%),
+    linear-gradient(-45deg, transparent 75%, light-dark(rgba(0, 0, 0, 0.06), rgba(255, 255, 255, 0.06)) 75%);
   background-size: 16px 16px;
   background-position: 0 0, 0 8px, 8px -8px, -8px 0;
 }
@@ -326,7 +326,7 @@
   font-family: var(--font-sans);
   font-size: 0.66rem;
   line-height: 1.35;
-  color: rgba(244, 244, 242, 0.45);
+  color: light-dark(rgba(11, 11, 13, 0.45), rgba(244, 244, 242, 0.45));
 }
 
 .listing-scanner-preview {
@@ -356,8 +356,8 @@
   min-height: 52px;
   padding: 16px 18px;
   border-radius: 22px;
-  border: 1px solid var(--glass-border, rgba(168, 168, 168, 0.14));
-  background: var(--glass-clear-tint, rgba(36, 36, 36, 0.04));
+  border: 1px solid var(--glass-border, light-dark(rgba(87, 87, 87, 0.14), rgba(168, 168, 168, 0.14)));
+  background: var(--glass-clear-tint, light-dark(rgba(219, 219, 219, 0.04), rgba(36, 36, 36, 0.04)));
   backdrop-filter: blur(var(--glass-clear-blur, 2px)) saturate(var(--glass-sat, 1.55))
     brightness(var(--glass-clear-bright, 0.97));
   -webkit-backdrop-filter: blur(var(--glass-clear-blur, 2px))
@@ -373,12 +373,12 @@
 
 .listing-box:hover {
   filter: none;
-  border-color: rgba(255, 255, 255, 0.22);
+  border-color: light-dark(rgba(0, 0, 0, 0.22), rgba(255, 255, 255, 0.22));
 }
 
 .listing-box:focus-within {
   filter: none;
-  border-color: rgba(255, 255, 255, 0.28);
+  border-color: light-dark(rgba(0, 0, 0, 0.28), rgba(255, 255, 255, 0.28));
 }
 
 .listing-label {
@@ -393,7 +393,7 @@
   font-weight: 400;
   letter-spacing: 0.04em;
   text-transform: none;
-  color: rgba(244, 244, 242, 0.42);
+  color: light-dark(rgba(11, 11, 13, 0.42), rgba(244, 244, 242, 0.42));
   pointer-events: none;
   transition:
     opacity 0.16s ease,
@@ -429,14 +429,14 @@
   min-height: 48px;
   padding: 12px 14px;
   border-radius: 22px;
-  border: 1px solid var(--glass-border, rgba(168, 168, 168, 0.14));
-  background: var(--glass-clear-tint, rgba(36, 36, 36, 0.04));
+  border: 1px solid var(--glass-border, light-dark(rgba(87, 87, 87, 0.14), rgba(168, 168, 168, 0.14)));
+  background: var(--glass-clear-tint, light-dark(rgba(219, 219, 219, 0.04), rgba(36, 36, 36, 0.04)));
   backdrop-filter: blur(var(--glass-clear-blur, 2px)) saturate(var(--glass-sat, 1.55))
     brightness(var(--glass-clear-bright, 0.97));
   -webkit-backdrop-filter: blur(var(--glass-clear-blur, 2px))
     saturate(var(--glass-sat, 1.55)) brightness(var(--glass-clear-bright, 0.97));
   box-shadow: var(--glass-clear-depth);
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
   font-family: var(--font-sans);
   font-size: 0.92rem;
   outline: none;
@@ -473,7 +473,7 @@
 }
 
 .listing-input:focus {
-  border-color: rgba(255, 255, 255, 0.28);
+  border-color: light-dark(rgba(0, 0, 0, 0.28), rgba(255, 255, 255, 0.28));
   filter: none;
 }
 
@@ -503,15 +503,15 @@
   min-height: 52px;
   margin: 0;
   padding: 12px 14px;
-  border: 1px solid var(--glass-border, rgba(168, 168, 168, 0.14));
+  border: 1px solid var(--glass-border, light-dark(rgba(87, 87, 87, 0.14), rgba(168, 168, 168, 0.14)));
   border-radius: 22px;
-  background: var(--glass-clear-tint, rgba(36, 36, 36, 0.04));
+  background: var(--glass-clear-tint, light-dark(rgba(219, 219, 219, 0.04), rgba(36, 36, 36, 0.04)));
   backdrop-filter: blur(var(--glass-clear-blur, 2px)) saturate(var(--glass-sat, 1.55))
     brightness(var(--glass-clear-bright, 0.97));
   -webkit-backdrop-filter: blur(var(--glass-clear-blur, 2px))
     saturate(var(--glass-sat, 1.55)) brightness(var(--glass-clear-bright, 0.97));
   box-shadow: var(--glass-clear-depth);
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
   font-family: var(--font-sans);
   font-size: 0.95rem;
   font-weight: 700;
@@ -551,7 +551,7 @@
   letter-spacing: 0.14em;
   text-transform: uppercase;
   text-align: center;
-  color: rgba(244, 244, 242, 0.45);
+  color: light-dark(rgba(11, 11, 13, 0.45), rgba(244, 244, 242, 0.45));
 }
 
 .create-listing .listing-orbit.type-strip-wrap {
@@ -572,14 +572,14 @@
   min-height: 40px;
   padding: 8px 6px;
   border-radius: 999px;
-  border: 1px solid var(--glass-border, rgba(168, 168, 168, 0.14));
-  background: var(--glass-clear-tint, rgba(36, 36, 36, 0.04));
+  border: 1px solid var(--glass-border, light-dark(rgba(87, 87, 87, 0.14), rgba(168, 168, 168, 0.14)));
+  background: var(--glass-clear-tint, light-dark(rgba(219, 219, 219, 0.04), rgba(36, 36, 36, 0.04)));
   backdrop-filter: blur(var(--glass-clear-blur, 2px)) saturate(var(--glass-sat, 1.55))
     brightness(var(--glass-clear-bright, 0.97));
   -webkit-backdrop-filter: blur(var(--glass-clear-blur, 2px))
     saturate(var(--glass-sat, 1.55)) brightness(var(--glass-clear-bright, 0.97));
   box-shadow: var(--glass-clear-depth);
-  color: rgba(244, 244, 242, 0.75);
+  color: light-dark(rgba(11, 11, 13, 0.75), rgba(244, 244, 242, 0.75));
   font-family: var(--font-sans);
   font-size: 0.68rem;
   font-weight: 700;
@@ -594,8 +594,8 @@
 }
 
 .listing-condition.is-active {
-  background: var(--glass-clear-tint-active, rgba(255, 255, 255, 0.06));
-  color: #fff;
+  background: var(--glass-clear-tint-active, light-dark(rgba(0, 0, 0, 0.06), rgba(255, 255, 255, 0.06)));
+  color: light-dark(rgb(0, 0, 0), #fff);
   filter: brightness(1.2);
 }
 
@@ -617,17 +617,17 @@
   width: 100%;
   min-height: 52px;
   margin: 8px 0 10px;
-  border: 1px solid var(--glass-border, rgba(168, 168, 168, 0.14));
+  border: 1px solid var(--glass-border, light-dark(rgba(87, 87, 87, 0.14), rgba(168, 168, 168, 0.14)));
   border-radius: 22px;
   display: grid;
   place-items: center;
-  background: var(--glass-tint, rgba(36, 36, 36, 0.06));
+  background: var(--glass-tint, light-dark(rgba(219, 219, 219, 0.06), rgba(36, 36, 36, 0.06)));
   backdrop-filter: blur(var(--glass-blur, 3px)) saturate(var(--glass-sat, 1.55))
     brightness(var(--glass-bright, 0.98));
   -webkit-backdrop-filter: blur(var(--glass-blur, 3px)) saturate(var(--glass-sat, 1.55))
     brightness(var(--glass-bright, 0.98));
   box-shadow: var(--glass-depth);
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
   transition: filter 0.2s ease, background 0.2s ease, transform 0.15s ease;
 }
 
@@ -650,7 +650,7 @@
   margin: 0 0 14px;
   font-family: var(--font-sans);
   font-size: 0.7rem;
-  color: rgba(244, 244, 242, 0.5);
+  color: light-dark(rgba(11, 11, 13, 0.5), rgba(244, 244, 242, 0.5));
   letter-spacing: 0.02em;
 }
 
@@ -664,7 +664,7 @@
   display: block;
   width: 100%;
   margin: 8px 0 0;
-  accent-color: #fff;
+  accent-color: light-dark(rgb(0, 0, 0), #fff);
   background: none;
 }
 
@@ -675,7 +675,7 @@
 .listing-date-value {
   display: block;
   padding: 22px 16px 10px;
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
   font-weight: 600;
 }
 
@@ -696,13 +696,13 @@ html body input.listing-slider {
 input.listing-slider::-webkit-slider-runnable-track {
   height: 4px;
   border-radius: 2px;
-  background: rgba(255, 255, 255, 0.3);
+  background: light-dark(rgba(0, 0, 0, 0.3), rgba(255, 255, 255, 0.3));
 }
 
 input.listing-slider::-moz-range-track {
   height: 4px;
   border-radius: 2px;
-  background: rgba(255, 255, 255, 0.3);
+  background: light-dark(rgba(0, 0, 0, 0.3), rgba(255, 255, 255, 0.3));
 }
 
 input.listing-slider::-webkit-slider-thumb {
@@ -712,7 +712,7 @@ input.listing-slider::-webkit-slider-thumb {
   margin-top: -9px;
   border-radius: 50%;
   border: none;
-  background: #fff;
+  background: light-dark(rgb(0, 0, 0), #fff);
 }
 
 input.listing-slider::-moz-range-thumb {
@@ -720,7 +720,7 @@ input.listing-slider::-moz-range-thumb {
   height: 22px;
   border-radius: 50%;
   border: none;
-  background: #fff;
+  background: light-dark(rgb(0, 0, 0), #fff);
 }
 
 .listing-date-wheels {
@@ -756,14 +756,14 @@ html body .listing-wheel .listing-wheel-item {
   border: none !important;
   box-shadow: none !important;
   backdrop-filter: none !important;
-  color: rgba(255, 255, 255, 0.5);
+  color: light-dark(rgba(0, 0, 0, 0.5), rgba(255, 255, 255, 0.5));
   font: inherit;
   font-weight: 600;
   cursor: pointer;
 }
 
 html body .listing-wheel .listing-wheel-item.is-on {
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
 }
 
 html body .listing-wheel .listing-wheel-input {
@@ -777,7 +777,7 @@ html body .listing-wheel .listing-wheel-input {
   border: none;
   outline: none;
   box-shadow: none;
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
   font: inherit;
   font-weight: 600;
   text-align: center;
@@ -819,7 +819,7 @@ html body .listing-photo-choice-btn {
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
   border-radius: 0;
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
   padding: 0;
 }
 

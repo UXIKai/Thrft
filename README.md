@@ -33,6 +33,7 @@ Wire real profiles later by setting `avatarUrl` (and labels) on entries in `src/
 ### Profile settings
 - Garment sizes use equal-sized buttons in centered rows, with the add-size control centered below them.
 - The settings gear beside the profile name opens Settings & privacy directly, without an intermediate popup.
+- A half-moon button beside the narrower Profile control switches between dark (white on black) and light (black on white) display modes. The choice persists on this device. Neutral UI colors follow the mode without inverting photos, brand colors, or the always-black color-selection centers.
 - The profile shows only the username. Account editing keeps the person, @ and lock icons for username, email and password; email changes require authentication-provider confirmation.
 - The Links editor has one centered Media heading above the music-service buttons and social-media buttons.
 - Money controls and sales statistics use matching tile sizes, spacing, and glass styling.
@@ -41,6 +42,7 @@ Settings & privacy starts with Profile followed by the active account. Other acc
 Links and Money rows sit immediately below ID verification. Profile contains only username, email and password; Links contains music services and social handles under Media; Money contains the financial controls. Each page centers its content and section headings above the controls, retaining scrolling on shorter screens.
 
 ### Chat
+- Group-member names open the member's public account page with username, avatar, joined date, verification, Following/Followers, and active Store listings. Settings, Orders, and Closet remain private. Following/follower counts currently show unavailable placeholders, matching the owner's profile; follower tracking is not implemented.
 - Pinned chats appear first in the regular conversation list, without separate pinned cards. The Messages heading sits in the upper-left corner with search and the desktop sidebar toggle on the right. Search opens the bottom input; the bottom plus opens a chooser with two-person group and one-person friend buttons. Collapsing leaves only the top-left toggle to restore the list.
 - Opening a conversation does not automatically focus the message field or summon the keyboard.
 - Opening chat search rotates the bottom plus into an X around a fixed center; closing clears search and rotates it back in the same position. The sidebar heading reads Chats. When search is closed, the plus opens the new-chat chooser.

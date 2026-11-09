@@ -384,12 +384,18 @@ export async function getPublicAccount(username) {
   const row = await findAccountByUsername(username)
   if (!row) return null
   const account = mapAccount(row)
+  const profile = await prisma.userProfile.findUnique({
+    where: { accountId: row.id },
+    select: { joined: true, identityStatus: true },
+  })
   return {
     username: account.username,
     displayName: account.displayName,
     bio: account.bio,
     avatarUrl: account.avatarUrl,
     id: account.id,
+    joined: profile?.joined || new Date(account.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+    identityStatus: profile?.identityStatus || 'unverified',
   }
 }
 

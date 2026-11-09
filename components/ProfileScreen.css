@@ -1,12 +1,12 @@
 /* Profile — clean dark UI matching thrft-profile-refine-1…4 */
 .profile-screen {
   --pf: var(--font-sans);
-  --pf-ink: #ffffff;
-  --pf-mute: rgba(255, 255, 255, 0.42);
-  --pf-mute-2: rgba(255, 255, 255, 0.55);
-  --pf-line: rgba(255, 255, 255, 0.12);
-  --pf-card: var(--glass-clear-tint, rgba(36, 36, 36, 0.04));
-  --pf-card-2: var(--glass-tint, rgba(36, 36, 36, 0.06));
+  --pf-ink: light-dark(rgb(0, 0, 0), #ffffff);
+  --pf-mute: light-dark(rgba(0, 0, 0, 0.42), rgba(255, 255, 255, 0.42));
+  --pf-mute-2: light-dark(rgba(0, 0, 0, 0.55), rgba(255, 255, 255, 0.55));
+  --pf-line: light-dark(rgba(0, 0, 0, 0.12), rgba(255, 255, 255, 0.12));
+  --pf-card: var(--glass-clear-tint, light-dark(rgba(219, 219, 219, 0.04), rgba(36, 36, 36, 0.04)));
+  --pf-card-2: var(--glass-tint, light-dark(rgba(219, 219, 219, 0.06), rgba(36, 36, 36, 0.06)));
   --pf-radius: 14px;
   --pf-pad-x: 18px;
 
@@ -42,7 +42,7 @@
   font-weight: 700;
   font-size: 1.05rem;
   letter-spacing: -0.01em;
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
 }
 
 .profile-title:empty {
@@ -61,7 +61,7 @@
   border: none;
   border-radius: 50%;
   background: transparent;
-  color: rgba(255, 255, 255, 0.78);
+  color: light-dark(rgba(0, 0, 0, 0.78), rgba(255, 255, 255, 0.78));
   padding: 0;
 }
 
@@ -91,7 +91,7 @@
   height: 104px;
   border-radius: 50%;
   background: transparent;
-  color: rgba(255, 255, 255, 0.82);
+  color: light-dark(rgba(0, 0, 0, 0.82), rgba(255, 255, 255, 0.82));
   display: grid;
   place-items: center;
   overflow: hidden;
@@ -100,17 +100,17 @@
   font-size: 2rem;
   letter-spacing: 0.02em;
   box-shadow: none;
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  border: 1px solid light-dark(rgba(0, 0, 0, 0.16), rgba(255, 255, 255, 0.16));
   backdrop-filter: blur(6px) saturate(1.2);
   -webkit-backdrop-filter: blur(6px) saturate(1.2);
   background-image:
-    radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.08), transparent 55%),
-    linear-gradient(160deg, rgba(40, 40, 40, 0.22), rgba(12, 12, 12, 0.1));
+    radial-gradient(circle at 35% 30%, light-dark(rgba(0, 0, 0, 0.08), rgba(255, 255, 255, 0.08)), transparent 55%),
+    linear-gradient(160deg, light-dark(rgba(215, 215, 215, 0.22), rgba(40, 40, 40, 0.22)), light-dark(rgba(243, 243, 243, 0.1), rgba(12, 12, 12, 0.1)));
 }
 
 .pf-user-avatar.has-photo {
   background: transparent;
-  border-color: rgba(255, 255, 255, 0.22);
+  border-color: light-dark(rgba(0, 0, 0, 0.22), rgba(255, 255, 255, 0.22));
 }
 
 .pf-user-avatar-img {
@@ -127,9 +127,9 @@
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  background: rgba(28, 28, 28, 0.72);
-  color: #fff;
+  border: 1px solid light-dark(rgba(0, 0, 0, 0.18), rgba(255, 255, 255, 0.18));
+  background: light-dark(rgba(227, 227, 227, 0.72), rgba(28, 28, 28, 0.72));
+  color: light-dark(rgb(0, 0, 0), #fff);
   display: grid;
   place-items: center;
   padding: 0;
@@ -139,7 +139,7 @@
 
 .profile-photo-sheet .glass-sheet-card {
   background:
-    linear-gradient(165deg, rgba(42, 42, 42, 0.94), rgba(22, 22, 22, 0.96));
+    linear-gradient(165deg, light-dark(rgba(213, 213, 213, 0.94), rgba(42, 42, 42, 0.94)), light-dark(rgba(233, 233, 233, 0.96), rgba(22, 22, 22, 0.96)));
 }
 
 .profile-photo-sheet-head {
@@ -162,9 +162,9 @@
   min-height: 72px;
   padding: 16px;
   border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(28, 28, 28, 0.55);
-  color: rgba(255, 255, 255, 0.9);
+  border: 1px solid light-dark(rgba(0, 0, 0, 0.1), rgba(255, 255, 255, 0.1));
+  background: light-dark(rgba(227, 227, 227, 0.55), rgba(28, 28, 28, 0.55));
+  color: light-dark(rgba(0, 0, 0, 0.9), rgba(255, 255, 255, 0.9));
 }
 
 .profile-photo-option-ico {
@@ -175,7 +175,7 @@
   place-items: center;
   background: transparent;
   border: none;
-  color: rgba(255, 255, 255, 0.88);
+  color: light-dark(rgba(0, 0, 0, 0.88), rgba(255, 255, 255, 0.88));
 }
 
 .profile-photo-option-ico svg {
@@ -215,7 +215,7 @@
   font-weight: 700;
   font-size: 0.98rem;
   letter-spacing: -0.01em;
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
   word-break: break-all;
 }
 
@@ -230,7 +230,7 @@
   border: none;
   border-radius: 0;
   background: transparent;
-  color: rgba(255, 255, 255, 0.72);
+  color: light-dark(rgba(0, 0, 0, 0.72), rgba(255, 255, 255, 0.72));
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -254,9 +254,9 @@
   font-size: 0.58rem;
   font-weight: 700;
   letter-spacing: 0.04em;
-  color: rgba(20, 20, 20, 0.9);
+  color: light-dark(rgba(235, 235, 235, 0.9), rgba(20, 20, 20, 0.9));
   background: rgba(180, 210, 190, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: 1px solid light-dark(rgba(0, 0, 0, 0.18), rgba(255, 255, 255, 0.18));
 }
 
 .profile-links-list {
@@ -273,10 +273,10 @@
   padding: 8px 12px;
   border-radius: 999px;
   font-size: 0.72rem;
-  color: rgba(255, 255, 255, 0.82);
+  color: light-dark(rgba(0, 0, 0, 0.82), rgba(255, 255, 255, 0.82));
   text-decoration: none;
-  background: var(--glass-clear-tint, rgba(36, 36, 36, 0.12));
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--glass-clear-tint, light-dark(rgba(219, 219, 219, 0.12), rgba(36, 36, 36, 0.12)));
+  border: 1px solid light-dark(rgba(0, 0, 0, 0.08), rgba(255, 255, 255, 0.08));
 }
 
 .profile-username-link {
@@ -288,16 +288,16 @@
   font: inherit;
   font-size: 0.86rem;
   font-weight: 600;
-  color: rgba(244, 244, 242, 0.62);
+  color: light-dark(rgba(11, 11, 13, 0.62), rgba(244, 244, 242, 0.62));
   cursor: pointer;
   text-decoration: underline;
-  text-decoration-color: rgba(255, 255, 255, 0.28);
+  text-decoration-color: light-dark(rgba(0, 0, 0, 0.28), rgba(255, 255, 255, 0.28));
   text-underline-offset: 3px;
 }
 
 .profile-username-link.is-empty {
   text-decoration-style: dashed;
-  color: rgba(244, 244, 242, 0.42);
+  color: light-dark(rgba(11, 11, 13, 0.42), rgba(244, 244, 242, 0.42));
 }
 
 .profile-name-sheet .glass-sheet-card {
@@ -320,9 +320,9 @@
   gap: 12px;
   padding: 14px;
   border-radius: 14px;
-  border: 1px solid var(--glass-border, rgba(168, 168, 168, 0.18));
-  background: var(--glass-clear-tint, rgba(36, 36, 36, 0.04));
-  color: #fff;
+  border: 1px solid var(--glass-border, light-dark(rgba(87, 87, 87, 0.18), rgba(168, 168, 168, 0.18)));
+  background: var(--glass-clear-tint, light-dark(rgba(219, 219, 219, 0.04), rgba(36, 36, 36, 0.04)));
+  color: light-dark(rgb(0, 0, 0), #fff);
   text-align: left;
   font-size: 0.88rem;
   cursor: pointer;
@@ -356,7 +356,7 @@
   font-family: var(--pf);
   font-weight: 700;
   font-size: 1.35rem;
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
   line-height: 1.05;
 }
 
@@ -371,7 +371,7 @@
   width: 1px;
   align-self: stretch;
   margin: 2px 14px;
-  background: var(--glass-tint-active, rgba(36, 36, 36, 0.1));
+  background: var(--glass-tint-active, light-dark(rgba(219, 219, 219, 0.1), rgba(36, 36, 36, 0.1)));
 }
 
 .profile-block {
@@ -385,7 +385,7 @@
   font-size: 0.68rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.72);
+  color: light-dark(rgba(0, 0, 0, 0.72), rgba(255, 255, 255, 0.72));
 }
 
 .profile-label-row {
@@ -448,7 +448,7 @@
 .profile-sales-note {
   margin: 12px 4px 0;
   font-size: 0.78rem;
-  color: rgba(255, 255, 255, 0.45);
+  color: light-dark(rgba(0, 0, 0, 0.45), rgba(255, 255, 255, 0.45));
   text-align: center;
 }
 
@@ -461,8 +461,8 @@
   gap: 8px;
   padding: 10px 4px;
   border-radius: var(--pf-radius);
-  border: 1px solid var(--glass-border, rgba(168, 168, 168, 0.18));
-  background: var(--glass-clear-tint, rgba(36, 36, 36, 0.04));
+  border: 1px solid var(--glass-border, light-dark(rgba(87, 87, 87, 0.18), rgba(168, 168, 168, 0.18)));
+  background: var(--glass-clear-tint, light-dark(rgba(219, 219, 219, 0.04), rgba(36, 36, 36, 0.04)));
   backdrop-filter: blur(var(--glass-clear-blur, 2px)) saturate(var(--glass-sat, 1.55))
     brightness(var(--glass-clear-bright, 0.97));
   -webkit-backdrop-filter: blur(var(--glass-clear-blur, 2px))
@@ -474,7 +474,7 @@
   font-family: var(--pf);
   font-weight: 700;
   font-size: 1.2rem;
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
   line-height: 1;
 }
 
@@ -507,8 +507,8 @@
 .profile-credits-card {
   padding: 22px 16px 18px;
   border-radius: 16px;
-  border: 1px solid var(--glass-border, rgba(168, 168, 168, 0.18));
-  background: var(--glass-tint, rgba(36, 36, 36, 0.06));
+  border: 1px solid var(--glass-border, light-dark(rgba(87, 87, 87, 0.18), rgba(168, 168, 168, 0.18)));
+  background: var(--glass-tint, light-dark(rgba(219, 219, 219, 0.06), rgba(36, 36, 36, 0.06)));
   backdrop-filter: blur(var(--glass-blur, 3px)) saturate(var(--glass-sat, 1.55))
     brightness(var(--glass-clear-bright, 0.97));
   -webkit-backdrop-filter: blur(var(--glass-blur, 3px)) saturate(var(--glass-sat, 1.55))
@@ -548,7 +548,7 @@
 
 .profile-credits-card.is-button:hover,
 .profile-credits-card.is-button:focus-visible {
-  border-color: rgba(244, 244, 242, 0.32);
+  border-color: light-dark(rgba(11, 11, 13, 0.32), rgba(244, 244, 242, 0.32));
 }
 
 .profile-credits-card.is-button:active {
@@ -559,7 +559,7 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
 }
 
 .profile-sparkle,
@@ -610,7 +610,7 @@
 .profile-points-actions .glass-cta.is-minimal.is-icon {
   display: grid;
   place-items: center;
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
 }
 
 .profile-points-action-ico {
@@ -651,9 +651,9 @@
   min-height: 48px;
   padding: 0 14px;
   border-radius: 14px;
-  border: 1px solid var(--glass-border, rgba(150, 150, 150, 0.2));
-  background: var(--glass-tint, rgba(36, 36, 36, 0.06));
-  color: #fff;
+  border: 1px solid var(--glass-border, light-dark(rgba(105, 105, 105, 0.2), rgba(150, 150, 150, 0.2)));
+  background: var(--glass-tint, light-dark(rgba(219, 219, 219, 0.06), rgba(36, 36, 36, 0.06)));
+  color: light-dark(rgb(0, 0, 0), #fff);
   box-sizing: border-box;
 }
 
@@ -661,7 +661,7 @@
   display: grid;
   place-items: center;
   flex-shrink: 0;
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
 }
 
 .profile-points-amount-ico .profile-sparkle {
@@ -676,7 +676,7 @@
   border: none;
   outline: none;
   background: transparent;
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
   font: inherit;
   font-weight: 600;
   font-size: 1rem;
@@ -684,7 +684,7 @@
 }
 
 .profile-points-amount-input::placeholder {
-  color: rgba(255, 255, 255, 0.38);
+  color: light-dark(rgba(0, 0, 0, 0.38), rgba(255, 255, 255, 0.38));
   font-weight: 600;
 }
 
@@ -753,11 +753,11 @@
   padding: 5px 12px;
   border-radius: 999px;
   border: none;
-  background: var(--glass-tint, rgba(36, 36, 36, 0.06));
+  background: var(--glass-tint, light-dark(rgba(219, 219, 219, 0.06), rgba(36, 36, 36, 0.06)));
   backdrop-filter: blur(var(--glass-blur, 3px)) saturate(var(--glass-sat, 1.55));
   -webkit-backdrop-filter: blur(var(--glass-blur, 3px)) saturate(var(--glass-sat, 1.55));
   box-shadow: var(--glass-clear-depth);
-  color: rgba(255, 255, 255, 0.9);
+  color: light-dark(rgba(0, 0, 0, 0.9), rgba(255, 255, 255, 0.9));
   font-family: var(--pf);
   font-size: 0.62rem;
   font-weight: 700;
@@ -776,7 +776,7 @@
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
   box-shadow: none;
-  color: rgba(255, 255, 255, 0.85);
+  color: light-dark(rgba(0, 0, 0, 0.85), rgba(255, 255, 255, 0.85));
   font-family: var(--pf);
   font-size: 1.55rem;
   font-weight: 400;
@@ -831,8 +831,8 @@
 
 .profile-ship-card {
   border-radius: 16px;
-  border: 1px solid var(--glass-border, rgba(168, 168, 168, 0.18));
-  background: var(--glass-clear-tint, rgba(36, 36, 36, 0.04));
+  border: 1px solid var(--glass-border, light-dark(rgba(87, 87, 87, 0.18), rgba(168, 168, 168, 0.18)));
+  background: var(--glass-clear-tint, light-dark(rgba(219, 219, 219, 0.04), rgba(36, 36, 36, 0.04)));
   backdrop-filter: blur(var(--glass-clear-blur, 2px)) saturate(var(--glass-sat, 1.55))
     brightness(var(--glass-clear-bright, 0.97));
   -webkit-backdrop-filter: blur(var(--glass-clear-blur, 2px))
@@ -858,8 +858,8 @@
   width: 26px;
   height: 26px;
   border-radius: 50%;
-  background: #fff;
-  color: #0a0a0a;
+  background: light-dark(rgb(0, 0, 0), #fff);
+  color: light-dark(rgb(245, 245, 245), #0a0a0a);
   display: grid;
   place-items: center;
   font-family: var(--pf);
@@ -886,7 +886,7 @@
   font-family: var(--pf);
   font-weight: 700;
   font-size: 1.2rem;
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
   line-height: 1.1;
 }
 
@@ -901,7 +901,7 @@
 
 .profile-ship-rule {
   width: 1px;
-  background: var(--glass-tint, rgba(36, 36, 36, 0.06));
+  background: var(--glass-tint, light-dark(rgba(219, 219, 219, 0.06), rgba(36, 36, 36, 0.06)));
   margin: 2px 0;
 }
 
@@ -914,7 +914,7 @@
   padding: 0;
   border: none;
   border-radius: 0;
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
   background: transparent;
   box-shadow: none;
   backdrop-filter: none;
@@ -939,7 +939,7 @@
   font-family: var(--pf);
   font-size: 1rem;
   font-weight: 700;
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
 }
 
 .profile-money-panel .profile-money-body {
@@ -976,7 +976,7 @@
   padding: 0;
   border: none;
   border-radius: 0;
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
   background: transparent;
   box-shadow: none;
   cursor: pointer;
@@ -1013,17 +1013,17 @@
   min-height: 88px;
   padding: 14px 10px;
   border-radius: 16px;
-  border: 1px solid var(--glass-border, rgba(168, 168, 168, 0.18));
-  background: var(--glass-tint, rgba(36, 36, 36, 0.06));
-  color: rgba(244, 244, 242, 0.55);
+  border: 1px solid var(--glass-border, light-dark(rgba(87, 87, 87, 0.18), rgba(168, 168, 168, 0.18)));
+  background: var(--glass-tint, light-dark(rgba(219, 219, 219, 0.06), rgba(36, 36, 36, 0.06)));
+  color: light-dark(rgba(11, 11, 13, 0.55), rgba(244, 244, 242, 0.55));
   font: inherit;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
 
 .profile-money-tile.is-active {
-  color: #fff;
-  border-color: rgba(244, 244, 242, 0.34);
+  color: light-dark(rgb(0, 0, 0), #fff);
+  border-color: light-dark(rgba(11, 11, 13, 0.34), rgba(244, 244, 242, 0.34));
 }
 
 .profile-money-tile-ico {
@@ -1160,9 +1160,9 @@
   width: 52px;
   min-height: 52px;
   border-radius: 16px;
-  border: 1px solid var(--glass-border, rgba(168, 168, 168, 0.18));
-  background: var(--glass-clear-tint, rgba(36, 36, 36, 0.04));
-  color: rgba(255, 255, 255, 0.78);
+  border: 1px solid var(--glass-border, light-dark(rgba(87, 87, 87, 0.18), rgba(168, 168, 168, 0.18)));
+  background: var(--glass-clear-tint, light-dark(rgba(219, 219, 219, 0.04), rgba(36, 36, 36, 0.04)));
+  color: light-dark(rgba(0, 0, 0, 0.78), rgba(255, 255, 255, 0.78));
   backdrop-filter: blur(var(--glass-clear-blur, 2px)) saturate(var(--glass-sat, 1.55));
   -webkit-backdrop-filter: blur(var(--glass-clear-blur, 2px))
     saturate(var(--glass-sat, 1.55));
@@ -1179,8 +1179,8 @@
 }
 
 .profile-social-btn.has-handle {
-  color: #fff;
-  border-color: rgba(255, 255, 255, 0.28);
+  color: light-dark(rgb(0, 0, 0), #fff);
+  border-color: light-dark(rgba(0, 0, 0, 0.28), rgba(255, 255, 255, 0.28));
   box-shadow: var(--glass-clear-depth), inset 0 0 0 1px rgba(255, 255, 255, 0.1);
 }
 
@@ -1190,7 +1190,7 @@
 }
 
 .profile-social-btn.is-x.has-handle {
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
 }
 
 .profile-social-btn.is-instagram.has-handle {
@@ -1233,8 +1233,8 @@
   margin-bottom: 14px;
   padding: 0 14px;
   border-radius: 14px;
-  border: 1px solid var(--glass-border, rgba(150, 150, 150, 0.2));
-  background: var(--glass-clear-tint, rgba(36, 36, 36, 0.04));
+  border: 1px solid var(--glass-border, light-dark(rgba(105, 105, 105, 0.2), rgba(150, 150, 150, 0.2)));
+  background: var(--glass-clear-tint, light-dark(rgba(219, 219, 219, 0.04), rgba(36, 36, 36, 0.04)));
   backdrop-filter: blur(var(--glass-clear-blur, 1.2px))
     saturate(var(--glass-sat, 1.4)) brightness(var(--glass-clear-bright, 0.93));
   -webkit-backdrop-filter: blur(var(--glass-clear-blur, 1.2px))
@@ -1247,7 +1247,7 @@
   width: 22px;
   display: grid;
   place-items: center;
-  color: rgba(255, 255, 255, 0.72);
+  color: light-dark(rgba(0, 0, 0, 0.72), rgba(255, 255, 255, 0.72));
   font-size: 1.05rem;
   line-height: 1;
 }
@@ -1266,8 +1266,8 @@
   padding: 0;
   border: none;
   background: transparent;
-  color: #fff;
-  caret-color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
+  caret-color: light-dark(rgb(0, 0, 0), #fff);
   font: inherit;
   font-size: 0.95rem;
   outline: none;
@@ -1283,7 +1283,7 @@
   flex: 0 0 auto;
   font-family: var(--font-sans);
   font-size: 1rem;
-  color: rgba(255, 255, 255, 0.45);
+  color: light-dark(rgba(0, 0, 0, 0.45), rgba(255, 255, 255, 0.45));
 }
 
 .profile-social-handle-field .glass-input.is-handle {
@@ -1314,13 +1314,13 @@
   display: grid;
   place-items: center;
   border-radius: 16px;
-  border: 1px solid var(--glass-border, rgba(168, 168, 168, 0.18));
-  background: var(--glass-clear-tint, rgba(36, 36, 36, 0.04));
+  border: 1px solid var(--glass-border, light-dark(rgba(87, 87, 87, 0.18), rgba(168, 168, 168, 0.18)));
+  background: var(--glass-clear-tint, light-dark(rgba(219, 219, 219, 0.04), rgba(36, 36, 36, 0.04)));
   backdrop-filter: blur(var(--glass-clear-blur, 2px)) saturate(var(--glass-sat, 1.55))
     brightness(var(--glass-clear-bright, 0.97));
   -webkit-backdrop-filter: blur(var(--glass-clear-blur, 2px))
     saturate(var(--glass-sat, 1.55)) brightness(var(--glass-clear-bright, 0.97));
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
 }
 
 .profile-suppliers-btn.is-compact,
@@ -1354,8 +1354,8 @@
 }
 
 .profile-signout.is-compact {
-  border: 1px solid var(--glass-border, rgba(168, 168, 168, 0.18));
-  background: var(--glass-clear-tint, rgba(36, 36, 36, 0.04));
+  border: 1px solid var(--glass-border, light-dark(rgba(87, 87, 87, 0.18), rgba(168, 168, 168, 0.18)));
+  background: var(--glass-clear-tint, light-dark(rgba(219, 219, 219, 0.04), rgba(36, 36, 36, 0.04)));
   backdrop-filter: blur(var(--glass-clear-blur, 2px)) saturate(var(--glass-sat, 1.55))
     brightness(var(--glass-clear-bright, 0.97));
   -webkit-backdrop-filter: blur(var(--glass-clear-blur, 2px))
@@ -1388,7 +1388,7 @@
   text-align: center;
   font-size: 1.05rem;
   font-weight: 700;
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
 }
 
 .profile-suppliers-title:empty {
@@ -1398,14 +1398,14 @@
 .profile-supplier-card {
   padding: 16px;
   border-radius: 16px;
-  border: 1px solid var(--glass-border, rgba(168, 168, 168, 0.18));
-  background: var(--glass-clear-tint, rgba(36, 36, 36, 0.04));
+  border: 1px solid var(--glass-border, light-dark(rgba(87, 87, 87, 0.18), rgba(168, 168, 168, 0.18)));
+  background: var(--glass-clear-tint, light-dark(rgba(219, 219, 219, 0.04), rgba(36, 36, 36, 0.04)));
 }
 
 .profile-supplier-card-name {
   margin: 0 0 4px;
   font-weight: 700;
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
 }
 
 .profile-supplier-card-meta {
@@ -1434,7 +1434,7 @@
   height: 34px;
   border-radius: 8px;
   background: #5b2fd6;
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
   display: grid;
   place-items: center;
   font-family: var(--pf);
@@ -1449,7 +1449,7 @@
   font-size: 0.88rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
 }
 
 .profile-supplier-sub {
@@ -1472,7 +1472,7 @@
   backdrop-filter: blur(var(--glass-blur, 3px)) saturate(var(--glass-sat, 1.55));
   -webkit-backdrop-filter: blur(var(--glass-blur, 3px)) saturate(var(--glass-sat, 1.55));
   box-shadow: var(--glass-clear-depth);
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
   text-align: left;
 }
 
@@ -1543,14 +1543,14 @@
   place-items: center;
   padding: 0;
   border-radius: 16px;
-  border: 1px solid var(--glass-border, rgba(168, 168, 168, 0.18));
-  background: var(--glass-clear-tint, rgba(36, 36, 36, 0.04));
+  border: 1px solid var(--glass-border, light-dark(rgba(87, 87, 87, 0.18), rgba(168, 168, 168, 0.18)));
+  background: var(--glass-clear-tint, light-dark(rgba(219, 219, 219, 0.04), rgba(36, 36, 36, 0.04)));
   backdrop-filter: blur(var(--glass-clear-blur, 2px)) saturate(var(--glass-sat, 1.55))
     brightness(var(--glass-clear-bright, 0.97));
   -webkit-backdrop-filter: blur(var(--glass-clear-blur, 2px))
     saturate(var(--glass-sat, 1.55)) brightness(var(--glass-clear-bright, 0.97));
   box-shadow: var(--glass-clear-depth);
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
 }
 
 .profile-book-icon,
@@ -1630,8 +1630,8 @@
   height: 18px;
   padding: 0 5px;
   border-radius: 999px;
-  background: var(--glass-tint, rgba(36, 36, 36, 0.06));
-  color: rgba(255, 255, 255, 0.75);
+  background: var(--glass-tint, light-dark(rgba(219, 219, 219, 0.06), rgba(36, 36, 36, 0.06)));
+  color: light-dark(rgba(0, 0, 0, 0.75), rgba(255, 255, 255, 0.75));
   font-size: 0.58rem;
   font-weight: 700;
   line-height: 1;
@@ -1644,13 +1644,13 @@
 }
 
 .profile-listing-tab.is-active .profile-badge {
-  background: var(--glass-tint-active, rgba(36, 36, 36, 0.1));
-  color: rgba(255, 255, 255, 0.9);
+  background: var(--glass-tint-active, light-dark(rgba(219, 219, 219, 0.1), rgba(36, 36, 36, 0.1)));
+  color: light-dark(rgba(0, 0, 0, 0.9), rgba(255, 255, 255, 0.9));
 }
 
 .profile-listing-tab:not(.is-active) .profile-badge {
-  background: var(--glass-tint, rgba(36, 36, 36, 0.06));
-  color: rgba(255, 255, 255, 0.5);
+  background: var(--glass-tint, light-dark(rgba(219, 219, 219, 0.06), rgba(36, 36, 36, 0.06)));
+  color: light-dark(rgba(0, 0, 0, 0.5), rgba(255, 255, 255, 0.5));
 }
 
 .profile-listing-tabs {
@@ -1666,7 +1666,7 @@
   gap: 0;
   width: 100%;
   margin: 4px 0 28px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid light-dark(rgba(0, 0, 0, 0.1), rgba(255, 255, 255, 0.1));
   background: transparent;
   box-shadow: none;
 }
@@ -1679,7 +1679,7 @@
   border: none;
   border-bottom: 2.5px solid transparent;
   background: transparent;
-  color: rgba(255, 255, 255, 0.38);
+  color: light-dark(rgba(0, 0, 0, 0.38), rgba(255, 255, 255, 0.38));
   font-family: var(--pf);
   font-size: 0.68rem;
   font-weight: 700;
@@ -1709,8 +1709,8 @@
 }
 
 .profile-listing-tab.is-active {
-  color: #fff;
-  border-bottom-color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
+  border-bottom-color: light-dark(rgb(0, 0, 0), #fff);
 }
 
 .profile-listing-tab.is-icon {
@@ -1721,7 +1721,7 @@
 }
 
 .profile-listing-tab.is-icon.is-active {
-  border-bottom-color: rgba(255, 255, 255, 0.85);
+  border-bottom-color: light-dark(rgba(0, 0, 0, 0.85), rgba(255, 255, 255, 0.85));
 }
 
 .profile-status-ico {
@@ -1808,7 +1808,7 @@
 .pf-empty-state-ico {
   width: 56px;
   height: 56px;
-  color: rgba(255, 255, 255, 0.28);
+  color: light-dark(rgba(0, 0, 0, 0.28), rgba(255, 255, 255, 0.28));
 }
 
 .pf-empty-state-text {
@@ -1824,26 +1824,26 @@
   font-family: var(--pf);
   font-weight: 400;
   font-size: 0.72rem;
-  color: rgba(255, 255, 255, 0.32);
+  color: light-dark(rgba(0, 0, 0, 0.32), rgba(255, 255, 255, 0.32));
 }
 
 .pf-empty-state .profile-mode-ico {
   width: 40px;
   height: 40px;
-  color: rgba(255, 255, 255, 0.28);
+  color: light-dark(rgba(0, 0, 0, 0.28), rgba(255, 255, 255, 0.28));
 }
 
 .profile-cta {
   margin-top: 2px;
   min-height: 48px;
   padding: 12px 26px;
-  border: 1px solid var(--glass-border, rgba(168, 168, 168, 0.18));
+  border: 1px solid var(--glass-border, light-dark(rgba(87, 87, 87, 0.18), rgba(168, 168, 168, 0.18)));
   border-radius: 999px;
-  background: var(--glass-clear-tint, rgba(36, 36, 36, 0.04));
+  background: var(--glass-clear-tint, light-dark(rgba(219, 219, 219, 0.04), rgba(36, 36, 36, 0.04)));
   backdrop-filter: blur(var(--glass-blur, 3px)) saturate(var(--glass-sat, 1.55));
   -webkit-backdrop-filter: blur(var(--glass-blur, 3px)) saturate(var(--glass-sat, 1.55));
   box-shadow: var(--glass-clear-depth);
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
   font-family: var(--pf);
   font-weight: 700;
   font-size: 0.9rem;
@@ -1856,13 +1856,13 @@
   margin-top: 8px;
   border-radius: 16px;
   border: none;
-  background: var(--glass-tint, rgba(36, 36, 36, 0.06));
+  background: var(--glass-tint, light-dark(rgba(219, 219, 219, 0.06), rgba(36, 36, 36, 0.06)));
   backdrop-filter: blur(var(--glass-blur, 3px)) saturate(var(--glass-sat, 1.55))
     brightness(var(--glass-bright, 0.98));
   -webkit-backdrop-filter: blur(var(--glass-blur, 3px)) saturate(var(--glass-sat, 1.55))
     brightness(var(--glass-bright, 0.98));
   box-shadow: var(--glass-depth);
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
   font-family: var(--pf);
   font-weight: 700;
   font-size: 0.78rem;
@@ -1888,7 +1888,7 @@
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.55);
+  color: light-dark(rgba(0, 0, 0, 0.55), rgba(255, 255, 255, 0.55));
 }
 
 .profile-music-linked {
@@ -1906,8 +1906,8 @@
   gap: 10px;
   padding: 10px 12px;
   border-radius: 14px;
-  background: var(--glass-clear-tint, rgba(36, 36, 36, 0.04));
-  border: 1px solid var(--glass-border, rgba(168, 168, 168, 0.18));
+  background: var(--glass-clear-tint, light-dark(rgba(219, 219, 219, 0.04), rgba(36, 36, 36, 0.04)));
+  border: 1px solid var(--glass-border, light-dark(rgba(87, 87, 87, 0.18), rgba(168, 168, 168, 0.18)));
   box-shadow: var(--glass-clear-depth);
 }
 
@@ -1917,7 +1917,7 @@
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.45);
+  color: light-dark(rgba(0, 0, 0, 0.45), rgba(255, 255, 255, 0.45));
 }
 
 .profile-music-linked-title {
@@ -1925,7 +1925,7 @@
   min-width: 0;
   font-size: 0.84rem;
   font-weight: 600;
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -1954,10 +1954,10 @@
   width: 56px;
   height: 48px;
   margin: 0 auto;
-  border: 1px solid var(--glass-border, rgba(168, 168, 168, 0.18));
+  border: 1px solid var(--glass-border, light-dark(rgba(87, 87, 87, 0.18), rgba(168, 168, 168, 0.18)));
   border-radius: 14px;
-  background: var(--glass-clear-tint, rgba(36, 36, 36, 0.04));
-  color: #fff;
+  background: var(--glass-clear-tint, light-dark(rgba(219, 219, 219, 0.04), rgba(36, 36, 36, 0.04)));
+  color: light-dark(rgb(0, 0, 0), #fff);
   cursor: pointer;
 }
 
@@ -1974,7 +1974,7 @@
   text-align: center;
   font-size: 0.92rem;
   font-weight: 650;
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
 }
 
 .profile-music-btn.is-on {
@@ -2001,7 +2001,7 @@
     inset: 0;
     z-index: 0;
     border: none;
-    background: rgba(8, 8, 8, 0.18);
+    background: light-dark(rgba(247, 247, 247, 0.18), rgba(8, 8, 8, 0.18));
     backdrop-filter: blur(14px) saturate(1.08);
     -webkit-backdrop-filter: blur(14px) saturate(1.08);
     cursor: pointer;
@@ -2019,8 +2019,8 @@
     transform: translate(-50%, -50%);
     border-radius: 22px;
     overflow: hidden;
-    border: 1px solid var(--glass-border, rgba(168, 168, 168, 0.22));
-    background: var(--glass-clear-tint, rgba(36, 36, 36, 0.08));
+    border: 1px solid var(--glass-border, light-dark(rgba(87, 87, 87, 0.22), rgba(168, 168, 168, 0.22)));
+    background: var(--glass-clear-tint, light-dark(rgba(219, 219, 219, 0.08), rgba(36, 36, 36, 0.08)));
     backdrop-filter: blur(18px) saturate(1.55);
     -webkit-backdrop-filter: blur(18px) saturate(1.55);
     box-shadow: 0 18px 48px rgba(0, 0, 0, 0.22);
@@ -2049,7 +2049,7 @@
   inset: 0;
   z-index: 0;
   border: none;
-  background: rgba(8, 8, 8, 0.18);
+  background: light-dark(rgba(247, 247, 247, 0.18), rgba(8, 8, 8, 0.18));
   backdrop-filter: blur(14px) saturate(1.08);
   -webkit-backdrop-filter: blur(14px) saturate(1.08);
   cursor: pointer;
@@ -2065,7 +2065,7 @@
   border-radius: 0;
   overflow: hidden;
   border: none;
-  background: rgba(8, 8, 8, 0.22);
+  background: light-dark(rgba(247, 247, 247, 0.22), rgba(8, 8, 8, 0.22));
   backdrop-filter: blur(18px) saturate(1.55);
   -webkit-backdrop-filter: blur(18px) saturate(1.55);
   box-shadow: none;
@@ -2105,7 +2105,7 @@
     border: none;
     border-radius: 0;
     box-shadow: none;
-    background: rgba(8, 8, 8, 0.22);
+    background: light-dark(rgba(247, 247, 247, 0.22), rgba(8, 8, 8, 0.22));
     backdrop-filter: blur(18px) saturate(1.35);
     -webkit-backdrop-filter: blur(18px) saturate(1.35);
   }
@@ -2168,8 +2168,8 @@
   max-height: min(68vh, 560px);
   border-radius: 22px;
   overflow: hidden;
-  border: 1px solid var(--glass-border, rgba(168, 168, 168, 0.22));
-  background: var(--glass-clear-tint, rgba(36, 36, 36, 0.08));
+  border: 1px solid var(--glass-border, light-dark(rgba(87, 87, 87, 0.22), rgba(168, 168, 168, 0.22)));
+  background: var(--glass-clear-tint, light-dark(rgba(219, 219, 219, 0.08), rgba(36, 36, 36, 0.08)));
   backdrop-filter: blur(18px) saturate(1.35);
   -webkit-backdrop-filter: blur(18px) saturate(1.35);
   box-shadow: 0 18px 48px rgba(0, 0, 0, 0.22);
@@ -2199,7 +2199,7 @@
   border: none;
   border-radius: 50%;
   background: transparent;
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
 }
 
 .profile-back-ico,
@@ -2235,12 +2235,12 @@
   -webkit-tap-highlight-color: transparent;
   appearance: none;
   -webkit-appearance: none;
-  color: rgba(255, 255, 255, 0.38);
+  color: light-dark(rgba(0, 0, 0, 0.38), rgba(255, 255, 255, 0.38));
   outline: none;
 }
 
 .profile-panel-mode.is-active {
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
 }
 
 .profile-mode-ico {
@@ -2288,7 +2288,7 @@
   position: absolute;
   inset: 0;
   border: none;
-  background: rgba(0, 0, 0, 0.4);
+  background: light-dark(rgba(255, 255, 255, 0.4), rgba(0, 0, 0, 0.4));
   backdrop-filter: blur(18px) saturate(1.1);
   -webkit-backdrop-filter: blur(18px) saturate(1.1);
 }
@@ -2301,8 +2301,8 @@
   overflow: auto;
   padding: 16px;
   border-radius: 20px 20px 0 0;
-  background: var(--glass-tint, rgba(36, 36, 36, 0.06));
-  border: 1px solid var(--glass-border, rgba(168, 168, 168, 0.18));
+  background: var(--glass-tint, light-dark(rgba(219, 219, 219, 0.06), rgba(36, 36, 36, 0.06)));
+  border: 1px solid var(--glass-border, light-dark(rgba(87, 87, 87, 0.18), rgba(168, 168, 168, 0.18)));
   border-bottom: none;
   backdrop-filter: blur(var(--glass-blur, 3px)) saturate(var(--glass-sat, 1.55))
     brightness(var(--glass-bright, 0.98));
@@ -2357,13 +2357,13 @@
   min-height: 46px;
   padding: 12px 14px;
   border-radius: 14px;
-  border: 1px solid var(--glass-border, rgba(168, 168, 168, 0.18));
-  background: var(--glass-clear-tint, rgba(36, 36, 36, 0.04));
+  border: 1px solid var(--glass-border, light-dark(rgba(87, 87, 87, 0.18), rgba(168, 168, 168, 0.18)));
+  background: var(--glass-clear-tint, light-dark(rgba(219, 219, 219, 0.04), rgba(36, 36, 36, 0.04)));
   backdrop-filter: blur(var(--glass-clear-blur, 2px)) saturate(var(--glass-sat, 1.55));
   -webkit-backdrop-filter: blur(var(--glass-clear-blur, 2px))
     saturate(var(--glass-sat, 1.55));
   box-shadow: var(--glass-clear-depth);
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
   font-family: inherit;
   font-size: 0.9rem;
   outline: none;
@@ -2376,7 +2376,7 @@
 }
 
 .profile-music-input::placeholder {
-  color: rgba(255, 255, 255, 0.35);
+  color: light-dark(rgba(0, 0, 0, 0.35), rgba(255, 255, 255, 0.35));
 }
 
 .profile-music-preview {
@@ -2386,8 +2386,8 @@
   margin-bottom: 14px;
   padding: 12px 14px;
   border-radius: 14px;
-  background: var(--glass-clear-tint, rgba(36, 36, 36, 0.04));
-  border: 1px solid var(--glass-border, rgba(168, 168, 168, 0.18));
+  background: var(--glass-clear-tint, light-dark(rgba(219, 219, 219, 0.04), rgba(36, 36, 36, 0.04)));
+  border: 1px solid var(--glass-border, light-dark(rgba(87, 87, 87, 0.18), rgba(168, 168, 168, 0.18)));
   box-shadow: var(--glass-clear-depth);
 }
 
@@ -2396,18 +2396,18 @@
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.5);
+  color: light-dark(rgba(0, 0, 0, 0.5), rgba(255, 255, 255, 0.5));
 }
 
 .profile-music-preview-title {
   font-size: 0.95rem;
   font-weight: 700;
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
 }
 
 .profile-music-preview-sub {
   font-size: 0.74rem;
-  color: rgba(255, 255, 255, 0.45);
+  color: light-dark(rgba(0, 0, 0, 0.45), rgba(255, 255, 255, 0.45));
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -2419,13 +2419,13 @@
   margin-left: auto;
   margin-right: auto;
   min-height: 48px;
-  border: 1px solid var(--glass-border, rgba(168, 168, 168, 0.18));
+  border: 1px solid var(--glass-border, light-dark(rgba(87, 87, 87, 0.18), rgba(168, 168, 168, 0.18)));
   border-radius: 999px;
-  background: var(--glass-clear-tint, rgba(36, 36, 36, 0.04));
+  background: var(--glass-clear-tint, light-dark(rgba(219, 219, 219, 0.04), rgba(36, 36, 36, 0.04)));
   backdrop-filter: blur(var(--glass-blur, 3px)) saturate(var(--glass-sat, 1.55));
   -webkit-backdrop-filter: blur(var(--glass-blur, 3px)) saturate(var(--glass-sat, 1.55));
   box-shadow: var(--glass-clear-depth);
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
   font-family: inherit;
   font-weight: 700;
   font-size: 0.9rem;
@@ -2475,7 +2475,7 @@
   border-radius: 0;
   background: transparent;
   box-shadow: none;
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
   font-size: 1.05rem;
   font-weight: 500;
   line-height: 1;
@@ -2529,9 +2529,9 @@
   box-sizing: border-box;
   padding: 12px 14px;
   border-radius: 16px;
-  border: 1px solid var(--glass-border, rgba(168, 168, 168, 0.18));
-  background: rgba(36, 36, 36, 0.2);
-  color: #fff;
+  border: 1px solid var(--glass-border, light-dark(rgba(87, 87, 87, 0.18), rgba(168, 168, 168, 0.18)));
+  background: light-dark(rgba(219, 219, 219, 0.2), rgba(36, 36, 36, 0.2));
+  color: light-dark(rgb(0, 0, 0), #fff);
   font-family: var(--font-sans);
   font-size: 0.9rem;
   outline: none;
@@ -2541,10 +2541,10 @@
 .closet-add-save {
   width: 100%;
   min-height: 48px;
-  border: 1px solid var(--glass-border, rgba(168, 168, 168, 0.18));
+  border: 1px solid var(--glass-border, light-dark(rgba(87, 87, 87, 0.18), rgba(168, 168, 168, 0.18)));
   border-radius: 22px;
-  background: rgba(255, 255, 255, 0.08);
-  color: #fff;
+  background: light-dark(rgba(0, 0, 0, 0.08), rgba(255, 255, 255, 0.08));
+  color: light-dark(rgb(0, 0, 0), #fff);
   font-family: var(--font-sans);
   font-size: 1.35rem;
   font-weight: 500;
@@ -2572,7 +2572,7 @@
   letter-spacing: 0.14em;
   text-transform: uppercase;
   text-align: center;
-  color: rgba(244, 244, 242, 0.45);
+  color: light-dark(rgba(11, 11, 13, 0.45), rgba(244, 244, 242, 0.45));
 }
 
 .closet-browse .type-strip-wrap.is-wheel {
@@ -2596,7 +2596,7 @@
 }
 
 .closet-browse .closet-orbit.is-compact-wheel .type-box.is-wheel.is-active {
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
 }
 
 .closet-grid {
@@ -2617,7 +2617,7 @@
   border: none;
   border-radius: 0;
   background: transparent;
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
   text-align: left;
 }
 
@@ -2633,7 +2633,7 @@
   width: 100%;
   aspect-ratio: 1;
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.06);
+  background: light-dark(rgba(0, 0, 0, 0.06), rgba(255, 255, 255, 0.06));
 }
 
 .closet-tile-meta {
@@ -2654,7 +2654,7 @@
 
 .closet-tile-type {
   font-size: 0.68rem;
-  color: rgba(255, 255, 255, 0.5);
+  color: light-dark(rgba(0, 0, 0, 0.5), rgba(255, 255, 255, 0.5));
 }
 
 .closet-detail {
@@ -2670,7 +2670,7 @@
   position: absolute;
   inset: 0;
   border: none;
-  background: rgba(0, 0, 0, 0.35);
+  background: light-dark(rgba(255, 255, 255, 0.35), rgba(0, 0, 0, 0.35));
   backdrop-filter: blur(18px) saturate(1.1);
   -webkit-backdrop-filter: blur(18px) saturate(1.1);
 }
@@ -2711,7 +2711,7 @@
 .closet-detail-sub {
   margin: 0;
   font-size: 0.74rem;
-  color: rgba(255, 255, 255, 0.5);
+  color: light-dark(rgba(0, 0, 0, 0.5), rgba(255, 255, 255, 0.5));
 }
 
 .closet-detail-error {
@@ -2725,10 +2725,10 @@
   width: 100%;
   min-height: 48px;
   margin-top: 4px;
-  border: 1px solid var(--glass-border, rgba(168, 168, 168, 0.18));
+  border: 1px solid var(--glass-border, light-dark(rgba(87, 87, 87, 0.18), rgba(168, 168, 168, 0.18)));
   border-radius: 22px;
-  background: var(--glass-tint, rgba(36, 36, 36, 0.06));
-  color: #fff;
+  background: var(--glass-tint, light-dark(rgba(219, 219, 219, 0.06), rgba(36, 36, 36, 0.06)));
+  color: light-dark(rgb(0, 0, 0), #fff);
   font-family: var(--font-sans);
   font-size: 0.9rem;
   font-weight: 700;
@@ -2770,7 +2770,7 @@
   place-items: center;
   border: none;
   background: none;
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
   transition: transform 0.28s ease, opacity 0.2s ease;
 }
 
@@ -2816,14 +2816,14 @@
   border: none;
   background: none;
   padding: 8px 12px;
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
   font: inherit;
   font-weight: 600;
 }
 
 .closet-people-empty {
   font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.5);
+  color: light-dark(rgba(0, 0, 0, 0.5), rgba(255, 255, 255, 0.5));
 }
 
 .closet-detail-x {
@@ -2836,7 +2836,7 @@
   place-items: center;
   border: none;
   background: none;
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
 }
 
 .closet-detail-img {
@@ -2882,10 +2882,10 @@
   box-sizing: border-box;
   height: 48px;
   padding: 0 20px;
-  border: 1px solid var(--glass-border, rgba(150, 150, 150, 0.25));
+  border: 1px solid var(--glass-border, light-dark(rgba(105, 105, 105, 0.25), rgba(150, 150, 150, 0.25)));
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
-  color: #fff;
+  background: light-dark(rgba(0, 0, 0, 0.08), rgba(255, 255, 255, 0.08));
+  color: light-dark(rgb(0, 0, 0), #fff);
   font-size: 16px;
   text-align: center;
   outline: none;
@@ -2906,7 +2906,7 @@
 .closet-pick-name {
   font-size: 1.05rem;
   font-weight: 600;
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
   padding: 12px 0;
 }
 
@@ -2918,7 +2918,7 @@
   border: none;
   background: none;
   padding: 0;
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
 }
 
 .closet-detail-card > .closet-detail-img {
@@ -2950,8 +2950,8 @@
 /* Stat cards match the money tiles: rounded, clear, no blur layer (iOS squares off backdrop-filter) */
 .profile-stat-card {
   border-radius: 16px;
-  border: 1px solid var(--glass-border, rgba(168, 168, 168, 0.18));
-  background: var(--glass-tint, rgba(36, 36, 36, 0.06));
+  border: 1px solid var(--glass-border, light-dark(rgba(87, 87, 87, 0.18), rgba(168, 168, 168, 0.18)));
+  background: var(--glass-tint, light-dark(rgba(219, 219, 219, 0.06), rgba(36, 36, 36, 0.06)));
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
   box-shadow: none;
@@ -2960,7 +2960,7 @@
 /* Account fields match the clear buttons */
 .profile-name-field {
   border-radius: 16px;
-  background: var(--glass-tint, rgba(36, 36, 36, 0.06));
+  background: var(--glass-tint, light-dark(rgba(219, 219, 219, 0.06), rgba(36, 36, 36, 0.06)));
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
   box-shadow: none;

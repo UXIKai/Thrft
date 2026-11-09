@@ -2,10 +2,10 @@
    No tint of its own — color comes only from what is behind it. */
 
 html body .profile-edit-card :is(.profile-money-tile, .profile-stat-card) {
-  background: rgba(255, 255, 255, 0.015) !important;
+  background: light-dark(rgba(0, 0, 0, 0.015), rgba(255, 255, 255, 0.015)) !important;
   backdrop-filter: blur(3px) !important;
   -webkit-backdrop-filter: blur(3px) !important;
-  border: 0.5px solid rgba(255, 255, 255, 0.32) !important;
+  border: 0.5px solid light-dark(rgba(0, 0, 0, 0.32), rgba(255, 255, 255, 0.32)) !important;
   box-shadow:
     inset 0 0 0 0.5px rgba(0, 0, 0, 0.3),
     inset 0 1px 2px rgba(0, 0, 0, 0.22),
@@ -14,10 +14,10 @@ html body .profile-edit-card :is(.profile-money-tile, .profile-stat-card) {
 }
 
 html body button:not(:is(.auth-social-btn,.auth-switch-link,.brand-globe-close,.brand-globe-dock-back,.brand-globe-dock-plus,.brand-globe-focus,.cart-dock-back,.cart-line-main,.cart-line-remove,.cart-pay,.chat-compose-plus,.chat-compose-send,.chat-contact-close,.chat-contact-member-link,.chat-contact-name,.chat-contact-name-edit,.chat-dm-menu-btn,.chat-dm-portal-scrim,.chat-dock-search,.chat-dots,.chat-filter-btn,.chat-liked-back,.chat-liked-item,.chat-liked-send,.chat-member-chip,.chat-pins-pencil,.chat-row,.chat-search-add,.chat-search-clear,.chat-sheet-find,.chat-sheet-save,.chat-sheet-x,.chat-thread-name,.chat-top-btn,.chat-users-action,.chat-users-back,.closet-tile,.home-checkout-btn,.home-search-btn,.home-search-done,.home-type-wheel-add,.is-bare,.is-minimal,.product-detail-add,.profile-gear,.profile-listing-tab,.profile-money-dock-back,.profile-music-close,.profile-name-edit,.profile-panel-back,.profile-panel-mode,.profile-username-link,.saved-dock-search,.saved-filter-btn,.saved-item,.saved-pencil-btn,.saved-search-add,.settings-color-wheel,.settings-idme-close,.settings-idme-unlink,.settings-palette-icon-btn,.settings-photo-btn,.settings-photo-scrim,.settings-row,.settings-size-back,.settings-size-brand-main,.settings-swatch,.settings-wheel-done,.type-box,.type-box-orbit,[class*='scrim'],[class*='swatch'],[class*='product-box'],.tab-item)) {
-  background: rgba(255, 255, 255, 0.015) !important;
+  background: light-dark(rgba(0, 0, 0, 0.015), rgba(255, 255, 255, 0.015)) !important;
   backdrop-filter: blur(3px) !important;
   -webkit-backdrop-filter: blur(3px) !important;
-  border: 0.5px solid rgba(255, 255, 255, 0.32) !important;
+  border: 0.5px solid light-dark(rgba(0, 0, 0, 0.32), rgba(255, 255, 255, 0.32)) !important;
   box-shadow:
     inset 0 0 0 0.5px rgba(0, 0, 0, 0.3),
     inset 0 1px 2px rgba(0, 0, 0, 0.22),
@@ -52,10 +52,10 @@ html body button:not(:is(.auth-social-btn,.auth-switch-link,.brand-globe-close,.
 
 /* Navigation bar: refraction lives on pseudo layers under the icons */
 html body .tab-bar {
-  background: rgba(255, 255, 255, 0.015);
+  background: light-dark(rgba(0, 0, 0, 0.015), rgba(255, 255, 255, 0.015));
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
-  border: 0.5px solid rgba(255, 255, 255, 0.32);
+  border: 0.5px solid light-dark(rgba(0, 0, 0, 0.32), rgba(255, 255, 255, 0.32));
   box-shadow:
     inset 0 0 0 0.5px rgba(0, 0, 0, 0.3),
     inset 0 1px 2px rgba(0, 0, 0, 0.22),
@@ -183,7 +183,7 @@ html body :is(.settings-block, .profile-credits-card, .profile-music-card, .list
 
 html body button.settings-effect-switch,
 html[data-bg-color='none'] body button.settings-effect-switch {
-  background: #000 !important;
+  background: light-dark(rgb(255, 255, 255), #000) !important;
   border: 0 !important;
   border-radius: 999px !important;
   backdrop-filter: none !important;
@@ -194,7 +194,7 @@ html[data-bg-color='none'] body button.settings-effect-switch {
 }
 html body button.settings-effect-switch.is-on,
 html[data-bg-color='none'] body button.settings-effect-switch.is-on {
-  background: #fff !important;
+  background: light-dark(rgb(0, 0, 0), #fff) !important;
   box-shadow: none !important;
 }
 html body button.settings-effect-switch .settings-effect-knob {
@@ -203,12 +203,12 @@ html body button.settings-effect-switch .settings-effect-knob {
   left: 3px;
   width: 22px;
   height: 22px;
-  background: #fff;
+  background: light-dark(rgb(0, 0, 0), #fff);
   border: 0;
   box-shadow: none;
 }
 html body button.settings-effect-switch.is-on .settings-effect-knob {
-  background: #000;
+  background: light-dark(rgb(255, 255, 255), #000);
   transform: translateX(18px);
 }
 
@@ -237,10 +237,10 @@ html body :is(.chat-menu, .chat-filter-menu, .chat-pins-menu, .chat-dm-menu, .sa
 
 /* DM popup: small, clear glass container */
 html body .chat-dm-menu {
-  background: rgba(255, 255, 255, 0.02) !important;
+  background: light-dark(rgba(0, 0, 0, 0.02), rgba(255, 255, 255, 0.02)) !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
-  border: 0.5px solid rgba(255, 255, 255, 0.3);
+  border: 0.5px solid light-dark(rgba(0, 0, 0, 0.3), rgba(255, 255, 255, 0.3));
   box-shadow: none;
   padding: 3px !important;
   gap: 0 !important;
@@ -332,7 +332,7 @@ html body .glass-sheet-plus {
   padding: 0;
   display: grid;
   place-items: center;
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
   background: none !important;
   border: 0 !important;
   box-shadow: none !important;
@@ -455,7 +455,7 @@ html body .settings-size-chip.settings-size-add-input {
   width: 84px;
   text-align: center;
   font-size: 16px;
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
   outline: none;
 }
 
@@ -468,7 +468,7 @@ html body .settings-size-chip.settings-size-add {
   font-size: 2rem;
   font-weight: 300;
   line-height: 1;
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
 }
 
 /* Garment size page: back under column 1, check beside it under the middle column */
@@ -515,7 +515,7 @@ html body .glass-sheet-card.is-size-sheet .settings-size-add {
   text-align: center;
   font-size: 3rem;
   font-weight: 700;
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
   letter-spacing: 0.02em;
   animation: size-picked-in 0.34s cubic-bezier(0.22, 0.61, 0.36, 1) both;
 }
@@ -540,8 +540,8 @@ html body .settings-size-chip {
   pointer-events: none;
   font-size: 3rem;
   font-weight: 700;
-  color: #fff;
-  background: rgba(0, 0, 0, 0.55);
+  color: light-dark(rgb(0, 0, 0), #fff);
+  background: light-dark(rgba(255, 255, 255, 0.55), rgba(0, 0, 0, 0.55));
   animation: size-picked-in 0.2s ease both;
 }
 
@@ -574,11 +574,11 @@ html body .settings-size-wheel.is-picked.is-compact-wheel .type-carousel.is-whee
   display: flex;
   justify-content: space-between;
   gap: 16px;
-  color: rgba(255, 255, 255, 0.7);
+  color: light-dark(rgba(0, 0, 0, 0.7), rgba(255, 255, 255, 0.7));
   font-size: 1.05rem;
 }
 .settings-size-summary-row strong {
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
 }
 
 /* Saved sizes page: list from the top under the back arrow, check at the bottom */
@@ -676,18 +676,18 @@ html body .glass-sheet-card.is-size-summary-page .glass-sheet-plus {
   margin: -44px auto 0 !important;
 }
 html body .settings-size-wheel.is-picked:not(.is-chosen) .type-box.is-wheel.is-active {
-  color: rgba(255, 255, 255, 0.55);
+  color: light-dark(rgba(0, 0, 0, 0.55), rgba(255, 255, 255, 0.55));
 }
 html body .settings-size-wheel.is-picked.is-chosen .type-box.is-wheel.is-active {
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
   text-decoration: underline;
   text-underline-offset: 10px;
 }
 
 html body .glass-sheet-card.is-size-sheet .settings-size-chip.is-on {
-  background: rgba(255, 255, 255, 0.92) !important;
-  color: #0b0b0b !important;
-  border-color: #fff !important;
+  background: light-dark(rgba(0, 0, 0, 0.92), rgba(255, 255, 255, 0.92)) !important;
+  color: light-dark(rgb(244, 244, 244), #0b0b0b) !important;
+  border-color: light-dark(rgb(0, 0, 0), #fff) !important;
   box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.28) !important;
   text-shadow: none !important;
 }
@@ -706,9 +706,9 @@ html body .settings-size-add-dock .settings-size-add-input {
   height: 46px;
   padding: 0 16px;
   border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  background: rgba(20, 20, 20, 0.92);
-  color: #fff;
+  border: 1px solid light-dark(rgba(0, 0, 0, 0.22), rgba(255, 255, 255, 0.22));
+  background: light-dark(rgba(235, 235, 235, 0.92), rgba(20, 20, 20, 0.92));
+  color: light-dark(rgb(0, 0, 0), #fff);
   font-size: 16px;
   text-align: center;
   outline: none;
@@ -753,7 +753,7 @@ html body [contenteditable="true"] {
 }
 .settings-size-summary-row.is-hot .settings-size-summary-label,
 .settings-size-summary-row.is-hot strong {
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
   text-shadow: 0 0 14px rgba(255, 255, 255, 0.55);
 }
 
@@ -850,7 +850,7 @@ html body .glass-sheet-card.is-size-summary-page .settings-size-wheelband {
   height: 44px;
   transform: translateY(-50%);
   border-radius: 14px;
-  background: rgba(255, 255, 255, 0.09);
+  background: light-dark(rgba(0, 0, 0, 0.09), rgba(255, 255, 255, 0.09));
   pointer-events: none;
 }
 html body .glass-sheet-card.is-size-summary-page .settings-size-summary {
@@ -899,11 +899,11 @@ html body .glass-sheet-card.is-size-summary-page .settings-size-summary-row.is-h
 }
 html body .glass-sheet-card.is-size-summary-page .settings-size-summary-row.is-hot .settings-size-summary-label,
 html body .glass-sheet-card.is-size-summary-page .settings-size-summary-row.is-hot strong {
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
   text-shadow: 0 0 14px rgba(255, 255, 255, 0.55);
 }
 html body .glass-sheet-card.is-size-summary-page .settings-size-summary-row:not(.is-hot) .settings-size-summary-label {
-  color: rgba(255, 255, 255, 0.6);
+  color: light-dark(rgba(0, 0, 0, 0.6), rgba(255, 255, 255, 0.6));
 }
 
 html body .glass-sheet-card.is-size-summary-page .settings-size-summary {
@@ -913,7 +913,7 @@ html body .glass-sheet-card.is-size-summary-page .settings-size-summary {
 
 html body .glass-sheet-card.is-size-summary-page .settings-size-summary-row.is-held .settings-size-summary-label,
 html body .glass-sheet-card.is-size-summary-page .settings-size-summary-row.is-held strong {
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
   text-shadow: 0 0 14px rgba(255, 255, 255, 0.55);
 }
 
@@ -926,7 +926,7 @@ html body .glass-sheet-card.is-size-summary-page .settings-size-drum-col {
   width: 100%;
 }
 html body .settings-size-gender {
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
   font-size: 1.15rem;
   font-weight: 600;
   letter-spacing: 0.04em;
@@ -940,7 +940,7 @@ html body .settings-size-gender {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: rgba(8, 8, 8, 0.94);
+  background: light-dark(rgba(247, 247, 247, 0.94), rgba(8, 8, 8, 0.94));
 }
 .gender-drum {
   --row-h: 44px;
@@ -964,7 +964,7 @@ html body .settings-size-gender {
   align-items: center;
   justify-content: center;
   scroll-snap-align: center;
-  color: rgba(255, 255, 255, 0.6);
+  color: light-dark(rgba(0, 0, 0, 0.6), rgba(255, 255, 255, 0.6));
   font-size: 1.3rem;
 }
 .gender-drum-row button {
@@ -972,7 +972,7 @@ html body .settings-size-gender {
   font: inherit;
 }
 .gender-drum-row.is-hot {
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
   text-shadow: 0 0 14px rgba(255, 255, 255, 0.55);
 }
 .gender-overlay-close {
@@ -981,7 +981,7 @@ html body .settings-size-gender {
   top: calc(env(safe-area-inset-top, 0px) + 12px);
   width: 44px;
   height: 44px;
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
 }
 html body .settings-size-gender { touch-action: none; user-select: none; -webkit-user-select: none; }
 .gender-overlay { pointer-events: none; }
@@ -1104,7 +1104,7 @@ html body .glass-sheet-card.is-size-summary-page .glass-sheet-add {
   height: 44px;
   margin: -44px auto 0 !important;
   transform: translateX(21vw);
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1119,8 +1119,8 @@ html body .glass-sheet-card.is-size-summary-page:not(.is-gender-gate) .settings-
 html body .settings-size-chip.settings-size-add { font-size: 1.5rem; }
 html body .glass-sheet-card.is-size-summary-page .glass-sheet-add svg { width: 20px; height: 20px; }
 .settings-new-kinds { display: flex; justify-content: center; gap: 22px; padding-bottom: 6px; }
-.settings-new-kinds button { color: rgba(255,255,255,0.5); font-size: 0.95rem; font-weight: 600; }
-.settings-new-kinds button.is-on { color: #fff; text-decoration: underline; text-underline-offset: 6px; }
+.settings-new-kinds button { color: light-dark(rgba(0, 0, 0, 0.5), rgba(255,255,255,0.5)); font-size: 0.95rem; font-weight: 600; }
+.settings-new-kinds button.is-on { color: light-dark(rgb(0, 0, 0), #fff); text-decoration: underline; text-underline-offset: 6px; }
 .settings-size-add-dock.settings-new-dock { flex-direction: column; align-items: center; }
 .settings-new-page {
   position: fixed;
@@ -1129,7 +1129,7 @@ html body .glass-sheet-card.is-size-summary-page .glass-sheet-add svg { width: 2
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(8, 8, 8, 0.96);
+  background: light-dark(rgba(247, 247, 247, 0.96), rgba(8, 8, 8, 0.96));
 }
 .settings-new-page .settings-new-kinds {
   width: 100%;
@@ -1144,12 +1144,12 @@ html body .glass-sheet-card.is-size-summary-page .glass-sheet-add svg { width: 2
   top: calc(env(safe-area-inset-top, 0px) + 12px);
   width: 44px;
   height: 44px;
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
 }
-.settings-new-page { background: var(--atmosphere-base, #050505); }
+.settings-new-page { background: var(--atmosphere-base, light-dark(rgb(250, 250, 250), #050505)); }
 html .settings-new-page {
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.12), transparent 42%),
+    linear-gradient(180deg, light-dark(rgba(0, 0, 0, 0.12), rgba(255, 255, 255, 0.12)), transparent 42%),
     rgba(var(--bg-color-rgb, 36, 36, 36), 0.4) !important;
   backdrop-filter: blur(28px) saturate(1.6);
   -webkit-backdrop-filter: blur(28px) saturate(1.6);
@@ -1195,8 +1195,8 @@ html body .glass-sheet-card .settings-size-chip.settings-size-add-input.is-inlin
   max-width: 120px;
   min-width: 0;
   box-sizing: border-box;
-  background: rgba(255, 255, 255, 0.08) !important;
-  border: 1px solid rgba(255, 255, 255, 0.22) !important;
+  background: light-dark(rgba(0, 0, 0, 0.08), rgba(255, 255, 255, 0.08)) !important;
+  border: 1px solid light-dark(rgba(0, 0, 0, 0.22), rgba(255, 255, 255, 0.22)) !important;
   border-radius: 16px;
 }
 .settings-new-page .settings-new-kinds { flex-wrap: wrap; gap: 14px 26px; padding: 0 6vw; }
@@ -1212,11 +1212,11 @@ html body .glass-sheet-card .settings-size-chip.settings-size-add-input.is-inlin
   align-items: center;
   gap: 0;
 }
-.settings-new-actions button { width: 44px; height: 44px; color: #fff; display: flex; align-items: center; justify-content: center; }
+.settings-new-actions button { width: 44px; height: 44px; color: light-dark(rgb(0, 0, 0), #fff); display: flex; align-items: center; justify-content: center; }
 .settings-new-actions button:first-child { transform: translateX(-21vw); }
 .settings-new-actions button + button { position: absolute; left: 50%; margin-left: -22px; }
 .settings-new-actions svg { width: 24px; height: 24px; }
-.settings-wiz-title { color: #fff; font-size: 1.5rem; font-weight: 600; }
+.settings-wiz-title { color: light-dark(rgb(0, 0, 0), #fff); font-size: 1.5rem; font-weight: 600; }
 /* Every slider shows five rows */
 html body .glass-sheet-card.is-size-summary-page .settings-size-drum-col {
   --wheel-h: 220px;
@@ -1231,7 +1231,7 @@ html body .glass-sheet-card.is-size-summary-page:not(.is-gender-gate) .settings-
   transform: translateX(-50%);
   width: 40px;
   height: 40px;
-  color: rgba(255, 255, 255, 0.85);
+  color: light-dark(rgba(0, 0, 0, 0.85), rgba(255, 255, 255, 0.85));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1267,7 +1267,7 @@ html body .glass-sheet-card.is-size-summary-page .glass-sheet-minus {
   height: 44px;
   margin: -44px auto 0 !important;
   transform: translateX(-21vw);
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1293,7 +1293,7 @@ html body .glass-sheet-card.is-size-summary-page .glass-sheet-head .glass-overla
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0, 0, 0, 0.35);
+  background: light-dark(rgba(255, 255, 255, 0.35), rgba(0, 0, 0, 0.35));
 }
 .settings-remove-confirm {
   min-width: 220px;
@@ -1304,20 +1304,20 @@ html body .glass-sheet-card.is-size-summary-page .glass-sheet-head .glass-overla
   align-items: center;
   gap: 14px;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.12), transparent 42%),
+    linear-gradient(180deg, light-dark(rgba(0, 0, 0, 0.12), rgba(255, 255, 255, 0.12)), transparent 42%),
     rgba(var(--bg-color-rgb, 36, 36, 36), 0.92);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: 1px solid light-dark(rgba(0, 0, 0, 0.18), rgba(255, 255, 255, 0.18));
 }
-.settings-remove-title { color: #fff; font-size: 1.3rem; font-weight: 600; }
+.settings-remove-title { color: light-dark(rgb(0, 0, 0), #fff); font-size: 1.3rem; font-weight: 600; }
 .settings-remove-btns { display: flex; gap: 36px; }
-.settings-remove-btns button { width: 48px; height: 44px; color: #fff; display: flex; align-items: center; justify-content: center; }
+.settings-remove-btns button { width: 48px; height: 44px; color: light-dark(rgb(0, 0, 0), #fff); display: flex; align-items: center; justify-content: center; }
 .settings-remove-btns svg { width: 22px; height: 22px; }
 
 /* Remove confirm is a whole page on the app background */
 html .settings-remove-pop {
   z-index: 95;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.12), transparent 42%),
+    linear-gradient(180deg, light-dark(rgba(0, 0, 0, 0.12), rgba(255, 255, 255, 0.12)), transparent 42%),
     rgba(var(--bg-color-rgb, 36, 36, 36), 0.4) !important;
   backdrop-filter: blur(28px) saturate(1.6);
   -webkit-backdrop-filter: blur(28px) saturate(1.6);
@@ -1332,7 +1332,7 @@ html body .glass-sheet-card:has(.settings-remove-pop) .settings-size-cats,
 html body .glass-sheet-card:has(.settings-remove-pop) .settings-size-drum-col {
   visibility: hidden;
 }
-.settings-remove-trash { width: 40px; height: 40px; color: #fff; }
+.settings-remove-trash { width: 40px; height: 40px; color: light-dark(rgb(0, 0, 0), #fff); }
 html body .glass-sheet-card:has(.settings-remove-pop) button:not(.settings-remove-btns button),
 html body .glass-sheet-card:has(.settings-remove-pop) .glass-sheet-head,
 html body .glass-sheet-card:has(.settings-remove-pop) .settings-size-reset {
@@ -1354,15 +1354,15 @@ html body .glass-sheet-card .settings-size-reset {
   margin: 0 auto;
   padding: 22px 18px 12px;
   border-radius: 16px;
-  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.28));
+  border: 1px solid var(--glass-border, light-dark(rgba(0, 0, 0, 0.28), rgba(255, 255, 255, 0.28)));
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 14px;
   text-align: center;
 }
-.settings-addr-text { color: #fff; font-size: 1.05rem; line-height: 1.4; }
-.settings-addr-reset { width: 40px; height: 40px; color: rgba(255, 255, 255, 0.85); display: flex; align-items: center; justify-content: center; }
+.settings-addr-text { color: light-dark(rgb(0, 0, 0), #fff); font-size: 1.05rem; line-height: 1.4; }
+.settings-addr-reset { width: 40px; height: 40px; color: light-dark(rgba(0, 0, 0, 0.85), rgba(255, 255, 255, 0.85)); display: flex; align-items: center; justify-content: center; }
 .settings-addr-reset svg { width: 28px; height: 28px; }
 
 .settings-addr-wrap { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 18px; }

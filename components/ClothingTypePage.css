@@ -14,7 +14,7 @@
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(244, 244, 242, 0.45);
+  color: light-dark(rgba(11, 11, 13, 0.45), rgba(244, 244, 242, 0.45));
 }
 
 .clothing-type-heading {
@@ -22,21 +22,21 @@
   font-family: var(--font-sans);
   font-size: 1.35rem;
   font-weight: 700;
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
   letter-spacing: 0.01em;
 }
 
 .clothing-type-sub {
   margin: 2px 0 0;
   font-size: 0.78rem;
-  color: rgba(255, 255, 255, 0.5);
+  color: light-dark(rgba(0, 0, 0, 0.5), rgba(255, 255, 255, 0.5));
 }
 
 .clothing-type-empty {
   margin: 0 0 12px;
   padding: 0 4px;
   font-size: 0.82rem;
-  color: rgba(255, 255, 255, 0.55);
+  color: light-dark(rgba(0, 0, 0, 0.55), rgba(255, 255, 255, 0.55));
 }
 
 .clothing-type-list {
@@ -56,9 +56,9 @@
   gap: 12px;
   padding: 14px 16px;
   border-radius: 18px;
-  border: 1px solid var(--glass-border, rgba(150, 150, 150, 0.2));
-  background: var(--glass-clear-tint, rgba(36, 36, 36, 0.04));
-  color: #fff;
+  border: 1px solid var(--glass-border, light-dark(rgba(105, 105, 105, 0.2), rgba(150, 150, 150, 0.2)));
+  background: var(--glass-clear-tint, light-dark(rgba(219, 219, 219, 0.04), rgba(36, 36, 36, 0.04)));
+  color: light-dark(rgb(0, 0, 0), #fff);
   text-align: left;
   font-size: 0.85rem;
   transition: filter 0.15s ease, background 0.15s ease;
@@ -80,7 +80,7 @@
 .clothing-type-row-title {
   font-family: var(--font-sans);
   font-size: 0.9rem;
-  color: #fff;
+  color: light-dark(rgb(0, 0, 0), #fff);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -89,12 +89,12 @@
 .clothing-type-row-brand {
   font-size: 0.7rem;
   letter-spacing: 0.04em;
-  color: rgba(244, 244, 242, 0.48);
+  color: light-dark(rgba(11, 11, 13, 0.48), rgba(244, 244, 242, 0.48));
 }
 
 .clothing-type-row-price {
   flex: 0 0 auto;
   font-family: var(--font-sans);
   font-size: 0.85rem;
-  color: rgba(244, 244, 242, 0.88);
+  color: light-dark(rgba(11, 11, 13, 0.88), rgba(244, 244, 242, 0.88));
 }

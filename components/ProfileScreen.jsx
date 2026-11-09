@@ -539,32 +539,36 @@ function EmptyBoxIcon() {
 function ShipMap() {
   return (
     <svg className="profile-ship-map" viewBox="0 0 320 168" aria-hidden>
-      <rect width="320" height="168" fill="rgba(255,255,255,0.02)" />
+      <rect width="320" height="168" fill="currentColor" fillOpacity="0.02" />
       <path
-        fill="rgba(255,255,255,0.1)"
+        fill="currentColor"
+        fillOpacity="0.1"
         d="M22 70c14-22 40-34 68-30 22 3 36 18 56 16 14-2 22-16 38-18 24-3 48 10 70 6 18-3 34-16 50-8 12 6 16 22 10 34-8 16-28 20-42 30-18 12-22 32-42 38-24 8-52 0-74-10-16-7-26-22-42-26-20-6-46 4-62-12-10-10-8-24-4-30z"
       />
       <path
-        fill="rgba(255,255,255,0.06)"
+        fill="currentColor"
+        fillOpacity="0.06"
         d="M48 118c10-6 24-4 34 2 8 5 10 16 4 24-8 10-24 12-36 6-10-5-12-20-2-32zM248 40c16-4 32 6 36 18 3 10-6 20-16 22-14 4-28-4-34-14-5-9 0-22 14-26z"
       />
       <path
         d="M78 96c28-10 58-22 96-28 24-4 48-2 72 8"
         fill="none"
-        stroke="rgba(255,255,255,0.5)"
+        stroke="currentColor"
+        strokeOpacity="0.5"
         strokeWidth="1.4"
         strokeDasharray="3.5 4.5"
         strokeLinecap="round"
       />
-      <circle cx="78" cy="96" r="3.8" fill="#fff" />
-      <circle cx="174" cy="70" r="3.2" fill="#fff" />
-      <circle cx="246" cy="76" r="4.6" fill="#fff" />
+      <circle cx="78" cy="96" r="3.8" fill="currentColor" />
+      <circle cx="174" cy="70" r="3.2" fill="currentColor" />
+      <circle cx="246" cy="76" r="4.6" fill="currentColor" />
       <circle
         cx="246"
         cy="76"
         r="8.5"
         fill="none"
-        stroke="rgba(255,255,255,0.28)"
+        stroke="currentColor"
+        strokeOpacity="0.28"
       />
     </svg>
   )

@@ -108,12 +108,32 @@ export default function AccountPage({
                   initialsFromName(name)
                 )}
               </span>
-              <p className="account-page-name">{name}</p>
-              <p className="account-page-handle">@{handle}</p>
+              <p className="account-page-name">
+                @{handle}
+                {account.identityStatus === 'verified' && (
+                  <span className="account-page-id-badge" title="Identity verified with ID.me">ID</span>
+                )}
+              </p>
               {account.bio ? <p className="account-page-bio">{account.bio}</p> : null}
               {account.joined ? (
                 <p className="account-page-joined">Joined {account.joined}</p>
               ) : null}
+              <div className="account-page-connections" aria-label="Connections">
+                {[
+                  ['Following', account.followingCount],
+                  ['Followers', account.followerCount],
+                ].map(([label, count]) => {
+                  const available = Number.isInteger(count) && count >= 0
+                  return (
+                    <div key={label}>
+                      <span className="account-page-count" aria-label={available ? `${count} ${label.toLowerCase()}` : `${label} count unavailable`}>
+                        {available ? count : '-'}
+                      </span>
+                      <span>{label}</span>
+                    </div>
+                  )
+                })}
+              </div>
             </div>
 
             <h2 className="account-page-section-label">Store</h2>
