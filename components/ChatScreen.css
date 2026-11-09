@@ -2972,6 +2972,13 @@ html body button.chat-contact-nick-save {
   transform: rotate(45deg);
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .chat-search-add,
+  .chat-search-add .chat-ico {
+    transition: none;
+  }
+}
+
 .chat-search-add.is-sheet-hidden {
   visibility: hidden;
 }
