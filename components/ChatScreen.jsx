@@ -3040,7 +3040,7 @@ export default function ChatScreen({
             onClick={closeUsersPicker}
           />
           <div className="chat-users-hero" aria-hidden>
-            <PeopleIcon />
+            <PersonIcon />
           </div>
           <ul className="chat-users-list">
             {filteredUsers.map((name) => {
