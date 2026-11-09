@@ -296,6 +296,7 @@
 
 .chat-sidebar-title {
   margin: 0;
+  margin-right: auto;
   font-size: 1.28rem;
   font-weight: 500;
   line-height: 36px;
