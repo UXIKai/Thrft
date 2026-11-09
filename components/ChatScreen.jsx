@@ -538,6 +538,15 @@ export default function ChatScreen({
   onThreadActiveChange,
 } = {}) {
   const [chats, setChats] = useState(() => readStoredChats())
+  const [isWide, setIsWide] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia('(min-width: 720px)').matches,
+  )
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 720px)')
+    const onChange = (e) => setIsWide(e.matches)
+    mq.addEventListener('change', onChange)
+    return () => mq.removeEventListener('change', onChange)
+  }, [])
   const [memberDraft, setMemberDraft] = useState('')
   const [menuId, setMenuId] = useState(null)
   const [dmRenaming, setDmRenaming] = useState(false)
@@ -1723,8 +1732,7 @@ export default function ChatScreen({
     )
   }
 
-  if (activeChat) {
-    return (
+  const threadView = activeChat ? (
       <div className="chat-thread" role="dialog" aria-label={activeChat.title}>
         {menuId &&
           createPortal(
@@ -2502,10 +2510,9 @@ export default function ChatScreen({
           </StageSlot>
         )}
       </div>
-    )
-  }
+  ) : null
 
-  return (
+  const listView = (
     <div className="chat-screen">
       {menuId && chats.find((c) => c.id === menuId)?.kind !== 'dm' && (
         <button
@@ -3036,4 +3043,14 @@ export default function ChatScreen({
       )}
     </div>
   )
+
+  if (isWide && activeChat) {
+    return (
+      <div className="chat-split">
+        <div className="chat-split-list">{listView}</div>
+        <div className="chat-split-thread">{threadView}</div>
+      </div>
+    )
+  }
+  return activeChat ? threadView : listView
 }
