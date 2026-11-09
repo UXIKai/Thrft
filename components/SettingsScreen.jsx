@@ -1535,26 +1535,8 @@ export default function SettingsScreen({
     }
   }, [wheelOpen])
 
-  return (
-    <div
-      className={`settings-screen${helpPage === 'help' ? ' is-assistant-open' : ''}`}
-      role="dialog"
-      aria-modal="true"
-      aria-label="Settings"
-    >
-      <div className="settings-scroll">
-      <header className="settings-top">
-        <button
-          type="button"
-          className="settings-back is-bare"
-          aria-label="Back to profile"
-          onClick={onBack}
-        >
-          <BackIcon />
-        </button>
-        <h1 className="settings-title" aria-label="Settings" />
-        <span className="settings-top-spacer" aria-hidden />
-      </header>
+  const customizationSections = (
+    <>
         <Section label="Appearance">
           <div className={`settings-block settings-palette-block${photoMenuOpen ? ' is-photo-open' : ''}`}>
             <button
@@ -1809,6 +1791,37 @@ export default function SettingsScreen({
           </div>
         </section>
 
+    </>
+  )
+
+  return (
+    <div
+      className={`settings-screen${helpPage === 'help' ? ' is-assistant-open' : ''}`}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Settings"
+    >
+      <div className="settings-scroll">
+      <header className="settings-top">
+        <button
+          type="button"
+          className="settings-back is-bare"
+          aria-label="Back to profile"
+          onClick={onBack}
+        >
+          <BackIcon />
+        </button>
+        <h1 className="settings-title" aria-label="Settings" />
+        <span className="settings-top-spacer" aria-hidden />
+      </header>
+        <Section label="Account Settings">
+          <Row
+            icon={<ProfileIcon />}
+            title="Profile"
+            onClick={onEditProfile}
+          />
+        </Section>
+
         <Section label="Accounts">
           <div className="settings-account-active">
             <span className="settings-account-avatar" aria-hidden>
@@ -1822,14 +1835,6 @@ export default function SettingsScreen({
             </span>
             <span className="settings-pill is-active">Active</span>
           </div>
-        </Section>
-
-        <Section label="Account Settings">
-          <Row
-            icon={<ProfileIcon />}
-            title="Profile"
-            onClick={onEditProfile}
-          />
         </Section>
 
         <Section label="Store API">
@@ -1966,6 +1971,8 @@ export default function SettingsScreen({
           <div className="settings-divider" aria-hidden />
           <Row icon={<HelpIcon />} title="Q&A" iconOnly onClick={openHelpAssistant} />
         </Section>
+
+        {customizationSections}
 
         <p className="settings-footer">ThrfT. v1.0.0</p>
 
