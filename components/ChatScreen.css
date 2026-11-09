@@ -294,6 +294,14 @@
   color: #fff;
 }
 
+.chat-sidebar-title {
+  margin: 0;
+  font-size: 1.28rem;
+  font-weight: 500;
+  line-height: 36px;
+  letter-spacing: -0.01em;
+}
+
 .chat-sidebar-control svg {
   width: 20px;
   height: 20px;
@@ -3125,6 +3133,7 @@ html body button.chat-contact-nick-save {
   }
 
   .chat-screen.is-sidebar-collapsed .chat-list-toolbar,
+  .chat-screen.is-sidebar-collapsed .chat-sidebar-title,
   .chat-screen.is-sidebar-collapsed .chat-list-section,
   .chat-screen.is-sidebar-collapsed .chat-bottom-dock {
     display: none;

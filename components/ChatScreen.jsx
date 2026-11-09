@@ -2516,8 +2516,9 @@ export default function ChatScreen({
         className={`chat-section chat-pins-section${pinsMode ? ` is-mode-${pinsMode}` : ''}`}
         aria-label="Chat controls"
       >
-        {isDesktop && (
-          <div className="chat-sidebar-header">
+        <div className="chat-sidebar-header">
+          <h1 className="chat-sidebar-title">Messages</h1>
+          {isDesktop && (
             <button
               type="button"
               className="chat-sidebar-control is-bare"
@@ -2534,8 +2535,8 @@ export default function ChatScreen({
                 <path d="M9 4v16" fill="none" stroke="currentColor" strokeWidth="1.7" />
               </svg>
             </button>
-          </div>
-        )}
+          )}
+        </div>
         <div className="chat-list-toolbar" ref={pinsMenuRef}>
           <div className={`chat-pins-edit${pinsMenuOpen ? ' is-open' : ''}`}>
             <button
