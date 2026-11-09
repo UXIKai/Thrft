@@ -198,7 +198,7 @@
 }
 
 .saved-edit-row.is-open {
-  width: var(--pins-menu-w);
+  z-index: 22;
 }
 
 .saved-pencil-btn {
@@ -236,7 +236,7 @@
 .saved-edit-menu {
   box-sizing: border-box;
   position: absolute;
-  top: 0;
+  top: calc(100% + 8px);
   left: 0;
   z-index: 22;
   display: flex;

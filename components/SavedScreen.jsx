@@ -524,8 +524,21 @@ export default function SavedScreen({
         </button>
       </div>
 
-      <div className="saved-list-toolbar" ref={editMenuRef}>
-        <div className={`saved-edit-row${editMenuOpen ? ' is-open' : ''}`}>
+      <div className="saved-list-toolbar">
+        <div className={`saved-edit-row${editMenuOpen ? ' is-open' : ''}`} ref={editMenuRef}>
+          <button
+            type="button"
+            className="saved-pencil-btn"
+            aria-label="Edit"
+            aria-expanded={editMenuOpen}
+            aria-haspopup="menu"
+            onClick={() => {
+              setFilterOpen(false)
+              setEditMenuOpen((open) => !open)
+            }}
+          >
+            <PencilIcon />
+          </button>
           {editMenuOpen ? (
             <div className="saved-edit-menu" role="menu" aria-label="Liked edit actions">
               <button
@@ -549,18 +562,7 @@ export default function SavedScreen({
                 <span className="saved-edit-menu-label">Edit</span>
               </button>
             </div>
-          ) : (
-            <button
-              type="button"
-              className="saved-pencil-btn"
-              aria-label="Edit"
-              aria-expanded={false}
-              aria-haspopup="menu"
-              onClick={() => setEditMenuOpen(true)}
-            >
-              <PencilIcon />
-            </button>
-          )}
+          ) : null}
         </div>
         <div className="saved-filter-wrap" ref={filterRef}>
           <button
@@ -569,7 +571,10 @@ export default function SavedScreen({
             aria-label="Filter liked"
             aria-expanded={filterOpen}
             aria-haspopup="menu"
-            onClick={() => setFilterOpen((open) => !open)}
+            onClick={() => {
+              setEditMenuOpen(false)
+              setFilterOpen((open) => !open)
+            }}
           >
             <FilterIcon />
           </button>
