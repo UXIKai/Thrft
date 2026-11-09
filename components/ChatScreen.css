@@ -2978,12 +2978,12 @@ html body button.chat-contact-nick-save {
     display: grid;
     grid-template-columns: minmax(260px, 340px) minmax(0, 1fr);
     grid-template-rows: auto minmax(0, 1fr);
-    column-gap: clamp(24px, 4vw, 64px);
+    column-gap: 16px;
     row-gap: 16px;
-    width: min(100%, 1440px);
-    margin: 0 auto;
+    width: 100%;
+    margin: 0;
     padding: calc(max(16px, env(safe-area-inset-top, 0px)) + 24px)
-      clamp(24px, 4vw, 56px) 20px;
+      16px 20px;
   }
 
   .chat-screen.is-desktop > .chat-pins-section {
@@ -3005,7 +3005,7 @@ html body button.chat-contact-nick-save {
   }
 
   .chat-screen.is-desktop .chat-bottom-dock {
-    left: 0;
+    left: 16px;
     bottom: 20px;
     width: min(340px, calc(100% - 24px));
     max-width: none;

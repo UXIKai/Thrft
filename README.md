@@ -30,6 +30,10 @@ Wire real profiles later by setting `avatarUrl` (and labels) on entries in `src/
 
 ## Layout & motion
 
+### Chat
+- Desktop chat uses the full window width, with a left-aligned conversation list and the open conversation filling the remaining space.
+- Phone layouts continue to show the conversation list or the open conversation one at a time.
+
 ### Leaderboard
 - **Zig-zag formation:** 5 empty rings left + 5 right under Thrft●.
 - Climb swaps orbit around each other (yin-yang), opposite-side only.
