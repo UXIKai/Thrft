@@ -331,21 +331,6 @@ function PersonIcon() {
   )
 }
 
-function NamePencilIcon() {
-  return (
-    <svg className="profile-name-pencil-ico" viewBox="0 0 24 24" aria-hidden>
-      <path
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        strokeLinejoin="round"
-        strokeLinecap="round"
-        d="M4.5 16.8 15.2 6.1a1.5 1.5 0 0 1 2.1 0l1.6 1.6a1.5 1.5 0 0 1 0 2.1L8.2 20.5H4.5v-3.7z"
-      />
-    </svg>
-  )
-}
-
 function CloseIcon() {
   return (
     <svg className="profile-close-ico" viewBox="0 0 24 24" aria-hidden>
@@ -1173,14 +1158,6 @@ export default function ProfileScreen({
     <div className="profile-screen">
       <header className="profile-top">
         <h1 className="profile-title" aria-label="Profile" />
-        <button
-          type="button"
-          className="profile-gear"
-          aria-label="Settings"
-          onClick={() => setSettingsOpen(true)}
-        >
-          <GearIcon />
-        </button>
       </header>
 
       <section className="profile-identity" aria-label="Account">
@@ -1243,11 +1220,11 @@ export default function ProfileScreen({
           <button
             type="button"
             className="profile-name-edit"
-            aria-label="Edit name and username"
+            aria-label="Settings"
             onMouseDown={holdScroll}
-            onClick={openNameSheet}
+            onClick={() => setSettingsOpen(true)}
           >
-            <NamePencilIcon />
+            <GearIcon />
           </button>
         </div>
         {(account?.username || userProfile?.username) ? (

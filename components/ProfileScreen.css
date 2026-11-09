@@ -2729,7 +2729,7 @@
   font-weight: 700;
 }
 
-/* Keep the name truly centered; the edit pencil floats beside it. */
+/* Keep the name centered with the settings control beside it. */
 .profile-name-row .profile-name-edit {
   position: absolute;
   left: 100%;
