@@ -9,7 +9,7 @@
 
 .product-store-size-header {
   position: absolute;
-  inset: -66px 0 auto;
+  inset: -58px 0 auto;
   pointer-events: none;
   display: grid;
   grid-template-columns: 72px 1fr 72px;
@@ -28,6 +28,11 @@
 .product-store-size-panel {
   position: relative;
   width: min(100%, 640px);
+  margin-top: -8px;
+}
+
+.product-detail-body .product-detail-buy {
+  margin-top: -8px;
 }
 
 .product-store-size-header button {
@@ -62,8 +67,8 @@
 .product-store-size-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 20px 12px;
-  margin: 12px auto 20px;
+  gap: 12px;
+  margin: 4px auto 8px;
   max-width: 640px;
 }
 
@@ -73,7 +78,7 @@
 }
 
 .product-store-info-button {
-  margin: 24px auto;
+  margin: 8px auto 12px;
   color: inherit;
   text-transform: uppercase;
 }
