@@ -72,6 +72,7 @@ Links and Money rows sit immediately below ID verification. Profile contains onl
 
 ### Product rows
 - The orbital color picker displays the focused color's name on a contrasting center: white for dark colors and black for bright colors. Its controls and surrounding labels also switch contrast with the preview, independently of the saved app theme.
+- The orbital's top safe area and browser theme color stay matched to the focused color, independent of the drifting background. Closing the orbital restores the app's background.
 - The orbital center's eclipse glow stays lit while browsing and dragging, matching the hovered color in the color picker and remaining white in other pickers.
 - The home search backdrop reuses the app's flowing atmosphere at 70% brightness behind the always-black filter panel. Choosing a color updates the backdrop, its flowing effect, and the panel text to that color; the panel itself does not animate.
 - Saved edit and filter menus open below their buttons, close each other, and dismiss when clicking outside.

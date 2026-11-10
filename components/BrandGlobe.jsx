@@ -1333,6 +1333,20 @@ function BrandGlobeView({
     previewColors ? (focusBrand && colorHex(focusBrand.id)) || '#ffffff' : null
   const seatRgb = seatTint?.match(/[a-f0-9]{2}/gi)?.map((part) => parseInt(part, 16)).join(', ')
   const previewScheme = seatTint ? colorSchemeForHex(seatTint) : null
+  useEffect(() => {
+    if (!seatTint) return undefined
+    const root = document.documentElement
+    const themeMeta = document.querySelector('meta[name="theme-color"]')
+    const previousThemeColor = themeMeta?.getAttribute('content')
+    root.style.setProperty('--orbital-preview-color', seatTint)
+    themeMeta?.setAttribute('content', seatTint)
+    return () => {
+      root.style.removeProperty('--orbital-preview-color')
+      if (themeMeta && previousThemeColor !== null) {
+        themeMeta.setAttribute('content', previousThemeColor)
+      }
+    }
+  }, [seatTint])
   const originStyle = {
     ...(origin && typeof origin.dx === 'number'
       ? { '--globe-dx': `${origin.dx}px`, '--globe-dy': `${origin.dy}px` }
