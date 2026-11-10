@@ -26,7 +26,7 @@ import {
   BUBBLE,
   slotForRank,
 } from './layout.js'
-import { applyBackgroundImage, applyBgColor, applySearchBackground, readBackgroundImage } from './appAppearance.js'
+import { applyBackgroundImage, clearSearchBackground, applySearchBackground, readBackgroundImage } from './appAppearance.js'
 import {
   fetchProfile,
   fetchSaved,
@@ -737,7 +737,8 @@ export default function App() {
               : homePicker === 'colors'
                 ? (id) => {
                     setHomeColor(id)
-                    applySearchBackground((id && colorHex(id)) || '#ffffff')
+                    if (id) applySearchBackground(colorHex(id) || '#ffffff')
+                    else clearSearchBackground()
                     closeHomePicker()
                   }
                 : handleHomeCategoryPick
@@ -775,9 +776,13 @@ export default function App() {
       </div>
 
       {signedIn && showNav && <TabBar active={tab} onChange={(nextTab) => {
-        if (tab === 'home' && nextTab !== 'home' && homeColor) {
+        if (nextTab !== tab) {
+          setHomeBrand(null)
+          setClothingType('all')
           setHomeColor('')
-          applyBgColor('none')
+          setHomePickerQuery('')
+          closeHomePicker()
+          clearSearchBackground()
         }
         setTab(nextTab)
       }} />}

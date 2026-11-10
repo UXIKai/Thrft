@@ -61,6 +61,17 @@ test('black Settings backgrounds disable dark mode, preserve contrast, and survi
 
     reloaded.applyCustomBgColor('#ffffff')
     assert.equal(reloaded.readTheme(), 'dark', 'nonblack Settings colors do not disable dark mode')
+
+    reloaded.applyTheme('dark')
+    reloaded.applyCustomBgColor('#080808')
+    const originalVoid = tokens.get('--void')
+    reloaded.applySearchBackground('#ffffff')
+    reloaded.applySearchBackground('#ff0000')
+    reloaded.clearSearchBackground()
+    assert.equal(tokens.get('--void'), originalVoid, 'clearing search restores the original black background, not neutral light mode')
+    assert.equal(root.style.colorScheme, 'dark')
+    reloaded.clearSearchBackground()
+    assert.equal(tokens.get('--void'), originalVoid, 'clearing an inactive preview does not alter appearance')
   } finally {
     if (previousStorage) Object.defineProperty(globalThis, 'localStorage', previousStorage)
     else delete globalThis.localStorage

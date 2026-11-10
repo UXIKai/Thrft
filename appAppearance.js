@@ -690,7 +690,40 @@ export function applyCustomBgColor(hex, { matchColor = false } = {}) {
   return currentCustomBgHex
 }
 
+let searchBackgroundSnapshot = null
+
+export function clearSearchBackground() {
+  if (!searchBackgroundSnapshot) return
+  const saved = searchBackgroundSnapshot
+  searchBackgroundSnapshot = null
+  currentBgColorId = saved.color
+  ensureCustomBgColor(saved.custom)
+  currentBgEffects = saved.effects
+  matchBackgroundColor = saved.match
+  try {
+    localStorage.setItem(BG_COLOR_KEY, currentBgColorId)
+    localStorage.setItem(CUSTOM_BG_COLOR_KEY, currentCustomBgHex)
+    if (matchBackgroundColor) localStorage.setItem(BG_MATCH_KEY, 'on')
+    else localStorage.removeItem(BG_MATCH_KEY)
+  } catch (error) {
+    console.warn('Unable to restore the background after search.', error)
+  }
+  applyBgAtmosphereTokens()
+  applyBackgroundPhoto(saved.photo)
+  applyBackgroundImage(saved.image)
+}
+
 export function applySearchBackground(hex) {
+  if (!searchBackgroundSnapshot) {
+    searchBackgroundSnapshot = {
+      color: currentBgColorId,
+      custom: currentCustomBgHex,
+      effects: [...currentBgEffects],
+      match: matchBackgroundColor,
+      photo: readBackgroundPhoto(),
+      image: currentBg,
+    }
+  }
   applyCustomBgColor(hex, { matchColor: true })
   applyBackgroundPhoto(null)
   applyBackgroundImage('atmosphere')
