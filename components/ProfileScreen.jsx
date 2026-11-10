@@ -1014,7 +1014,7 @@ export default function ProfileScreen({
 
   function openProfileEditor(page = 'Profile') {
     setEditorPage(page)
-    setAccountEmailDraft(userProfile?.email || '')
+    setAccountEmailDraft(account?.email || userProfile?.email || '')
     setAccountUsernameDraft(
       String(account?.username || userProfile?.username || '').replace(/^@+/, ''),
     )
@@ -1029,7 +1029,9 @@ export default function ProfileScreen({
 
   async function saveAccountEdit() {
     if (accountEditBusy) return
-    const email = accountEmailDraft.trim()
+    const savedEmail = String(account?.email || userProfile?.email || '').trim()
+    const email = accountEmailDraft.trim() || savedEmail
+    const emailChanged = email !== savedEmail
     const username = accountUsernameDraft
       .trim()
       .replace(/^@+/, '')
@@ -1040,7 +1042,7 @@ export default function ProfileScreen({
       setAccountEditNote('Enter a username')
       return
     }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    if (emailChanged && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       setAccountEditNote('Enter a valid email address')
       return
     }
@@ -1051,7 +1053,6 @@ export default function ProfileScreen({
     setAccountEditBusy(true)
     setAccountEditNote('')
     try {
-      const emailChanged = email !== (userProfile?.email || '')
       if (nextPassword || emailChanged) {
         const supabase = getSupabase()
         if (!supabase) {

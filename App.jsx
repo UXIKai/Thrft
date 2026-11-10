@@ -346,7 +346,10 @@ export default function App() {
 
   async function handleSaveProfile(patch) {
     const result = await saveProfile(patch)
-    setUserProfile(result.profile)
+    setUserProfile((prev) => ({
+      ...result.profile,
+      email: account?.email || result.profile?.email || prev.email,
+    }))
     if (patch && typeof patch.username === 'string' && patch.username.trim()) {
       const nextUsername = patch.username.trim().replace(/^@+/, '')
       setAccount((prev) =>
