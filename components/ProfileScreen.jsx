@@ -16,6 +16,7 @@ import { createListing, fetchMyListings, fetchSellerSalesStats, formatListingPri
 import { ClosetIcon, MarketIcon, StoreIcon } from './SegmentIcons.jsx'
 import { getSupabase, isSupabaseConfigured } from '../supabase.js'
 import BrandGlobe from './BrandGlobe.jsx'
+import GiveBack from './GiveBack.jsx'
 import OrbitCarousel from './OrbitCarousel.jsx'
 import SettingsScreen from './SettingsScreen.jsx'
 import './GlassOverlay.css'
@@ -2123,6 +2124,7 @@ export default function ProfileScreen({
                     </section>
                   )}
                 </div>
+                <GiveBack />
               </section>
               }
               

@@ -30,6 +30,8 @@ Wire real profiles later by setting `avatarUrl` (and labels) on entries in `src/
 
 ## Layout & motion
 
+The Money editor includes the Diaita Group Initiative pledge controls below its other content. Settings links to Money with a bank icon; Give Back is no longer a separate Settings section.
+
 Changing navigation tabs resets Home Brand, Color, and Category filters to All. Clearing a Home color search restores the background that preceded the search, including its contrast and wallpaper, instead of forcing a neutral light background.
 
 The inline Store size header shows only the current EN or EU metric in numeric mode. The page's top-right action reads `123` while displaying letters and `Aa` while displaying numbers; EN/EU is hidden in letter mode. Letter switching is available when equivalent letter labels exist (footwear without letter equivalents stays numeric). General apparel equivalents use a chest-size chart, with product-specific conversions taking precedence.

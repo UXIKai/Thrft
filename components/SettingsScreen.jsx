@@ -436,7 +436,7 @@ const HELP_PAGES = {
           },
           {
             heading: 'Give back',
-            body: 'In Settings. Optional Dlaita Group Initiative: a monthly dollar amount or a percent of earnings.',
+            body: 'In Settings → Money. Optional Diaita Group Initiative: a monthly dollar amount or a percent of earnings.',
           },
           {
             heading: 'ID.me',
@@ -514,7 +514,7 @@ const ASSISTANT_FAQ = [
   {
     keys: ['give', 'donate', 'dlaita', 'pledge'],
     answer:
-      'In Settings under Give Back you can pledge a monthly dollar amount or a percent of earnings to the Dlaita Group Initiative.',
+      'In Settings → Money, below the other controls, you can pledge a monthly dollar amount or a percent of earnings to the Diaita Group Initiative.',
   },
   {
     keys: ['order', 'tracking', 'delivery', 'refund', 'support'],
@@ -793,10 +793,6 @@ export default function SettingsScreen({
   const [barTransparency, setBarTransparency] = useState(() =>
     readBarTransparency(),
   )
-  const [pledgeMode, setPledgeMode] = useState('flat')
-  const [pledgeAmount, setPledgeAmount] = useState('')
-  const [pledgePercent, setPledgePercent] = useState('')
-  const [pledged, setPledged] = useState(false)
   const [sheet, setSheet] = useState(null)
   const [sheetDraft, setSheetDraft] = useState({})
   const [helpPage, setHelpPage] = useState(null)
@@ -926,32 +922,6 @@ export default function SettingsScreen({
     }
   }
 
-  const percentLabel = pledgePercent === '' ? null : `${pledgePercent}%`
-  const amountLabel = pledgeAmount === '' ? null : `$${pledgeAmount}`
-
-  const pledgeCta = useMemo(() => {
-    if (pledgeMode === 'flat') {
-      if (!amountLabel) return pledged ? 'PLEDGED / MONTH' : 'PLEDGE / MONTH'
-      return pledged ? `PLEDGED ${amountLabel} / MONTH` : `PLEDGE ${amountLabel} / MONTH`
-    }
-    if (!percentLabel) return pledged ? 'PLEDGED OF EARNINGS' : 'PLEDGE OF EARNINGS'
-    return pledged ? `PLEDGED ${percentLabel} OF EARNINGS` : `PLEDGE ${percentLabel} OF EARNINGS`
-  }, [pledgeMode, pledged, percentLabel, amountLabel])
-
-  const canPledge =
-    pledgeMode === 'flat'
-      ? pledgeAmount !== '' && Number(pledgeAmount) > 0
-      : pledgePercent !== '' && Number(pledgePercent) > 0
-
-  function onPledgePercentChange(raw) {
-    setPledgePercent(raw.replace(/\D/g, '').slice(0, 3))
-    setPledged(false)
-  }
-
-  function onPledgeAmountChange(raw) {
-    setPledgeAmount(raw.replace(/\D/g, '').slice(0, 4))
-    setPledged(false)
-  }
 
   useEffect(() => {
     if (helpPage !== 'help') return undefined
@@ -1918,103 +1888,7 @@ export default function SettingsScreen({
         </Section>
 
         <Section label="Money">
-          <Row icon={<BoxIcon />} title="Money" onClick={onEditMoney} />
-        </Section>
-
-        <Section label="Give Back">
-          <div className="settings-giveback">
-            <div className="settings-giveback-head">
-              <p className="settings-giveback-title">Dlaita Group Initiative</p>
-            </div>
-            <div className="settings-pledge-modes" role="group" aria-label="Pledge type">
-              <div
-                className={`settings-pledge-mode is-input ${pledgeMode === 'flat' ? 'is-active' : ''}`}
-                onClick={() => {
-                  setPledgeMode('flat')
-                  setPledged(false)
-                }}
-              >
-                <label className="settings-pledge-pct" htmlFor="pledge-amount">
-                  <span className="settings-pledge-pct-suffix" aria-hidden>
-                    $
-                  </span>
-                  <input
-                    id="pledge-amount"
-                    className="settings-pledge-pct-input"
-                    type="text"
-                    inputMode="numeric"
-                    pattern="[0-9]*"
-                    maxLength={4}
-                    name="thrft_pledge_flat"
-                    autoComplete="off"
-                    autoCorrect="off"
-                    autoCapitalize="off"
-                    spellCheck={false}
-                    data-lpignore="true"
-                    data-1p-ignore="true"
-                    data-form-type="other"
-                    aria-label="Pledge dollars per month"
-                    value={pledgeAmount}
-                    onFocus={() => {
-                      setPledgeMode('flat')
-                      setPledged(false)
-                    }}
-                    onChange={(e) => onPledgeAmountChange(e.target.value)}
-                  />
-                </label>
-                <span className="settings-pledge-small">flat / month</span>
-              </div>
-              <div
-                className={`settings-pledge-mode is-input ${pledgeMode === 'percent' ? 'is-active' : ''}`}
-                onClick={() => {
-                  setPledgeMode('percent')
-                  setPledged(false)
-                }}
-              >
-                <label className="settings-pledge-pct" htmlFor="pledge-percent">
-                  <input
-                    id="pledge-percent"
-                    className="settings-pledge-pct-input"
-                    type="text"
-                    inputMode="numeric"
-                    pattern="[0-9]*"
-                    maxLength={3}
-                    name="thrft_pledge_pct"
-                    autoComplete="off"
-                    autoCorrect="off"
-                    autoCapitalize="off"
-                    spellCheck={false}
-                    data-lpignore="true"
-                    data-1p-ignore="true"
-                    data-form-type="other"
-                    aria-label="Pledge percent of earnings"
-                    value={pledgePercent}
-                    onFocus={() => {
-                      setPledgeMode('percent')
-                      setPledged(false)
-                    }}
-                    onChange={(e) => onPledgePercentChange(e.target.value)}
-                  />
-                  <span className="settings-pledge-pct-suffix" aria-hidden>
-                    %
-                  </span>
-                </label>
-                <span className="settings-pledge-small">of earnings</span>
-              </div>
-            </div>
-            <button
-              type="button"
-              className={`settings-pledge-cta ${pledged ? 'is-on' : ''}`}
-              disabled={!canPledge}
-              onClick={() => {
-                if (!canPledge) return
-                setPledged((v) => !v)
-              }}
-            >
-              <HeartIcon />
-              {pledgeCta}
-            </button>
-          </div>
+          <Row icon={<svg className="settings-row-ico" viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" d="M4 10h16M5.5 10v7.5M9.5 10v7.5M14.5 10v7.5M18.5 10v7.5M3.5 18.5h17M12 4.2 20 9H4l8-4.8z" /></svg>} title="Money" onClick={onEditMoney} />
         </Section>
 
         <Section label="Help & Support" className="is-side-by-side">
