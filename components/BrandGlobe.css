@@ -696,7 +696,7 @@ html .brand-globe .brand-globe-stage.is-choosing .brand-globe-center-hole {
 
 /* Color picker: tint the backdrop and label, keeping the center black. */
 .brand-globe.is-color-picker > .brand-globe-color-atmosphere {
-  filter: brightness(0.7);
+  filter: none;
 }
 
 .brand-globe.has-tint .brand-globe-scrim {

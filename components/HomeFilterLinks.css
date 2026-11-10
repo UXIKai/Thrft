@@ -233,8 +233,7 @@
 
 /* Keep the flowing atmosphere behind, never on, the solid color card. */
 html body .home-search-blur {
-  /* Black by default; a deep shade of the picked color otherwise */
-  background: color-mix(in srgb, var(--search-tint, #000) 38%, #000) !important;
+  background: var(--search-tint, #fff) !important;
   transition: background-color 0.4s ease;
   background-image: none !important;
   animation: none;
@@ -247,9 +246,9 @@ html body .home-search-blur > .atmosphere {
   inset: 0;
   display: block;
   opacity: 1;
-  filter: brightness(0.7);
-  --atmosphere-base: var(--search-tint, #000);
-  background: var(--search-tint, #000);
+  filter: none;
+  --atmosphere-base: var(--search-tint, #fff);
+  background: var(--search-tint, #fff);
 }
 
 html body .home-search-blur::after {

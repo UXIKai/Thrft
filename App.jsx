@@ -7,7 +7,7 @@ import BrandGlobe from './components/BrandGlobe.jsx'
 import ClothingTypePage from './components/ClothingTypePage.jsx'
 import ChatScreen from './components/ChatScreen.jsx'
 import CreateListing from './components/CreateListing.jsx'
-import { COLOR_OPTIONS } from './colorsCatalog.js'
+import { COLOR_OPTIONS, colorHex } from './colorsCatalog.js'
 import HomeFilterLinks from './components/HomeFilterLinks.jsx'
 import LiquidGlassDefs from './components/LiquidGlassDefs.jsx'
 import CartScreen from './components/CartScreen.jsx'
@@ -25,7 +25,7 @@ import {
   BUBBLE,
   slotForRank,
 } from './layout.js'
-import { applyBackgroundImage, readBackgroundImage } from './appAppearance.js'
+import { applyBackgroundImage, applySearchBackground, readBackgroundImage } from './appAppearance.js'
 import {
   fetchProfile,
   fetchSaved,
@@ -715,6 +715,7 @@ export default function App() {
               : homePicker === 'colors'
                 ? (id) => {
                     setHomeColor(id)
+                    applySearchBackground((id && colorHex(id)) || '#ffffff')
                     closeHomePicker()
                   }
                 : handleHomeCategoryPick

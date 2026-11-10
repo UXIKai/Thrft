@@ -15,6 +15,7 @@ export const CUSTOM_COLOR_KEY = 'thrft-app-color-hex'
 export const BG_COLOR_KEY = 'thrft-bg-color-v1'
 export const CUSTOM_BG_COLOR_KEY = 'thrft-bg-color-hex-v1'
 export const BG_IMAGE_KEY = 'thrft-bg-image-v2'
+const BG_MATCH_KEY = 'thrft-bg-match-color-v1'
 export const THEME_KEY = 'thrft-theme-v1'
 export const UI_SCALE_KEY = 'thrft-ui-scale-v1'
 export const DEFAULT_UI_SCALE = 100
@@ -68,6 +69,7 @@ let currentGlassPct = DEFAULT_BAR_TRANSPARENCY
 let currentBg = DEFAULT_BG_IMAGE
 let currentBgEffects = [...DEFAULT_BG_EFFECTS]
 let currentTheme = 'dark'
+let matchBackgroundColor = false
 
 export function readTheme() {
   try {
@@ -459,7 +461,7 @@ export function applyBgAtmosphereTokens() {
   root.style.setProperty('--bg-color-rgb', base.join(', '))
 
   // Deep void keeps the wash readable; hue lives in the flowing clouds.
-  const voidRgb = currentTheme === 'light'
+  const voidRgb = matchBackgroundColor && hasColor ? base : currentTheme === 'light'
     ? (hasColor ? base.map((channel) => Math.round(238 + channel * 0.06)) : [250, 250, 250])
     : hasColor
     ? [
@@ -476,9 +478,9 @@ export function applyBgAtmosphereTokens() {
   root.style.setProperty('--settings-wash', 'transparent')
 
   if (hasColor) {
-    const effectA = liftRgb(base, 0.58)
+    const effectA = matchBackgroundColor ? base.map((channel) => Math.round(channel * 0.6)) : liftRgb(base, 0.58)
     const effectB = liftRgb(base, 0.3)
-    const effectC = liftRgb(base, 0.12)
+    const effectC = matchBackgroundColor ? base.map((channel) => Math.round(channel * 0.35)) : liftRgb(base, 0.12)
     currentBgEffects = [
       `#${effectA.map((n) => n.toString(16).padStart(2, '0')).join('')}`,
       `#${effectB.map((n) => n.toString(16).padStart(2, '0')).join('')}`,
@@ -592,6 +594,7 @@ export function readAppColor() {
 
 /** Background effect swatch — living atmosphere only. */
 export function applyBgColor(id) {
+  matchBackgroundColor = false
   const color = resolveBgColor(id)
   currentBgColorId = color.id
   if (color.id === 'none') {
@@ -599,6 +602,7 @@ export function applyBgColor(id) {
   }
   try {
     localStorage.setItem(BG_COLOR_KEY, currentBgColorId)
+    localStorage.removeItem(BG_MATCH_KEY)
   } catch {
     /* ignore */
   }
@@ -607,11 +611,14 @@ export function applyBgColor(id) {
 }
 
 /** Live color-wheel pick for the background wash. */
-export function applyCustomBgColor(hex) {
+export function applyCustomBgColor(hex, { matchColor = false } = {}) {
   const color = ensureCustomBgColor(hex)
   if (!color) return currentBgColorId
   currentBgColorId = 'custom'
+  matchBackgroundColor = matchColor
   try {
+    if (matchColor) localStorage.setItem(BG_MATCH_KEY, 'on')
+    else localStorage.removeItem(BG_MATCH_KEY)
     localStorage.setItem(BG_COLOR_KEY, 'custom')
     localStorage.setItem(CUSTOM_BG_COLOR_KEY, currentCustomBgHex)
   } catch {
@@ -619,6 +626,12 @@ export function applyCustomBgColor(hex) {
   }
   applyBgAtmosphereTokens()
   return currentCustomBgHex
+}
+
+export function applySearchBackground(hex) {
+  applyCustomBgColor(hex, { matchColor: true })
+  applyBackgroundPhoto(null)
+  applyBackgroundImage('atmosphere')
 }
 
 export function readCustomBgColorHex() {
@@ -827,6 +840,11 @@ export function applyContainerEdge(pct) {
 }
 
 export function initAppearance() {
+  try {
+    matchBackgroundColor = localStorage.getItem(BG_MATCH_KEY) === 'on'
+  } catch (error) {
+    console.warn('Unable to read background color matching.', error)
+  }
   currentTheme = readTheme()
   document.documentElement.dataset.theme = currentTheme
   document.documentElement.style.colorScheme = currentTheme

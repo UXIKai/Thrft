@@ -1329,7 +1329,7 @@ function BrandGlobeView({
   }
 
   const seatTint =
-    previewColors && focusBrand ? colorHex(focusBrand.id) : null
+    previewColors ? (focusBrand && colorHex(focusBrand.id)) || '#ffffff' : null
   const seatRgb = seatTint?.match(/[a-f0-9]{2}/gi)?.map((part) => parseInt(part, 16)).join(', ')
   const originStyle = {
     ...(origin && typeof origin.dx === 'number'
@@ -1339,9 +1339,9 @@ function BrandGlobeView({
       '--globe-tint': seatTint,
       '--atmosphere-base': seatTint,
       '--atmosphere-base-rgb': seatRgb,
-      '--atmosphere-effect-a-rgb': seatRgb,
+      '--atmosphere-effect-a-rgb': seatRgb.split(', ').map((part) => Math.round(Number(part) * 0.6)).join(', '),
       '--atmosphere-effect-b-rgb': seatRgb,
-      '--atmosphere-effect-c-rgb': seatRgb,
+      '--atmosphere-effect-c-rgb': seatRgb.split(', ').map((part) => Math.round(Number(part) * 0.35)).join(', '),
     } : null),
   }
 

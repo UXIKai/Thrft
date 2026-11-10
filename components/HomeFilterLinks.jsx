@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import OrbitCarousel from './OrbitCarousel.jsx'
 import { colorHex } from '../colorsCatalog.js'
+import { applyBackgroundImage, applyBackgroundPhoto, applySearchBackground } from '../appAppearance.js'
 import './HomeFilterLinks.css'
 
 /**
@@ -47,6 +48,7 @@ export default function HomeFilterLinks({
   )
 
   function done() {
+    applySearchBackground((draftColor && colorHex(draftColor)) || '#ffffff')
     setOpen(false)
     if (draftBrand !== brandId) onPickBrand?.(draftBrand)
     if (draftColor !== colorId) onPickColor?.(draftColor)
@@ -55,6 +57,8 @@ export default function HomeFilterLinks({
 
   useEffect(() => {
     if (!open) return undefined
+    applyBackgroundImage('atmosphere')
+    applyBackgroundPhoto(null)
     const onKey = (e) => {
       if (e.key === 'Escape') setOpen(false)
     }
@@ -71,7 +75,7 @@ export default function HomeFilterLinks({
   const cardStyle = {
     '--card-ink': draftColor ? cardHex : '#ffffff',
   }
-  const searchColor = (draftColor && colorHex(draftColor)) || '#000000'
+  const searchColor = (draftColor && colorHex(draftColor)) || '#ffffff'
   const searchRgb = searchColor.match(/[a-f0-9]{2}/gi)?.map((part) => parseInt(part, 16)).join(', ')
 
   return (
@@ -94,11 +98,11 @@ export default function HomeFilterLinks({
           aria-hidden
           style={{
             '--search-tint': searchColor,
-            ...(draftColor && searchRgb ? {
+            ...(searchRgb ? {
               '--atmosphere-base-rgb': searchRgb,
-              '--atmosphere-effect-a-rgb': searchRgb,
+              '--atmosphere-effect-a-rgb': searchRgb.split(', ').map((part) => Math.round(Number(part) * 0.6)).join(', '),
               '--atmosphere-effect-b-rgb': searchRgb,
-              '--atmosphere-effect-c-rgb': searchRgb,
+              '--atmosphere-effect-c-rgb': searchRgb.split(', ').map((part) => Math.round(Number(part) * 0.35)).join(', '),
             } : {}),
           }}
         >
