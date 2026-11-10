@@ -30,7 +30,7 @@ Wire real profiles later by setting `avatarUrl` (and labels) on entries in `src/
 
 ## Layout & motion
 
-Brand orbitals show website logos instead of text for the orbiting brands and centered selection, while searching still matches brand names. Unknown brands and failed logo loads retain readable names. Category, color, and account orbitals keep their existing labels.
+Brand orbitals show website logos instead of text for the orbiting brands and centered selection, while searching still matches brand names. They use a black background with white text for readability. Unknown brands and failed logo loads retain readable names. Category, color, and account orbitals keep their existing labels and appearance.
 
 Product brand headings open a brand page containing every active catalog product and available marketplace listing for that brand. Catalog queries are brand-filtered without the home-feed cap; marketplace listings are paged through completely before brand matching. Sold/unlisted items and mock Market previews are excluded.
 

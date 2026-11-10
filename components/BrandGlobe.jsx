@@ -1378,6 +1378,8 @@ function BrandGlobeView({
         previewColors ? ' is-color-picker' : ''
       }${
         seatTint ? ' has-tint' : ''
+      }${
+        showBrandLogos ? ' is-brand-picker' : ''
       }`}
       style={originStyle}
       role="dialog"
