@@ -30,6 +30,8 @@ Wire real profiles later by setting `avatarUrl` (and labels) on entries in `src/
 
 ## Layout & motion
 
+Store creation includes a Materials text field saved with the product. The Information view shows only materials, not the title/brand or description. Apply the updated Prisma schema with `npm run db:push` and regenerate the client with `npm run db:generate` when deploying this field.
+
 The Money editor includes the Diaita Group Initiative pledge controls below its other content. Settings links to Money with a bank icon; Give Back is no longer a separate Settings section.
 
 Changing navigation tabs resets Home Brand, Color, and Category filters to All. Clearing a Home color search restores the background that preceded the search, including its contrast and wallpaper, instead of forcing a neutral light background.

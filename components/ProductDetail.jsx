@@ -185,8 +185,6 @@ export default function ProductDetail({
         <div className="product-store-size-content">
           {showInformation ? (
             <section className="product-store-information" aria-label="Product information">
-              <h2>{displayTitle || name}</h2>
-              {product.description && <p>{product.description}</p>}
               <h3>Materials</h3>
               <p>{Array.isArray(product.materials) ? product.materials.join(', ') : product.materials || 'Materials not provided.'}</p>
               <button type="button" className="is-bare" onClick={() => setShowInformation(false)}>Select size</button>

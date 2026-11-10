@@ -111,6 +111,7 @@ export function mapProduct(row) {
     price: row.price || '',
     condition: row.condition || '',
     description: row.description || '',
+    materials: row.materials || '',
     segment: row.segment || 'store',
     status: row.status || 'active',
     photoUrl: row.photoUrl || '',
@@ -466,6 +467,7 @@ export async function createProduct(accountId, input = {}) {
       price: String(input.price || '').slice(0, 40),
       condition: String(input.condition || '').slice(0, 40),
       description: String(input.description || '').slice(0, 2000),
+      materials: String(input.materials || '').trim().slice(0, 2000),
       segment: String(input.segment || 'store').slice(0, 40),
       status: String(input.status || 'active').slice(0, 40),
       photoUrl: String(input.photoUrl || '').slice(0, 900_000),
@@ -503,6 +505,10 @@ export async function updateProduct(id, accountId, patch = {}) {
         typeof patch.description === 'string'
           ? patch.description.slice(0, 2000)
           : current.description,
+      materials:
+        typeof patch.materials === 'string'
+          ? patch.materials.trim().slice(0, 2000)
+          : current.materials,
       segment:
         typeof patch.segment === 'string'
           ? patch.segment.slice(0, 40)

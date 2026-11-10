@@ -81,6 +81,7 @@ model Product {
   price       String   @default("")
   condition   String   @default("")
   description String   @default("")
+  materials   String   @default("")
   segment     String   @default("store")
   status      String   @default("active")
   photoUrl    String   @default("") @map("photo_url")
