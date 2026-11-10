@@ -541,7 +541,7 @@ export default function App() {
 
 
             <div className="home-segment-tabs" role="tablist" aria-label="Shop Market or Store">
-              {['market', 'store'].map((segment) => (
+              {['store', 'market'].map((segment) => (
                 <button
                   key={segment}
                   type="button"
