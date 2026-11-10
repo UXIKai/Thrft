@@ -651,6 +651,7 @@ export default function App() {
           }}
           onOpenBrand={(brandId, brandName) => {
             setActiveProduct(null)
+            productReturnRef.current = null
             setActiveBrand({ brandId, brandName })
           }}
           onAddToCart={(product) => {

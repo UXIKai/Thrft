@@ -46,6 +46,7 @@ function DoneCheckIcon() {
 export default function ProductDetail({
   product,
   onClose,
+  onOpenBrand,
 }) {
   const [stageEl, setStageEl] = useState(null)
   const { items, addItem, replaceItems, removeItem } = useBag()
@@ -129,7 +130,7 @@ export default function ProductDetail({
 
   const photo = productPhoto(product)
   const name = product.title || product.brandName || 'Product'
-  const brand = String(product.brandName || '').trim()
+  const brand = String(product.brandName || product.brand || '').trim()
   const title = String(name).trim()
   const hasBrandPrefix =
     brand &&
@@ -250,8 +251,15 @@ export default function ProductDetail({
         <span className="glass-overlay-spacer" aria-hidden />
       </header>
       <div className="glass-overlay-body product-detail-body">
-        {product.brandName && (
-          <p className="product-detail-brand">{product.brandName}</p>
+        {brand && (
+          <button
+            type="button"
+            className="product-detail-brand is-bare"
+            onClick={() => onOpenBrand?.(product.brandId || '', brand)}
+            aria-label={`View ${brand} brand page`}
+          >
+            {brand}
+          </button>
         )}
         <div className="product-detail-photo">
           {photo ? (

@@ -18,6 +18,13 @@
   color: light-dark(rgb(0, 0, 0), #fff);
 }
 
+button.product-detail-brand {
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
 .product-detail-photo {
   width: min(72vw, 260px);
   aspect-ratio: 1 / 1.2;
