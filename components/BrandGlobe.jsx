@@ -584,6 +584,11 @@ function BrandGlobeView({
   const [panX, setPanX] = useState(0)
   const [panY, setPanY] = useState(0)
   const [orbit, setOrbit] = useState(0)
+  const [zoom, setZoom] = useState(1)
+  const zoomRef = useRef(1)
+  const touchesRef = useRef(new Map())
+  const gestureRef = useRef(null)
+  const centerTapRef = useRef(false)
   const [pointer, setPointer] = useState(null)
   const [focusFitPx, setFocusFitPx] = useState(24)
   const rootRef = useRef(null)
@@ -679,9 +684,9 @@ function BrandGlobeView({
   // the seat — carousel packs (Type / members) stay tighter than brand page.
   panLimitRef.current = {
     r:
-      compact || snug
+      !showBrandLogos && (compact || snug)
         ? Math.max(48, maxR * 0.85 + PAN_REACH_PX * 0.35)
-        : Math.max(80, maxR + PAN_REACH_PX),
+        : Math.max(80, maxR * zoom + PAN_REACH_PX),
   }
 
   useEffect(() => {
@@ -723,6 +728,7 @@ function BrandGlobeView({
   }
 
   function startOrbit() {
+    if (showBrandLogos) return
     if (orbitRafRef.current) return
     if (choosingRef.current || rotatingRef.current || phase === 'exit') return
 
@@ -836,7 +842,7 @@ function BrandGlobeView({
     return brands.map((brand, i) => {
       const slot = slots[i] || { lon: 0, r: 80, ring: 0 }
       const lon = (slot.lon || 0) + orbit
-      const r = slot.r || 80
+      const r = (slot.r || 80) * (showBrandLogos ? zoom : 1)
       const x = Math.cos(lon) * r + panX
       const y = Math.sin(lon) * r + panY
       return {
@@ -855,16 +861,16 @@ function BrandGlobeView({
         long: String(brand.label || '').length > 9,
       }
     })
-  }, [brands, slots, panX, panY, orbit, stageSize.w, stageSize.h])
+  }, [brands, slots, panX, panY, orbit, stageSize.w, stageSize.h, showBrandLogos, zoom])
 
   projectedRef.current = layout
 
   // Seat name only while actively scrubbing / holding to choose.
   // Idle (and after settle): empty orb — no leftover brand popping in.
-  const seatOpen = choosing || rotating || popping
+  const seatOpen = showBrandLogos || choosing || rotating || popping
   // While typing in the search, the best match shows in the seat.
   const typedBrand =
-    !seatOpen && typeof searchValue === 'string' && searchValue.trim()
+    (!seatOpen || showBrandLogos) && typeof searchValue === 'string' && searchValue.trim()
       ? brands[0] || null
       : null
   const focusBrand =
@@ -884,11 +890,11 @@ function BrandGlobeView({
       // Keep every orbit chip mounted — seat is the center button only.
       // Soft-hide only when a chip actually slides into the select circle.
       // Carousel rings (Type / members) already clear the orb, so don't erase them.
-      const w = showBrandLogos ? BRAND_LOGO_TILE_PX : chipWidthPx(slot.display, dense, veryDense)
-      const h = showBrandLogos ? BRAND_LOGO_TILE_PX : chipHeightPx(dense, veryDense)
+      const w = showBrandLogos ? BRAND_LOGO_TILE_PX * zoom : chipWidthPx(slot.display, dense, veryDense)
+      const h = showBrandLogos ? BRAND_LOGO_TILE_PX * zoom : chipHeightPx(dense, veryDense)
       const hideR =
         showBrandLogos
-          ? seatPx + Math.SQRT2 * BRAND_LOGO_TILE_PX / 2 + 12
+          ? seatPx + Math.SQRT2 * BRAND_LOGO_TILE_PX * zoom / 2 + 12
           : compact || snug
           ? Math.min(SEAT_HIDE_R, seatPx * 0.55 + 8)
           : SEAT_HIDE_R
@@ -928,7 +934,24 @@ function BrandGlobeView({
       kept.push({ ...c, vis: c.baseVis * dim })
     }
     return kept
-  }, [layout, dense, veryDense, compact, snug, seatPx, showBrandLogos])
+  }, [layout, dense, veryDense, compact, snug, seatPx, showBrandLogos, zoom])
+
+  useEffect(() => {
+    if (!showBrandLogos) return
+    let id = null
+    let distance = seatPx
+    if (Math.hypot(panX, panY) > 12) {
+      for (const slot of layout) {
+        const d = Math.hypot(slot.x, slot.y)
+        if (d < distance) {
+          distance = d
+          id = slot.brand.id
+        }
+      }
+    }
+    focusRef.current = id
+    setFocusId(id)
+  }, [showBrandLogos, layout, panX, panY, seatPx])
 
   // Scale seated name (whole words only) so it stays fully inside the circle.
   useLayoutEffect(() => {
@@ -998,6 +1021,7 @@ function BrandGlobeView({
 
   /** Keep the middle button on whoever is closest right now. */
   function syncFocusToCenter({ force = false } = {}) {
+    if (showBrandLogos) return focusRef.current
     if (focusLockRef.current && !force) return
     const id = nearestToCenter()
     if (id && id !== focusRef.current) {
@@ -1072,6 +1096,29 @@ function BrandGlobeView({
     }
   }
 
+  function gestureSnapshot() {
+    const points = [...touchesRef.current.values()]
+    const a = points[0]
+    const b = points[1] || a
+    return {
+      x: (a.x + b.x) / 2,
+      y: (a.y + b.y) / 2,
+      distance: Math.hypot(a.x - b.x, a.y - b.y),
+    }
+  }
+
+  function zoomAt(nextZoom, clientX, clientY) {
+    const rect = stageRef.current.getBoundingClientRect()
+    const x = clientX - rect.left - rect.width / 2
+    const y = clientY - rect.top - rect.height / 2
+    const next = clamp(nextZoom, 0.55, 2)
+    const ratio = next / zoomRef.current
+    zoomRef.current = next
+    setZoom(next)
+    panLimitRef.current.r = maxR * next + PAN_REACH_PX
+    applyPan(x - (x - panXRef.current) * ratio, y - (y - panYRef.current) * ratio)
+  }
+
   function beginChoosing(event) {
     stopOrbit()
     if (rafRef.current) {
@@ -1142,6 +1189,15 @@ function BrandGlobeView({
       }
       event.preventDefault()
       event.stopPropagation()
+      if (showBrandLogos) {
+        if (event.ctrlKey) {
+          zoomAt(zoomRef.current * Math.exp(-event.deltaY * 0.01), event.clientX, event.clientY)
+        } else {
+          const unit = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? 320 : 1
+          applyPan(panXRef.current - event.deltaX * unit, panYRef.current - event.deltaY * unit)
+        }
+        return
+      }
       stopOrbit()
       if (rafRef.current) {
         window.cancelAnimationFrame(rafRef.current)
@@ -1184,12 +1240,28 @@ function BrandGlobeView({
       window.clearTimeout(onWheel._settle)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [phase])
+  }, [phase, showBrandLogos, maxR])
 
   function onPointerDown(event) {
     if (event.button != null && event.button !== 0) return
     if (event.target?.closest?.('.brand-globe-search-row, .brand-globe-search'))
       return
+    if (showBrandLogos) {
+      event.preventDefault()
+      touchesRef.current.set(event.pointerId, { x: event.clientX, y: event.clientY })
+      if (touchesRef.current.size === 1) {
+        movedRef.current = false
+        centerTapRef.current = Boolean(event.target.closest('.brand-globe-focus'))
+        pointerDownRef.current = { x: event.clientX, y: event.clientY }
+      } else {
+        movedRef.current = true
+        centerTapRef.current = false
+      }
+      gestureRef.current = gestureSnapshot()
+      event.currentTarget.setPointerCapture(event.pointerId)
+      setBrushing(true)
+      return
+    }
 
     // Hold the center to start choosing.
     if (event.target?.closest?.('.brand-globe-focus')) {
@@ -1237,6 +1309,23 @@ function BrandGlobeView({
   }
 
   function onPointerMove(event) {
+    if (showBrandLogos) {
+      if (!touchesRef.current.has(event.pointerId)) return
+      const previous = gestureRef.current
+      touchesRef.current.set(event.pointerId, { x: event.clientX, y: event.clientY })
+      const next = gestureSnapshot()
+      if (Math.hypot(event.clientX - pointerDownRef.current.x, event.clientY - pointerDownRef.current.y) > DRAG_THRESHOLD) {
+        movedRef.current = true
+      }
+      if (touchesRef.current.size > 1 && previous.distance > 0) {
+        zoomAt(zoomRef.current * next.distance / previous.distance, previous.x, previous.y)
+      }
+      if (movedRef.current) {
+        applyPan(panXRef.current + next.x - previous.x, panYRef.current + next.y - previous.y)
+      }
+      gestureRef.current = next
+      return
+    }
     // Hold-center choose: same globe spin, seat updates as it turns.
     if (choosingRef.current) {
       const dx = event.clientX - pointerDownRef.current.x
@@ -1280,7 +1369,21 @@ function BrandGlobeView({
     if (local) setPointer(local)
   }
 
-  function onPointerUp() {
+  function onPointerUp(event) {
+    if (showBrandLogos) {
+      if (!touchesRef.current.delete(event.pointerId)) return
+      if (touchesRef.current.size) {
+        gestureRef.current = gestureSnapshot()
+        return
+      }
+      setBrushing(false)
+      gestureRef.current = null
+      if (event.type !== 'pointercancel' && centerTapRef.current && !movedRef.current && focusBrand) {
+        pick(focusBrand)
+      }
+      centerTapRef.current = false
+      return
+    }
     if (choosingRef.current) {
       // Stop pan, then commit the seated brand.
       rotatingRef.current = false
@@ -1309,6 +1412,7 @@ function BrandGlobeView({
   }
 
   function onPointerLeave() {
+    if (showBrandLogos) return
     if (choosingRef.current) {
       // Keep choosing while captured; only clear hover chrome.
       setPointer(null)
@@ -1457,7 +1561,7 @@ function BrandGlobeView({
                   0,
                   1,
                 )
-                const scale = 1 + proximity * 0.06
+                const scale = showBrandLogos ? zoom : 1 + proximity * 0.06
                 return (
                   <span
                     key={brand.id}
@@ -1499,11 +1603,15 @@ function BrandGlobeView({
                 : 'Scroll to a brand, then tap to choose'
             }
             onPointerDown={(event) => {
+              if (showBrandLogos) return
               event.preventDefault()
               event.stopPropagation()
               beginChoosing(event)
             }}
             onClick={(event) => {
+              if (showBrandLogos && event.detail === 0 && focusBrand) {
+                pick(focusBrand)
+              }
               // Prefer the pointerup choose path; block a second click select.
               event.preventDefault()
               event.stopPropagation()
