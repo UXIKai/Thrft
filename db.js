@@ -432,9 +432,10 @@ export async function listProductsForAccount(
 }
 
 /** Recent products across accounts (For You ranking — no mock catalog). */
-export async function listProducts({ limit = 200, status } = {}) {
+export async function listProducts({ limit = 200, status, segment } = {}) {
   const where = {}
   if (status) where.status = status
+  if (segment) where.segment = segment
   const rows = await prisma.product.findMany({
     where,
     include: { account: { select: { username: true, displayName: true } } },

@@ -114,6 +114,7 @@ export default function App() {
   const [tab, setTab] = useState('home')
   const [clothingType, setClothingType] = useState('all')
   const [homeColor, setHomeColor] = useState('')
+  const [homeSegment, setHomeSegment] = useState('market')
   const [homeBrand, setHomeBrand] = useState(null) // { id, label } | null
   const [homePicker, setHomePicker] = useState(null) // 'brands' | 'category' | null
   const [homePickerPhase, setHomePickerPhase] = useState('closed')
@@ -539,7 +540,33 @@ export default function App() {
             </section>
 
 
+            <div className="home-segment-tabs" role="tablist" aria-label="Shop Market or Store">
+              {['market', 'store'].map((segment) => (
+                <button
+                  key={segment}
+                  type="button"
+                  role="tab"
+                  id={`home-${segment}-tab`}
+                  aria-controls="home-product-panel"
+                  aria-selected={homeSegment === segment}
+                  className={`home-segment-tab is-bare${homeSegment === segment ? ' is-active' : ''}`}
+                  onClick={() => setHomeSegment(segment)}
+                >
+                  {segment === 'market' ? (
+                    <span className="home-market-dot" aria-hidden="true" />
+                  ) : (
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M3.6 12.2 12.1 3.7a1.4 1.4 0 0 1 1-.4H20a1.2 1.2 0 0 1 1.2 1.2v6.9a1.4 1.4 0 0 1-.4 1L12.3 20a1.4 1.4 0 0 1-2 0L3.6 14.2a1.4 1.4 0 0 1 0-2z" fill="none" stroke="currentColor" strokeWidth="1.7" />
+                      <circle cx="16.4" cy="7.6" r="1.35" fill="currentColor" />
+                    </svg>
+                  )}
+                  {segment === 'market' ? 'Market' : 'Store'}
+                </button>
+              ))}
+            </div>
             <ProductRows
+              key={homeSegment}
+              segment={homeSegment}
               onOpenProduct={handleOpenProduct}
               clothingType={clothingType}
               colorId={homeColor}

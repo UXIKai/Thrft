@@ -1880,3 +1880,43 @@ html body .tab-bar.is-pressed .tab-pill::before {
 .tab-bar {
   width: min(calc(420px + 4in), calc(100% - 26px));
 }
+.app-column.is-home-wide .home-scroll > .home-segment-tabs {
+  max-width: none;
+}
+
+.home-segment-tabs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  width: 100%;
+  margin: 0 0 20px;
+}
+
+.home-segment-tab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 56px;
+  min-width: 0;
+  border-bottom: 2px solid transparent;
+  color: light-dark(rgba(0, 0, 0, 0.5), rgba(255, 255, 255, 0.5));
+  font-weight: 700;
+}
+
+.home-segment-tab.is-active {
+  color: light-dark(#000, #fff);
+  border-bottom-color: currentColor;
+}
+
+.home-segment-tab svg {
+  width: 24px;
+  height: 24px;
+}
+
+.home-market-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #3dd68c;
+  box-shadow: 0 0 12px rgba(61, 214, 140, 0.45);
+}

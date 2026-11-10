@@ -330,6 +330,12 @@ export async function fetchMyProducts({ status = '', segment = '' } = {}) {
   return Array.isArray(data.products) ? data.products : []
 }
 
+export async function fetchStoreProducts() {
+  const data = await api('/api/products')
+  if (!Array.isArray(data.products)) throw new Error('Invalid store products response')
+  return data.products
+}
+
 export async function createListingProduct(payload) {
   const data = await api('/api/products', {
     method: 'POST',

@@ -1,6 +1,5 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
-import { BRAND_ROWS } from '../brandsCatalog.js'
-import { fetchSaved } from '../api.js'
+import { fetchSaved, fetchStoreProducts } from '../api.js'
 import {
   buildPersonalizedRows,
   PERSONALIZED_PRODUCTS_PER_ROW,
@@ -111,6 +110,7 @@ function CrawlRow({ row, rowIndex, onOpenProduct }) {
  * signed-in user's search history and likes.
  */
 export default function ProductRows({
+  segment = 'market',
   onOpenProduct,
   clothingType = 'all',
   brandId = '',
@@ -126,6 +126,7 @@ export default function ProductRows({
   const [listings, setListings] = useState([])
   const [savedItems, setSavedItems] = useState([])
   const [status, setStatus] = useState('loading')
+  const [error, setError] = useState('')
 
   useEffect(() => {
     let alive = true
@@ -144,56 +145,53 @@ export default function ProductRows({
 
   useEffect(() => {
     let alive = true
-    if (!isSupabaseConfigured()) {
+    if (segment === 'market' && !isSupabaseConfigured()) {
       setStatus('ready')
       setListings([])
       return undefined
     }
     setStatus('loading')
-    fetchAvailableListings({ limit: 240 })
+    setError('')
+    const request = segment === 'market'
+      ? fetchAvailableListings({ limit: 240 })
+      : fetchStoreProducts()
+    request
       .then((rows) => {
         if (!alive) return
         setListings(rows)
         setStatus('ready')
       })
-      .catch(() => {
+      .catch((err) => {
         if (!alive) return
         setListings([])
+        setError(err.message || 'Could not load products.')
         setStatus('ready')
       })
     return () => {
       alive = false
     }
-  }, [feedRefresh, forYouRefresh])
+  }, [feedRefresh, forYouRefresh, segment])
 
   const filteredCatalog = useMemo(() => {
     const live = Array.isArray(listings) ? listings : []
-    const mock = BRAND_ROWS.flatMap((b) => b.products)
-    const base = live.length ? live : mock
-    const byType = filterListingsByClothingType(base, clothingType)
+    const byType = filterListingsByClothingType(live, clothingType)
     return filterListingsByColor(
       filterListingsByBrand(byType, { brandId, brandName }),
       colorId,
     )
   }, [listings, clothingType, brandId, brandName, colorId])
 
-  const pool = useMemo(() => {
-    // Personalization pool stays broad so likes/search still fill rows even
-    // when a home filter is active; filter only soft-biases via affinity.
-    const live = Array.isArray(listings) ? listings : []
-    const mock = BRAND_ROWS.flatMap((b) => b.products)
-    return live.length ? [...live, ...mock] : mock
-  }, [listings])
-
   const rows = useMemo(() => {
+    if (!filteredCatalog.length) return []
+    const catalogIds = new Set(filteredCatalog.map((product) => product.id))
     const savedIds = [
       ...savedProductIds,
       ...savedItems.map((item) => item?.id).filter(Boolean),
     ]
     return buildPersonalizedRows({
-      catalog: pool.length ? pool : filteredCatalog,
+      catalog: filteredCatalog,
       favoredBrands,
-      savedProducts: savedItems,
+      savedProducts: savedItems.filter((product) => catalogIds.has(product.id)),
       savedProductIds: savedIds,
       clothingSizes,
       brandSizes,
@@ -201,7 +199,6 @@ export default function ProductRows({
       productsPerRow: PERSONALIZED_PRODUCTS_PER_ROW,
     })
   }, [
-    pool,
     filteredCatalog,
     favoredBrands,
     savedItems,
@@ -213,12 +210,15 @@ export default function ProductRows({
 
   if (status === 'loading' && !rows.length) {
     return (
-      <section className="product-feed" aria-label="Personalized product rows" aria-busy="true" />
+      <section className="product-feed" id="home-product-panel" role="tabpanel" aria-labelledby={`home-${segment}-tab`} aria-busy="true">
+        <p role="status">Loading products...</p>
+      </section>
     )
   }
 
   return (
-    <section className="product-feed" aria-label="Personalized product rows">
+    <section className="product-feed" id="home-product-panel" role="tabpanel" aria-labelledby={`home-${segment}-tab`}>
+      {error ? <p role="alert">{error}</p> : !rows.length && <p role="status">No {segment === 'market' ? 'Market' : 'Store'} products found.</p>}
       {rows.map((row, rowIndex) => (
         <CrawlRow
           key={row.id}

@@ -9,6 +9,7 @@ import {
   getPublicAccount,
   searchAccounts,
   listProductsForAccount,
+  listProducts,
   getProduct,
   createProduct,
   updateProduct,
@@ -430,6 +431,11 @@ const server = http.createServer(async (req, res) => {
 
     if (req.method === 'GET' && pathname === '/api/accounts') {
       send(res, 200, { accounts: await searchAccounts(url.searchParams.get('q')) })
+      return
+    }
+
+    if (req.method === 'GET' && pathname === '/api/products') {
+      send(res, 200, { products: await listProducts({ status: 'active', segment: 'store' }) })
       return
     }
 
