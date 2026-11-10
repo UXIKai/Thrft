@@ -38,6 +38,17 @@
   gap: 12px;
 }
 
+.product-detail-format-toggle {
+  position: absolute;
+  top: max(16px, env(safe-area-inset-top, 0px));
+  left: max(18px, env(safe-area-inset-left, 0px));
+  z-index: 3;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 8px;
+  color: inherit;
+}
+
 .product-store-size-content {
   text-align: center;
   color: light-dark(#111, #fff);

@@ -172,7 +172,6 @@ export default function ProductDetail({
           {numericSizes ? <button type="button" className="is-bare" aria-label={`Size metric ${sizeMetric}; switch to ${sizeMetric === 'EN' ? 'EU' : 'EN'}`} onClick={() => setSizeMetric(sizeMetric === 'EN' ? 'EU' : 'EN')}>{sizeMetric}</button> : <span />}
           <h2>Select size</h2>
           <div className="product-store-size-actions">
-            {(!numericSizes || canShowLetters) && <button type="button" className="is-bare" aria-label={numericSizes ? 'Show letter sizes' : 'Show numeric sizes'} onClick={() => setSizeFormat(numericSizes ? 'letters' : 'numbers')}>{numericSizes ? 'Aa' : '123'}</button>}
             <button type="button" className="is-bare" aria-label="Close size selection" onClick={() => setSizing(false)}>×</button>
           </div>
         </header>
@@ -300,6 +299,16 @@ export default function ProductDetail({
       aria-modal="true"
       aria-label={name}
     >
+      {sizing && !isMarket && (!numericSizes || canShowLetters) && (
+        <button
+          type="button"
+          className="product-detail-format-toggle is-bare"
+          aria-label={numericSizes ? 'Show letter sizes' : 'Show numeric sizes'}
+          onClick={() => setSizeFormat(numericSizes ? 'letters' : 'numbers')}
+        >
+          {numericSizes ? 'Aa' : '123'}
+        </button>
+      )}
       <header className="glass-overlay-top">
         <button
           type="button"

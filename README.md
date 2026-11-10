@@ -30,7 +30,7 @@ Wire real profiles later by setting `avatarUrl` (and labels) on entries in `src/
 
 ## Layout & motion
 
-The inline Store size header shows only the current EN or EU metric in numeric mode. Its right-side action reads `123` while displaying letters and `Aa` while displaying numbers; EN/EU is hidden in letter mode. Letter switching is available when equivalent letter labels exist (footwear without letter equivalents stays numeric). General apparel equivalents use a chest-size chart, with product-specific conversions taking precedence.
+The inline Store size header shows only the current EN or EU metric in numeric mode. The page's top-left action reads `123` while displaying letters and `Aa` while displaying numbers; EN/EU is hidden in letter mode. Letter switching is available when equivalent letter labels exist (footwear without letter equivalents stays numeric). General apparel equivalents use a chest-size chart, with product-specific conversions taking precedence.
 
 Store plus buttons expand an inline Select Size panel beneath the product, keeping its photo, title, and price visible, with an EN/EU display toggle and Information view for description and materials. Product `sizeConversions` override the general footwear chart; unconverted labels stay unchanged. Bag selections retain the original size value. Materials are shown only when supplied, otherwise explicitly marked unavailable.
 
