@@ -170,15 +170,7 @@ export default function ProductDetail({
       <section className="product-store-size-panel" aria-label="Select size">
         <header className="product-store-size-header">
           {numericSizes ? <button type="button" className="is-bare" aria-label={`Size metric ${sizeMetric}; switch to ${sizeMetric === 'EN' ? 'EU' : 'EN'}`} onClick={() => setSizeMetric(sizeMetric === 'EN' ? 'EU' : 'EN')}>{sizeMetric}</button> : <span />}
-          <button
-            type="button"
-            className="product-detail-size-close is-bare"
-            aria-label="Close size selection"
-            aria-expanded="true"
-            onClick={() => setSizing(false)}
-          >
-            <PlusIcon />
-          </button>
+          <span />
           <div className="product-store-size-actions">
           </div>
         </header>
@@ -355,7 +347,6 @@ export default function ProductDetail({
           </div>
         )}
         {!isMarket && <p className="product-detail-price">{product.price}</p>}
-        {sizePanel}
         {isMarket ? (
           <button
             type="button"
@@ -366,17 +357,16 @@ export default function ProductDetail({
           >
             {added ? <DoneCheckIcon /> : <PlusIcon />}
           </button>
-        ) : !sizing && <div
-          className={`product-detail-buy${added ? ' is-added' : ''}`}
-          hidden={sizing}
+        ) : <div
+          className={`product-detail-buy${added && !sizing ? ' is-added' : ''}`}
         >
           <button
             type="button"
-            className="product-detail-add"
-            aria-label="Choose amount"
+            className={`product-detail-add${sizing ? ' is-open' : ''}`}
+            aria-label={sizing ? 'Close size selection' : 'Choose amount'}
             aria-expanded={sizing}
-            tabIndex={added ? -1 : 0}
-            onClick={start}
+            tabIndex={added && !sizing ? -1 : 0}
+            onClick={() => sizing ? setSizing(false) : start()}
           >
             <PlusIcon />
           </button>
@@ -384,19 +374,19 @@ export default function ProductDetail({
             type="button"
             className="product-detail-step product-detail-minus is-bare"
             aria-label="Remove one"
-            tabIndex={added ? 0 : -1}
+            tabIndex={added && !sizing ? 0 : -1}
             onClick={() => step(qty - 1)}
           >
             <svg viewBox="0 0 24 24" aria-hidden>
               <path fill="currentColor" d="M5 11h14v2H5z" />
             </svg>
           </button>
-          <div className="product-detail-stepper" aria-hidden={!added}>
+          <div className="product-detail-stepper" aria-hidden={!added || sizing}>
             <button
               type="button"
               className="product-detail-qty is-bare"
               aria-label={`View ${qty} selected products`}
-              tabIndex={added ? 0 : -1}
+              tabIndex={added && !sizing ? 0 : -1}
               onClick={() => setQuantityOpen(true)}
             >
               {qty}
@@ -406,7 +396,7 @@ export default function ProductDetail({
             type="button"
             className="product-detail-step product-detail-plus-btn is-bare"
             aria-label="Add one"
-            tabIndex={added ? 0 : -1}
+            tabIndex={added && !sizing ? 0 : -1}
             onClick={start}
           >
             <PlusIcon />
@@ -415,7 +405,7 @@ export default function ProductDetail({
             type="button"
             className="product-detail-step product-detail-confirm is-bare"
             aria-label="Done, return to previous page"
-            tabIndex={added ? 0 : -1}
+            tabIndex={added && !sizing ? 0 : -1}
             onClick={onClose}
           >
             <svg viewBox="0 0 24 24" aria-hidden>
@@ -423,6 +413,7 @@ export default function ProductDetail({
             </svg>
           </button>
         </div>}
+        {sizePanel}
       </div>
     </div>,
     stageEl,
