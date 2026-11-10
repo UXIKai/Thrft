@@ -1894,10 +1894,12 @@ html body .tab-bar.is-pressed .tab-pill::before {
 .home-segment-tab {
   display: flex;
   align-items: center;
+  flex-direction: column;
   justify-content: center;
-  gap: 10px;
-  min-height: 56px;
+  gap: 4px;
+  min-height: 64px;
   min-width: 0;
+  padding: 6px 0;
   border-bottom: 2px solid transparent;
   color: light-dark(rgba(0, 0, 0, 0.5), rgba(255, 255, 255, 0.5));
   font-weight: 700;
@@ -1909,6 +1911,14 @@ html body .tab-bar.is-pressed .tab-pill::before {
 }
 
 .home-segment-tab svg {
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
+}
+
+.home-segment-tab span {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-transform: uppercase;
 }

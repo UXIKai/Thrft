@@ -549,20 +549,21 @@ export default function App() {
                   id={`home-${segment}-tab`}
                   aria-controls="home-product-panel"
                   aria-selected={homeSegment === segment}
-                  aria-label={segment === 'market' ? 'Market' : 'Store'}
                   className={`home-segment-tab is-bare${homeSegment === segment ? ' is-active' : ''}`}
                   onClick={() => setHomeSegment(segment)}
                 >
                   {segment === 'market' ? (
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                      <path d="M3 10h18L18 4H6l-3 6Zm2 0v10m14-10v10M3 20h18M8 10V4m8 6V4M5 15h14" />
-                      <path d="M8 15v5m8-5v5" />
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <path fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" d="M7 10 10 3.5M17 10l-3-6.5" />
+                      <path fill="currentColor" fillRule="evenodd" d="M2.5 9h19a1 1 0 0 1 1 1v1.2a1 1 0 0 1-1 1h-.3l-1.6 8.1a1.6 1.6 0 0 1-1.6 1.3H6a1.6 1.6 0 0 1-1.6-1.3l-1.6-8.1h-.3a1 1 0 0 1-1-1V10a1 1 0 0 1 1-1Zm5.3 5a.9.9 0 0 0-.9.9v3.4a.9.9 0 0 0 1.8 0v-3.4a.9.9 0 0 0-.9-.9Zm4.2 0a.9.9 0 0 0-.9.9v3.4a.9.9 0 0 0 1.8 0v-3.4a.9.9 0 0 0-.9-.9Zm4.2 0a.9.9 0 0 0-.9.9v3.4a.9.9 0 0 0 1.8 0v-3.4a.9.9 0 0 0-.9-.9Z" />
                     </svg>
                   ) : (
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                      <path d="M4 10v10h16V10M3 10l2-6h14l2 6M3 10a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 6 0M9 10V4m6 6V4M10 20v-6h4v6" />
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <path fill="currentColor" d="M4 2.5h3.5L6.4 9.6a2.2 2.2 0 0 1-4.4 0Zm4.2 0h3.5l-.1 7.1a2.2 2.2 0 0 1-4.4 0Zm4.1 0h3.5l1 7.1a2.2 2.2 0 0 1-4.4 0Zm4.2 0H20l2 7.1a2.2 2.2 0 0 1-4.4 0Z" />
+                      <path fill="currentColor" fillRule="evenodd" d="M3 13.4c1 .4 2.1.3 3-.3 1 .6 2.2.6 3.2 0 1 .6 2.2.6 3.2 0 1 .6 2.2.6 3.2 0 1 .6 2.2.6 3.2 0 .9.6 2 .7 3 .3v8.1H3v-8.1Zm3 2.4v5.7h4.6v-5.7H6Zm7.4 0v3.6H18v-3.6h-4.6Z" />
                     </svg>
                   )}
+                  <span>{segment === 'market' ? 'Market' : 'Store'}</span>
                 </button>
               ))}
             </div>
