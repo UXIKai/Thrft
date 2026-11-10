@@ -1697,7 +1697,22 @@ function BrandGlobeView({
                       {word}
                     </span>
                   ))
-                : focusLabel}
+                : focusLabel || (centerSearchAvailable && (
+                  <svg
+                    className="brand-globe-center-search-icon"
+                    viewBox="0 0 24 24"
+                    width="28"
+                    height="28"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    aria-hidden="true"
+                  >
+                    <circle cx="10.5" cy="10.5" r="6.5" />
+                    <path d="m15.5 15.5 5 5" />
+                  </svg>
+                ))}
             </span>
           </button>
         </div>
