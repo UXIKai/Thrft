@@ -2,6 +2,7 @@ import { createPortal } from 'react-dom'
 import { useEffect, useState } from 'react'
 import { useBag } from '../BagContext.jsx'
 import { LETTER_SIZES } from '../sizeOptions.js'
+import { productSizeOptions } from '../productSizes.js'
 import './GlassOverlay.css'
 import './ProductDetail.css'
 
@@ -67,14 +68,27 @@ export default function ProductDetail({
   }, [])
 
   const [sizing, setSizing] = useState(false)
+  const [sizeMetric, setSizeMetric] = useState('EN')
+  const [showInformation, setShowInformation] = useState(false)
   const [quantityOpen, setQuantityOpen] = useState(false)
   const [editingSizeIndex, setEditingSizeIndex] = useState(null)
   const [draftSize, setDraftSize] = useState('')
 
   useEffect(() => {
+    if (!sizing) return undefined
+    const dismiss = (event) => {
+      if (event.key === 'Escape') setSizing(false)
+    }
+    document.addEventListener('keydown', dismiss)
+    return () => document.removeEventListener('keydown', dismiss)
+  }, [sizing])
+
+  useEffect(() => {
     setSizing(false)
     setQuantityOpen(false)
     setEditingSizeIndex(null)
+    setShowInformation(false)
+    setSizeMetric('EN')
   }, [product?.id])
 
   useEffect(() => {
@@ -92,6 +106,7 @@ export default function ProductDetail({
       if (!added) addItem(product)
       return
     }
+    setShowInformation(false)
     setSizing(true)
   }
 
@@ -144,6 +159,46 @@ export default function ProductDetail({
   const displayTitle = hasBrandPrefix
     ? title.slice(brand.length).replace(/^[\s:|-]+/, '')
     : title
+
+  if (sizing && !isMarket) {
+    const options = productSizeOptions(product)
+    return createPortal(
+      <div className="glass-overlay product-detail product-store-size-panel" role="dialog" aria-modal="true" aria-label="Select size">
+        <header className="product-store-size-header">
+          <button type="button" className="is-bare" aria-label={`Size metric ${sizeMetric}; switch to ${sizeMetric === 'EN' ? 'EU' : 'EN'}`} onClick={() => setSizeMetric(sizeMetric === 'EN' ? 'EU' : 'EN')}>
+            <span aria-hidden="true">{sizeMetric === 'EN' ? <><strong>EN</strong>/EU</> : <>EN/<strong>EU</strong></>}</span>
+          </button>
+          <h1>Select size</h1>
+          <button type="button" className="is-bare" aria-label="Close size selection" onClick={() => setSizing(false)}>×</button>
+        </header>
+        <div className="glass-overlay-body product-store-size-content">
+          <p className="product-detail-price">{product.price}</p>
+          {showInformation ? (
+            <section className="product-store-information" aria-label="Product information">
+              <h2>{displayTitle || name}</h2>
+              {product.description && <p>{product.description}</p>}
+              <h3>Materials</h3>
+              <p>{Array.isArray(product.materials) ? product.materials.join(', ') : product.materials || 'Materials not provided.'}</p>
+              <button type="button" className="is-bare" onClick={() => setShowInformation(false)}>Select size</button>
+            </section>
+          ) : (
+            <>
+              <div className="product-store-size-grid" role="group" aria-label={`${sizeMetric} sizes`}>
+                {options.map((option) => (
+                  <button type="button" className="product-detail-size is-bare" key={option.value} onClick={() => pickSize(option.value)}>
+                    {sizeMetric === 'EU' ? option.eu : option.en}
+                  </button>
+                ))}
+              </div>
+              {sizeMetric === 'EU' && <p className="product-store-size-note">Conversions vary by brand. Sizes without a conversion retain their original label.</p>}
+              <button type="button" className="product-store-info-button is-bare" onClick={() => setShowInformation(true)}>Information</button>
+            </>
+          )}
+        </div>
+      </div>,
+      stageEl,
+    )
+  }
 
   if (editingSizeIndex !== null) {
     return createPortal(

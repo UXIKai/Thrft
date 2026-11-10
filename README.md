@@ -30,6 +30,8 @@ Wire real profiles later by setting `avatarUrl` (and labels) on entries in `src/
 
 ## Layout & motion
 
+Store plus buttons open a dedicated Select Size panel with an EN/EU display toggle and Information view for description and materials. Product `sizeConversions` override the general footwear chart; unconverted labels stay unchanged. Bag selections retain the original size value. Materials are shown only when supplied, otherwise explicitly marked unavailable.
+
 Market product details show the seller's title, brand, category, price, condition, and description beneath the photo, without Store size/quantity selectors. Brand/category values have no parenthetical labels and are not added to feed tiles. Market items add directly to the bag; Store sizing is unchanged.
 
 Brand orbital tiles are circular, with uncropped logo images sized to fit completely inside them. The selected brand's center circle automatically matches solid square source-logo backgrounds by inspecting opaque, similarly colored image corners. Logo images use a same-origin proxy so pixel inspection works. Transparent/non-square marks, the empty search circle, and failed logo loads retain white backgrounds.
