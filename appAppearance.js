@@ -80,13 +80,35 @@ export function readTheme() {
   }
 }
 
+function relativeLuminance(rgb) {
+  const [r, g, b] = rgb.map((channel) => {
+    const c = channel / 255
+    return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4
+  })
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b
+}
+
+/** Bright matched backgrounds get black text; dark ones get white. Otherwise the chosen theme. */
+function syncColorScheme() {
+  const root = document.documentElement
+  let scheme = currentTheme
+  if (matchBackgroundColor) {
+    const color = resolveBgColor(currentBgColorId)
+    if (color.id !== 'none') {
+      // WCAG: black text has more contrast than white above ~0.179 luminance.
+      scheme = relativeLuminance(color.rgb) > 0.179 ? 'light' : 'dark'
+    }
+  }
+  root.style.colorScheme = scheme
+  root.dataset.scheme = scheme
+}
+
 export function applyTheme(theme) {
   if (theme !== 'dark' && theme !== 'light') {
     throw new Error('Display mode must be dark or light.')
   }
   currentTheme = theme
   document.documentElement.dataset.theme = theme
-  document.documentElement.style.colorScheme = theme
   applyGlassTokens()
   applyBgAtmosphereTokens()
   try {
@@ -476,6 +498,7 @@ export function applyBgAtmosphereTokens() {
   root.style.setProperty('--atmosphere-base-rgb', voidRgb.join(', '))
   // Don't paint Settings panes — that looked like Containers stealing Background.
   root.style.setProperty('--settings-wash', 'transparent')
+  syncColorScheme()
 
   if (hasColor) {
     const effectA = matchBackgroundColor ? base.map((channel) => Math.round(channel * 0.6)) : liftRgb(base, 0.58)
