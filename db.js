@@ -432,15 +432,16 @@ export async function listProductsForAccount(
 }
 
 /** Recent products across accounts (For You ranking — no mock catalog). */
-export async function listProducts({ limit = 200, status, segment } = {}) {
+export async function listProducts({ limit = 200, status, segment, brand } = {}) {
   const where = {}
   if (status) where.status = status
   if (segment) where.segment = segment
+  if (brand) where.brand = { equals: brand, mode: 'insensitive' }
   const rows = await prisma.product.findMany({
     where,
     include: { account: { select: { username: true, displayName: true } } },
     orderBy: { createdAt: 'desc' },
-    take: Math.min(500, Math.max(1, Number(limit) || 200)),
+    ...(brand ? {} : { take: Math.min(500, Math.max(1, Number(limit) || 200)) }),
   })
   return rows.map(mapProduct)
 }

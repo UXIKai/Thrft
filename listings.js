@@ -247,9 +247,20 @@ export async function fetchMyListings({ limit = 200 } = {}) {
 export async function fetchListingsForBrand({
   brandId = '',
   brandName = '',
-  limit = 80,
 } = {}) {
-  const all = await fetchAvailableListings({ limit: Math.max(limit, 120) })
+  const supabase = await requireClient()
+  const all = []
+  const pageSize = 500
+  for (let offset = 0; ; offset += pageSize) {
+    const query = supabase.from('listings').select('*').eq('status', 'available')
+    const { data, error } = await query
+      .order('created_at', { ascending: false })
+      .order('id', { ascending: false })
+      .range(offset, offset + pageSize - 1)
+    if (error) throw new Error(error.message || 'Could not load brand listings')
+    all.push(...(data || []).map(mapListing))
+    if (!data || data.length < pageSize) break
+  }
   const id = String(brandId || '').toLowerCase()
   const name = String(brandName || '').toLowerCase()
   const filtered = all.filter((item) => {
@@ -259,7 +270,7 @@ export async function fetchListingsForBrand({
     }
     return false
   })
-  return filtered.slice(0, limit)
+  return filtered
 }
 
 /**

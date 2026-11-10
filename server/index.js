@@ -464,7 +464,8 @@ const server = http.createServer(async (req, res) => {
     }
 
     if (req.method === 'GET' && pathname === '/api/products') {
-      send(res, 200, { products: await listProducts({ status: 'active', segment: 'store' }) })
+      const brand = (url.searchParams.get('brand') || '').trim()
+      send(res, 200, { products: await listProducts({ status: 'active', segment: 'store', brand }) })
       return
     }
 

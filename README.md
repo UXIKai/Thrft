@@ -30,6 +30,8 @@ Wire real profiles later by setting `avatarUrl` (and labels) on entries in `src/
 
 ## Layout & motion
 
+Product brand headings open a brand page containing every active catalog product and available marketplace listing for that brand. Catalog queries are brand-filtered without the home-feed cap; marketplace listings are paged through completely before brand matching. Sold/unlisted items and mock Market previews are excluded.
+
 Create → Closet → camera chooser includes a centered plus button between Camera and Gallery. It opens a centered brand wheel; tapping the wheel expands a list with a bottom search field. Continue opens centered P/N Number and O/N Number fields (at least one is required). Matching products offer color choices; selecting one downloads its photo, removes the background with the existing scanner, and saves the cutout and color to Closet.
 
 The closet lookup brand wheel and searchable list show the published website icons for all 106 named built-in brands, retrieved through Google's favicon service using official website domains from `brandLogos.js`. Brand names remain visible and accessible. Other/custom brands have no assumed logo; failed image loads keep the name and log a warning. Logo delivery requires internet access.

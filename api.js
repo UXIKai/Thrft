@@ -330,8 +330,8 @@ export async function fetchMyProducts({ status = '', segment = '' } = {}) {
   return Array.isArray(data.products) ? data.products : []
 }
 
-export async function fetchStoreProducts() {
-  const data = await api('/api/products')
+export async function fetchStoreProducts({ brand = '' } = {}) {
+  const data = await api(`/api/products${brand ? `?${new URLSearchParams({ brand })}` : ''}`)
   if (!Array.isArray(data.products)) throw new Error('Invalid store products response')
   return data.products
 }

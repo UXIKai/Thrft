@@ -2,6 +2,8 @@ import { createPortal } from 'react-dom'
 import { useEffect, useState } from 'react'
 import { fetchListingsForBrand } from '../listings.js'
 import { isSupabaseConfigured } from '../supabase.js'
+import { fetchStoreProducts } from '../api.js'
+import { findBrandById } from '../brandsCatalog.js'
 import './GlassOverlay.css'
 import './BrandProfile.css'
 
@@ -34,19 +36,28 @@ export default function BrandProfile({ brandId, brandName, onClose, onOpenProduc
 
   useEffect(() => {
     let alive = true
-    if (!isSupabaseConfigured()) {
+    setStatus('loading')
+    setProducts([])
+    const resolvedName = brandName || findBrandById(brandId)?.name
+    if (!resolvedName) {
       setStatus('error')
-      setProducts([])
       return undefined
     }
-    setStatus('loading')
-    fetchListingsForBrand({ brandId, brandName })
-      .then((rows) => {
+    Promise.all([
+      fetchStoreProducts({ brand: resolvedName }),
+      isSupabaseConfigured() ? fetchListingsForBrand({ brandId, brandName: resolvedName }) : Promise.resolve([]),
+    ])
+      .then(([store, market]) => {
         if (!alive) return
+        const rows = [
+          ...store.map((product) => ({ ...product, listingSource: 'store' })),
+          ...market.map((product) => ({ ...product, listingSource: 'market' })),
+        ]
         setProducts(rows)
         setStatus(rows.length ? 'ready' : 'empty')
       })
-      .catch(() => {
+      .catch((error) => {
+        console.error('Could not load brand products:', error)
         if (!alive) return
         setProducts([])
         setStatus('error')
@@ -82,7 +93,7 @@ export default function BrandProfile({ brandId, brandName, onClose, onOpenProduc
           </p>
         )}
         {status === 'error' && (
-          <p className="brand-profile-empty" role="status">
+          <p className="brand-profile-empty" role="alert">
             Could not load listings
           </p>
         )}
@@ -93,7 +104,7 @@ export default function BrandProfile({ brandId, brandName, onClose, onOpenProduc
         )}
         <ul className="brand-profile-list">
           {products.map((p) => (
-            <li key={p.id}>
+            <li key={`${p.listingSource}-${p.id}`}>
               <button
                 type="button"
                 className="brand-profile-row"
