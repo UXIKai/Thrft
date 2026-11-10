@@ -1414,3 +1414,19 @@ html body .tab-bar.is-pressed .tab-pill::before {
   content: none;
   display: none;
 }
+
+/* Position and droplet scale are driven by the navigation spring. */
+html body .stage > .tab-bar,
+html body .stage > .tab-bar.is-pressed,
+html body .stage > .tab-bar.is-dragging {
+  transform: translateX(-50%);
+  transition: none;
+}
+
+html body .tab-bar .tab-pill,
+html body .tab-bar.is-pressed .tab-pill,
+html body .tab-bar.is-dragging .tab-pill,
+html body .tab-bar .tab-item .tab-icon {
+  animation: none;
+  transition: none;
+}

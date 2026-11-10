@@ -1,4 +1,5 @@
 import { useLayoutEffect, useRef, useState } from 'react'
+import { stepNavigationSpring } from '../navigationSpring.js'
 
 const MAP_X = "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22256%22%20height%3D%22128%22%20viewBox%3D%220%200%20256%20128%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20x2%3D%221%22%20y1%3D%220%22%20y2%3D%220%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22rgb%28255%2C0%2C0%29%22/%3E%3Cstop%20offset%3D%220.3%22%20stop-color%3D%22rgb%28128%2C0%2C0%29%22/%3E%3Cstop%20offset%3D%220.7%22%20stop-color%3D%22rgb%28128%2C0%2C0%29%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22rgb%280%2C0%2C0%29%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width%3D%22256%22%20height%3D%22128%22%20fill%3D%22url%28%23g%29%22/%3E%3C/svg%3E"
 const MAP_Y = "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22256%22%20height%3D%22128%22%20viewBox%3D%220%200%20256%20128%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20x2%3D%220%22%20y1%3D%220%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22rgb%280%2C255%2C0%29%22/%3E%3Cstop%20offset%3D%220.3%22%20stop-color%3D%22rgb%280%2C128%2C0%29%22/%3E%3Cstop%20offset%3D%220.7%22%20stop-color%3D%22rgb%280%2C128%2C0%29%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22rgb%280%2C0%2C0%29%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width%3D%22256%22%20height%3D%22128%22%20fill%3D%22url%28%23g%29%22/%3E%3C/svg%3E"
@@ -74,7 +75,84 @@ export default function TabBar({ active = 'home', onChange }) {
   const activeIdx = Math.max(0, TABS.findIndex((t) => t.id === active))
   const [dragPos, setDragPos] = useState(null)
   const [pressed, setPressed] = useState(false)
+  const [releaseCount, setReleaseCount] = useState(0)
+  const motionRef = useRef({
+    position: { value: activeIdx, velocity: 0 },
+    x: { value: 1, velocity: 0 },
+    y: { value: 1, velocity: 0 },
+    icon: { value: 1, velocity: 0 },
+    activeIdx,
+    releaseCount: 0,
+  })
   const [lens, setLens] = useState({ w: 104, h: 56 })
+
+  useLayoutEffect(() => {
+    const nav = navRef.current
+    const bubble = nav.querySelector('.tab-pill')
+    const icons = [...nav.querySelectorAll('.tab-item .tab-icon')]
+    const motion = motionRef.current
+    const released = motion.releaseCount !== releaseCount
+    const changed = motion.activeIdx !== activeIdx
+    motion.activeIdx = activeIdx
+    motion.releaseCount = releaseCount
+    const target = dragPos ?? activeIdx
+    const media = window.matchMedia('(prefers-reduced-motion: reduce)')
+    let frame
+    let lastTime = performance.now()
+
+    if (!pressed && (released || changed) && !media.matches) {
+      motion.x = { value: 1.12, velocity: 0 }
+      motion.y = { value: 0.94, velocity: 0 }
+      motion.icon = { value: 1.15, velocity: 0 }
+    }
+
+    const paint = () => {
+      nav.style.setProperty('--tab-i', motion.position.value)
+      bubble.style.transform = `scale(${motion.x.value}, ${motion.y.value})`
+      icons.forEach((icon, index) => {
+        icon.style.transform = `scale(${index === activeIdx ? motion.icon.value : 1})`
+      })
+    }
+    const finish = () => {
+      motion.position = { value: target, velocity: 0 }
+      motion.x = { value: pressed && !media.matches ? 0.92 : 1, velocity: 0 }
+      motion.y = { ...motion.x }
+      motion.icon = { value: 1, velocity: 0 }
+      paint()
+    }
+    const tick = (time) => {
+      if (media.matches) {
+        finish()
+        return
+      }
+      const dt = Math.min((time - lastTime) / 1000, 0.032)
+      lastTime = time
+      const targets = { position: target, x: pressed ? 0.92 : 1, y: pressed ? 0.92 : 1, icon: 1 }
+      let moving = false
+      for (const key of Object.keys(targets)) {
+        motion[key] = key === 'position' && dragPos !== null
+          ? { value: target, velocity: 0 }
+          : stepNavigationSpring(motion[key].value, motion[key].velocity, targets[key], dt)
+        moving ||= Math.abs(motion[key].value - targets[key]) > 0.0001 || Math.abs(motion[key].velocity) > 0.001
+      }
+      paint()
+      if (moving) frame = requestAnimationFrame(tick)
+      else finish()
+    }
+    const onReducedMotion = () => {
+      if (media.matches) {
+        cancelAnimationFrame(frame)
+        finish()
+      }
+    }
+    media.addEventListener('change', onReducedMotion)
+    if (media.matches) finish()
+    else frame = requestAnimationFrame(tick)
+    return () => {
+      cancelAnimationFrame(frame)
+      media.removeEventListener('change', onReducedMotion)
+    }
+  }, [activeIdx, dragPos, pressed, releaseCount])
 
   // The bubble's refraction map needs the lens size in pixels.
   useLayoutEffect(() => {
@@ -116,16 +194,16 @@ export default function TabBar({ active = 'home', onChange }) {
     const idx = Math.round(posFromEvent(e))
     setDragPos(null)
     setPressed(false)
+    if (commit) setReleaseCount((count) => count + 1)
     if (commit && TABS[idx] && TABS[idx].id !== active) onChange?.(TABS[idx].id)
   }
 
-  const pos = dragPos ?? activeIdx
   return (
     <nav
       ref={navRef}
       className={`tab-bar${pressed ? ' is-pressed' : ''}${dragPos !== null ? ' is-dragging' : ''}`}
       aria-label="Main"
-      style={{ '--tab-i': pos, touchAction: 'none' }}
+      style={{ touchAction: 'none' }}
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onPointerUp={(e) => endDrag(e, true)}
@@ -169,8 +247,10 @@ export default function TabBar({ active = 'home', onChange }) {
             className={`tab-item ${selected ? 'is-active' : ''}`}
             aria-current={selected ? 'page' : undefined}
             aria-label={tab.label}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') onChange?.(tab.id)
+            onClick={(e) => {
+              if (e.detail !== 0) return
+              setReleaseCount((count) => count + 1)
+              onChange?.(tab.id)
             }}
           >
             {tab.icon}
