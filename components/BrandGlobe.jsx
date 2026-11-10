@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import StageSlot from './StageSlot.jsx'
 import { colorHex } from '../colorsCatalog.js'
 import { colorSchemeForHex } from '../appAppearance.js'
+import BrandLogo from './BrandLogo.jsx'
 import './BrandGlobe.css'
 
 function GlobeBackIcon() {
@@ -574,6 +575,7 @@ function BrandGlobeView({
   snug = false,
   /** Color picker — tint the globe with the color under the seat. */
   previewColors = false,
+  showBrandLogos = title === 'Brands',
 }) {
   const [focusId, setFocusId] = useState(null)
   const [brushing, setBrushing] = useState(false)
@@ -1470,7 +1472,9 @@ function BrandGlobeView({
                       zIndex: 20 + (8 - (ring || 0)),
                     }}
                   >
-                    <span className="brand-globe-label-text">{display}</span>
+                    <span className="brand-globe-label-text">
+                      {showBrandLogos ? <BrandLogo name={brand.label} logoOnly /> : display}
+                    </span>
                   </span>
                 )
               },
@@ -1508,7 +1512,9 @@ function BrandGlobeView({
               key={focusBrand?.id || 'empty'}
               style={{ fontSize: `${focusFitPx}px` }}
             >
-              {focusWords.length > 1
+              {showBrandLogos && focusBrand
+                ? <BrandLogo name={focusBrand.label} logoOnly />
+                : focusWords.length > 1
                 ? focusWords.map((word, index) => (
                     <span
                       key={`${word}-${index}`}

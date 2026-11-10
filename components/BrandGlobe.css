@@ -745,3 +745,33 @@ html[data-bg-image='none'] .brand-globe.is-color-picker .brand-globe-stage .bran
   color: light-dark(#111, #fff);
   font-size: 0.85rem;
 }
+
+.brand-globe .brand-logo-label.is-logo-only {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  min-height: 48px;
+  gap: 0;
+  text-align: center;
+  font-size: 0.8rem;
+  line-height: 1.2;
+  white-space: normal;
+}
+
+.brand-globe .brand-logo-label.is-logo-only .brand-logo {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.brand-globe-focus .brand-logo-label.is-logo-only {
+  width: 80px;
+  min-height: 80px;
+}
+
+.brand-globe-focus .brand-logo-label.is-logo-only .brand-logo {
+  width: 72px;
+  height: 72px;
+}
