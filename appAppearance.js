@@ -17,6 +17,33 @@ export const CUSTOM_BG_COLOR_KEY = 'thrft-bg-color-hex-v1'
 export const BG_IMAGE_KEY = 'thrft-bg-image-v2'
 const BG_MATCH_KEY = 'thrft-bg-match-color-v1'
 export const THEME_KEY = 'thrft-theme-v1'
+export const BRIGHTNESS_KEY = 'thrft-brightness-v1'
+export const DEFAULT_BRIGHTNESS = 100
+
+export function readBrightness() {
+  try {
+    const raw = localStorage.getItem(BRIGHTNESS_KEY)
+    if (raw === null) return DEFAULT_BRIGHTNESS
+    const value = Number(raw)
+    return Number.isFinite(value) ? Math.min(100, Math.max(0, Math.round(value))) : DEFAULT_BRIGHTNESS
+  } catch (error) {
+    console.warn('Unable to read app brightness.', error)
+    return DEFAULT_BRIGHTNESS
+  }
+}
+
+export function applyBrightness(value) {
+  const number = Number(value)
+  if (!Number.isFinite(number)) throw new Error('Brightness must be a number.')
+  const brightness = Math.min(100, Math.max(0, Math.round(number)))
+  document.documentElement.style.setProperty('--app-dim-opacity', String((1 - brightness / 100) * 0.65))
+  try {
+    localStorage.setItem(BRIGHTNESS_KEY, String(brightness))
+  } catch (error) {
+    console.warn('Unable to save app brightness.', error)
+  }
+  return brightness
+}
 export const UI_SCALE_KEY = 'thrft-ui-scale-v1'
 export const DEFAULT_UI_SCALE = 100
 export const BG_PHOTO_KEY = 'thrft-bg-photo-v1'
@@ -879,6 +906,7 @@ export function initAppearance() {
   document.documentElement.style.colorScheme = currentTheme
   applyUiScale(readUiScale())
   applyContainerEdge(readContainerEdge())
+  applyBrightness(readBrightness())
   readPalette()
   readCustomColorHex()
   readCustomBgColorHex()

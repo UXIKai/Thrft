@@ -3,6 +3,8 @@ import { createPortal } from 'react-dom'
 import {
   applyTheme,
   readTheme,
+  applyBrightness,
+  readBrightness,
   applyAppColor,
   applyBackgroundImage,
   readBackgroundImage,
@@ -787,6 +789,7 @@ export default function SettingsScreen({
   const [bgEffectOn, setBgEffectOn] = useState(() => readBackgroundImage() === 'atmosphere')
   const [uiScale, setUiScale] = useState(() => readUiScale())
   const [containerEdge, setContainerEdge] = useState(() => readContainerEdge())
+  const [brightness, setBrightness] = useState(() => readBrightness())
   const [barTransparency, setBarTransparency] = useState(() =>
     readBarTransparency(),
   )
@@ -1754,6 +1757,27 @@ export default function SettingsScreen({
                   <div className="settings-slider-ends">
                     <span>Short</span>
                     <span>Tall</span>
+                  </div>
+                </div>
+                <div
+                  className="settings-glass-slider"
+                  style={{ '--pull': brightness / 100 }}
+                >
+                  <input
+                    className="settings-slider"
+                    type="range"
+                    min={0}
+                    max={100}
+                    value={brightness}
+                    onChange={(event) => {
+                      const next = applyBrightness(Number(event.target.value))
+                      setBrightness(next)
+                    }}
+                    aria-label="App brightness from Dim to Bright"
+                  />
+                  <div className="settings-slider-ends">
+                    <span>Dim</span>
+                    <span>Bright</span>
                   </div>
                 </div>
           </div>
