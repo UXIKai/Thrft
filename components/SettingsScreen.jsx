@@ -1845,21 +1845,6 @@ export default function SettingsScreen({
         <h1 className="settings-title">Settings</h1>
         <span className="settings-top-spacer" aria-hidden />
       </header>
-        <Section label="Accounts">
-          <div className="settings-account-active">
-            <span className="settings-account-avatar" aria-hidden>
-              {initialsFromName(displayName)}
-            </span>
-            <span className="settings-row-copy">
-              <span className="settings-row-title">{displayName}</span>
-              {email ? (
-                <span className="settings-row-sub">{email}</span>
-              ) : null}
-            </span>
-            <span className="settings-pill is-active">Active</span>
-          </div>
-        </Section>
-
         <Section label="Account Settings" className="is-profile-controls">
           <Row
             icon={<ProfileIcon />}
@@ -1878,6 +1863,21 @@ export default function SettingsScreen({
               <path d="M12 4a8 8 0 0 0 0 16Z" fill="currentColor" />
             </svg>
           </button>
+        </Section>
+
+        <Section label="Accounts">
+          <div className="settings-account-active">
+            <span className="settings-account-avatar" aria-hidden>
+              {initialsFromName(displayName)}
+            </span>
+            <span className="settings-row-copy">
+              <span className="settings-row-title">{displayName}</span>
+              {email ? (
+                <span className="settings-row-sub">{email}</span>
+              ) : null}
+            </span>
+            <span className="settings-pill is-active">Active</span>
+          </div>
         </Section>
 
         <Section label="Store API">
