@@ -37,7 +37,7 @@ Home color search previews the chosen color behind the card, starting white for 
 The product quantity number opens a selected-products page with the quantity at the top and each unit's selected size beneath its product name. Clicking a product container opens a screen showing only centered sizes; tapping a size only selects it; the bottom check mark saves it for that unit (quantity unchanged) and returns to the list. Tap outside the sizes or press Escape to cancel. Both pages close with a check mark at the bottom center (no top back button). Size selections persist in the bag.
 
 ### Profile settings
-- The profile-photo chooser uses one camera icon to open the system photo picker, with a centered close X at the bottom of the screen.
+- Tapping the profile photo pops it up full-size with a camera icon centered at the bottom that opens the system photo picker; tap outside or press Escape to close. There is no camera badge on the avatar.
 - Garment sizes use equal-sized buttons in centered rows, with the add-size control centered below them.
 - The settings gear beside the profile name opens Settings & privacy directly, without an intermediate popup.
 - A half-moon button beside the narrower Profile control switches between dark (white on black) and light (black on white) display modes. The choice persists on this device. Neutral UI colors follow the mode without inverting photos, brand colors, or the always-black color-selection centers.

@@ -53,21 +53,6 @@ function CameraBadge() {
   )
 }
 
-function TakePhotoIcon() {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden>
-      <path
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        strokeLinejoin="round"
-        d="M9 6.2h6l1.1 1.4H18a1.6 1.6 0 0 1 1.6 1.6v8A1.6 1.6 0 0 1 18 18.8H6A1.6 1.6 0 0 1 4.4 17.2v-8A1.6 1.6 0 0 1 6 7.6h1.9L9 6.2z"
-      />
-      <circle cx="12" cy="13" r="3.1" fill="none" stroke="currentColor" strokeWidth="1.6" />
-    </svg>
-  )
-}
-
 function GalleryIcon() {
   return (
     <svg viewBox="0 0 24 24" aria-hidden>
@@ -656,6 +641,14 @@ export default function ProfileScreen({
     Array.isArray(userProfile?.suppliers) ? userProfile.suppliers : [],
   )
   const [photoSheetOpen, setPhotoSheetOpen] = useState(false)
+  useEffect(() => {
+    if (!photoSheetOpen) return undefined
+    const onKey = (event) => {
+      if (event.key === 'Escape') setPhotoSheetOpen(false)
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [photoSheetOpen])
   const [nameSheetOpen, setNameSheetOpen] = useState(false)
   const [nameDraft, setNameDraft] = useState('')
   const [accountEmailDraft, setAccountEmailDraft] = useState('')
@@ -1148,23 +1141,17 @@ export default function ProfileScreen({
 
       <section className="profile-identity" aria-label="Account">
         <div className="pf-user-avatar-wrap">
-          <div
-            className={`pf-user-avatar${avatarUrl ? ' has-photo' : ''}`}
-            aria-hidden
+          <button
+            type="button"
+            className={`pf-user-avatar is-bare${avatarUrl ? ' has-photo' : ''}`}
+            aria-label="View profile photo"
+            onClick={() => setPhotoSheetOpen(true)}
           >
             {avatarUrl ? (
               <img className="pf-user-avatar-img" src={avatarUrl} alt="" />
             ) : (
               initialsFromName(userProfile?.displayName)
             )}
-          </div>
-          <button
-            type="button"
-            className="profile-cam"
-            aria-label="Change photo"
-            onClick={() => setPhotoSheetOpen(true)}
-          >
-            <CameraBadge />
           </button>
           <input
             ref={cameraInputRef}
@@ -2504,41 +2491,29 @@ export default function ProfileScreen({
         photoSheetOpen &&
         createPortal(
           <div
-            className="glass-sheet profile-photo-sheet"
+            className="profile-photo-view"
             role="dialog"
             aria-modal="true"
-            aria-label="Change photo"
+            aria-label="Profile photo"
+            onClick={(event) => {
+              if (event.target === event.currentTarget) setPhotoSheetOpen(false)
+            }}
           >
+            <div className={`profile-photo-view-avatar${avatarUrl ? ' has-photo' : ''}`}>
+              {avatarUrl ? (
+                <img src={avatarUrl} alt="Profile photo" />
+              ) : (
+                initialsFromName(userProfile?.displayName)
+              )}
+            </div>
             <button
               type="button"
-              className="glass-sheet-scrim"
-              aria-label="Dismiss"
-              onClick={() => setPhotoSheetOpen(false)}
-            />
-            <div className="glass-sheet-card">
-              <div className="glass-sheet-head profile-photo-sheet-head">
-                <button
-                  type="button"
-                  className="glass-overlay-icon-btn"
-                  aria-label="Close"
-                  onClick={() => setPhotoSheetOpen(false)}
-                >
-                  <CloseIcon />
-                </button>
-              </div>
-              <div className="profile-photo-options">
-                <button
-                  type="button"
-                  className="profile-photo-option"
-                  aria-label="Choose profile photo"
-                  onClick={() => galleryInputRef.current?.click()}
-                >
-                  <span className="profile-photo-option-ico">
-                    <TakePhotoIcon />
-                  </span>
-                </button>
-              </div>
-            </div>
+              className="profile-photo-view-cam is-bare"
+              aria-label="Change profile photo"
+              onClick={() => galleryInputRef.current?.click()}
+            >
+              <CameraBadge />
+            </button>
           </div>,
           stageEl,
         )}
