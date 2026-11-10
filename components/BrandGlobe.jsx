@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import StageSlot from './StageSlot.jsx'
 import { colorHex } from '../colorsCatalog.js'
+import { colorSchemeForHex } from '../appAppearance.js'
 import './BrandGlobe.css'
 
 function GlobeBackIcon() {
@@ -1331,11 +1332,14 @@ function BrandGlobeView({
   const seatTint =
     previewColors ? (focusBrand && colorHex(focusBrand.id)) || '#ffffff' : null
   const seatRgb = seatTint?.match(/[a-f0-9]{2}/gi)?.map((part) => parseInt(part, 16)).join(', ')
+  const previewScheme = seatTint ? colorSchemeForHex(seatTint) : null
   const originStyle = {
     ...(origin && typeof origin.dx === 'number'
       ? { '--globe-dx': `${origin.dx}px`, '--globe-dy': `${origin.dy}px` }
       : null),
     ...(seatTint ? {
+      colorScheme: previewScheme,
+      '--globe-seat-background': previewScheme === 'light' ? '#000000' : '#ffffff',
       '--globe-tint': seatTint,
       '--atmosphere-base': seatTint,
       '--atmosphere-base-rgb': seatRgb,

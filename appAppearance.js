@@ -88,6 +88,12 @@ function relativeLuminance(rgb) {
   return 0.2126 * r + 0.7152 * g + 0.0722 * b
 }
 
+export function colorSchemeForHex(hex) {
+  const rgb = hexToRgb(hex)
+  if (!rgb) throw new Error('Contrast color must be a six-digit hex color.')
+  return relativeLuminance(rgb) > 0.179 ? 'light' : 'dark'
+}
+
 /** Bright matched backgrounds get black text; dark ones get white. Otherwise the chosen theme. */
 function syncColorScheme() {
   const root = document.documentElement

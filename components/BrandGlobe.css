@@ -694,7 +694,7 @@ html .brand-globe .brand-globe-stage.is-choosing .brand-globe-center-hole {
     inset 0 0 16px 2px color-mix(in srgb, var(--eclipse-color) 45%, transparent);
 }
 
-/* Color picker: tint the backdrop and label, keeping the center black. */
+/* Keep the selected-color label readable on a contrasting center. */
 .brand-globe.is-color-picker > .brand-globe-color-atmosphere {
   filter: none;
 }
@@ -705,11 +705,11 @@ html .brand-globe .brand-globe-stage.is-choosing .brand-globe-center-hole {
 
 html .brand-globe.is-color-picker .brand-globe-center-hole,
 html[data-bg-image='none'] .brand-globe.is-color-picker .brand-globe-stage .brand-globe-center-hole {
-  background: #000;
+  background: var(--globe-seat-background, #000);
 }
 
 .brand-globe.is-color-picker .brand-globe-focus {
-  background: #000;
+  background: var(--globe-seat-background, #000);
   color: var(--globe-tint, #fff);
   filter: none;
 }

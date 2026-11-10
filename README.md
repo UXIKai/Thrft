@@ -40,7 +40,7 @@ The product quantity number opens a selected-products page with the quantity at 
 - Tapping the profile photo pops it up full-size with a camera icon centered at the bottom that opens the system photo picker; tap outside or press Escape to close. There is no camera badge on the avatar.
 - Garment sizes use equal-sized buttons in centered rows, with the add-size control centered below them.
 - The settings gear beside the profile name opens Settings & privacy directly, without an intermediate popup.
-- A half-moon button beside the narrower Profile control switches between dark (white on black) and light (black on white) display modes. The choice persists on this device. Neutral UI colors follow the mode without inverting photos, brand colors, or the always-black color-selection centers.
+- A half-moon button beside the narrower Profile control switches between dark (white on black) and light (black on white) display modes. The choice persists on this device. Neutral UI colors follow the mode without inverting photos or brand colors; color previews choose their own readable contrast.
 - The profile shows only the username. Account editing keeps the person, @ and lock icons for username, email and password; email changes require authentication-provider confirmation.
 - The Links editor has one centered Media heading above the music-service buttons and social-media buttons.
 - Money controls and sales statistics use matching tile sizes, spacing, and glass styling.
@@ -71,7 +71,7 @@ Links and Money rows sit immediately below ID verification. Profile contains onl
 - Climb swaps orbit around each other (yin-yang), opposite-side only.
 
 ### Product rows
-- The orbital color picker keeps its center circle black and displays the focused color's name in that color. Its flowing background previews each focused color at 70% brightness while gliding.
+- The orbital color picker displays the focused color's name on a contrasting center: white for dark colors and black for bright colors. Its controls and surrounding labels also switch contrast with the preview, independently of the saved app theme.
 - The orbital center's eclipse glow stays lit while browsing and dragging, matching the hovered color in the color picker and remaining white in other pickers.
 - The home search backdrop reuses the app's flowing atmosphere at 70% brightness behind the always-black filter panel. Choosing a color updates the backdrop, its flowing effect, and the panel text to that color; the panel itself does not animate.
 - Saved edit and filter menus open below their buttons, close each other, and dismiss when clicking outside.
