@@ -2550,21 +2550,11 @@ export default function ProfileScreen({
                 <button
                   type="button"
                   className="profile-photo-option"
-                  aria-label="Take photo"
-                  onClick={() => cameraInputRef.current?.click()}
-                >
-                  <span className="profile-photo-option-ico">
-                    <TakePhotoIcon />
-                  </span>
-                </button>
-                <button
-                  type="button"
-                  className="profile-photo-option"
-                  aria-label="Photo gallery"
+                  aria-label="Choose profile photo"
                   onClick={() => galleryInputRef.current?.click()}
                 >
                   <span className="profile-photo-option-ico">
-                    <GalleryIcon />
+                    <TakePhotoIcon />
                   </span>
                 </button>
               </div>

@@ -150,9 +150,17 @@
 
 .profile-photo-options {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 12px;
   margin-bottom: 6px;
+}
+
+html body .glass-sheet.profile-photo-sheet .glass-sheet-head.profile-photo-sheet-head button.glass-overlay-icon-btn[type='button'] {
+  position: absolute;
+  left: 50%;
+  bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+  margin: 0;
+  transform: translateX(-50%);
 }
 
 .profile-photo-option {
