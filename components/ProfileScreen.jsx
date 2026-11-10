@@ -1068,7 +1068,8 @@ export default function ProfileScreen({
         setAccountPasswordDraft('')
       }
       await onSaveProfile?.({ username })
-      setAccountEditNote(emailChanged ? 'Saved. Check your email to confirm the email change.' : 'Saved')
+      setAccountEditNote('')
+      closeLinks()
     } catch (err) {
       setAccountEditNote(err?.message || 'Could not save')
     } finally {
