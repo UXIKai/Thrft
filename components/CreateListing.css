@@ -803,10 +803,6 @@ html body .listing-wheel .listing-wheel-input {
   overflow: hidden;
 }
 
-.listing-scan-zoom {
-  margin: -8px 0 18px;
-}
-
 /* Photo boxes match the page background (no gray fill) */
 .listing-photo-drop,
 .listing-scanner-btn,

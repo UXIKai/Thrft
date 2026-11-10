@@ -594,16 +594,19 @@ export default function CreateListing({ onPosted } = {}) {
           </div>
           {scanPreview ? (
             <>
-            <input
-              className="listing-slider listing-scan-zoom"
-              type="range"
-              min="0.4"
-              max="1"
-              step="0.05"
-              aria-label="Photo size"
-              value={scanZoom}
-              onChange={(e) => setScanZoom(Number(e.target.value))}
-            />
+            <label className="listing-field">
+              <span>Zoom</span>
+              <input
+                className="listing-slider"
+                type="range"
+                min="0.4"
+                max="1"
+                step="0.05"
+                aria-label="Zoom"
+                value={scanZoom}
+                onChange={(e) => setScanZoom(Number(e.target.value))}
+              />
+            </label>
             <label className="listing-field">
               <span>Straighten</span>
               <input
