@@ -163,8 +163,8 @@
   right: 2px;
   top: 50%;
   transform: translateY(-50%);
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   margin: 0;
   padding: 0;
   border: none;
@@ -240,7 +240,7 @@
   width: min(118px, 32vw);
   height: min(118px, 32vw);
   transform: translate(-50%, -50%) scale(1);
-  border-radius: 50%;
+  border-radius: 0;
   pointer-events: none;
   z-index: 1;
   background: radial-gradient(
@@ -790,8 +790,8 @@ html[data-bg-image='none'] .brand-globe.is-color-picker .brand-globe-stage .bran
 }
 
 .brand-globe-focus .brand-logo-label.is-logo-only .brand-logo {
-  width: 64px;
-  height: 64px;
+  width: 54px;
+  height: 54px;
 }
 
 .brand-globe.is-brand-picker .brand-globe-label {

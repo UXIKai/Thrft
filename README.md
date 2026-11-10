@@ -30,7 +30,7 @@ Wire real profiles later by setting `avatarUrl` (and labels) on entries in `src/
 
 ## Layout & motion
 
-Brand orbital tiles and their logo images are circular. The selected brand's center circle automatically matches solid square source-logo backgrounds by inspecting opaque, similarly colored image corners. Logo images use a same-origin proxy so pixel inspection works. Transparent/non-square marks, the empty search circle, and failed logo loads retain white backgrounds.
+Brand orbital tiles are circular, with uncropped logo images sized to fit completely inside them. The selected brand's center circle automatically matches solid square source-logo backgrounds by inspecting opaque, similarly colored image corners. Logo images use a same-origin proxy so pixel inspection works. Transparent/non-square marks, the empty search circle, and failed logo loads retain white backgrounds.
 
 The brand picker has no bottom search bar: tap the empty center circle to type a brand name, then finish typing to preview and select the match. Opening search preserves the canvas dimensions and focuses without scrolling so the keyboard does not shift the circle. The standalone back button still closes the picker.
 
