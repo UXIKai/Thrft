@@ -1,6 +1,16 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { BRAND_DOMAINS, BRAND_LOGO_TILE_PX, packBrandLogoLanes } from './brandLogos.js'
+import { BRAND_DOMAINS, BRAND_LOGO_TILE_PX, brandLogoBackground, packBrandLogoLanes } from './brandLogos.js'
+
+test('only known solid square logos tint the center', () => {
+  assert.equal(brandLogoBackground('Gap'), '#000b3b')
+  assert.equal(brandLogoBackground('UGG'), '#909090')
+  assert.equal(brandLogoBackground('Uniqlo'), '#ff0000')
+  assert.equal(brandLogoBackground('Dr. Martens'), '#000000')
+  for (const name of ['Nike', 'Moncler', 'Adidas', 'Custom', '', undefined]) {
+    assert.equal(brandLogoBackground(name), '#ffffff')
+  }
+})
 
 test('logo rings preserve every brand and clear the center and each other', () => {
   for (const count of [0, 1, 2, 7, 24, Object.keys(BRAND_DOMAINS).length, 250]) {

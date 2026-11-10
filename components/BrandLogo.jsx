@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { brandLogoUrl } from '../brandLogos.js'
 
-export default function BrandLogo({ name, logoOnly = false }) {
+export default function BrandLogo({ name, logoOnly = false, onError }) {
   const [failedSource, setFailedSource] = useState(null)
   const src = brandLogoUrl(name)
   return (
@@ -15,6 +15,7 @@ export default function BrandLogo({ name, logoOnly = false }) {
         onError={() => {
           console.warn(`Unable to load the logo for ${name}.`)
           setFailedSource(src)
+          onError?.()
         }}
       />}
       {(!logoOnly || !src || failedSource === src) && <span>{name}</span>}

@@ -809,7 +809,7 @@ html[data-bg-image='none'] .brand-globe.is-color-picker .brand-globe-stage .bran
 }
 
 html .brand-globe.is-brand-picker .brand-globe-center-hole {
-  background: #fff;
+  background: var(--brand-center-background, #fff);
   box-shadow: none;
 }
 
@@ -857,8 +857,12 @@ html .brand-globe.is-brand-picker .brand-globe-center-hole {
 }
 
 .brand-globe.is-brand-picker .brand-globe-focus {
-  background: #fff;
+  background: var(--brand-center-background, #fff);
   color: #111;
   text-shadow: none;
   filter: none;
+}
+
+.brand-globe.is-brand-picker .brand-globe-focus .brand-logo-label {
+  background: transparent;
 }

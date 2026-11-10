@@ -30,6 +30,8 @@ Wire real profiles later by setting `avatarUrl` (and labels) on entries in `src/
 
 ## Layout & motion
 
+The selected brand's center circle matches known solid square logo backgrounds (including Gap, UGG, Uniqlo, and Dr. Martens). Transparent/non-square marks, the empty search circle, and failed logo loads retain white backgrounds.
+
 The brand picker has no bottom search bar: tap the empty center circle to type a brand name, then finish typing to preview and select the match. Opening search preserves the canvas dimensions and focuses without scrolling so the keyboard does not shift the circle. The standalone back button still closes the picker.
 
 Brand orbitals show website logos instead of text for the orbiting brands and centered selection, while searching still matches brand names. They use a black background, a white center circle, and evenly spaced 42px white logo tiles without added dark outlines. Drag the canvas directly with one finger and pinch with two fingers to zoom (55%-200%); trackpad pinch also zooms. The canvas stays where released. Move a brand into the center and tap the center to select, or press the center first, drag toward a brand to bring it into the seat, and release to select it. Drags started outside the center never select on release; adding a second finger cancels release-selection. Returning to the starting middle or an empty gap clears the selection. Rings grow with the catalog rather than squeezing logos together. Unknown brands and failed logo loads retain readable names. Category, color, and account orbitals keep their existing labels and appearance.

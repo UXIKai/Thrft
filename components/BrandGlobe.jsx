@@ -3,7 +3,7 @@ import StageSlot from './StageSlot.jsx'
 import { colorHex } from '../colorsCatalog.js'
 import { colorSchemeForHex } from '../appAppearance.js'
 import BrandLogo from './BrandLogo.jsx'
-import { BRAND_LOGO_TILE_PX, packBrandLogoLanes } from '../brandLogos.js'
+import { BRAND_LOGO_TILE_PX, brandLogoBackground, packBrandLogoLanes } from '../brandLogos.js'
 import './BrandGlobe.css'
 
 function GlobeBackIcon() {
@@ -579,6 +579,7 @@ function BrandGlobeView({
   showBrandLogos = title === 'Brands',
 }) {
   const [focusId, setFocusId] = useState(null)
+  const [failedCenterLogos, setFailedCenterLogos] = useState(() => new Set())
   const [centerSearching, setCenterSearching] = useState(false)
   const [searchStageSize, setSearchStageSize] = useState(null)
   const centerInputRef = useRef(null)
@@ -1495,6 +1496,8 @@ function BrandGlobeView({
     }
   }, [seatTint])
   const originStyle = {
+    '--brand-center-background': showBrandLogos && !failedCenterLogos.has(focusBrand?.label)
+      ? brandLogoBackground(focusBrand?.label) : '#ffffff',
     ...(origin && typeof origin.dx === 'number'
       ? { '--globe-dx': `${origin.dx}px`, '--globe-dy': `${origin.dy}px` }
       : null),
@@ -1703,7 +1706,11 @@ function BrandGlobeView({
               style={{ fontSize: `${focusFitPx}px` }}
             >
               {showBrandLogos && focusBrand
-                ? <BrandLogo name={focusBrand.label} logoOnly />
+                ? <BrandLogo
+                    name={focusBrand.label}
+                    logoOnly
+                    onError={() => setFailedCenterLogos((previous) => new Set(previous).add(focusBrand.label))}
+                  />
                 : focusWords.length > 1
                 ? focusWords.map((word, index) => (
                     <span

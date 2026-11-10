@@ -113,6 +113,22 @@ export function brandLogoUrl(name) {
   return domain ? `https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=128` : null
 }
 
+// Solid square favicon backgrounds; transparent/non-square marks stay on white.
+const SQUARE_LOGO_BACKGROUNDS = {
+  Gap: '#000b3b',
+  UGG: '#909090',
+  Uniqlo: '#ff0000',
+  'Dr. Martens': '#000000',
+  Supreme: '#ed1c24',
+  Fendi: '#000000',
+  'Tiffany & Co.': '#81d8d0',
+}
+
+export function brandLogoBackground(name) {
+  return Object.hasOwn(SQUARE_LOGO_BACKGROUNDS, name)
+    ? SQUARE_LOGO_BACKGROUNDS[name] : '#ffffff'
+}
+
 export const BRAND_LOGO_TILE_PX = 42
 const LOGO_CLEARANCE_PX = Math.SQRT2 * BRAND_LOGO_TILE_PX + 20
 
