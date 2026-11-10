@@ -170,7 +170,7 @@ export default function ProductDetail({
       <section className="product-store-size-panel" aria-label="Select size">
         <header className="product-store-size-header">
           {numericSizes ? <button type="button" className="is-bare" aria-label={`Size metric ${sizeMetric}; switch to ${sizeMetric === 'EN' ? 'EU' : 'EN'}`} onClick={() => setSizeMetric(sizeMetric === 'EN' ? 'EU' : 'EN')}>{sizeMetric}</button> : <span />}
-          <h2>Select size</h2>
+          <span aria-hidden="true" />
           <div className="product-store-size-actions">
             <button type="button" className="is-bare" aria-label="Close size selection" onClick={() => setSizing(false)}>×</button>
           </div>
