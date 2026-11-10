@@ -30,7 +30,7 @@ Wire real profiles later by setting `avatarUrl` (and labels) on entries in `src/
 
 ## Layout & motion
 
-Store creation includes a Materials text field saved with the product. The Information view shows only materials, not the title/brand or description. Apply the updated Prisma schema with `npm run db:push` and regenerate the client with `npm run db:generate` when deploying this field.
+Store creation includes a Materials text field saved with the product. The Information view shows only materials, not the title/brand or description. Tap the Materials heading to return to the sizes. Apply the updated Prisma schema with `npm run db:push` and regenerate the client with `npm run db:generate` when deploying this field.
 
 The Money editor includes the Diaita Group Initiative pledge controls below its other content. Settings links to Money with a bank icon; Give Back is no longer a separate Settings section.
 
@@ -38,7 +38,7 @@ Changing navigation tabs resets Home Brand, Color, and Category filters to All. 
 
 The inline Store size header shows only the current EN or EU metric in numeric mode. The page's top-right action reads `123` while displaying letters and `Aa` while displaying numbers; EN/EU is hidden in letter mode. Letter switching is available when equivalent letter labels exist (footwear without letter equivalents stays numeric). General apparel equivalents use a chest-size chart, with product-specific conversions taking precedence.
 
-Store plus buttons expand an inline Select Size panel beneath the product, keeping its photo, title, and price visible, with an EN/EU display toggle and Information view for description and materials. Product `sizeConversions` override the general footwear chart; unconverted labels stay unchanged. Bag selections retain the original size value. Materials are shown only when supplied, otherwise explicitly marked unavailable.
+Store plus buttons expand an inline size panel beneath the product, keeping its photo, title, and price visible, with an EN/EU display toggle and Information view for materials. Product `sizeConversions` override the general footwear chart; unconverted labels stay unchanged. Bag selections retain the original size value. Materials are shown only when supplied, otherwise explicitly marked unavailable.
 
 Market product details show the seller's title, brand, category, price, condition, and description beneath the photo, without Store size/quantity selectors. Brand/category values have no parenthetical labels and are not added to feed tiles. Market items add directly to the bag; Store sizing is unchanged.
 
