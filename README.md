@@ -30,7 +30,7 @@ Wire real profiles later by setting `avatarUrl` (and labels) on entries in `src/
 
 ## Layout & motion
 
-Home has equal-width, filled storefront (Store, left) and basket (Market, right) icon tabs with labels underneath between the leaderboard and product cards, spanning the mobile screen. Store (the default tab) shows the Supabase listings cards; Market shows active catalog products from `/api/products`. Each feed uses only its own products, including when personalizing or showing empty results.
+Home has equal-width, filled storefront (Store, left) and basket (Market, right) icon tabs with labels underneath between the leaderboard and product cards, spanning the mobile screen. Store (the default tab) shows the Supabase listings cards in scrolling rows. Market shows active catalog products from `/api/products` plus three sample products per demo brand, labeled Sample in their product details. Market uses a three-column grid with automatic rows that grows vertically with the number of products, without repeating cards to fill space. Brand, category, and color filters apply to the sample products too.
 
 The navigation's outer track uses a clear vertical sheen, 8px blur with brightness/contrast enhancement, asymmetric white rim highlights, and a soft drop shadow. The active bubble uses the quieter clear finish with a faint neutral edge and light blur. Mobile bubble spacing remains unchanged.
 

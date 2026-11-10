@@ -931,6 +931,20 @@ html[data-bg-color='none'] .stage.is-bg-none .atmosphere {
   color: light-dark(rgba(0, 0, 0, 0.45), rgba(255, 255, 255, 0.45));
 }
 
+.market-product-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  padding: 0 12px;
+}
+
+.market-product-grid .product-box {
+  width: 100%;
+  min-width: 0;
+  height: auto;
+  aspect-ratio: 118 / 142;
+}
+
 .brand-row {
   margin-bottom: 18px;
   border: none;

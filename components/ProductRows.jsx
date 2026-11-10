@@ -10,8 +10,21 @@ import {
   filterListingsByBrand,
   filterListingsByColor,
   filterListingsByClothingType,
+  TYPE_TO_CATEGORIES,
 } from '../listings.js'
 import { isSupabaseConfigured } from '../supabase.js'
+import { BRAND_ROWS } from '../brandsCatalog.js'
+
+const MARKET_SAMPLES = BRAND_ROWS.flatMap((brand) =>
+  brand.products.slice(0, 3).map((product) => ({
+    ...product,
+    id: `market-demo-${product.id}`,
+    title: `Sample · ${product.title}`,
+    category: TYPE_TO_CATEGORIES[product.clothingType]?.[0] || product.clothingType,
+    description: `Sample Market product for preview. ${product.description}`,
+    isMock: true,
+  })),
+)
 
 /** Slow seamless crawl — never stops while the row is mounted. */
 const PX_PER_SEC = 18
@@ -106,8 +119,7 @@ function CrawlRow({ row, rowIndex, onOpenProduct }) {
 }
 
 /**
- * Home product feed — 10 continuous marquees × 20 boxes, ranked from the
- * signed-in user's search history and likes.
+ * Market uses a growing three-column grid; Store retains personalized marquees.
  */
 export default function ProductRows({
   segment = 'store',
@@ -123,7 +135,7 @@ export default function ProductRows({
   brandSizes = {},
   savedProductIds = [],
 }) {
-  const [listings, setListings] = useState([])
+  const [listings, setListings] = useState(() => segment === 'market' ? MARKET_SAMPLES : [])
   const [savedItems, setSavedItems] = useState([])
   const [status, setStatus] = useState('loading')
   const [error, setError] = useState('')
@@ -158,12 +170,12 @@ export default function ProductRows({
     request
       .then((rows) => {
         if (!alive) return
-        setListings(rows)
+        setListings(segment === 'market' ? [...rows, ...MARKET_SAMPLES] : rows)
         setStatus('ready')
       })
       .catch((err) => {
         if (!alive) return
-        setListings([])
+        setListings(segment === 'market' ? MARKET_SAMPLES : [])
         setError(err.message || 'Could not load products.')
         setStatus('ready')
       })
@@ -182,6 +194,7 @@ export default function ProductRows({
   }, [listings, clothingType, brandId, brandName, colorId])
 
   const rows = useMemo(() => {
+    if (segment === 'market') return []
     if (!filteredCatalog.length) return []
     const catalogIds = new Set(filteredCatalog.map((product) => product.id))
     const savedIds = [
@@ -206,7 +219,22 @@ export default function ProductRows({
     clothingSizes,
     brandSizes,
     forYouRefresh,
+    segment,
   ])
+
+  if (segment === 'market') {
+    return (
+      <section className="product-feed market-product-feed" id="home-product-panel" role="tabpanel" aria-labelledby="home-market-tab" aria-busy={status === 'loading'}>
+        {error && <p role="alert">{error}</p>}
+        {!filteredCatalog.length && <p role="status">{status === 'loading' ? 'Loading products...' : 'No Market products found.'}</p>}
+        <div className="market-product-grid">
+          {filteredCatalog.map((product) => (
+            <ProductCard key={product.id} product={product} onOpen={onOpenProduct} />
+          ))}
+        </div>
+      </section>
+    )
+  }
 
   if (status === 'loading' && !rows.length) {
     return (
