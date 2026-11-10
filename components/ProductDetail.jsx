@@ -67,6 +67,7 @@ export default function ProductDetail({
   const [sizing, setSizing] = useState(false)
   const [quantityOpen, setQuantityOpen] = useState(false)
   const [editingSizeIndex, setEditingSizeIndex] = useState(null)
+  const [draftSize, setDraftSize] = useState('')
 
   useEffect(() => {
     setSizing(false)
@@ -155,17 +156,9 @@ export default function ProductDetail({
               key={size}
               type="button"
               className="product-detail-size is-bare"
-              aria-pressed={selectedSizes[editingSizeIndex] === size}
-              autoFocus={selectedSizes[editingSizeIndex] === size}
-              onClick={() => {
-                const nextSizes = selectedSizes.map((selected, index) =>
-                  index === editingSizeIndex ? size : selected,
-                )
-                replaceItems(items.map((row) => row.id === product.id
-                  ? { ...row, size: nextSizes[nextSizes.length - 1], selectedSizes: nextSizes }
-                  : row))
-                setEditingSizeIndex(null)
-              }}
+              aria-pressed={draftSize === size}
+              autoFocus={draftSize === size}
+              onClick={() => setDraftSize(size)}
             >
               {size}
             </button>
@@ -175,7 +168,17 @@ export default function ProductDetail({
           type="button"
           className="product-detail-done is-bare"
           aria-label="Done choosing size"
-          onClick={() => setEditingSizeIndex(null)}
+          onClick={() => {
+            if (draftSize && draftSize !== selectedSizes[editingSizeIndex]) {
+              const nextSizes = selectedSizes.map((selected, index) =>
+                index === editingSizeIndex ? draftSize : selected,
+              )
+              replaceItems(items.map((row) => row.id === product.id
+                ? { ...row, size: nextSizes[nextSizes.length - 1], selectedSizes: nextSizes }
+                : row))
+            }
+            setEditingSizeIndex(null)
+          }}
         >
           <DoneCheckIcon />
         </button>
@@ -198,7 +201,10 @@ export default function ProductDetail({
                   type="button"
                   className="product-detail-selected-item is-bare"
                   aria-label={`Change size for ${displayTitle || name}, item ${index + 1}, ${size || 'no size selected'}`}
-                  onClick={() => setEditingSizeIndex(index)}
+                  onClick={() => {
+                    setDraftSize(size || '')
+                    setEditingSizeIndex(index)
+                  }}
                 >
                 {photo && <img src={photo} alt="" />}
                 <div>
