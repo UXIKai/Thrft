@@ -760,7 +760,7 @@ html[data-bg-image='none'] .brand-globe.is-color-picker .brand-globe-stage .bran
   box-sizing: border-box;
   padding: 5px;
   border-radius: 8px;
-  background: #eee;
+  background: #fff;
   color: #111;
   text-shadow: none;
   overflow: hidden;
@@ -771,7 +771,9 @@ html[data-bg-image='none'] .brand-globe.is-color-picker .brand-globe-stage .bran
   height: 32px;
   object-fit: contain;
   pointer-events: none;
-  filter: drop-shadow(0 0 1px #444);
+  filter: none;
+  border: none;
+  box-shadow: none;
 }
 
 .brand-globe .brand-logo-label.is-logo-only > span {
@@ -807,5 +809,12 @@ html[data-bg-image='none'] .brand-globe.is-color-picker .brand-globe-stage .bran
 }
 
 html .brand-globe.is-brand-picker .brand-globe-center-hole {
-  background: #000;
+  background: #fff;
+}
+
+.brand-globe.is-brand-picker .brand-globe-focus {
+  background: #fff;
+  color: #111;
+  text-shadow: none;
+  filter: none;
 }
