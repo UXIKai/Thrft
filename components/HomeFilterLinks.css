@@ -47,8 +47,9 @@
 
 .home-search-done {
   position: absolute;
-  right: 14px;
+  left: 50%;
   bottom: 14px;
+  transform: translateX(-50%);
   width: 40px;
   height: 40px;
   min-height: 40px;
