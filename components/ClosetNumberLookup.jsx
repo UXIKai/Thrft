@@ -101,7 +101,7 @@ export default function ClosetNumberLookup({ brands, initialBrand, onClose, onAd
               </div>
               <input className="closet-number-brand-search" type="search" aria-label="Search brands" placeholder="Search brands" value={query} onChange={(event) => setQuery(event.target.value)} />
             </> : <>
-              <OrbitCarousel variant="wheel" items={brands.map((name) => ({ id: name, label: name }))} activeId={brand} onSelect={setBrand} onActivate={() => setExpanded(true)} ariaLabel="Brand" renderItem={(item) => <BrandLogo name={item.label} />} />
+              <OrbitCarousel variant="wheel" className="closet-brand-wheel" wheelSpacing={60} items={brands.map((name) => ({ id: name, label: name }))} activeId={brand} onSelect={setBrand} onActivate={() => setExpanded(true)} ariaLabel="Brand" renderItem={(item) => <BrandLogo name={item.label} />} />
               <button type="button" disabled={!brand} onClick={() => setPage('numbers')}>Continue</button>
             </>}
           </> : <>

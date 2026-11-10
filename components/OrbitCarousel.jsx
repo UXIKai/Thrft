@@ -66,6 +66,7 @@ export default function OrbitCarousel({
   /** Keep each word mounted so it glides between slots. */
   smooth = false,
   renderItem,
+  wheelSpacing = WHEEL_STEP,
 }) {
   const isStrip = variant === 'strip'
   const isWheel = variant === 'wheel'
@@ -77,7 +78,7 @@ export default function OrbitCarousel({
   )
   const dragRef = useRef({ active: false, start: 0, lastStep: 0 })
   const offsets = isCompactWheel ? COMPACT_WHEEL_OFFSETS : VISIBLE_OFFSETS
-  const wheelStep = isCompactWheel ? WHEEL_STEP_COMPACT : WHEEL_STEP
+  const wheelStep = isCompactWheel ? WHEEL_STEP_COMPACT : wheelSpacing
   const wheelAngle = isCompactWheel ? WHEEL_ANGLE_COMPACT : WHEEL_ANGLE
 
   const orbitItems = useMemo(() => {
