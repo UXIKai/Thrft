@@ -23,7 +23,7 @@
 
 .settings-section.is-profile-controls .settings-card {
   display: grid;
-  grid-template-columns: 44px minmax(0, 1fr) 52px;
+  grid-template-columns: minmax(0, 1fr) 52px;
   align-items: center;
   gap: 10px;
   border: none;

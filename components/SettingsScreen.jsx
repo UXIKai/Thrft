@@ -1834,17 +1834,18 @@ export default function SettingsScreen({
     >
       <div className="settings-scroll">
       <header className="settings-top">
-        <h1 className="settings-title" aria-label="Settings" />
+        <button
+          type="button"
+          className="settings-back is-bare"
+          aria-label="Back to profile"
+          onClick={onBack}
+        >
+          <BackIcon />
+        </button>
+        <h1 className="settings-title">Settings</h1>
+        <span className="settings-top-spacer" aria-hidden />
       </header>
         <Section label="Account Settings" className="is-profile-controls">
-          <button
-            type="button"
-            className="settings-back is-bare"
-            aria-label="Back to profile"
-            onClick={onBack}
-          >
-            <BackIcon />
-          </button>
           <Row
             icon={<ProfileIcon />}
             title="Profile"
