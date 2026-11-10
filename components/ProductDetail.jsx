@@ -35,6 +35,14 @@ function productPhoto(product) {
 }
 
 /** Product page with a size picker and bag controls. */
+function DoneCheckIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" d="m5 12.5 4.5 4.5L19 7.5" />
+    </svg>
+  )
+}
+
 export default function ProductDetail({
   product,
   onClose,
@@ -163,6 +171,14 @@ export default function ProductDetail({
             </button>
           ))}
         </div>
+        <button
+          type="button"
+          className="product-detail-done is-bare"
+          aria-label="Done choosing size"
+          onClick={() => setEditingSizeIndex(null)}
+        >
+          <DoneCheckIcon />
+        </button>
       </div>,
       stageEl,
     )
@@ -172,11 +188,7 @@ export default function ProductDetail({
     return createPortal(
       <div className="glass-overlay product-detail product-detail-quantity-page" role="dialog" aria-modal="true" aria-label="Selected products">
         <header className="glass-overlay-top">
-          <button type="button" className="glass-overlay-back is-bare" aria-label="Back to product" onClick={() => setQuantityOpen(false)}>
-            <BackIcon />
-          </button>
           <h1 className="product-detail-quantity-title">Quantity: {qty}</h1>
-          <span className="glass-overlay-spacer" aria-hidden />
         </header>
         <div className="glass-overlay-body">
           <ul className="product-detail-selected-list">
@@ -199,6 +211,14 @@ export default function ProductDetail({
             ))}
           </ul>
         </div>
+        <button
+          type="button"
+          className="product-detail-done is-bare"
+          aria-label="Done"
+          onClick={() => setQuantityOpen(false)}
+        >
+          <DoneCheckIcon />
+        </button>
       </div>,
       stageEl,
     )

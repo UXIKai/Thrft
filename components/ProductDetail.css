@@ -392,12 +392,33 @@ html body .product-detail .glass-overlay-back {
 .product-detail-quantity-page .glass-overlay-top {
   order: 0;
   display: grid;
-  grid-template-columns: 40px minmax(0, 1fr) 40px;
+  grid-template-columns: minmax(0, 1fr);
   padding: calc(12px + env(safe-area-inset-top, 0px)) 18px 12px;
 }
 
-.product-detail-quantity-page .glass-overlay-top .glass-overlay-spacer {
-  display: block;
+.product-detail-quantity-page .glass-overlay-body {
+  padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px));
+}
+
+.product-detail-done {
+  position: absolute;
+  left: 50%;
+  bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  z-index: 2;
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  transform: translateX(-50%);
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: light-dark(#000, #fff);
+}
+
+.product-detail-done svg {
+  width: 30px;
+  height: 30px;
 }
 
 .product-detail-selected-list {
