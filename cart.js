@@ -56,7 +56,11 @@ export function addToCart(product) {
   const cur = readCart()
   const idx = cur.findIndex((row) => row.id === product.id)
   if (idx >= 0) {
-    cur[idx] = { ...cur[idx], qty: (cur[idx].qty || 1) + 1 }
+    const row = cur[idx]
+    const sizes = Array.from({ length: row.qty || 1 }, (_, index) =>
+      row.selectedSizes?.[index] || row.size || '',
+    )
+    cur[idx] = { ...row, qty: (row.qty || 1) + 1, selectedSizes: [...sizes, product.size || row.size || ''] }
   } else {
     cur.unshift({
       id: product.id,
@@ -78,6 +82,7 @@ export function addToCart(product) {
         null,
       placements: product.placements || null,
       size: product.size || '',
+      selectedSizes: [product.size || ''],
       qty: 1,
     })
   }

@@ -41,7 +41,11 @@ export default function ProductDetail({
 }) {
   const [stageEl, setStageEl] = useState(null)
   const { items, addItem, replaceItems, removeItem } = useBag()
-  const inBag = items.find((row) => row.id === product?.id)?.qty || 0
+  const bagItem = items.find((row) => row.id === product?.id)
+  const inBag = bagItem?.qty || 0
+  const selectedSizes = Array.from({ length: inBag }, (_, index) =>
+    bagItem?.selectedSizes?.[index] || bagItem?.size || '',
+  )
   const qty = inBag
   const added = inBag > 0
 
@@ -53,9 +57,11 @@ export default function ProductDetail({
   }, [])
 
   const [sizing, setSizing] = useState(false)
+  const [quantityOpen, setQuantityOpen] = useState(false)
 
   useEffect(() => {
     setSizing(false)
+    setQuantityOpen(false)
   }, [product?.id])
 
   // Plus opens the size list; picking a size adds one and brings the stepper back.
@@ -69,7 +75,12 @@ export default function ProductDetail({
       replaceItems(
         items.map((row) =>
           row.id === product.id
-            ? { ...row, size, qty: Math.min(inBag + 1, 99) }
+            ? {
+                ...row,
+                size,
+                qty: Math.min(inBag + 1, 99),
+                selectedSizes: [...selectedSizes, size].slice(0, 99),
+              }
             : row,
         ),
       )
@@ -87,7 +98,9 @@ export default function ProductDetail({
     }
     replaceItems(
       items.map((row) =>
-        row.id === product.id ? { ...row, qty: Math.min(next, 99) } : row,
+        row.id === product.id
+          ? { ...row, qty: Math.min(next, 99), selectedSizes: selectedSizes.slice(0, next) }
+          : row,
       ),
     )
   }
@@ -105,6 +118,35 @@ export default function ProductDetail({
   const displayTitle = hasBrandPrefix
     ? title.slice(brand.length).replace(/^[\s:|-]+/, '')
     : title
+
+  if (quantityOpen) {
+    return createPortal(
+      <div className="glass-overlay product-detail" role="dialog" aria-modal="true" aria-label="Selected products">
+        <header className="glass-overlay-top">
+          <button type="button" className="glass-overlay-back is-bare" aria-label="Back to product" onClick={() => setQuantityOpen(false)}>
+            <BackIcon />
+          </button>
+          <h1 className="product-detail-quantity-title">Quantity: {qty}</h1>
+          <span className="glass-overlay-spacer" aria-hidden />
+        </header>
+        <div className="glass-overlay-body">
+          <ul className="product-detail-selected-list">
+            {selectedSizes.map((size, index) => (
+              <li key={index} className="product-detail-selected-item">
+                {photo && <img src={photo} alt="" />}
+                <div>
+                  {brand && <p>{brand}</p>}
+                  <h2>{displayTitle || name}</h2>
+                  <p>{size ? `Size: ${size}` : 'Size not selected'}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>,
+      stageEl,
+    )
+  }
 
   return createPortal(
     <div
@@ -180,7 +222,15 @@ export default function ProductDetail({
             </svg>
           </button>
           <div className="product-detail-stepper" aria-hidden={!added}>
-            <span className="product-detail-qty">{qty}</span>
+            <button
+              type="button"
+              className="product-detail-qty is-bare"
+              aria-label={`View ${qty} selected products`}
+              tabIndex={added ? 0 : -1}
+              onClick={() => setQuantityOpen(true)}
+            >
+              {qty}
+            </button>
           </div>
           <button
             type="button"

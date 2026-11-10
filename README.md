@@ -30,6 +30,8 @@ Wire real profiles later by setting `avatarUrl` (and labels) on entries in `src/
 
 ## Layout & motion
 
+The product quantity number opens a selected-products page with the quantity at the top and each unit's selected size beneath its product name. Size selections persist in the bag.
+
 ### Profile settings
 - Garment sizes use equal-sized buttons in centered rows, with the add-size control centered below them.
 - The settings gear beside the profile name opens Settings & privacy directly, without an intermediate popup.

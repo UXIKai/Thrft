@@ -65,7 +65,13 @@ export default function CartScreen({
 
   function setQty(item, qty) {
     bag.replaceItems(
-      items.map((it) => (it.id === item.id ? { ...it, qty } : it)),
+      items.map((it) => (it.id === item.id ? {
+        ...it,
+        qty,
+        selectedSizes: Array.from({ length: qty }, (_, index) =>
+          it.selectedSizes?.[index] || it.size || '',
+        ),
+      } : it)),
     )
   }
 

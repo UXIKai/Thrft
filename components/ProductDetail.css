@@ -384,3 +384,38 @@ html body .product-detail .glass-overlay-back {
     animation: none;
   }
 }
+.product-detail-quantity-title {
+  font-size: 1.1rem;
+  text-align: center;
+}
+
+.product-detail-selected-list {
+  width: min(100%, 560px);
+  margin: 0 auto;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.product-detail-selected-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px;
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  background: var(--glass-clear-tint);
+}
+
+.product-detail-selected-item img {
+  width: 72px;
+  height: 88px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.product-detail-selected-item h2 {
+  margin: 4px 0;
+  font-size: 1rem;
+}
