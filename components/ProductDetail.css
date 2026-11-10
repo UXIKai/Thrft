@@ -90,6 +90,14 @@
   overflow-wrap: anywhere;
 }
 
+.product-store-materials {
+  color: inherit;
+  font: inherit;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-width: 100%;
+}
+
 .product-detail-market-info {
   width: min(100%, 360px);
   display: grid;

@@ -177,8 +177,9 @@ export default function ProductDetail({
         <div className="product-store-size-content">
           {showInformation ? (
             <section className="product-store-information" aria-label="Product information">
-              <h3><button type="button" className="is-bare" onClick={() => setShowInformation(false)}>Materials</button></h3>
-              <p>{Array.isArray(product.materials) ? product.materials.join(', ') : product.materials || 'Materials not provided.'}</p>
+              <button type="button" className="product-store-materials is-bare" aria-label="Return to sizes" onClick={() => setShowInformation(false)}>
+                {Array.isArray(product.materials) ? product.materials.join(', ') : product.materials || 'Not provided.'}
+              </button>
             </section>
           ) : (
             <>

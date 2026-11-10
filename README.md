@@ -30,7 +30,7 @@ Wire real profiles later by setting `avatarUrl` (and labels) on entries in `src/
 
 ## Layout & motion
 
-Store creation includes a Materials text field saved with the product. The Information view shows only materials, not the title/brand or description. Tap the Materials heading to return to the sizes. Apply the updated Prisma schema with `npm run db:push` and regenerate the client with `npm run db:generate` when deploying this field.
+Store creation includes a Materials text field saved with the product. The Information view shows only the material details without a heading, title/brand, or description. Tap the material details to return to the sizes. Apply the updated Prisma schema with `npm run db:push` and regenerate the client with `npm run db:generate` when deploying this field.
 
 The Money editor includes the Diaita Group Initiative pledge controls below its other content. Settings links to Money with a bank icon; Give Back is no longer a separate Settings section.
 
