@@ -2504,10 +2504,8 @@ export default function ChatScreen({
             aria-label="Search conversations"
             aria-expanded={searchOpen}
             onClick={() => {
-              setSearchOpen(true)
-              requestAnimationFrame(() => {
-                document.getElementById('chat-search-input')?.focus({ preventScroll: true })
-              })
+              flushSync(() => setSearchOpen(true))
+              document.getElementById('chat-search-input')?.focus({ preventScroll: true })
             }}
           >
             <SearchIcon />

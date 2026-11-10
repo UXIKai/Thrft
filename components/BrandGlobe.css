@@ -365,7 +365,7 @@
   position: absolute;
   left: 50%;
   right: auto;
-  bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+  bottom: calc(8px + max(env(safe-area-inset-bottom, 0px), var(--kb-height, 0px)));
   width: var(--dock-bar-width);
   max-width: none;
   padding: 0;
