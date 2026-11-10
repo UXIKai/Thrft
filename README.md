@@ -30,7 +30,7 @@ Wire real profiles later by setting `avatarUrl` (and labels) on entries in `src/
 
 ## Layout & motion
 
-Home color search previews the chosen color behind the black card, starting white for All, with the flowing atmosphere enabled. Confirming a search or selecting an orbital color also saves that exact app background color and enables the effect.
+Home color search previews the chosen color behind the card, starting white for All, with the flowing atmosphere enabled. The card is black except for Black-family shades, which use a white card to keep the selected-color text visible. Confirming a search or selecting an orbital color also saves that exact app background color and enables the effect.
 
 The product quantity number opens a selected-products page with the quantity at the top and each unit's selected size beneath its product name. Size selections persist in the bag.
 

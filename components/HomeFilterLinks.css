@@ -261,7 +261,7 @@ html body .home-search-backdrop {
 }
 
 html body .home-search-modal {
-  background: #000 !important;
+  background: var(--search-card-background, #000) !important;
   background-image: none !important;
   isolation: isolate;
   opacity: 1;

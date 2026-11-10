@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import OrbitCarousel from './OrbitCarousel.jsx'
-import { colorHex } from '../colorsCatalog.js'
+import { COLOR_FAMILIES, colorHex } from '../colorsCatalog.js'
 import { applyBackgroundImage, applyBackgroundPhoto, applySearchBackground } from '../appAppearance.js'
 import './HomeFilterLinks.css'
 
@@ -74,6 +74,9 @@ export default function HomeFilterLinks({
   const cardHex = draftColor ? colorHex(draftColor) || '#ffffff' : '#ffffff'
   const cardStyle = {
     '--card-ink': draftColor ? cardHex : '#ffffff',
+    '--search-card-background': COLOR_FAMILIES.Black.some(
+      (label) => label.toLowerCase().replace(/\s+/g, '-') === draftColor,
+    ) ? '#ffffff' : '#000000',
   }
   const searchColor = (draftColor && colorHex(draftColor)) || '#ffffff'
   const searchRgb = searchColor.match(/[a-f0-9]{2}/gi)?.map((part) => parseInt(part, 16)).join(', ')
