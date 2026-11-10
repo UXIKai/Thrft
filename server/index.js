@@ -7,6 +7,7 @@ import {
   dbFilePath,
   listAccounts,
   getPublicAccount,
+  searchAccounts,
   listProductsForAccount,
   getProduct,
   createProduct,
@@ -424,6 +425,11 @@ const server = http.createServer(async (req, res) => {
       send(res, 200, {
         products: await listProductsForAccount(session.account.id, { status, segment }),
       })
+      return
+    }
+
+    if (req.method === 'GET' && pathname === '/api/accounts') {
+      send(res, 200, { accounts: await searchAccounts(url.searchParams.get('q')) })
       return
     }
 

@@ -42,6 +42,7 @@ Settings & privacy starts with Profile followed by the active account. Other acc
 Links and Money rows sit immediately below ID verification. Profile contains only username, email and password; Links contains music services and social handles under Media; Money contains the financial controls. Each page centers its content and section headings above the controls, retaining scrolling on shorter screens.
 
 ### Chat
+- Friend and group-member searches query registered accounts by username or display name; demo contacts and locally saved names are never search suggestions. New group members retain their actual usernames for profile navigation.
 - Group-member names open the member's public account page with username, avatar, joined date, verification, Following/Followers, and active Store listings. Settings, Orders, and Closet remain private. Following/follower counts currently show unavailable placeholders, matching the owner's profile; follower tracking is not implemented.
 - Pinned chats appear first in the regular conversation list, without separate pinned cards. The Messages heading sits in the upper-left corner with search and the desktop sidebar toggle on the right. Search opens the bottom input; the bottom plus opens a chooser with two-person group and one-person friend buttons. Collapsing leaves only the top-left toggle to restore the list.
 - Opening a conversation does not automatically focus the message field or summon the keyboard.

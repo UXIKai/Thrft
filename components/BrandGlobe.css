@@ -722,3 +722,12 @@ html[data-bg-image='none'] .brand-globe.is-color-picker .brand-globe-stage .bran
 .brand-globe-scrim {
   transition: background-color 0.2s ease;
 }
+.brand-globe-search-status {
+  position: absolute;
+  bottom: calc(100% + 12px);
+  left: 0;
+  width: 100%;
+  text-align: center;
+  color: light-dark(#111, #fff);
+  font-size: 0.85rem;
+}

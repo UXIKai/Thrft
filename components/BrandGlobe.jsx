@@ -560,6 +560,7 @@ function BrandGlobeView({
   onSearchChange = null,
   staged = false,
   searchPlaceholder = 'Search',
+  searchStatus = '',
   onSearchConfirm = null,
   searchConfirmDisabled = false,
   searchConfirmLabel = 'Confirm',
@@ -1524,6 +1525,7 @@ function BrandGlobeView({
                   <GlobeBackIcon />
                 )}
               </button>
+              {searchStatus && <p className="brand-globe-search-status" role="status">{searchStatus}</p>}
               <input
                 className="brand-globe-search-input"
                 type="text"

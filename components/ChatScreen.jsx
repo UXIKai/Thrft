@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal, flushSync } from 'react-dom'
-import { fetchSaved } from '../api.js'
+import { fetchSaved, searchAccounts } from '../api.js'
 import BrandGlobe from './BrandGlobe.jsx'
 import StageSlot from './StageSlot.jsx'
 import './ChatScreen.css'
@@ -627,40 +627,31 @@ export default function ChatScreen({
   }, [activeChat])
 
 
-  const allMemberNames = useMemo(() => {
-    const names = new Set()
-    for (const c of chats) {
-      if (c?.kind === 'dm' && c.title) names.add(String(c.title))
-      if (Array.isArray(c?.members)) {
-        for (const m of c.members) {
-          if (m && m !== 'You') names.add(String(m))
-        }
-      }
+  const [accountSearch, setAccountSearch] = useState({ query: '', names: [], error: '', loading: false })
+  const accountQuery = (usersPickerOpen ? usersQuery : memberGlobeVisible && !groupNameStep ? memberSearch : '').trim()
+  const allMemberNames = accountSearch.query === accountQuery ? accountSearch.names : []
+  const accountSearchError = accountSearch.query === accountQuery ? accountSearch.error : ''
+
+  useEffect(() => {
+    let active = true
+    if (!accountQuery) {
+      setAccountSearch({ query: '', names: [], error: '', loading: false })
+      return undefined
     }
-    // Seed a few demo contacts so the globe isn't empty on a fresh account.
-    for (const seed of [
-      'Alex Rivera',
-      'Jordan Lee',
-      'Sam Patel',
-      'Casey Nguyen',
-      'Riley Brooks',
-      'Morgan Diaz',
-      'Quinn Harper',
-      'Avery Chen',
-    ]) {
-      names.add(seed)
-    }
-    return [...names].sort((a, b) => a.localeCompare(b))
-  }, [chats])
+    setAccountSearch({ query: accountQuery, names: [], error: '', loading: true })
+    const timer = setTimeout(() => {
+      searchAccounts(accountQuery).then((accounts) => {
+        if (active) setAccountSearch({ query: accountQuery, names: accounts.map((account) => account.username), error: '', loading: false })
+      }).catch((error) => {
+        if (active) setAccountSearch({ query: accountQuery, names: [], error: error.message || 'Unable to search accounts.', loading: false })
+      })
+    }, 250)
+    return () => { active = false; clearTimeout(timer) }
+  }, [accountQuery])
 
   const memberGlobeItems = useMemo(() => {
-    const q = groupNameStep ? '' : memberSearch.trim().toLowerCase()
     const selected = new Set(draftMembers.map((m) => m.toLowerCase()))
-    let list = allMemberNames.filter((n) => !selected.has(n.toLowerCase()))
-    // Only real contacts — never invent a typed name that isn't in the list
-    if (q) {
-      list = list.filter((n) => n.toLowerCase().includes(q))
-    }
+    const list = allMemberNames.filter((n) => !selected.has(n.toLowerCase()))
     return list.slice(0, 36).map((name) => ({ id: name, label: name }))
   }, [allMemberNames, draftMembers, memberSearch, groupNameStep])
 
@@ -685,26 +676,7 @@ export default function ChatScreen({
     })
   }, [likedItems, likedQuery])
 
-  const userDirectory = useMemo(() => {
-    const byLower = new Map()
-    for (const name of allMemberNames) {
-      const clean = String(name || '').trim()
-      if (!clean) continue
-      byLower.set(clean.toLowerCase(), clean)
-    }
-    for (const name of friends) {
-      const clean = String(name || '').trim()
-      if (!clean) continue
-      if (!byLower.has(clean.toLowerCase())) byLower.set(clean.toLowerCase(), clean)
-    }
-    return [...byLower.values()].sort((a, b) => a.localeCompare(b))
-  }, [allMemberNames, friends])
-
-  const filteredUsers = useMemo(() => {
-    const q = usersQuery.trim().toLowerCase()
-    if (!q) return []
-    return userDirectory.filter((n) => n.toLowerCase().includes(q))
-  }, [userDirectory, usersQuery])
+  const filteredUsers = allMemberNames
 
   useEffect(() => {
     writeStoredChats(chats)
@@ -3058,6 +3030,12 @@ export default function ChatScreen({
             <PersonIcon />
           </div>
           <ul className="chat-users-list">
+            {accountSearchError && <li role="alert">{accountSearchError}</li>}
+            {accountQuery && !accountSearchError && (
+              accountSearch.loading || accountSearch.query !== accountQuery
+                ? <li role="status">Searching accounts...</li>
+                : filteredUsers.length === 0 && <li role="status">No accounts found.</li>
+            )}
             {filteredUsers.map((name) => {
                 const friend = isFriend(name)
                 const initials = name
@@ -3144,6 +3122,11 @@ export default function ChatScreen({
           searchValue={groupNameStep ? draftName : memberSearch}
           onSearchChange={groupNameStep ? setDraftName : setMemberSearch}
           searchPlaceholder={groupNameStep ? 'Group name' : 'Search members'}
+          searchStatus={groupNameStep ? '' : accountSearchError || (accountQuery
+            ? accountSearch.loading || accountSearch.query !== accountQuery
+              ? 'Searching accounts...'
+              : allMemberNames.length === 0 ? 'No accounts found.' : ''
+            : 'Search for an account')}
           onSearchConfirm={
             composer?.mode === 'create' ? onMemberGlobeConfirm : undefined
           }

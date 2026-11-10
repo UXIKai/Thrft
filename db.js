@@ -380,6 +380,23 @@ export async function updateAccount(accountId, patch = {}) {
   })
 }
 
+export async function searchAccounts(query) {
+  const search = String(query || '').trim().replace(/^@/, '').slice(0, 64)
+  if (!search) return []
+  return prisma.account.findMany({
+    where: {
+      username: { not: '' },
+      OR: [
+        { username: { contains: search, mode: 'insensitive' } },
+        { displayName: { contains: search, mode: 'insensitive' } },
+      ],
+    },
+    select: { username: true, displayName: true, avatarUrl: true },
+    orderBy: { username: 'asc' },
+    take: 36,
+  })
+}
+
 export async function getPublicAccount(username) {
   const row = await findAccountByUsername(username)
   if (!row) return null

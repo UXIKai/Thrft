@@ -311,6 +311,12 @@ export async function fetchAccountPage(username) {
   return api(`/api/accounts/${encodeURIComponent(username)}`)
 }
 
+export async function searchAccounts(query) {
+  const data = await api(`/api/accounts?q=${encodeURIComponent(query)}`)
+  if (!Array.isArray(data.accounts)) throw new Error('Invalid account search response')
+  return data.accounts
+}
+
 export async function fetchMyAccount() {
   return api('/api/me/account')
 }
