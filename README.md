@@ -32,7 +32,7 @@ Wire real profiles later by setting `avatarUrl` (and labels) on entries in `src/
 
 Home color search previews the chosen color behind the card, starting white for All, with the flowing atmosphere enabled. The card is black except for Black-family shades, which use a white card to keep the selected-color text visible. Confirming a search or selecting an orbital color also saves that exact app background color and enables the effect.
 
-The product quantity number opens a selected-products page with the quantity at the top and each unit's selected size beneath its product name. Size selections persist in the bag.
+The product quantity number opens a selected-products page with the quantity at the top and each unit's selected size beneath its product name. Clicking a product container opens a screen showing only centered sizes; choosing one updates that unit without changing the quantity and returns to the list. Tap outside the sizes or press Escape to cancel. Size selections persist in the bag.
 
 ### Profile settings
 - Garment sizes use equal-sized buttons in centered rows, with the add-size control centered below them.

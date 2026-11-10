@@ -58,11 +58,22 @@ export default function ProductDetail({
 
   const [sizing, setSizing] = useState(false)
   const [quantityOpen, setQuantityOpen] = useState(false)
+  const [editingSizeIndex, setEditingSizeIndex] = useState(null)
 
   useEffect(() => {
     setSizing(false)
     setQuantityOpen(false)
+    setEditingSizeIndex(null)
   }, [product?.id])
+
+  useEffect(() => {
+    if (editingSizeIndex === null) return undefined
+    const dismiss = (event) => {
+      if (event.key === 'Escape') setEditingSizeIndex(null)
+    }
+    document.addEventListener('keydown', dismiss)
+    return () => document.removeEventListener('keydown', dismiss)
+  }, [editingSizeIndex])
 
   // Plus opens the size list; picking a size adds one and brings the stepper back.
   function start() {
@@ -119,6 +130,44 @@ export default function ProductDetail({
     ? title.slice(brand.length).replace(/^[\s:|-]+/, '')
     : title
 
+  if (editingSizeIndex !== null) {
+    return createPortal(
+      <div
+        className="glass-overlay product-detail-size-page"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Choose size"
+        onClick={(event) => {
+          if (event.target === event.currentTarget) setEditingSizeIndex(null)
+        }}
+      >
+        <div className="product-detail-sizes" role="group" aria-label="Sizes">
+          {(product.sizes?.length ? product.sizes : LETTER_SIZES).map((size) => (
+            <button
+              key={size}
+              type="button"
+              className="product-detail-size is-bare"
+              aria-pressed={selectedSizes[editingSizeIndex] === size}
+              autoFocus={selectedSizes[editingSizeIndex] === size}
+              onClick={() => {
+                const nextSizes = selectedSizes.map((selected, index) =>
+                  index === editingSizeIndex ? size : selected,
+                )
+                replaceItems(items.map((row) => row.id === product.id
+                  ? { ...row, size: nextSizes[nextSizes.length - 1], selectedSizes: nextSizes }
+                  : row))
+                setEditingSizeIndex(null)
+              }}
+            >
+              {size}
+            </button>
+          ))}
+        </div>
+      </div>,
+      stageEl,
+    )
+  }
+
   if (quantityOpen) {
     return createPortal(
       <div className="glass-overlay product-detail product-detail-quantity-page" role="dialog" aria-modal="true" aria-label="Selected products">
@@ -132,13 +181,20 @@ export default function ProductDetail({
         <div className="glass-overlay-body">
           <ul className="product-detail-selected-list">
             {selectedSizes.map((size, index) => (
-              <li key={index} className="product-detail-selected-item">
+              <li key={index}>
+                <button
+                  type="button"
+                  className="product-detail-selected-item is-bare"
+                  aria-label={`Change size for ${displayTitle || name}, item ${index + 1}, ${size || 'no size selected'}`}
+                  onClick={() => setEditingSizeIndex(index)}
+                >
                 {photo && <img src={photo} alt="" />}
                 <div>
                   {brand && <p>{brand}</p>}
                   <h2>{displayTitle || name}</h2>
                   <p>{size ? `Size: ${size}` : 'Size not selected'}</p>
                 </div>
+                </button>
               </li>
             ))}
           </ul>

@@ -410,6 +410,9 @@ html body .product-detail .glass-overlay-back {
 }
 
 .product-detail-selected-item {
+  width: 100%;
+  text-align: left;
+  color: inherit;
   display: flex;
   align-items: center;
   gap: 16px;
@@ -429,4 +432,21 @@ html body .product-detail .glass-overlay-back {
 .product-detail-selected-item h2 {
   margin: 4px 0;
   font-size: 1rem;
+}
+
+.product-detail-size-page {
+  align-items: center;
+  justify-content: center;
+  padding: calc(20px + env(safe-area-inset-top, 0px)) 20px calc(20px + env(safe-area-inset-bottom, 0px));
+  overflow-y: auto;
+}
+
+.product-detail-size-page .product-detail-sizes {
+  width: min(460px, 100%);
+  flex: 0 0 auto;
+}
+
+.product-detail-size-page .product-detail-size[aria-pressed='true'] {
+  text-decoration: underline;
+  text-underline-offset: 6px;
 }
