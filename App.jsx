@@ -549,18 +549,20 @@ export default function App() {
                   id={`home-${segment}-tab`}
                   aria-controls="home-product-panel"
                   aria-selected={homeSegment === segment}
+                  aria-label={segment === 'market' ? 'Market' : 'Store'}
                   className={`home-segment-tab is-bare${homeSegment === segment ? ' is-active' : ''}`}
                   onClick={() => setHomeSegment(segment)}
                 >
                   {segment === 'market' ? (
-                    <span className="home-market-dot" aria-hidden="true" />
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <path d="M3 10h18L18 4H6l-3 6Zm2 0v10m14-10v10M3 20h18M8 10V4m8 6V4M5 15h14" />
+                      <path d="M8 15v5m8-5v5" />
+                    </svg>
                   ) : (
-                    <svg viewBox="0 0 24 24" aria-hidden="true">
-                      <path d="M3.6 12.2 12.1 3.7a1.4 1.4 0 0 1 1-.4H20a1.2 1.2 0 0 1 1.2 1.2v6.9a1.4 1.4 0 0 1-.4 1L12.3 20a1.4 1.4 0 0 1-2 0L3.6 14.2a1.4 1.4 0 0 1 0-2z" fill="none" stroke="currentColor" strokeWidth="1.7" />
-                      <circle cx="16.4" cy="7.6" r="1.35" fill="currentColor" />
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <path d="M4 10v10h16V10M3 10l2-6h14l2 6M3 10a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 6 0M9 10V4m6 6V4M10 20v-6h4v6" />
                     </svg>
                   )}
-                  {segment === 'market' ? 'Market' : 'Store'}
                 </button>
               ))}
             </div>

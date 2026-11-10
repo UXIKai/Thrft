@@ -1912,11 +1912,3 @@ html body .tab-bar.is-pressed .tab-pill::before {
   width: 24px;
   height: 24px;
 }
-
-.home-market-dot {
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: #3dd68c;
-  box-shadow: 0 0 12px rgba(61, 214, 140, 0.45);
-}
