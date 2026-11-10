@@ -3,6 +3,7 @@ import StageSlot from './StageSlot.jsx'
 import { colorHex } from '../colorsCatalog.js'
 import { colorSchemeForHex } from '../appAppearance.js'
 import BrandLogo from './BrandLogo.jsx'
+import { BRAND_LOGO_TILE_PX, packBrandLogoLanes } from '../brandLogos.js'
 import './BrandGlobe.css'
 
 function GlobeBackIcon() {
@@ -655,7 +656,7 @@ function BrandGlobeView({
 
   const packed = useMemo(
     () =>
-      packCircleLanes(brands, {
+      showBrandLogos ? packBrandLogoLanes(brands, seatPx) : packCircleLanes(brands, {
         dense,
         veryDense,
         seatPx,
@@ -664,7 +665,7 @@ function BrandGlobeView({
         snug,
         safeR,
       }),
-    [brands, dense, veryDense, seatPx, fillR, compact, snug, safeR],
+    [brands, dense, veryDense, seatPx, fillR, compact, snug, safeR, showBrandLogos],
   )
   const slots = packed.slots
   const maxR = packed.maxR || fillR
@@ -883,10 +884,12 @@ function BrandGlobeView({
       // Keep every orbit chip mounted — seat is the center button only.
       // Soft-hide only when a chip actually slides into the select circle.
       // Carousel rings (Type / members) already clear the orb, so don't erase them.
-      const w = chipWidthPx(slot.display, dense, veryDense)
-      const h = chipHeightPx(dense, veryDense)
+      const w = showBrandLogos ? BRAND_LOGO_TILE_PX : chipWidthPx(slot.display, dense, veryDense)
+      const h = showBrandLogos ? BRAND_LOGO_TILE_PX : chipHeightPx(dense, veryDense)
       const hideR =
-        compact || snug
+        showBrandLogos
+          ? seatPx + Math.SQRT2 * BRAND_LOGO_TILE_PX / 2 + 12
+          : compact || snug
           ? Math.min(SEAT_HIDE_R, seatPx * 0.55 + 8)
           : SEAT_HIDE_R
       const inSeat = Math.hypot(slot.x, slot.y) < hideR
@@ -925,7 +928,7 @@ function BrandGlobeView({
       kept.push({ ...c, vis: c.baseVis * dim })
     }
     return kept
-  }, [layout, dense, veryDense, compact, snug, seatPx])
+  }, [layout, dense, veryDense, compact, snug, seatPx, showBrandLogos])
 
   // Scale seated name (whole words only) so it stays fully inside the circle.
   useLayoutEffect(() => {

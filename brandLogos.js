@@ -112,3 +112,27 @@ export function brandLogoUrl(name) {
   const domain = BRAND_DOMAINS[name]
   return domain ? `https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=128` : null
 }
+
+export const BRAND_LOGO_TILE_PX = 64
+const LOGO_CLEARANCE_PX = Math.SQRT2 * BRAND_LOGO_TILE_PX + 20
+
+export function packBrandLogoLanes(brands, seatPx = 59) {
+  const slots = []
+  let radius = seatPx + Math.SQRT2 * BRAND_LOGO_TILE_PX / 2 + 24
+  let ring = 0
+  let maxR = 0
+  while (slots.length < brands.length) {
+    const capacity = Math.max(1, Math.floor(
+      Math.PI / Math.asin(Math.min(1, LOGO_CLEARANCE_PX / (2 * radius))),
+    ))
+    const count = Math.min(capacity, brands.length - slots.length)
+    const step = Math.PI * 2 / count
+    for (let i = 0; i < count; i += 1) {
+      slots.push({ lon: (i + (ring % 2) * 0.5) * step, r: radius, ring })
+    }
+    maxR = radius
+    radius += LOGO_CLEARANCE_PX
+    ring += 1
+  }
+  return { slots, maxR }
+}

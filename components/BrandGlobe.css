@@ -751,12 +751,19 @@ html[data-bg-image='none'] .brand-globe.is-color-picker .brand-globe-stage .bran
   align-items: center;
   justify-content: center;
   width: 64px;
-  min-height: 48px;
+  height: 64px;
   gap: 0;
   text-align: center;
   font-size: 0.8rem;
   line-height: 1.2;
   white-space: normal;
+  box-sizing: border-box;
+  padding: 8px;
+  border-radius: 12px;
+  background: #eee;
+  color: #111;
+  text-shadow: none;
+  overflow: hidden;
 }
 
 .brand-globe .brand-logo-label.is-logo-only .brand-logo {
@@ -764,16 +771,28 @@ html[data-bg-image='none'] .brand-globe.is-color-picker .brand-globe-stage .bran
   height: 48px;
   object-fit: contain;
   pointer-events: none;
+  filter: drop-shadow(0 0 1px #444);
+}
+
+.brand-globe .brand-logo-label.is-logo-only > span {
+  max-width: 100%;
+  font-size: 0.65rem;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
 }
 
 .brand-globe-focus .brand-logo-label.is-logo-only {
   width: 80px;
-  min-height: 80px;
+  height: 80px;
 }
 
 .brand-globe-focus .brand-logo-label.is-logo-only .brand-logo {
-  width: 72px;
-  height: 72px;
+  width: 64px;
+  height: 64px;
+}
+
+.brand-globe.is-brand-picker .brand-globe-label {
+  padding: 0;
 }
 
 .brand-globe.is-brand-picker {
