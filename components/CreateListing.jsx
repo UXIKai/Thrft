@@ -529,7 +529,7 @@ export default function CreateListing({ onPosted } = {}) {
               </button>
             </div>
           ) : (
-            <button type="button" className="listing-photo-hit" aria-label="Add photos" title="Add photos" onClick={() => setPhotoChoice(true)}>
+            <button type="button" className="listing-photo-hit is-bare" aria-label="Add photos" title="Add photos" onClick={() => setPhotoChoice(true)}>
               {marketPhotos.length ? (
                 <span className="listing-photo-thumbs">
                   {marketPhotos.map((src, i) => (
@@ -559,7 +559,7 @@ export default function CreateListing({ onPosted } = {}) {
                 </button>
               </div>
             ) : (
-              <button type="button" className="listing-photo-hit" aria-label="Clothing scanner" title="Clothing scanner" disabled={scanning} onClick={() => setPhotoChoice(true)}>
+              <button type="button" className="listing-photo-hit is-bare" aria-label="Clothing scanner" title="Clothing scanner" disabled={scanning} onClick={() => setPhotoChoice(true)}>
                 {scanPreview ? (
                   <img className="listing-scanner-preview" src={scanPreview} alt="Scanned clothing cutout" style={{ transform: `scale(${scanZoom})` }} />
                 ) : (

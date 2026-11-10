@@ -815,6 +815,7 @@ html body .listing-wheel .listing-wheel-input {
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
   box-shadow: none;
+  overflow: hidden;
 }
 
 .listing-photo-drop {
@@ -848,6 +849,7 @@ html body .listing-photo-hit {
   width: 100%;
   height: 100%;
   cursor: pointer;
+  border-radius: inherit;
 }
 
 .listing-photo-choice {
