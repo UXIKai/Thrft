@@ -50,6 +50,8 @@ Brand orbitals show website logos instead of text for the orbiting brands and ce
 
 Product brand headings open a brand page containing every active catalog product and available marketplace listing for that brand. Catalog queries are brand-filtered without the home-feed cap; marketplace listings are paged through completely before brand matching. Sold/unlisted items and mock Market previews are excluded.
 
+Create → Closet removes the photo background with the AI scanner, crops transparent margins, and respects camera orientation. Failed scans display an error rather than saving a rough color-key replacement. The Straighten slider corrects angled photos; size adjustments keep the complete cutout inside the frame, and the saved image matches the preview.
+
 Create → Closet → camera chooser includes a centered plus button between Camera and Gallery. It opens a centered brand wheel; tapping the wheel expands a list with a bottom search field. Continue opens centered P/N Number and O/N Number fields (at least one is required). Matching products offer color choices; selecting one downloads its photo, removes the background with the existing scanner, and saves the cutout and color to Closet.
 
 The closet lookup brand wheel and searchable list show the published website icons for all 106 named built-in brands, retrieved through Google's favicon service using official website domains from `brandLogos.js`. Logos use a 40px column beside larger brand names, with 60px wheel spacing for clear alignment. Brand names remain visible and accessible. Other/custom brands have no assumed logo; failed image loads keep the name and log a warning. Logo delivery requires internet access.

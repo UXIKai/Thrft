@@ -122,72 +122,6 @@ export function filterClosetItems(items, { brand = '', category = '' } = {}) {
   })
 }
 
-/**
- * Rough background removal: sample corner color and punch out similar pixels.
- * Prototype stand-in until a real cutout API is wired.
- */
-function removeBackgroundSimple(file) {
-  return new Promise((resolve, reject) => {
-    if (!file) {
-      reject(new Error('No image'))
-      return
-    }
-    const url = URL.createObjectURL(file)
-    const img = new Image()
-    img.onload = () => {
-      try {
-        const max = 720
-        const scale = Math.min(1, max / Math.max(img.width, img.height))
-        const w = Math.max(1, Math.round(img.width * scale))
-        const h = Math.max(1, Math.round(img.height * scale))
-        const canvas = document.createElement('canvas')
-        canvas.width = w
-        canvas.height = h
-        const ctx = canvas.getContext('2d')
-        ctx.drawImage(img, 0, 0, w, h)
-        const imageData = ctx.getImageData(0, 0, w, h)
-        const { data } = imageData
-        const sample = (x, y) => {
-          const i = (y * w + x) * 4
-          return [data[i], data[i + 1], data[i + 2]]
-        }
-        const corners = [
-          sample(2, 2),
-          sample(w - 3, 2),
-          sample(2, h - 3),
-          sample(w - 3, h - 3),
-        ]
-        const avg = corners
-          .reduce(
-            (acc, c) => [acc[0] + c[0], acc[1] + c[1], acc[2] + c[2]],
-            [0, 0, 0],
-          )
-          .map((n) => n / corners.length)
-        const threshold = 48
-        for (let i = 0; i < data.length; i += 4) {
-          const dr = data[i] - avg[0]
-          const dg = data[i + 1] - avg[1]
-          const db = data[i + 2] - avg[2]
-          const dist = Math.sqrt(dr * dr + dg * dg + db * db)
-          if (dist < threshold) data[i + 3] = 0
-        }
-        ctx.putImageData(imageData, 0, 0)
-        const out = canvas.toDataURL('image/png')
-        URL.revokeObjectURL(url)
-        resolve(out)
-      } catch (err) {
-        URL.revokeObjectURL(url)
-        reject(err)
-      }
-    }
-    img.onerror = () => {
-      URL.revokeObjectURL(url)
-      reject(new Error('Could not read image'))
-    }
-    img.src = url
-  })
-}
-
 function blobToImage(blob) {
   return new Promise((resolve, reject) => {
     const url = URL.createObjectURL(blob)
@@ -219,6 +153,7 @@ async function cropToItem(blob) {
     let minY = h
     let maxX = -1
     let maxY = -1
+    let hasTransparency = false
     for (let y = 0; y < h; y += 1) {
       for (let x = 0; x < w; x += 1) {
         if (data[(y * w + x) * 4 + 3] > 24) {
@@ -226,10 +161,13 @@ async function cropToItem(blob) {
           if (x > maxX) maxX = x
           if (y < minY) minY = y
           if (y > maxY) maxY = y
+        } else {
+          hasTransparency = true
         }
       }
     }
-    if (maxX < 0) return canvas.toDataURL('image/png')
+    if (maxX < 0) throw new Error('No clothing found. Try a clearer photo.')
+    if (!hasTransparency) throw new Error('The background could not be separated. Try a clearer photo.')
     const pad = Math.round(Math.max(w, h) * 0.02)
     const sx = Math.max(0, minX - pad)
     const sy = Math.max(0, minY - pad)
@@ -245,21 +183,38 @@ async function cropToItem(blob) {
   }
 }
 
-/** Cuts the clothing out of a photo (AI model, falls back to color keying). */
+/** Normalize camera orientation before sending pixels to the cutout model. */
+async function orientedPhoto(file) {
+  const { img, url } = await blobToImage(file)
+  try {
+    const scale = Math.min(1, 2048 / Math.max(img.naturalWidth, img.naturalHeight))
+    const canvas = document.createElement('canvas')
+    canvas.width = Math.max(1, Math.round(img.naturalWidth * scale))
+    canvas.height = Math.max(1, Math.round(img.naturalHeight * scale))
+    canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height)
+    return await new Promise((resolve, reject) => {
+      canvas.toBlob((blob) => blob ? resolve(blob) : reject(new Error('Could not prepare photo')), 'image/png')
+    })
+  } finally {
+    URL.revokeObjectURL(url)
+  }
+}
+
+/** Cuts clothing out with the AI model; failures are reported to the scanner. */
 export async function removeImageBackground(file) {
   if (!file) throw new Error('No image')
   try {
     const { removeBackground } = await import('@imgly/background-removal')
-    const blob = await removeBackground(file)
+    const blob = await removeBackground(await orientedPhoto(file))
     return await cropToItem(blob)
-  } catch {
-    return removeBackgroundSimple(file)
+  } catch (error) {
+    throw new Error(`Could not remove the background. Check your connection and try a clear photo. ${error?.message || ''}`, { cause: error })
   }
 }
 
-/** Bakes a zoom (0.4–2.5) into the cutout, keeping the same frame size. */
-export async function scaleCutout(dataUrl, scale) {
-  if (!dataUrl || Math.abs(scale - 1) < 0.01) return dataUrl
+/** Fit a straightened cutout into its frame without clipping the item. */
+export async function scaleCutout(dataUrl, scale, angle = 0) {
+  if (!dataUrl || (Math.abs(scale - 1) < 0.01 && angle === 0)) return dataUrl
   const img = await new Promise((resolve, reject) => {
     const i = new Image()
     i.onload = () => resolve(i)
@@ -269,8 +224,15 @@ export async function scaleCutout(dataUrl, scale) {
   const canvas = document.createElement('canvas')
   canvas.width = img.width
   canvas.height = img.height
-  const w = img.width * scale
-  const h = img.height * scale
-  canvas.getContext('2d').drawImage(img, (img.width - w) / 2, (img.height - h) / 2, w, h)
+  const radians = angle * Math.PI / 180
+  const rotatedWidth = Math.abs(img.width * Math.cos(radians)) + Math.abs(img.height * Math.sin(radians))
+  const rotatedHeight = Math.abs(img.width * Math.sin(radians)) + Math.abs(img.height * Math.cos(radians))
+  const fit = Math.min(canvas.width / rotatedWidth, canvas.height / rotatedHeight)
+  const zoom = Math.min(1, Math.max(0.4, scale))
+  const ctx = canvas.getContext('2d')
+  ctx.translate(canvas.width / 2, canvas.height / 2)
+  ctx.rotate(radians)
+  ctx.scale(fit * zoom, fit * zoom)
+  ctx.drawImage(img, -img.width / 2, -img.height / 2)
   return canvas.toDataURL('image/png')
 }

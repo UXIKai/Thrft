@@ -213,6 +213,19 @@ export default function CreateListing({ onPosted } = {}) {
   const [scanPreview, setScanPreview] = useState('')
   const [scanning, setScanning] = useState(false)
   const [scanZoom, setScanZoom] = useState(1)
+  const [scanAngle, setScanAngle] = useState(0)
+  const [scanImage, setScanImage] = useState('')
+  useEffect(() => {
+    let active = true
+    if (!scanPreview) {
+      setScanImage('')
+      return undefined
+    }
+    scaleCutout(scanPreview, scanZoom, scanAngle)
+      .then((image) => { if (active) setScanImage(image) })
+      .catch((err) => { if (active) setPostError(String(err?.message || 'Could not straighten photo')) })
+    return () => { active = false }
+  }, [scanPreview, scanZoom, scanAngle])
   const [customCategories, setCustomCategories] = useState(() =>
     getCustomCategories(),
   )
@@ -367,11 +380,14 @@ export default function CreateListing({ onPosted } = {}) {
     setPhotoChoice(false)
     if (!file) return
     setScanning(true)
+    setScanPreview('')
+    setScanImage('')
     setPostError('')
     try {
       const cutout = await removeImageBackground(file)
       setScanPreview(cutout)
       setScanZoom(1)
+      setScanAngle(0)
     } catch (err) {
       setPostError(String(err?.message || 'Could not scan clothing'))
     } finally {
@@ -390,7 +406,7 @@ export default function CreateListing({ onPosted } = {}) {
       }
       setPosting(true)
       try {
-        const sizedImage = await scaleCutout(scanPreview, scanZoom)
+        const sizedImage = await scaleCutout(scanPreview, scanZoom, scanAngle)
         const item = addClosetItem({
           brand,
           category,
@@ -568,8 +584,8 @@ export default function CreateListing({ onPosted } = {}) {
               </div>
             ) : (
               <button type="button" className="listing-photo-hit is-bare" aria-label="Clothing scanner" title="Clothing scanner" disabled={scanning} onClick={() => setPhotoChoice(true)}>
-                {scanPreview ? (
-                  <img className="listing-scanner-preview" src={scanPreview} alt="Scanned clothing cutout" style={{ transform: `scale(${scanZoom})` }} />
+                {scanning ? <span role="status">Removing background...</span> : scanPreview ? (
+                  <img className="listing-scanner-preview" src={scanImage || scanPreview} alt="Scanned clothing cutout" />
                 ) : (
                   <ScannerIcon />
                 )}
@@ -577,16 +593,31 @@ export default function CreateListing({ onPosted } = {}) {
             )}
           </div>
           {scanPreview ? (
+            <>
             <input
               className="listing-slider listing-scan-zoom"
               type="range"
               min="0.4"
-              max="2.5"
+              max="1"
               step="0.05"
               aria-label="Photo size"
               value={scanZoom}
               onChange={(e) => setScanZoom(Number(e.target.value))}
             />
+            <label className="listing-field">
+              <span>Straighten</span>
+              <input
+                className="listing-slider"
+                type="range"
+                min="-180"
+                max="180"
+                step="1"
+                aria-label="Straighten clothing"
+                value={scanAngle}
+                onChange={(event) => setScanAngle(Number(event.target.value))}
+              />
+            </label>
+            </>
           ) : null}
         </>
       )}
