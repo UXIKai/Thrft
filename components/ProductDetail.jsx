@@ -121,7 +121,7 @@ export default function ProductDetail({
 
   if (quantityOpen) {
     return createPortal(
-      <div className="glass-overlay product-detail" role="dialog" aria-modal="true" aria-label="Selected products">
+      <div className="glass-overlay product-detail product-detail-quantity-page" role="dialog" aria-modal="true" aria-label="Selected products">
         <header className="glass-overlay-top">
           <button type="button" className="glass-overlay-back is-bare" aria-label="Back to product" onClick={() => setQuantityOpen(false)}>
             <BackIcon />
