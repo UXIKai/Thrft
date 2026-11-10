@@ -108,6 +108,7 @@ export function mapListing(row) {
   const brand = row.brand || ''
   return {
     id: row.id,
+    detailVariant: 'market',
     title: row.title || 'Listing',
     brand,
     brandName: brand || 'Brand',

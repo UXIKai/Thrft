@@ -30,6 +30,8 @@ Wire real profiles later by setting `avatarUrl` (and labels) on entries in `src/
 
 ## Layout & motion
 
+Market product details show the seller's title, brand, category, price, condition, and description beneath the photo, without Store size/quantity selectors. Brand/category values have no parenthetical labels and are not added to feed tiles. Market items add directly to the bag; Store sizing is unchanged.
+
 Brand orbital tiles are circular, with uncropped logo images sized to fit completely inside them. The selected brand's center circle automatically matches solid square source-logo backgrounds by inspecting opaque, similarly colored image corners. Logo images use a same-origin proxy so pixel inspection works. Transparent/non-square marks, the empty search circle, and failed logo loads retain white backgrounds.
 
 The brand picker has no bottom search bar: tap the empty center circle to type a brand name, then finish typing to preview and select the match. Opening search preserves the canvas dimensions and focuses without scrolling so the keyboard does not shift the circle. The standalone back button still closes the picker.

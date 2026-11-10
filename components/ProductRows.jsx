@@ -91,7 +91,7 @@ function CrawlRow({ row, rowIndex, onOpenProduct }) {
         >
           <div className="brand-row-seq" ref={seqRef}>
             {products.map((p) => (
-              <ProductCard key={`${row.id}-${p.id}`} product={p} onOpen={onOpenProduct} />
+              <ProductCard key={`${row.id}-${p.id}`} product={p} onOpen={(item) => onOpenProduct?.({ ...item, detailVariant: 'store' })} />
             ))}
           </div>
           <div className="brand-row-seq" aria-hidden>
@@ -99,7 +99,7 @@ function CrawlRow({ row, rowIndex, onOpenProduct }) {
               <ProductCard
                 key={`${row.id}-${p.id}-b`}
                 product={p}
-                onOpen={onOpenProduct}
+                onOpen={(item) => onOpenProduct?.({ ...item, detailVariant: 'store' })}
               />
             ))}
           </div>
@@ -108,7 +108,7 @@ function CrawlRow({ row, rowIndex, onOpenProduct }) {
               <ProductCard
                 key={`${row.id}-${p.id}-c`}
                 product={p}
-                onOpen={onOpenProduct}
+                onOpen={(item) => onOpenProduct?.({ ...item, detailVariant: 'store' })}
               />
             ))}
           </div>
@@ -229,7 +229,7 @@ export default function ProductRows({
         {!filteredCatalog.length && <p role="status">{status === 'loading' ? 'Loading products...' : 'No Market products found.'}</p>}
         <div className="market-product-grid">
           {filteredCatalog.map((product) => (
-            <ProductCard key={product.id} product={product} onOpen={onOpenProduct} />
+            <ProductCard key={product.id} product={product} onOpen={(item) => onOpenProduct?.({ ...item, detailVariant: 'market' })} />
           ))}
         </div>
       </section>

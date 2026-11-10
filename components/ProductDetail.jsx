@@ -57,6 +57,7 @@ export default function ProductDetail({
   )
   const qty = inBag
   const added = inBag > 0
+  const isMarket = product?.detailVariant === 'market'
 
   useEffect(() => {
     setStageEl(document.querySelector('.stage'))
@@ -87,6 +88,10 @@ export default function ProductDetail({
 
   // Plus opens the size list; picking a size adds one and brings the stepper back.
   function start() {
+    if (isMarket) {
+      if (!added) addItem(product)
+      return
+    }
     setSizing(true)
   }
 
@@ -251,7 +256,7 @@ export default function ProductDetail({
         <span className="glass-overlay-spacer" aria-hidden />
       </header>
       <div className="glass-overlay-body product-detail-body">
-        {brand && (
+        {!isMarket && brand && (
           <button
             type="button"
             className="product-detail-brand is-bare"
@@ -268,8 +273,19 @@ export default function ProductDetail({
             <span className="product-detail-photo-empty" aria-hidden />
           )}
         </div>
-        {displayTitle && <h1 className="product-detail-title">{displayTitle}</h1>}
-        <p className="product-detail-price">{product.price}</p>
+        {(isMarket ? title : displayTitle) && <h1 className="product-detail-title">{isMarket ? title : displayTitle}</h1>}
+        {isMarket && (
+          <div className="product-detail-market-info">
+            <div className="product-detail-market-meta">
+              {brand && <button type="button" className="product-detail-brand is-bare" onClick={() => onOpenBrand?.(product.brandId || '', brand)} aria-label={`View ${brand} brand page`}>{brand}</button>}
+              {product.category && <span>{product.category}</span>}
+            </div>
+            <p className="product-detail-price">{product.price}</p>
+            {product.condition && <p className="product-detail-condition">{product.condition}</p>}
+            {product.description && <p className="product-detail-description">{product.description}</p>}
+          </div>
+        )}
+        {!isMarket && <p className="product-detail-price">{product.price}</p>}
         {sizing && (
           <div className="product-detail-sizes-reveal">
             <div className="product-detail-sizes" role="listbox" aria-label="Size">
@@ -286,7 +302,17 @@ export default function ProductDetail({
             </div>
           </div>
         )}
-        <div
+        {isMarket ? (
+          <button
+            type="button"
+            className="is-bare"
+            aria-label={added ? 'Remove from bag' : 'Add to bag'}
+            aria-pressed={added}
+            onClick={() => added ? removeItem(product.id) : start()}
+          >
+            {added ? <DoneCheckIcon /> : <PlusIcon />}
+          </button>
+        ) : <div
           className={`product-detail-buy${added ? ' is-added' : ''}`}
           hidden={sizing}
         >
@@ -342,7 +368,7 @@ export default function ProductDetail({
               <path d="m5 12 4 4L19 6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </button>
-        </div>
+        </div>}
       </div>
     </div>,
     stageEl,

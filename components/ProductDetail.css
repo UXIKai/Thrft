@@ -7,6 +7,40 @@
   padding-top: 18px;
 }
 
+.product-detail-market-info {
+  width: min(100%, 360px);
+  display: grid;
+  gap: 12px;
+}
+
+.product-detail-market-meta {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+.product-detail-market-info p {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.product-detail-description {
+  white-space: pre-wrap;
+}
+
+.product-detail-body > button[aria-label$='bag'] {
+  width: 36px;
+  height: 36px;
+  padding: 6px;
+  color: inherit;
+}
+
+.product-detail-body > button[aria-label$='bag'] svg {
+  width: 24px;
+  height: 24px;
+}
+
 .product-detail-brand,
 .product-detail-title {
   margin: 0;

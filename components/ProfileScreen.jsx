@@ -1313,6 +1313,8 @@ export default function ProfileScreen({
                         className="profile-product-row"
                         onClick={() =>
                           onOpenProduct?.({
+                            ...p,
+                            detailVariant: spaceTab === 'market' ? 'market' : 'store',
                             id: p.id,
                             title: p.title,
                             price: p.price,
