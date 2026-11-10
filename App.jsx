@@ -114,7 +114,7 @@ export default function App() {
   const [tab, setTab] = useState('home')
   const [clothingType, setClothingType] = useState('all')
   const [homeColor, setHomeColor] = useState('')
-  const [homeSegment, setHomeSegment] = useState('market')
+  const [homeSegment, setHomeSegment] = useState('store')
   const [homeBrand, setHomeBrand] = useState(null) // { id, label } | null
   const [homePicker, setHomePicker] = useState(null) // 'brands' | 'category' | null
   const [homePickerPhase, setHomePickerPhase] = useState('closed')

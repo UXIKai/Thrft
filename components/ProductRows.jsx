@@ -110,7 +110,7 @@ function CrawlRow({ row, rowIndex, onOpenProduct }) {
  * signed-in user's search history and likes.
  */
 export default function ProductRows({
-  segment = 'market',
+  segment = 'store',
   onOpenProduct,
   clothingType = 'all',
   brandId = '',
@@ -145,14 +145,14 @@ export default function ProductRows({
 
   useEffect(() => {
     let alive = true
-    if (segment === 'market' && !isSupabaseConfigured()) {
+    if (segment === 'store' && !isSupabaseConfigured()) {
       setStatus('ready')
       setListings([])
       return undefined
     }
     setStatus('loading')
     setError('')
-    const request = segment === 'market'
+    const request = segment === 'store'
       ? fetchAvailableListings({ limit: 240 })
       : fetchStoreProducts()
     request

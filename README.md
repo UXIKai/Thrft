@@ -30,7 +30,7 @@ Wire real profiles later by setting `avatarUrl` (and labels) on entries in `src/
 
 ## Layout & motion
 
-Home has equal-width, filled storefront (Store, left) and basket (Market, right) icon tabs with labels underneath between the leaderboard and product cards, spanning the mobile screen. Market browses personal Supabase listings; Store browses active brand-store products. Each feed uses only its own products, including when personalizing or showing empty results.
+Home has equal-width, filled storefront (Store, left) and basket (Market, right) icon tabs with labels underneath between the leaderboard and product cards, spanning the mobile screen. Store (the default tab) shows the Supabase listings cards; Market shows active catalog products from `/api/products`. Each feed uses only its own products, including when personalizing or showing empty results.
 
 Home color search previews the chosen color behind the card, starting white for All, with the flowing atmosphere enabled. The card is black except for Black-family shades, which use a white card to keep the selected-color text visible. Confirming a search or selecting an orbital color also saves that exact app background color and enables the effect.
 
