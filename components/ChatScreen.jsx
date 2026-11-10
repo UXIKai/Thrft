@@ -801,6 +801,7 @@ export default function ChatScreen({
   }
 
   function openCreateGroup() {
+    setSearchOpen(false)
     setDraftName('')
     setDraftMembers([])
     setMemberDraft('')
@@ -2721,10 +2722,10 @@ export default function ChatScreen({
         </section>
       ) : null}
 
-      <StageSlot active={!isDesktop}>
-          <div className={`chat-bottom-dock${isDesktop ? ' is-desktop' : ''}${composer ? ' is-sheet-open' : ''}${usersPickerOpen || memberGlobeVisible ? ' is-covered' : ''}`}>
-            <div className={`chat-search-bar${composer ? ' is-sheet-open' : ''}${searchOpen || composer ? '' : ' is-collapsed'}`}>
-              {searchOpen || composer ? (
+      {!composer && <StageSlot active={!isDesktop}>
+          <div className={`chat-bottom-dock${isDesktop ? ' is-desktop' : ''}${usersPickerOpen || memberGlobeVisible ? ' is-covered' : ''}`}>
+            <div className={`chat-search-bar${searchOpen ? '' : ' is-collapsed'}`}>
+              {searchOpen ? (
                 <button
                   type="button"
                   className="chat-dock-search chat-dock-new"
@@ -2737,10 +2738,10 @@ export default function ChatScreen({
                   <SearchIcon />
                 </button>
               ) : null}
-              {searchOpen || composer ? (
+              {searchOpen ? (
                 <input
                   id="chat-search-input"
-                  className={`chat-search-input${composer ? ' is-sheet-hidden' : ''}`}
+                  className="chat-search-input"
                   type="text"
                   inputMode="search"
                   name="thrft_chat_search"
@@ -2752,15 +2753,13 @@ export default function ChatScreen({
                   data-form-type="other"
                   placeholder=""
                   aria-label="Search chats"
-                  aria-hidden={composer ? true : undefined}
-                  tabIndex={composer ? -1 : undefined}
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                 />
               ) : null}
               <button
                 type="button"
-                className={`chat-search-add${searchOpen ? ' is-search-open' : ''}${composer ? ' is-sheet-hidden' : ''}`}
+                className={`chat-search-add${searchOpen ? ' is-search-open' : ''}`}
                 aria-label={searchOpen ? 'Close search' : 'New chat'}
                 onClick={() => {
                   if (searchOpen) {
@@ -2775,7 +2774,7 @@ export default function ChatScreen({
               </button>
             </div>
           </div>
-      </StageSlot>
+      </StageSlot>}
 
       {menuId &&
         menuPos &&
