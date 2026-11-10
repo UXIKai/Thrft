@@ -1584,7 +1584,7 @@ html body .glass-sheet.profile-photo-sheet .glass-sheet-head.profile-photo-sheet
   width: 100%;
   margin: 0;
   gap: 0;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .profile-spaces-inline .profile-listing-tabs.is-panel {
@@ -2230,9 +2230,14 @@ html body .glass-sheet.profile-photo-sheet .glass-sheet-head.profile-photo-sheet
 .profile-panel-mode:focus,
 .profile-panel-mode:active {
   width: 100%;
-  height: 40px;
-  display: grid;
-  place-items: center;
+  min-height: 64px;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 6px 0;
   border: none;
   border-radius: 0;
   background: transparent !important;
@@ -2249,6 +2254,19 @@ html body .glass-sheet.profile-photo-sheet .glass-sheet-head.profile-photo-sheet
 
 .profile-panel-mode.is-active {
   color: light-dark(rgb(0, 0, 0), #fff);
+}
+
+.profile-panel-mode .profile-mode-ico {
+  width: 28px;
+  height: 28px;
+}
+
+.profile-panel-mode span {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-transform: uppercase;
 }
 
 .profile-mode-ico {

@@ -221,6 +221,26 @@ export async function fetchAvailableListings({ limit = 120 } = {}) {
   return (data || []).map(mapListing)
 }
 
+/** Listings posted by the signed-in user (available and sold). */
+export async function fetchMyListings({ limit = 200 } = {}) {
+  const supabase = await requireClient()
+  const sellerId = await getAuthUserId()
+  if (!sellerId) return []
+  const { data, error } = await supabase
+    .from('listings')
+    .select('*')
+    .eq('seller_id', sellerId)
+    .order('created_at', { ascending: false })
+    .limit(limit)
+
+  if (error) {
+    const err = new Error(error.message || 'Could not load listings')
+    err.code = error.code || 'fetch_failed'
+    throw err
+  }
+  return (data || []).map(mapListing)
+}
+
 /**
  * Available listings for one brand (by slug id and/or display name).
  */

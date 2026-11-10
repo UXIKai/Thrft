@@ -13,6 +13,7 @@ import LiquidGlassDefs from './components/LiquidGlassDefs.jsx'
 import CartScreen from './components/CartScreen.jsx'
 import ProductDetail from './components/ProductDetail.jsx'
 import ProductRows from './components/ProductRows.jsx'
+import { MarketIcon, StoreIcon } from './components/SegmentIcons.jsx'
 import ProfileScreen from './components/ProfileScreen.jsx'
 import SavedScreen from './components/SavedScreen.jsx'
 import TabBar from './components/TabBar.jsx'
@@ -552,17 +553,7 @@ export default function App() {
                   className={`home-segment-tab is-bare${homeSegment === segment ? ' is-active' : ''}`}
                   onClick={() => setHomeSegment(segment)}
                 >
-                  {segment === 'market' ? (
-                    <svg viewBox="0 0 24 24" aria-hidden="true">
-                      <path fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" d="M7 10 10 3.5M17 10l-3-6.5" />
-                      <path fill="currentColor" fillRule="evenodd" d="M2.5 9h19a1 1 0 0 1 1 1v1.2a1 1 0 0 1-1 1h-.3l-1.6 8.1a1.6 1.6 0 0 1-1.6 1.3H6a1.6 1.6 0 0 1-1.6-1.3l-1.6-8.1h-.3a1 1 0 0 1-1-1V10a1 1 0 0 1 1-1Zm5.3 5a.9.9 0 0 0-.9.9v3.4a.9.9 0 0 0 1.8 0v-3.4a.9.9 0 0 0-.9-.9Zm4.2 0a.9.9 0 0 0-.9.9v3.4a.9.9 0 0 0 1.8 0v-3.4a.9.9 0 0 0-.9-.9Zm4.2 0a.9.9 0 0 0-.9.9v3.4a.9.9 0 0 0 1.8 0v-3.4a.9.9 0 0 0-.9-.9Z" />
-                    </svg>
-                  ) : (
-                    <svg viewBox="0 0 24 24" aria-hidden="true">
-                      <path fill="currentColor" d="M4 2.5h3.5L6.4 9.6a2.2 2.2 0 0 1-4.4 0Zm4.2 0h3.5l-.1 7.1a2.2 2.2 0 0 1-4.4 0Zm4.1 0h3.5l1 7.1a2.2 2.2 0 0 1-4.4 0Zm4.2 0H20l2 7.1a2.2 2.2 0 0 1-4.4 0Z" />
-                      <path fill="currentColor" fillRule="evenodd" d="M3 13.4c1 .4 2.1.3 3-.3 1 .6 2.2.6 3.2 0 1 .6 2.2.6 3.2 0 1 .6 2.2.6 3.2 0 1 .6 2.2.6 3.2 0 .9.6 2 .7 3 .3v8.1H3v-8.1Zm3 2.4v5.7h4.6v-5.7H6Zm7.4 0v3.6H18v-3.6h-4.6Z" />
-                    </svg>
-                  )}
+                  {segment === 'market' ? <MarketIcon /> : <StoreIcon />}
                   <span>{segment === 'market' ? 'Market' : 'Store'}</span>
                 </button>
               ))}

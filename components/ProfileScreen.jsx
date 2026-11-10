@@ -12,7 +12,8 @@ import {
 } from '../closet.js'
 import { getCustomCategories } from '../customCatalog.js'
 import { LISTING_BRANDS, LISTING_CATEGORIES } from '../listingCatalog.js'
-import { createListing, fetchSellerSalesStats, formatListingPrice } from '../listings.js'
+import { createListing, fetchMyListings, fetchSellerSalesStats, formatListingPrice } from '../listings.js'
+import { ClosetIcon, MarketIcon, StoreIcon } from './SegmentIcons.jsx'
 import { getSupabase, isSupabaseConfigured } from '../supabase.js'
 import BrandGlobe from './BrandGlobe.jsx'
 import OrbitCarousel from './OrbitCarousel.jsx'
@@ -477,51 +478,6 @@ function TruckIcon() {
   )
 }
 
-/** Storefront — not a house. */
-function StorefrontIcon() {
-  return (
-    <svg className="profile-mode-ico" viewBox="0 0 24 24" aria-hidden>
-      <path
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.7"
-        strokeLinejoin="round"
-        strokeLinecap="round"
-        d="M4.4 9.2 5.6 5.4h12.8l1.2 3.8c.15.5-.2 1-.7 1H5.1c-.5 0-.85-.5-.7-1z"
-      />
-      <path
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.7"
-        strokeLinejoin="round"
-        strokeLinecap="round"
-        d="M5.2 10.2V19c0 .7.5 1.2 1.2 1.2h11.2c.7 0 1.2-.5 1.2-1.2v-8.8M9.2 20.2v-5.2h5.6v5.2"
-      />
-    </svg>
-  )
-}
-
-function ClosetIcon() {
-  return (
-    <svg className="profile-mode-ico" viewBox="0 0 24 24" aria-hidden>
-      <path
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        strokeLinejoin="round"
-        d="M5.2 3.8h13.6A1.4 1.4 0 0 1 20.2 5.2v14.4a1.4 1.4 0 0 1-1.4 1.4H5.2a1.4 1.4 0 0 1-1.4-1.4V5.2A1.4 1.4 0 0 1 5.2 3.8z"
-      />
-      <path
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        strokeLinecap="round"
-        d="M12 3.8v17.2M8.2 11.2h1.6M14.2 11.2h1.6"
-      />
-    </svg>
-  )
-}
-
 function EmptyBoxIcon() {
   return (
     <svg className="pf-empty-state-ico" viewBox="0 0 64 64" aria-hidden>
@@ -604,7 +560,8 @@ function PriceTagIcon() {
  * Mock data / UI-only actions.
  */
 const SPACE_MODES = [
-  { id: 'store', label: 'Store', Icon: StorefrontIcon },
+  { id: 'store', label: 'Store', Icon: StoreIcon },
+  { id: 'market', label: 'Market', Icon: MarketIcon },
   { id: 'closet', label: 'Closet', Icon: ClosetIcon },
 ]
 
@@ -659,9 +616,10 @@ export default function ProfileScreen({
     setClosetSplit(false)
     setClosetSelected(null)
   }
-  const [spaceTab, setSpaceTab] = useState('store') // 'store' | 'closet'
+  const [spaceTab, setSpaceTab] = useState('store') // 'store' | 'market' | 'closet'
   const [panelListingTab, setPanelListingTab] = useState('active')
   const [storeProducts, setStoreProducts] = useState([])
+  const [marketListings, setMarketListings] = useState([])
   const [closetItems, setClosetItems] = useState([])
   const [closetBrand, setClosetBrand] = useState('All')
   const [closetGlobe, setClosetGlobe] = useState(null)
@@ -828,6 +786,24 @@ export default function ProfileScreen({
       })
       .catch(() => {
         if (alive) setStoreProducts([])
+      })
+    return () => {
+      alive = false
+    }
+  }, [spaceTab, userProfile?.accountId, account?.id])
+
+  useEffect(() => {
+    if (spaceTab !== 'market' || !isSupabaseConfigured()) {
+      if (spaceTab === 'market') setMarketListings([])
+      return undefined
+    }
+    let alive = true
+    fetchMyListings()
+      .then((items) => {
+        if (alive) setMarketListings(items)
+      })
+      .catch(() => {
+        if (alive) setMarketListings([])
       })
     return () => {
       alive = false
@@ -1277,30 +1253,30 @@ export default function ProfileScreen({
         </button>
       </section>
 
-      <section className="profile-block profile-spaces-inline" aria-label="Store and Closet">
+      <section className="profile-block profile-spaces-inline" aria-label="Store, Market and Closet">
         <div
           className="profile-panel-modes is-inline"
           role="tablist"
-          aria-label="Store and Closet"
+          aria-label="Store, Market and Closet"
         >
           {SPACE_MODES.map(({ id, label, Icon }) => (
             <button
               key={id}
               type="button"
               role="tab"
-              aria-label={label}
               aria-selected={spaceTab === id}
               className={`profile-panel-mode ${spaceTab === id ? 'is-active' : ''}`}
               onMouseDown={holdScroll}
               onClick={() => switchSpace(id)}
             >
-              <Icon />
+              <Icon className="profile-mode-ico" />
+              <span>{label}</span>
             </button>
           ))}
         </div>
 
         <div className="profile-spaces-inline-body">
-          {spaceTab === 'store' && (
+          {spaceTab !== 'closet' && (
             <div
               className="profile-listing-tabs is-panel"
               role="tablist"
@@ -1330,9 +1306,13 @@ export default function ProfileScreen({
               </button>
             </div>
           )}
-          {spaceTab === 'store' ? (
+          {spaceTab !== 'closet' ? (
             (() => {
-              const rows = storeProducts.filter((p) => p.status === panelListingTab)
+              const rows = spaceTab === 'store'
+                ? storeProducts.filter((p) => p.status === panelListingTab)
+                : marketListings.filter((p) =>
+                    panelListingTab === 'sold' ? p.status === 'sold' : p.status === 'available',
+                  )
               if (!rows.length) {
                 return (
                   <div className="pf-empty-state">
