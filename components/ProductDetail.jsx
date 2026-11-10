@@ -160,19 +160,16 @@ export default function ProductDetail({
     ? title.slice(brand.length).replace(/^[\s:|-]+/, '')
     : title
 
-  if (sizing && !isMarket) {
-    const options = productSizeOptions(product)
-    return createPortal(
-      <div className="glass-overlay product-detail product-store-size-panel" role="dialog" aria-modal="true" aria-label="Select size">
+  const sizePanel = sizing && !isMarket ? (
+      <section className="product-store-size-panel" aria-label="Select size">
         <header className="product-store-size-header">
           <button type="button" className="is-bare" aria-label={`Size metric ${sizeMetric}; switch to ${sizeMetric === 'EN' ? 'EU' : 'EN'}`} onClick={() => setSizeMetric(sizeMetric === 'EN' ? 'EU' : 'EN')}>
             <span aria-hidden="true">{sizeMetric === 'EN' ? <><strong>EN</strong>/EU</> : <>EN/<strong>EU</strong></>}</span>
           </button>
-          <h1>Select size</h1>
+          <h2>Select size</h2>
           <button type="button" className="is-bare" aria-label="Close size selection" onClick={() => setSizing(false)}>×</button>
         </header>
-        <div className="glass-overlay-body product-store-size-content">
-          <p className="product-detail-price">{product.price}</p>
+        <div className="product-store-size-content">
           {showInformation ? (
             <section className="product-store-information" aria-label="Product information">
               <h2>{displayTitle || name}</h2>
@@ -184,7 +181,7 @@ export default function ProductDetail({
           ) : (
             <>
               <div className="product-store-size-grid" role="group" aria-label={`${sizeMetric} sizes`}>
-                {options.map((option) => (
+                {productSizeOptions(product).map((option) => (
                   <button type="button" className="product-detail-size is-bare" key={option.value} onClick={() => pickSize(option.value)}>
                     {sizeMetric === 'EU' ? option.eu : option.en}
                   </button>
@@ -195,10 +192,8 @@ export default function ProductDetail({
             </>
           )}
         </div>
-      </div>,
-      stageEl,
-    )
-  }
+      </section>
+  ) : null
 
   if (editingSizeIndex !== null) {
     return createPortal(
@@ -341,22 +336,7 @@ export default function ProductDetail({
           </div>
         )}
         {!isMarket && <p className="product-detail-price">{product.price}</p>}
-        {sizing && (
-          <div className="product-detail-sizes-reveal">
-            <div className="product-detail-sizes" role="listbox" aria-label="Size">
-              {(product.sizes?.length ? product.sizes : LETTER_SIZES).map((size) => (
-                <button
-                  key={size}
-                  type="button"
-                  className="product-detail-size is-bare"
-                  onClick={() => pickSize(size)}
-                >
-                  {size}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
+        {sizePanel}
         {isMarket ? (
           <button
             type="button"
@@ -367,7 +347,7 @@ export default function ProductDetail({
           >
             {added ? <DoneCheckIcon /> : <PlusIcon />}
           </button>
-        ) : <div
+        ) : !sizing && <div
           className={`product-detail-buy${added ? ' is-added' : ''}`}
           hidden={sizing}
         >

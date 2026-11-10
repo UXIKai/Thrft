@@ -30,7 +30,7 @@ Wire real profiles later by setting `avatarUrl` (and labels) on entries in `src/
 
 ## Layout & motion
 
-Store plus buttons open a dedicated Select Size panel with an EN/EU display toggle and Information view for description and materials. Product `sizeConversions` override the general footwear chart; unconverted labels stay unchanged. Bag selections retain the original size value. Materials are shown only when supplied, otherwise explicitly marked unavailable.
+Store plus buttons expand an inline Select Size panel beneath the product, keeping its photo, title, and price visible, with an EN/EU display toggle and Information view for description and materials. Product `sizeConversions` override the general footwear chart; unconverted labels stay unchanged. Bag selections retain the original size value. Materials are shown only when supplied, otherwise explicitly marked unavailable.
 
 Market product details show the seller's title, brand, category, price, condition, and description beneath the photo, without Store size/quantity selectors. Brand/category values have no parenthetical labels and are not added to feed tiles. Market items add directly to the bag; Store sizing is unchanged.
 

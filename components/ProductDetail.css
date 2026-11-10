@@ -11,15 +11,19 @@
   display: grid;
   grid-template-columns: 72px 1fr 72px;
   align-items: center;
-  padding: max(20px, env(safe-area-inset-top, 0px)) 16px 20px;
+  padding: 8px 0 16px;
   color: light-dark(#111, #fff);
 }
 
-.product-store-size-header h1 {
+.product-store-size-header h2 {
   margin: 0;
   text-align: center;
   text-transform: uppercase;
   font-size: 1.15rem;
+}
+
+.product-store-size-panel {
+  width: min(100%, 640px);
 }
 
 .product-store-size-header button {
@@ -400,8 +404,12 @@ html body .product-detail .glass-overlay-back {
 }
 
 .product-detail .product-detail-body {
-  justify-content: center;
-  padding-top: 0;
+  justify-content: flex-start;
+  padding-top: 18px;
+}
+
+.product-detail-body > * {
+  flex-shrink: 0;
 }
 
 /* In the bag: minus, number, plus in one row (the number replaces the add plus) */
