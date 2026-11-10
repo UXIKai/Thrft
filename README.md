@@ -49,6 +49,7 @@ Home color search previews the chosen color behind the card, starting white for 
 The product quantity number opens a selected-products page with the quantity at the top and each unit's selected size beneath its product name. Clicking a product container opens a screen showing only centered sizes; tapping a size only selects it; the bottom check mark saves it for that unit (quantity unchanged) and returns to the list. Tap outside the sizes or press Escape to cancel. Both pages close with a check mark at the bottom center (no top back button). Size selections persist in the bag.
 
 ### Profile settings
+- Settings places the back button beside the narrower Profile container, with the moon toggle on its right.
 - Choosing a black or near-black Background swatch/custom color turns off the dark-mode toggle and saves that preference. The chosen background stays black, with automatic white text for contrast; Home search colors do not change the saved theme.
 - A Dim–Bright slider below Short–Tall controls app brightness live and persists on this device. Bright preserves the normal appearance; Dim adds a screen-wide dark overlay without changing the theme or device brightness.
 - Tapping the profile photo pops it up full-size with a camera icon centered at the bottom that opens the system photo picker; tap outside or press Escape to close. There is no camera badge on the avatar.
