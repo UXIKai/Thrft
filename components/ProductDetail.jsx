@@ -170,7 +170,15 @@ export default function ProductDetail({
       <section className="product-store-size-panel" aria-label="Select size">
         <header className="product-store-size-header">
           {numericSizes ? <button type="button" className="is-bare" aria-label={`Size metric ${sizeMetric}; switch to ${sizeMetric === 'EN' ? 'EU' : 'EN'}`} onClick={() => setSizeMetric(sizeMetric === 'EN' ? 'EU' : 'EN')}>{sizeMetric}</button> : <span />}
-          <span aria-hidden="true" />
+          <button
+            type="button"
+            className="product-detail-size-close is-bare"
+            aria-label="Close size selection"
+            aria-expanded="true"
+            onClick={() => setSizing(false)}
+          >
+            <PlusIcon />
+          </button>
           <div className="product-store-size-actions">
           </div>
         </header>
@@ -351,19 +359,6 @@ export default function ProductDetail({
           </div>
         )}
         {!isMarket && <p className="product-detail-price">{product.price}</p>}
-        {sizing && !isMarket && (
-          <div className="product-detail-buy">
-            <button
-              type="button"
-              className="product-detail-add is-open"
-              aria-label="Close size selection"
-              aria-expanded="true"
-              onClick={() => setSizing(false)}
-            >
-              <PlusIcon />
-            </button>
-          </div>
-        )}
         {sizePanel}
         {isMarket ? (
           <button

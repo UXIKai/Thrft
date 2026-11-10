@@ -38,6 +38,19 @@
   gap: 12px;
 }
 
+.product-detail-size-close {
+  display: grid;
+  place-items: center;
+  justify-self: center;
+  width: 36px;
+}
+
+.product-detail-size-close svg {
+  width: 22px;
+  height: 22px;
+  transform: rotate(45deg);
+}
+
 .product-detail-format-toggle {
   position: absolute;
   top: calc(max(16px, env(safe-area-inset-top, 0px)) + 10px);
