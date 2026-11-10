@@ -55,6 +55,12 @@ export default function HomeFilterLinks({
     if (draftCategory !== categoryId) onPickCategory?.(draftCategory)
   }
 
+  function resetColor() {
+    setDraftColor('')
+    applySearchBackground('#ffffff')
+    if (colorId) onPickColor?.('')
+  }
+
   useEffect(() => {
     if (!open) return undefined
     applyBackgroundImage('atmosphere')
@@ -178,6 +184,18 @@ export default function HomeFilterLinks({
             >
               <svg viewBox="0 0 24 24" aria-hidden>
                 <path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              className="home-search-reset"
+              aria-label="Reset color"
+              title="Reset color"
+              disabled={!draftColor}
+              onClick={resetColor}
+            >
+              <svg viewBox="0 0 24 24" aria-hidden>
+                <path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3M4.5 4v4h4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </button>
           </div>
