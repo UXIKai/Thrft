@@ -724,20 +724,6 @@ export default function CreateListing({ onPosted } = {}) {
         </span>
       </label>
 
-      {!isCloset && !isMarket && <label className="listing-field">
-        <span className={`listing-box${materials ? ' is-filled' : ''}`}>
-          <span className="listing-label">Materials</span>
-          <textarea
-            className="listing-input listing-textarea is-inset"
-            placeholder=" "
-            aria-label="Materials"
-            rows={3}
-            maxLength={2000}
-            value={materials}
-            onChange={(event) => setMaterials(event.target.value)}
-          />
-        </span>
-      </label>}
       {isCloset && (
         <>
       <label className="listing-field">
@@ -798,6 +784,20 @@ export default function CreateListing({ onPosted } = {}) {
               />
             </span>
           </label>
+          {!isMarket && <label className="listing-field">
+            <span className={`listing-box${materials ? ' is-filled' : ''}`}>
+              <span className="listing-label">Materials</span>
+              <textarea
+                className="listing-input listing-textarea is-inset"
+                placeholder=" "
+                aria-label="Materials"
+                rows={3}
+                maxLength={2000}
+                value={materials}
+                onChange={(event) => setMaterials(event.target.value)}
+              />
+            </span>
+          </label>}
         </>
       )}
 
