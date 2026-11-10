@@ -1848,10 +1848,10 @@ html body .tab-bar.is-dragging .tab-pill {
 
 @media (max-width: 719px) {
   html body .tab-bar .tab-pill {
-    top: 0.5px;
-    bottom: 0.5px;
-    left: calc(var(--tab-i, 0) * 20% + 0.5px);
-    width: calc(20% - 1px);
+    top: 4px;
+    bottom: 4px;
+    left: calc(var(--tab-i, 0) * 20% + 4px);
+    width: calc(20% - 8px);
   }
 }
 
