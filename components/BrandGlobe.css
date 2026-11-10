@@ -813,6 +813,49 @@ html .brand-globe.is-brand-picker .brand-globe-center-hole {
   box-shadow: none;
 }
 
+.brand-globe-center-search {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 61;
+  box-sizing: border-box;
+  width: min(118px, 32vw);
+  height: min(118px, 32vw);
+  padding: 14px;
+  border: none;
+  border-radius: 50%;
+  background: #fff;
+  color: #111;
+  -webkit-text-fill-color: #111;
+  caret-color: #111;
+  font: inherit;
+  font-size: 16px;
+  text-align: center;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.brand-globe-center-search.is-editing {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.brand-globe-brand-back {
+  position: absolute;
+  bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+  left: 20px;
+  z-index: 65;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: #fff;
+}
+
 .brand-globe.is-brand-picker .brand-globe-focus {
   background: #fff;
   color: #111;

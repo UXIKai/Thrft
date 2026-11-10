@@ -579,6 +579,14 @@ function BrandGlobeView({
   showBrandLogos = title === 'Brands',
 }) {
   const [focusId, setFocusId] = useState(null)
+  const [centerSearching, setCenterSearching] = useState(false)
+  const centerInputRef = useRef(null)
+  const centerSearchAvailable = showBrandLogos && typeof onSearchChange === 'function'
+
+  function openCenterSearch() {
+    setCenterSearching(true)
+    centerInputRef.current?.focus()
+  }
   const [brushing, setBrushing] = useState(false)
   const [rotating, setRotating] = useState(false)
   const [panX, setPanX] = useState(0)
@@ -1184,7 +1192,7 @@ function BrandGlobeView({
 
     function onWheel(event) {
       // Let the search field keep native caret scrolling.
-      if (event.target?.closest?.('.brand-globe-search-row, .brand-globe-search-input')) {
+      if (event.target?.closest?.('.brand-globe-search-row, .brand-globe-search-input, .brand-globe-center-search')) {
         return
       }
       event.preventDefault()
@@ -1244,7 +1252,7 @@ function BrandGlobeView({
 
   function onPointerDown(event) {
     if (event.button != null && event.button !== 0) return
-    if (event.target?.closest?.('.brand-globe-search-row, .brand-globe-search'))
+    if (event.target?.closest?.('.brand-globe-search-row, .brand-globe-search, .brand-globe-center-search'))
       return
     if (showBrandLogos) {
       event.preventDefault()
@@ -1385,6 +1393,9 @@ function BrandGlobeView({
       setBrushing(false)
       setChoosing(false)
       gestureRef.current = null
+      if (event.type !== 'pointercancel' && centerTapRef.current && !movedRef.current && !focusBrand && centerSearchAvailable) {
+        openCenterSearch()
+      }
       if (event.type !== 'pointercancel' && centerTapRef.current) {
         let selected = movedRef.current ? null : focusBrand
         if (movedRef.current && Math.hypot(panXRef.current, panYRef.current) > 12) {
@@ -1613,6 +1624,30 @@ function BrandGlobeView({
               },
             )}
           </div>
+          {centerSearchAvailable && (
+            <input
+              ref={centerInputRef}
+              className={`brand-globe-center-search${centerSearching ? ' is-editing' : ''}`}
+              aria-label="Search brands"
+              type="text"
+              inputMode="search"
+              autoComplete="off"
+              autoCorrect="off"
+              autoCapitalize="off"
+              spellCheck={false}
+              value={searchValue ?? ''}
+              placeholder="Search"
+              tabIndex={centerSearching ? 0 : -1}
+              onChange={(event) => onSearchChange(event.target.value)}
+              onBlur={() => setCenterSearching(false)}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter' || event.key === 'Escape') {
+                  event.preventDefault()
+                  event.currentTarget.blur()
+                }
+              }}
+            />
+          )}
           <button
             ref={focusBtnRef}
             type="button"
@@ -1624,7 +1659,7 @@ function BrandGlobeView({
             aria-label={
               focusBrand
                 ? `Tap to choose ${focusBrand.label}`
-                : 'Scroll to a brand, then tap to choose'
+                : centerSearchAvailable ? 'Search brands' : 'Scroll to a brand, then tap to choose'
             }
             onPointerDown={(event) => {
               if (showBrandLogos) return
@@ -1635,6 +1670,8 @@ function BrandGlobeView({
             onClick={(event) => {
               if (showBrandLogos && event.detail === 0 && focusBrand) {
                 pick(focusBrand)
+              } else if (event.detail === 0 && centerSearchAvailable && !focusBrand) {
+                openCenterSearch()
               }
               // Prefer the pointerup choose path; block a second click select.
               event.preventDefault()
@@ -1664,7 +1701,16 @@ function BrandGlobeView({
             </span>
           </button>
         </div>
-        {typeof onSearchChange === 'function' ? (
+        {centerSearchAvailable ? (
+          <button
+            type="button"
+            className="brand-globe-brand-back is-bare"
+            aria-label="Back"
+            onClick={onClose}
+          >
+            <GlobeBackIcon />
+          </button>
+        ) : typeof onSearchChange === 'function' ? (
           <div
             className={`brand-globe-search-row${
               typeof onSearchConfirm === 'function' ? ' has-confirm' : ''
