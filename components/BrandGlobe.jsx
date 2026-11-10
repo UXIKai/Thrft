@@ -580,12 +580,15 @@ function BrandGlobeView({
 }) {
   const [focusId, setFocusId] = useState(null)
   const [centerSearching, setCenterSearching] = useState(false)
+  const [searchStageSize, setSearchStageSize] = useState(null)
   const centerInputRef = useRef(null)
   const centerSearchAvailable = showBrandLogos && typeof onSearchChange === 'function'
 
   function openCenterSearch() {
+    const rect = stageRef.current?.getBoundingClientRect()
+    if (rect) setSearchStageSize({ width: rect.width, height: rect.height })
     setCenterSearching(true)
-    centerInputRef.current?.focus()
+    centerInputRef.current?.focus({ preventScroll: true })
   }
   const [brushing, setBrushing] = useState(false)
   const [rotating, setRotating] = useState(false)
@@ -1542,7 +1545,13 @@ function BrandGlobeView({
           <span className="atmosphere-bloom atmosphere-bloom-d" />
         </div>
       )}
-      <div className={`brand-globe-panel${isDock ? ' is-dock is-blend' : ''}`}>
+      <div
+        className={`brand-globe-panel${isDock ? ' is-dock is-blend' : ''}`}
+        style={isDock && centerSearching && searchStageSize ? {
+          alignSelf: 'flex-start',
+          height: searchStageSize.height,
+        } : undefined}
+      >
         {!isDock && (
           <header className="brand-globe-head">
             <p className="brand-globe-title">{title}</p>
@@ -1558,6 +1567,13 @@ function BrandGlobeView({
         )}
         <div
           ref={stageRef}
+          style={centerSearching && searchStageSize ? {
+            flex: 'none',
+            width: searchStageSize.width,
+            height: searchStageSize.height,
+            minHeight: searchStageSize.height,
+            maxHeight: searchStageSize.height,
+          } : undefined}
           className={`brand-globe-stage${brushing ? ' is-brushing' : ''}${
             focusBrand ? ' has-focus' : ''
           }${rotating ? ' is-rotating' : ''}${choosing ? ' is-choosing' : ''}${
@@ -1636,7 +1652,7 @@ function BrandGlobeView({
               autoCapitalize="off"
               spellCheck={false}
               value={searchValue ?? ''}
-              placeholder="Search"
+              placeholder=""
               tabIndex={centerSearching ? 0 : -1}
               onChange={(event) => onSearchChange(event.target.value)}
               onBlur={() => setCenterSearching(false)}
