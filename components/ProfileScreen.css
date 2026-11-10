@@ -1301,6 +1301,19 @@
   font: inherit;
   font-size: 0.95rem;
   outline: none;
+  color-scheme: inherit;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.profile-name-field input:-webkit-autofill,
+.profile-name-field input:-webkit-autofill:hover,
+.profile-name-field input:-webkit-autofill:focus,
+.profile-name-field input:-webkit-autofill:active {
+  -webkit-text-fill-color: light-dark(rgb(0, 0, 0), #fff);
+  caret-color: light-dark(rgb(0, 0, 0), #fff);
+  box-shadow: 0 0 0 1000px rgba(var(--app-color-rgb, 36, 36, 36), 0.55) inset;
+  transition: background-color 99999s ease-out;
 }
 
 .profile-social-handle-field {
