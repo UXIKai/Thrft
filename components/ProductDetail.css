@@ -405,7 +405,7 @@ html body .product-detail .glass-overlay-back {
 
 .product-detail .product-detail-body {
   justify-content: flex-start;
-  padding-top: 18px;
+  padding-top: calc(max(20px, env(safe-area-inset-top, 0px)) + clamp(48px, 8vh, 80px));
 }
 
 .product-detail-body > * {
