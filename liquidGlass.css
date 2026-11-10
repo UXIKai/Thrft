@@ -1389,5 +1389,5 @@ html body .glass-sheet:not(.settings-wheel-sheet):not(.settings-palette-sheet) .
 
 /* Thinner nav: the bar and lens are pill shaped */
 html body .tab-bar { border-radius: 999px; }
-html body .tab-bar .tab-item { min-height: 53px; padding-top: 2px; padding-bottom: 2px; border-radius: 999px; }
+html body .tab-bar .tab-item { min-height: 58px; padding-top: 2px; padding-bottom: 2px; border-radius: 999px; }
 html body .tab-bar .tab-pill { border-radius: 999px; }
