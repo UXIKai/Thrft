@@ -6,6 +6,7 @@ import {
   getCustomBrands,
   getCustomCategories,
 } from '../customCatalog.js'
+import { createListingProduct } from '../api.js'
 import { createListing } from '../listings.js'
 import { isSupabaseConfigured } from '../supabase.js'
 import {
@@ -15,29 +16,8 @@ import {
   LISTING_SEGMENTS,
 } from '../listingCatalog.js'
 import BrandGlobe from './BrandGlobe.jsx'
+import { ClosetIcon, MarketIcon, StoreIcon } from './SegmentIcons.jsx'
 import './CreateListing.css'
-
-function ClosetIcon() {
-  return (
-    <svg className="listing-seg-icon" viewBox="0 0 24 24" aria-hidden>
-      <path
-        fill="currentColor"
-        d="M6 3.5h12A1.5 1.5 0 0 1 19.5 5v14a1.5 1.5 0 0 1-1.5 1.5H6A1.5 1.5 0 0 1 4.5 19V5A1.5 1.5 0 0 1 6 3.5zm5.25 1.5v14h1.5v-14h-1.5zM7.2 10.2h2.2v1.5H7.2v-1.5zm7.4 0h2.2v1.5h-2.2v-1.5z"
-      />
-    </svg>
-  )
-}
-
-function MarketIcon() {
-  return (
-    <svg className="listing-seg-icon" viewBox="0 0 24 24" aria-hidden>
-      <path
-        fill="currentColor"
-        d="M4.2 8.2 5.4 4.8h13.2l1.2 3.4c.2.6-.2 1.2-.8 1.2h-.6c-.7 0-1.2.5-1.2 1.2V19a1 1 0 0 1-1 1H7.8a1 1 0 0 1-1-1v-8.4c0-.7-.5-1.2-1.2-1.2h-.6c-.6 0-1-.6-.8-1.2zM8.2 10.4V18h7.6v-7.6H8.2zm1.4 1.4h4.8v1.4H9.6v-1.4zm0 2.8h4.8V16H9.6v-1.4z"
-      />
-    </svg>
-  )
-}
 
 function CameraIcon() {
   return (
@@ -95,11 +75,13 @@ function PostIcon() {
 }
 
 function segmentIcon(icon) {
-  if (icon === 'closet') return <ClosetIcon />
-  return <MarketIcon />
+  if (icon === 'store') return <StoreIcon className="listing-seg-icon" />
+  if (icon === 'closet') return <ClosetIcon className="listing-seg-icon" />
+  return <MarketIcon className="listing-seg-icon" />
 }
 
 function segmentLabel(id) {
+  if (id === 'store') return 'Store'
   if (id === 'closet') return 'Closet'
   return 'Market'
 }
@@ -208,7 +190,7 @@ function DateWheel({ label, items, value, onChange }) {
 }
 
 export default function CreateListing({ onPosted } = {}) {
-  const [segment, setSegment] = useState('market')
+  const [segment, setSegment] = useState('store')
   const [title, setTitle] = useState('')
   const [brand, setBrand] = useState("Levi's")
   const [category, setCategory] = useState('Tees')
@@ -247,6 +229,7 @@ export default function CreateListing({ onPosted } = {}) {
   const [marketPhotos, setMarketPhotos] = useState([])
 
   const isMarket = segment === 'market'
+  const isStore = segment === 'store'
   const isCloset = segment === 'closet'
 
   useEffect(() => {
@@ -434,6 +417,30 @@ export default function CreateListing({ onPosted } = {}) {
       setPostError('Add a title before posting.')
       return
     }
+    if (isStore) {
+      setPosting(true)
+      try {
+        const product = await createListingProduct({
+          title: cleanTitle,
+          brand,
+          category,
+          price: price.trim(),
+          condition: 'New',
+          description: description.trim(),
+          segment: 'store',
+          photoUrl: marketPhotos[0] || '',
+        })
+        setPostedProduct({ ...product, segment: 'store' })
+        setPosted(true)
+        setMarketPhotos([])
+        onPosted?.(product)
+      } catch (err) {
+        setPostError(String(err?.message || 'Could not post to Store'))
+      } finally {
+        setPosting(false)
+      }
+      return
+    }
     if (!isSupabaseConfigured()) {
       setPostError('Connect Supabase (VITE_SUPABASE_URL + publishable key) to post.')
       return
@@ -492,23 +499,23 @@ export default function CreateListing({ onPosted } = {}) {
               type="button"
               role="tab"
               aria-selected={active}
-              aria-label={seg.label}
-              title={seg.label}
               className={`listing-seg-btn ${active ? 'is-active' : ''}`}
               onClick={() => {
                 setSegment(seg.id)
                 setPhotoChoice(false)
+                setMarketPhotos([])
                 setPosted(false)
                 setPostError('')
               }}
             >
               {segmentIcon(seg.icon)}
+              <span>{seg.label}</span>
             </button>
           )
         })}
       </div>
 
-      {isMarket && (
+      {(isMarket || isStore) && (
         <div className="listing-photo-drop" role="group" aria-label="Add photos">
           <input ref={photoCameraRef} type="file" accept="image/*" capture="environment" className="listing-scan-input" aria-hidden tabIndex={-1} onChange={onMarketPhoto} />
           <input ref={photoGalleryRef} type="file" accept="image/*" multiple className="listing-scan-input" aria-hidden tabIndex={-1} onChange={onMarketPhoto} />
@@ -737,7 +744,7 @@ export default function CreateListing({ onPosted } = {}) {
 
       {!isCloset && (
         <>
-          <div className="listing-field">
+          {isMarket && <div className="listing-field">
             <div className="listing-conditions" role="group" aria-label="Condition">
               {LISTING_CONDITIONS.map((c) => {
                 const active = condition === c
@@ -754,7 +761,7 @@ export default function CreateListing({ onPosted } = {}) {
                 )
               })}
             </div>
-          </div>
+          </div>}
 
           <label className="listing-field">
             <span className={`listing-box${description ? ' is-filled' : ''}`}>
@@ -775,8 +782,8 @@ export default function CreateListing({ onPosted } = {}) {
       <button
         type="button"
         className={`listing-post${isCloset ? ' is-closet' : ''}`}
-        aria-label={isCloset ? 'Add to closet' : 'Post listing'}
-        title={isCloset ? 'Add to closet' : 'Post listing'}
+        aria-label={isCloset ? 'Add to closet' : `Post to ${segmentLabel(segment)}`}
+        title={isCloset ? 'Add to closet' : `Post to ${segmentLabel(segment)}`}
         disabled={posting || scanning}
         onClick={submitListing}
       >

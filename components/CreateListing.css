@@ -23,17 +23,20 @@
 
 .listing-segment {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
   margin-bottom: 16px;
 }
 
 .listing-seg-btn {
   display: inline-flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 48px;
-  padding: 12px;
+  gap: 4px;
+  min-height: 64px;
+  min-width: 0;
+  padding: 8px 6px;
   border-radius: 22px;
   border: 1px solid var(--glass-border, light-dark(rgba(87, 87, 87, 0.14), rgba(168, 168, 168, 0.14)));
   background: var(--glass-clear-tint, light-dark(rgba(219, 219, 219, 0.04), rgba(36, 36, 36, 0.04)));
@@ -62,6 +65,19 @@
   color: light-dark(rgb(0, 0, 0), #fff);
   box-shadow: var(--glass-clear-depth);
   filter: brightness(1.2);
+}
+
+.listing-seg-btn span {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.listing-seg-btn .listing-seg-icon {
+  width: 26.6px;
+  height: 26.6px;
 }
 
 .listing-seg-icon,

@@ -2,8 +2,9 @@
 
 /** Create destinations: peer marketplace + personal closet. */
 export const LISTING_SEGMENTS = [
-  { id: 'market', label: 'Market', icon: 'market' },
+  { id: 'store', label: 'Store', icon: 'store' },
   { id: 'closet', label: 'Closet', icon: 'closet' },
+  { id: 'market', label: 'Market', icon: 'market' },
 ]
 
 export const LISTING_BRANDS = [
