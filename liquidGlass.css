@@ -1396,10 +1396,8 @@ html body .tab-bar .tab-item { min-height: 58px; padding-top: 2px; padding-botto
 }
 html body .tab-bar .tab-pill { border-radius: 999px; }
 
-/* Raised clear lens; keep the outer navigation track unchanged. */
-html body .tab-bar .tab-pill,
-html body .tab-bar.is-dragging .tab-pill,
-html body .tab-bar.is-pressed .tab-pill {
+/* Raised glass on the track, with the quieter clear finish on the selection. */
+html body .tab-bar {
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.02));
   border: 1px solid rgba(255, 255, 255, 0.18);
   box-shadow:
@@ -1408,6 +1406,25 @@ html body .tab-bar.is-pressed .tab-pill {
     0 4px 10px rgba(0, 0, 0, 0.18);
   backdrop-filter: blur(8px) brightness(115%) contrast(105%);
   -webkit-backdrop-filter: blur(8px) brightness(115%) contrast(105%);
+}
+
+html body .tab-bar::before,
+html body .tab-bar::after {
+  content: none;
+  display: none;
+}
+
+html body .tab-bar .tab-pill,
+html body .tab-bar.is-dragging .tab-pill,
+html body .tab-bar.is-pressed .tab-pill {
+  background: light-dark(rgba(0, 0, 0, 0.015), rgba(255, 255, 255, 0.015));
+  border: 0.5px solid light-dark(rgba(0, 0, 0, 0.32), rgba(255, 255, 255, 0.32));
+  box-shadow:
+    inset 0 0 0 0.5px rgba(0, 0, 0, 0.3),
+    inset 0 1px 2px rgba(0, 0, 0, 0.22),
+    0 1px 0 rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 }
 
 html body .tab-bar.is-pressed .tab-pill::before {

@@ -32,7 +32,7 @@ Wire real profiles later by setting `avatarUrl` (and labels) on entries in `src/
 
 Home has equal-width, filled storefront (Store, left) and basket (Market, right) icon tabs with labels underneath between the leaderboard and product cards, spanning the mobile screen. Store (the default tab) shows the Supabase listings cards; Market shows active catalog products from `/api/products`. Each feed uses only its own products, including when personalizing or showing empty results.
 
-The navigation's active bubble uses a clear vertical sheen, localized 8px blur with brightness/contrast enhancement, asymmetric white rim highlights, and a soft drop shadow. The outer track and mobile bubble spacing remain unchanged.
+The navigation's outer track uses a clear vertical sheen, 8px blur with brightness/contrast enhancement, asymmetric white rim highlights, and a soft drop shadow. The active bubble uses the quieter clear finish with a faint neutral edge and light blur. Mobile bubble spacing remains unchanged.
 
 Tab changes use a physical spring (stiffness 420, damping 26, mass 0.9), with a 0.92 press squish, a 1.12-by-0.94 release stretch, and a synchronized 1.15 icon pop. Dragging follows the finger directly before springing into the selected slot; reduced-motion mode disables these animations.
 
