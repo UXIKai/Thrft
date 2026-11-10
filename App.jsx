@@ -26,7 +26,7 @@ import {
   BUBBLE,
   slotForRank,
 } from './layout.js'
-import { applyBackgroundImage, applySearchBackground, readBackgroundImage } from './appAppearance.js'
+import { applyBackgroundImage, applyBgColor, applySearchBackground, readBackgroundImage } from './appAppearance.js'
 import {
   fetchProfile,
   fetchSaved,
@@ -773,7 +773,13 @@ export default function App() {
       )}
       </div>
 
-      {signedIn && showNav && <TabBar active={tab} onChange={setTab} />}
+      {signedIn && showNav && <TabBar active={tab} onChange={(nextTab) => {
+        if (tab === 'home' && nextTab !== 'home' && homeColor) {
+          setHomeColor('')
+          applyBgColor('none')
+        }
+        setTab(nextTab)
+      }} />}
     </div>
   )
 }
