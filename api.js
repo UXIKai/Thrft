@@ -344,6 +344,13 @@ export async function createListingProduct(payload) {
   return data.product
 }
 
+export async function lookupProductNumbers({ brand, partNumber, orderNumber }, signal) {
+  const query = new URLSearchParams({ brand, partNumber, orderNumber })
+  const data = await api(`/api/products/lookup?${query}`, { signal })
+  if (!Array.isArray(data.products)) throw new Error('Invalid product lookup response.')
+  return data.products
+}
+
 export async function updateListingProduct(id, patch) {
   const data = await api(`/api/products/${encodeURIComponent(id)}`, {
     method: 'PUT',

@@ -87,11 +87,16 @@ export function addClosetItem(item) {
       imageUrl: item.imageUrl || '',
       scanned: Boolean(item.scanned),
       backgroundRemoved: Boolean(item.backgroundRemoved),
+      color: item.color || '',
+      partNumber: item.partNumber || '',
       createdAt: item.createdAt || new Date().toISOString(),
     },
     ...readAll(),
   ]
   writeAll(next)
+  if (!readAll().some((stored) => stored.id === next[0].id)) {
+    throw new Error('Could not save this item. Your device storage may be full.')
+  }
   return next[0]
 }
 

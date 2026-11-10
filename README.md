@@ -30,6 +30,10 @@ Wire real profiles later by setting `avatarUrl` (and labels) on entries in `src/
 
 ## Layout & motion
 
+Create → Closet → camera chooser includes a centered plus button between Camera and Gallery. It opens a centered brand wheel; tapping the wheel expands a list with a bottom search field. Continue opens centered P/N Number and O/N Number fields (at least one is required). Matching products offer color choices; selecting one downloads its photo, removes the background with the existing scanner, and saves the cutout and color to Closet.
+
+Product-number lookup requires a real catalog: set `THRFT_PRODUCT_CATALOG_PATH` on the API server to a JSON array of records shaped like `{"brand":"Nike","partNumber":"…","orderNumber":"…","title":"…","category":"Tees","price":"30","variants":[{"color":"Black","imageUrl":"https://…"}]}`. Numbers are exact, brand-scoped matches, and both must match when both are supplied. Use only a catalog you are authorized to expose to signed-in users; do not include private order data. Image hosts must permit browser CORS downloads. No manufacturer catalogs are bundled or connected automatically; an unconfigured lookup reports that explicitly and leaves Camera/Gallery available.
+
 Home has equal-width, filled storefront (Store, left) and basket (Market, right) icon tabs with labels underneath between the leaderboard and product cards, spanning the mobile screen. Store (the default tab) shows the Supabase listings cards in scrolling rows. Market shows active catalog products from `/api/products` plus three sample products per demo brand, labeled Sample in their product details. Market uses a three-column grid with automatic rows that grows vertically with the number of products, without repeating cards to fill space. Brand, category, and color filters apply to the sample products too.
 
 The navigation's outer track uses a clear vertical sheen, 8px blur with brightness/contrast enhancement, asymmetric white rim highlights, and a soft drop shadow. The active bubble uses the quieter clear finish with a faint neutral edge and light blur. Mobile bubble spacing remains unchanged.

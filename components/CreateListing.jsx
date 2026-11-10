@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { addClosetItem, removeImageBackground, scaleCutout } from '../closet.js'
 import {
   addCustomBrand,
@@ -16,6 +16,7 @@ import {
   LISTING_SEGMENTS,
 } from '../listingCatalog.js'
 import BrandGlobe from './BrandGlobe.jsx'
+import ClosetNumberLookup from './ClosetNumberLookup.jsx'
 import { ClosetIcon, MarketIcon, StoreIcon } from './SegmentIcons.jsx'
 import './CreateListing.css'
 
@@ -231,6 +232,8 @@ export default function CreateListing({ onPosted } = {}) {
   const isMarket = segment === 'market'
   const isStore = segment === 'store'
   const isCloset = segment === 'closet'
+  const [numberLookupOpen, setNumberLookupOpen] = useState(false)
+  const closeNumberLookup = useCallback(() => setNumberLookupOpen(false), [])
 
   useEffect(() => {
     setCustomCategories(getCustomCategories())
@@ -248,10 +251,10 @@ export default function CreateListing({ onPosted } = {}) {
   useEffect(() => {
     const stage = document.querySelector('.stage')
     if (!stage) return undefined
-    const hideNav = addSheetOpen || pickerPhase !== 'closed'
+    const hideNav = addSheetOpen || pickerPhase !== 'closed' || numberLookupOpen
     stage.classList.toggle('is-create-adding', hideNav)
     return () => stage.classList.remove('is-create-adding')
-  }, [addSheetOpen, pickerPhase])
+  }, [addSheetOpen, pickerPhase, numberLookupOpen])
 
   function openPicker(kind) {
     setAddSheetOpen(false)
@@ -551,10 +554,13 @@ export default function CreateListing({ onPosted } = {}) {
           <div className={`listing-scanner-btn${scanPreview ? ' has-preview' : ''}`} role="group" aria-label="Clothing scanner">
             {photoChoice && !scanning ? (
               <div className="listing-photo-choice">
-                <button type="button" className="listing-photo-choice-btn" aria-label="Take a photo" onClick={() => scanInputRef.current?.click()}>
+                <button type="button" className="listing-photo-choice-btn is-bare" aria-label="Take a photo" onClick={() => scanInputRef.current?.click()}>
                   <CameraChoiceIcon />
                 </button>
-                <button type="button" className="listing-photo-choice-btn" aria-label="Choose from gallery" onClick={() => scanGalleryRef.current?.click()}>
+                <button type="button" className="listing-photo-choice-btn is-bare" aria-label="Add by product number" onClick={() => setNumberLookupOpen(true)}>
+                  <PostIcon />
+                </button>
+                <button type="button" className="listing-photo-choice-btn is-bare" aria-label="Choose from gallery" onClick={() => scanGalleryRef.current?.click()}>
                   <GalleryChoiceIcon />
                 </button>
               </div>
@@ -803,6 +809,18 @@ export default function CreateListing({ onPosted } = {}) {
               }`}
         </p>
       )}
+      {numberLookupOpen && <ClosetNumberLookup
+        brands={[...new Set([...LISTING_BRANDS, ...customBrands])]}
+        initialBrand={brand}
+        onClose={closeNumberLookup}
+        onAdded={(item) => {
+          setNumberLookupOpen(false)
+          setPhotoChoice(false)
+          setPostedProduct({ ...item, segment: 'closet' })
+          setPosted(true)
+          onPosted?.(item)
+        }}
+      />}
     </section>
   )
 }

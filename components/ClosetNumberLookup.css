@@ -1,0 +1,75 @@
+.closet-number-page {
+  position: absolute;
+  inset: 0;
+  z-index: 85;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-y: auto;
+  padding: calc(64px + env(safe-area-inset-top, 0px)) 24px calc(88px + env(safe-area-inset-bottom, 0px));
+  background: var(--atmosphere-base, light-dark(#fafafa, #050505));
+  color: light-dark(#111, #fff);
+}
+.closet-number-content {
+  width: min(100%, 440px);
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  text-align: center;
+}
+.closet-number-content form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.closet-number-content input {
+  width: 100%;
+  min-height: 52px;
+  padding: 14px 18px;
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+}
+.closet-number-content button {
+  min-height: 48px;
+  padding: 12px;
+  color: inherit;
+}
+.closet-number-back {
+  position: absolute;
+  top: calc(16px + env(safe-area-inset-top, 0px));
+  left: 18px;
+  width: 44px;
+  height: 44px;
+  color: inherit;
+  font-size: 32px;
+}
+.closet-number-brands {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+  min-height: 0;
+}
+.closet-number-brand-search {
+  position: absolute;
+  bottom: calc(20px + max(env(safe-area-inset-bottom, 0px), var(--kb-height, 0px)));
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: min(440px, calc(100% - 48px));
+}
+.closet-number-result {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.closet-number-result img {
+  width: 64px;
+  height: 72px;
+  object-fit: contain;
+  vertical-align: middle;
+  margin-right: 12px;
+}

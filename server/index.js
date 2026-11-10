@@ -1,4 +1,5 @@
 import http from 'node:http'
+import { lookupProductNumbers } from '../productLookup.js'
 import {
   getProfile,
   updateProfile,
@@ -431,6 +432,34 @@ const server = http.createServer(async (req, res) => {
 
     if (req.method === 'GET' && pathname === '/api/accounts') {
       send(res, 200, { accounts: await searchAccounts(url.searchParams.get('q')) })
+      return
+    }
+
+    if (req.method === 'GET' && pathname === '/api/products/lookup') {
+      const token = bearerToken(req)
+      const session = token ? await sessionFromToken(token) : null
+      if (!session?.account) {
+        send(res, 401, { message: 'Sign in required' })
+        return
+      }
+      const query = {
+        brand: url.searchParams.get('brand') || '',
+        partNumber: url.searchParams.get('partNumber') || '',
+        orderNumber: url.searchParams.get('orderNumber') || '',
+      }
+      if (!query.brand.trim() || (!query.partNumber.trim() && !query.orderNumber.trim()) ||
+        Object.values(query).some((value) => value.length > 120)) {
+        send(res, 400, { message: 'Choose a brand and enter a P/N or O/N number (up to 120 characters).' })
+        return
+      }
+      try {
+        send(res, 200, { products: await lookupProductNumbers(query) })
+      } catch (error) {
+        console.error('Product-number lookup failed:', error)
+        send(res, error.status || 500, {
+          message: error.status === 503 ? error.message : 'Could not search the product catalog. Please try again.',
+        })
+      }
       return
     }
 
