@@ -1135,11 +1135,7 @@ export default function ProfileScreen({
   }
 
   return (
-    <div className="profile-screen">
-      <header className="profile-top">
-        <h1 className="profile-title" aria-label="Profile" />
-      </header>
-
+    <div className="profile-screen" role="region" aria-label="Profile">
       <section className="profile-identity" aria-label="Account">
         <div className="pf-user-avatar-wrap">
           <button
