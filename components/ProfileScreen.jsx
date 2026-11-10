@@ -561,8 +561,8 @@ function PriceTagIcon() {
  */
 const SPACE_MODES = [
   { id: 'store', label: 'Store', Icon: StoreIcon },
-  { id: 'market', label: 'Market', Icon: MarketIcon },
   { id: 'closet', label: 'Closet', Icon: ClosetIcon },
+  { id: 'market', label: 'Market', Icon: MarketIcon },
 ]
 
 export default function ProfileScreen({
@@ -1253,11 +1253,11 @@ export default function ProfileScreen({
         </button>
       </section>
 
-      <section className="profile-block profile-spaces-inline" aria-label="Store, Market and Closet">
+      <section className="profile-block profile-spaces-inline" aria-label="Store, Closet and Market">
         <div
           className="profile-panel-modes is-inline"
           role="tablist"
-          aria-label="Store, Market and Closet"
+          aria-label="Store, Closet and Market"
         >
           {SPACE_MODES.map(({ id, label, Icon }) => (
             <button
