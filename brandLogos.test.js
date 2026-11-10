@@ -1,6 +1,21 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { BRAND_DOMAINS, BRAND_LOGO_TILE_PX, brandLogoBackground, packBrandLogoLanes } from './brandLogos.js'
+import { BRAND_DOMAINS, BRAND_LOGO_TILE_PX, brandLogoBackground, packBrandLogoLanes, squareLogoBackground } from './brandLogos.js'
+
+test('detects arbitrary square backgrounds without tinting transparent or non-square marks', () => {
+  const pixels = new Uint8ClampedArray(8 * 8 * 4)
+  for (let i = 0; i < pixels.length; i += 4) {
+    pixels.set([24, 80, 160, 255], i)
+  }
+  assert.equal(squareLogoBackground(pixels, 8, 8), '#1850a0')
+  pixels.set([255, 255, 255, 255], (3 * 8 + 3) * 4)
+  assert.equal(squareLogoBackground(pixels, 8, 8), '#1850a0')
+  assert.equal(squareLogoBackground(pixels, 8, 4), null)
+  pixels[3] = 0
+  assert.equal(squareLogoBackground(pixels, 8, 8), null)
+  pixels.set([255, 0, 0, 255], 0)
+  assert.equal(squareLogoBackground(pixels, 8, 8), null)
+})
 
 test('only known solid square logos tint the center', () => {
   assert.equal(brandLogoBackground('Gap'), '#000b3b')

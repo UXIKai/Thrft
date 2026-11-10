@@ -759,7 +759,7 @@ html[data-bg-image='none'] .brand-globe.is-color-picker .brand-globe-stage .bran
   white-space: normal;
   box-sizing: border-box;
   padding: 5px;
-  border-radius: 8px;
+  border-radius: 50%;
   background: #fff;
   color: #111;
   text-shadow: none;
@@ -770,6 +770,7 @@ html[data-bg-image='none'] .brand-globe.is-color-picker .brand-globe-stage .bran
   width: 32px;
   height: 32px;
   object-fit: contain;
+  border-radius: 50%;
   pointer-events: none;
   filter: none;
   border: none;

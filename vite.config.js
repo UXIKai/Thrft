@@ -13,6 +13,12 @@ export default defineConfig({
     port: 5173,
     host: true,
     proxy: {
+      '/brand-icons': {
+        target: 'https://www.google.com',
+        followRedirects: true,
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/brand-icons/, ''),
+      },
       '/api/checkout': {
         target: 'http://127.0.0.1:8790',
         changeOrigin: true,
@@ -31,6 +37,12 @@ export default defineConfig({
     port: 4173,
     host: true,
     proxy: {
+      '/brand-icons': {
+        target: 'https://www.google.com',
+        followRedirects: true,
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/brand-icons/, ''),
+      },
       '/api/checkout': {
         target: 'http://127.0.0.1:8790',
         changeOrigin: true,

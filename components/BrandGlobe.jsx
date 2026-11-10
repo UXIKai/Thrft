@@ -580,6 +580,7 @@ function BrandGlobeView({
 }) {
   const [focusId, setFocusId] = useState(null)
   const [failedCenterLogos, setFailedCenterLogos] = useState(() => new Set())
+  const [logoBackgrounds, setLogoBackgrounds] = useState({})
   const [centerSearching, setCenterSearching] = useState(false)
   const [searchStageSize, setSearchStageSize] = useState(null)
   const centerInputRef = useRef(null)
@@ -1497,7 +1498,7 @@ function BrandGlobeView({
   }, [seatTint])
   const originStyle = {
     '--brand-center-background': showBrandLogos && !failedCenterLogos.has(focusBrand?.label)
-      ? brandLogoBackground(focusBrand?.label) : '#ffffff',
+      ? logoBackgrounds[focusBrand?.label] ?? brandLogoBackground(focusBrand?.label) : '#ffffff',
     ...(origin && typeof origin.dx === 'number'
       ? { '--globe-dx': `${origin.dx}px`, '--globe-dy': `${origin.dy}px` }
       : null),
@@ -1709,6 +1710,9 @@ function BrandGlobeView({
                 ? <BrandLogo
                     name={focusBrand.label}
                     logoOnly
+                    onBackground={(color) => setLogoBackgrounds((previous) => ({
+                      ...previous, [focusBrand.label]: color || '#ffffff',
+                    }))}
                     onError={() => setFailedCenterLogos((previous) => new Set(previous).add(focusBrand.label))}
                   />
                 : focusWords.length > 1

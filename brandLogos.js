@@ -110,7 +110,21 @@ export const BRAND_DOMAINS = {
 
 export function brandLogoUrl(name) {
   const domain = BRAND_DOMAINS[name]
-  return domain ? `https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=128` : null
+  return domain ? `/brand-icons/s2/favicons?domain=${encodeURIComponent(domain)}&sz=128` : null
+}
+
+export function squareLogoBackground(pixels, width, height) {
+  if (width < 4 || height < 4 || Math.abs(width / height - 1) > 0.05) return null
+  const points = [[0, 0], [width - 1, 0], [0, height - 1], [width - 1, height - 1]]
+  const corners = points.map(([x, y]) => {
+    const offset = (y * width + x) * 4
+    return Array.from(pixels.slice(offset, offset + 4))
+  })
+  if (corners.some((c) => c[3] < 245)) return null
+  const average = [0, 1, 2].map((channel) =>
+    Math.round(corners.reduce((sum, c) => sum + c[channel], 0) / 4))
+  if (corners.some((c) => average.some((v, channel) => Math.abs(v - c[channel]) > 18))) return null
+  return `#${average.map((v) => v.toString(16).padStart(2, '0')).join('')}`
 }
 
 // Solid square favicon backgrounds; transparent/non-square marks stay on white.

@@ -14,6 +14,7 @@ await writeFile(
     {
       version: 3,
       routes: [
+        { src: '/brand-icons/(.*)', dest: 'https://www.google.com/$1' },
         { handle: 'filesystem' },
         { src: '/(.*)', dest: '/index.html' },
       ],
