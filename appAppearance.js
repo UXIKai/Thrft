@@ -653,16 +653,20 @@ export function applyBgColor(id) {
   matchBackgroundColor = false
   const color = resolveBgColor(id)
   currentBgColorId = color.id
+  const isBlackBackground = color.id !== 'none' && relativeLuminance(color.rgb) <= 0.02
+  if (isBlackBackground) matchBackgroundColor = true
   if (color.id === 'none') {
     currentBgEffects = [...DEFAULT_BG_EFFECTS]
   }
   try {
     localStorage.setItem(BG_COLOR_KEY, currentBgColorId)
-    localStorage.removeItem(BG_MATCH_KEY)
+    if (matchBackgroundColor) localStorage.setItem(BG_MATCH_KEY, 'on')
+    else localStorage.removeItem(BG_MATCH_KEY)
   } catch {
     /* ignore */
   }
-  applyBgAtmosphereTokens()
+  if (isBlackBackground) applyTheme('light')
+  else applyBgAtmosphereTokens()
   return currentBgColorId
 }
 
@@ -671,16 +675,18 @@ export function applyCustomBgColor(hex, { matchColor = false } = {}) {
   const color = ensureCustomBgColor(hex)
   if (!color) return currentBgColorId
   currentBgColorId = 'custom'
-  matchBackgroundColor = matchColor
+  const isBlackBackground = !matchColor && relativeLuminance(color.rgb) <= 0.02
+  matchBackgroundColor = matchColor || isBlackBackground
   try {
-    if (matchColor) localStorage.setItem(BG_MATCH_KEY, 'on')
+    if (matchBackgroundColor) localStorage.setItem(BG_MATCH_KEY, 'on')
     else localStorage.removeItem(BG_MATCH_KEY)
     localStorage.setItem(BG_COLOR_KEY, 'custom')
     localStorage.setItem(CUSTOM_BG_COLOR_KEY, currentCustomBgHex)
   } catch {
     /* ignore */
   }
-  applyBgAtmosphereTokens()
+  if (isBlackBackground) applyTheme('light')
+  else applyBgAtmosphereTokens()
   return currentCustomBgHex
 }
 

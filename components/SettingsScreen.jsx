@@ -1436,6 +1436,7 @@ export default function SettingsScreen({
   function chooseBgColor(id) {
     if (hasPhoto) clearPhoto()
     setBgColor(applyBgColor(id))
+    setTheme(readTheme())
     rememberPaletteId(id)
   }
 
@@ -1499,6 +1500,7 @@ export default function SettingsScreen({
     if (wheelTargetRef.current === 'bg') {
       setCustomBgHex(hex)
       setBgColor(applyCustomBgColor(hex))
+      setTheme(readTheme())
       return
     }
     setCustomHex(hex)
