@@ -32,6 +32,12 @@
   color: inherit;
 }
 
+.product-store-size-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
 .product-store-size-content {
   text-align: center;
   color: light-dark(#111, #fff);

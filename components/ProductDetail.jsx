@@ -69,6 +69,7 @@ export default function ProductDetail({
 
   const [sizing, setSizing] = useState(false)
   const [sizeMetric, setSizeMetric] = useState('EN')
+  const [sizeFormat, setSizeFormat] = useState(null)
   const [showInformation, setShowInformation] = useState(false)
   const [quantityOpen, setQuantityOpen] = useState(false)
   const [editingSizeIndex, setEditingSizeIndex] = useState(null)
@@ -89,6 +90,7 @@ export default function ProductDetail({
     setEditingSizeIndex(null)
     setShowInformation(false)
     setSizeMetric('EN')
+    setSizeFormat(null)
   }, [product?.id])
 
   useEffect(() => {
@@ -160,14 +162,19 @@ export default function ProductDetail({
     ? title.slice(brand.length).replace(/^[\s:|-]+/, '')
     : title
 
+  const originalSizeOptions = productSizeOptions(product)
+  const numericSizes = (sizeFormat || (originalSizeOptions.some((option) => /\d/.test(option.value)) ? 'numbers' : 'letters')) === 'numbers'
+  const sizeOptions = productSizeOptions(product, numericSizes ? 'numbers' : 'letters')
+  const canShowLetters = sizeOptions.some((option) => /[a-z]/i.test(option.letter))
   const sizePanel = sizing && !isMarket ? (
       <section className="product-store-size-panel" aria-label="Select size">
         <header className="product-store-size-header">
-          <button type="button" className="is-bare" aria-label={`Size metric ${sizeMetric}; switch to ${sizeMetric === 'EN' ? 'EU' : 'EN'}`} onClick={() => setSizeMetric(sizeMetric === 'EN' ? 'EU' : 'EN')}>
-            <span aria-hidden="true">{sizeMetric === 'EN' ? <><strong>EN</strong>/EU</> : <>EN/<strong>EU</strong></>}</span>
-          </button>
+          {numericSizes ? <button type="button" className="is-bare" aria-label={`Size metric ${sizeMetric}; switch to ${sizeMetric === 'EN' ? 'EU' : 'EN'}`} onClick={() => setSizeMetric(sizeMetric === 'EN' ? 'EU' : 'EN')}>{sizeMetric}</button> : <span />}
           <h2>Select size</h2>
-          <button type="button" className="is-bare" aria-label="Close size selection" onClick={() => setSizing(false)}>×</button>
+          <div className="product-store-size-actions">
+            {(!numericSizes || canShowLetters) && <button type="button" className="is-bare" aria-label={numericSizes ? 'Show letter sizes' : 'Show numeric sizes'} onClick={() => setSizeFormat(numericSizes ? 'letters' : 'numbers')}>{numericSizes ? 'Aa' : '123'}</button>}
+            <button type="button" className="is-bare" aria-label="Close size selection" onClick={() => setSizing(false)}>×</button>
+          </div>
         </header>
         <div className="product-store-size-content">
           {showInformation ? (
@@ -180,14 +187,14 @@ export default function ProductDetail({
             </section>
           ) : (
             <>
-              <div className="product-store-size-grid" role="group" aria-label={`${sizeMetric} sizes`}>
-                {productSizeOptions(product).map((option) => (
+              <div className="product-store-size-grid" role="group" aria-label={numericSizes ? `${sizeMetric} sizes` : 'Letter sizes'}>
+                {sizeOptions.map((option) => (
                   <button type="button" className="product-detail-size is-bare" key={option.value} onClick={() => pickSize(option.value)}>
-                    {sizeMetric === 'EU' ? option.eu : option.en}
+                    {!numericSizes ? option.letter : sizeMetric === 'EU' ? option.eu : option.en}
                   </button>
                 ))}
               </div>
-              {sizeMetric === 'EU' && <p className="product-store-size-note">Conversions vary by brand. Sizes without a conversion retain their original label.</p>}
+              {numericSizes && <p className="product-store-size-note">General size equivalents vary by brand. Sizes without a conversion retain their original label.</p>}
               <button type="button" className="product-store-info-button is-bare" onClick={() => setShowInformation(true)}>Information</button>
             </>
           )}
