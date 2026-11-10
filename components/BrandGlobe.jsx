@@ -1252,10 +1252,12 @@ function BrandGlobeView({
       if (touchesRef.current.size === 1) {
         movedRef.current = false
         centerTapRef.current = Boolean(event.target.closest('.brand-globe-focus'))
+        setChoosing(centerTapRef.current)
         pointerDownRef.current = { x: event.clientX, y: event.clientY }
       } else {
         movedRef.current = true
         centerTapRef.current = false
+        setChoosing(false)
       }
       gestureRef.current = gestureSnapshot()
       event.currentTarget.setPointerCapture(event.pointerId)
@@ -1321,7 +1323,11 @@ function BrandGlobeView({
         zoomAt(zoomRef.current * next.distance / previous.distance, previous.x, previous.y)
       }
       if (movedRef.current) {
-        applyPan(panXRef.current + next.x - previous.x, panYRef.current + next.y - previous.y)
+        const direction = centerTapRef.current ? -1 : 1
+        applyPan(
+          panXRef.current + (next.x - previous.x) * direction,
+          panYRef.current + (next.y - previous.y) * direction,
+        )
       }
       gestureRef.current = next
       return
@@ -1377,9 +1383,27 @@ function BrandGlobeView({
         return
       }
       setBrushing(false)
+      setChoosing(false)
       gestureRef.current = null
-      if (event.type !== 'pointercancel' && centerTapRef.current && !movedRef.current && focusBrand) {
-        pick(focusBrand)
+      if (event.type !== 'pointercancel' && centerTapRef.current) {
+        let selected = movedRef.current ? null : focusBrand
+        if (movedRef.current && Math.hypot(panXRef.current, panYRef.current) > 12) {
+          let distance = seatPx
+          for (let i = 0; i < slotsRef.current.length; i += 1) {
+            const slot = slotsRef.current[i]
+            const angle = slot.lon + orbitRef.current
+            const radius = slot.r * zoomRef.current
+            const d = Math.hypot(
+              Math.cos(angle) * radius + panXRef.current,
+              Math.sin(angle) * radius + panYRef.current,
+            )
+            if (d < distance) {
+              distance = d
+              selected = brandsRef.current[i]
+            }
+          }
+        }
+        if (selected) pick(selected)
       }
       centerTapRef.current = false
       return
