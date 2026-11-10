@@ -200,7 +200,6 @@ export default function ProductDetail({
                   </button>
                 ))}
               </div>
-              {numericSizes && <p className="product-store-size-note">General size equivalents vary by brand. Sizes without a conversion retain their original label.</p>}
               <button type="button" className="product-store-info-button is-bare" onClick={() => setShowInformation(true)}>Information</button>
             </>
           )}

@@ -11,7 +11,7 @@
   display: grid;
   grid-template-columns: 72px 1fr 72px;
   align-items: center;
-  padding: 8px 0 16px;
+  padding: 8px 0 4px;
   color: light-dark(#111, #fff);
 }
 
@@ -71,7 +71,7 @@
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 20px 12px;
-  margin: 40px auto;
+  margin: 12px auto 20px;
   max-width: 640px;
 }
 
@@ -84,10 +84,6 @@
   margin: 24px auto;
   color: inherit;
   text-transform: uppercase;
-}
-
-.product-store-size-note {
-  font-size: 0.8rem;
 }
 
 .product-store-information {
