@@ -3,6 +3,7 @@ import { lookupProductNumbers } from '../api.js'
 import { addClosetItem, removeImageBackground } from '../closet.js'
 import OrbitCarousel from './OrbitCarousel.jsx'
 import StageSlot from './StageSlot.jsx'
+import BrandLogo from './BrandLogo.jsx'
 import './ClosetNumberLookup.css'
 
 export default function ClosetNumberLookup({ brands, initialBrand, onClose, onAdded }) {
@@ -94,13 +95,13 @@ export default function ClosetNumberLookup({ brands, initialBrand, onClose, onAd
             {expanded ? <>
               <div className="closet-number-brands" role="group" aria-label="Brands">
                 {brands.filter((name) => name.toLowerCase().includes(query.toLowerCase())).map((name) =>
-                  <button type="button" key={name} onClick={() => { setBrand(name); setExpanded(false) }}>{name}</button>,
+                  <button type="button" key={name} onClick={() => { setBrand(name); setExpanded(false) }}><BrandLogo name={name} /></button>,
                 )}
                 {!brands.some((name) => name.toLowerCase().includes(query.toLowerCase())) && <p role="status">No brands found.</p>}
               </div>
               <input className="closet-number-brand-search" type="search" aria-label="Search brands" placeholder="Search brands" value={query} onChange={(event) => setQuery(event.target.value)} />
             </> : <>
-              <OrbitCarousel variant="wheel" items={brands.map((name) => ({ id: name, label: name }))} activeId={brand} onSelect={setBrand} onActivate={() => setExpanded(true)} ariaLabel="Brand" />
+              <OrbitCarousel variant="wheel" items={brands.map((name) => ({ id: name, label: name }))} activeId={brand} onSelect={setBrand} onActivate={() => setExpanded(true)} ariaLabel="Brand" renderItem={(item) => <BrandLogo name={item.label} />} />
               <button type="button" disabled={!brand} onClick={() => setPage('numbers')}>Continue</button>
             </>}
           </> : <>

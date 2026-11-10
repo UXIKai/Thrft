@@ -65,6 +65,7 @@ export default function OrbitCarousel({
   compact = false,
   /** Keep each word mounted so it glides between slots. */
   smooth = false,
+  renderItem,
 }) {
   const isStrip = variant === 'strip'
   const isWheel = variant === 'wheel'
@@ -264,7 +265,7 @@ export default function OrbitCarousel({
                   transform,
                 }}
               >
-                {item.label || '\u00a0'}
+                {renderItem ? renderItem(item) : item.label || '\u00a0'}
               </button>
             )
           })}
