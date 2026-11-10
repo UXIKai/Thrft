@@ -113,7 +113,7 @@ export function brandLogoUrl(name) {
   return domain ? `https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=128` : null
 }
 
-export const BRAND_LOGO_TILE_PX = 48
+export const BRAND_LOGO_TILE_PX = 42
 const LOGO_CLEARANCE_PX = Math.SQRT2 * BRAND_LOGO_TILE_PX + 20
 
 export function packBrandLogoLanes(brands, seatPx = 59) {
