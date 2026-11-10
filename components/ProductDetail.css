@@ -40,8 +40,8 @@
 
 .product-detail-format-toggle {
   position: absolute;
-  top: max(16px, env(safe-area-inset-top, 0px));
-  left: max(18px, env(safe-area-inset-left, 0px));
+  top: calc(max(16px, env(safe-area-inset-top, 0px)) + 10px);
+  right: max(18px, env(safe-area-inset-right, 0px));
   z-index: 3;
   min-width: 44px;
   min-height: 44px;
