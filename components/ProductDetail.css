@@ -38,17 +38,15 @@
 }
 
 .product-store-size-grid {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 20px 12px;
   margin: 40px auto;
   max-width: 640px;
 }
 
 .product-store-size-grid button {
-  flex: 0 0 calc(100% / 7 - 12px);
-  min-width: 36px;
+  min-width: 0;
   min-height: 44px;
 }
 
