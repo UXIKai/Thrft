@@ -183,6 +183,11 @@ button.product-detail-brand {
   width: 22px;
   height: 22px;
   display: block;
+  transition: transform 0.2s ease;
+}
+
+.product-detail-add.is-open .product-detail-plus {
+  transform: rotate(45deg);
 }
 
 .product-detail-add[aria-pressed='true'] {
