@@ -2759,16 +2759,9 @@ export default function ChatScreen({
               ) : null}
               <button
                 type="button"
-                className={`chat-search-add${searchOpen ? ' is-search-open' : ''}`}
-                aria-label={searchOpen ? 'Close search' : 'New chat'}
-                onClick={() => {
-                  if (searchOpen) {
-                    setQuery('')
-                    setSearchOpen(false)
-                  } else {
-                    onDockPlusClick()
-                  }
-                }}
+                className="chat-search-add"
+                aria-label="New chat"
+                onClick={onDockPlusClick}
               >
                 <PlusIcon />
               </button>
