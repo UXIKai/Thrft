@@ -1858,7 +1858,11 @@ export default function ProfileScreen({
               >
                 <BackIcon />
               </button>
-              <h2 className="profile-suppliers-title">{editorPage}</h2>
+              {editorPage !== 'Money' ? (
+                <h2 className="profile-suppliers-title">{editorPage}</h2>
+              ) : (
+                <span className="profile-panel-spacer" aria-hidden />
+              )}
               <span className="profile-panel-spacer" aria-hidden />
             </header>
             <div className="profile-panel-body profile-at-body">
@@ -2031,7 +2035,6 @@ export default function ProfileScreen({
 
               </>}
               {editorPage === 'Money' && <section className="profile-block is-panel-section" aria-label="Money">
-                <h2 className="profile-label">Money</h2>
                 <div className="profile-money-grid" role="group" aria-label="Money">
                   <button
                     type="button"

@@ -907,6 +907,7 @@
 }
 
 .settings-giveback {
+  margin-top: 32px;
   padding: 14px;
 }
 
@@ -1778,6 +1779,7 @@
 .settings-giveback-head {
   display: flex;
   align-items: flex-start;
+  justify-content: center;
   gap: 12px;
   margin-bottom: 12px;
 }
@@ -1800,6 +1802,7 @@
 
 .settings-giveback-title {
   margin: 2px 0 3px;
+  text-align: center;
   font-size: 0.9rem;
   font-weight: 700;
 }
