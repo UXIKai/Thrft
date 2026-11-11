@@ -18,6 +18,7 @@ export const BG_IMAGE_KEY = 'thrft-bg-image-v2'
 const BG_MATCH_KEY = 'thrft-bg-match-color-v1'
 export const THEME_KEY = 'thrft-theme-v1'
 export const USER_THEME_KEY = 'thrft-user-theme-v1'
+export const MOONLIGHT_KEY = 'thrft-moonlight-v1'
 export const BRIGHTNESS_KEY = 'thrft-brightness-v1'
 export const DEFAULT_BRIGHTNESS = 100
 
@@ -98,6 +99,8 @@ let currentBg = DEFAULT_BG_IMAGE
 let currentBgEffects = [...DEFAULT_BG_EFFECTS]
 let currentTheme = 'dark'
 let matchBackgroundColor = false
+// Moonlight: the moon button's black page + inverted containers look.
+let moonlightOn = false
 
 export function readTheme() {
   try {
@@ -145,7 +148,7 @@ export function colorSchemeForHex(hex) {
 function syncColorScheme() {
   const root = document.documentElement
   // The default page is always black; the mode only recolors containers.
-  let scheme = currentBgColorId === 'none' ? 'dark' : currentTheme
+  let scheme = moonlightOn && currentBgColorId === 'none' ? 'dark' : currentTheme
   if (matchBackgroundColor) {
     const color = resolveBgColor(currentBgColorId)
     if (color.id !== 'none') {
@@ -529,6 +532,7 @@ export function applyBgAtmosphereTokens() {
   const base = hasColor ? color.rgb : [36, 36, 36]
 
   root.dataset.bgColor = color.id
+  root.dataset.moonlight = moonlightOn ? 'on' : 'off'
   root.style.setProperty('--bg-color-id', color.id)
   root.style.setProperty(
     '--bg-color-swatch',
@@ -537,8 +541,8 @@ export function applyBgAtmosphereTokens() {
   root.style.setProperty('--bg-color-rgb', base.join(', '))
 
   // Deep void keeps the wash readable; hue lives in the flowing clouds.
-  const voidRgb = matchBackgroundColor && hasColor ? base : hasColor && currentTheme === 'light'
-    ? base.map((channel) => Math.round(238 + channel * 0.06))
+  const voidRgb = matchBackgroundColor && hasColor ? base : currentTheme === 'light' && !(moonlightOn && !hasColor)
+    ? (hasColor ? base.map((channel) => Math.round(238 + channel * 0.06)) : [250, 250, 250])
     : hasColor
     ? [
         Math.round(base[0] * 0.12),
@@ -715,10 +719,38 @@ export function applyCustomBgColor(hex, { matchColor = false } = {}) {
 
 let searchBackgroundSnapshot = null
 
+export function readMoonlight() {
+  try {
+    return localStorage.getItem(MOONLIGHT_KEY) === 'on'
+  } catch {
+    return false
+  }
+}
+
+function saveMoonlight(on) {
+  moonlightOn = on
+  try {
+    localStorage.setItem(MOONLIGHT_KEY, on ? 'on' : 'off')
+  } catch {
+    /* ignore */
+  }
+}
+
+/** Leave moonlight and return the app to its normal dark look. */
+export function exitMoonlight() {
+  if (!moonlightOn) return false
+  saveMoonlight(false)
+  saveUserTheme('dark')
+  applyTheme('dark')
+  return true
+}
+
 export function applyDisplayMode(theme) {
   if (theme !== 'dark' && theme !== 'light') {
     throw new Error('Display mode must be dark or light.')
   }
+  saveMoonlight(true)
+  applyBackgroundImage('none')
   clearSearchBackground()
   applyAppColor(DEFAULT_APP_COLOR)
   saveUserTheme(theme)
@@ -980,6 +1012,7 @@ export function initAppearance() {
   } catch (error) {
     console.warn('Unable to read background color matching.', error)
   }
+  moonlightOn = readMoonlight()
   currentTheme = readTheme()
   document.documentElement.dataset.theme = currentTheme
   document.documentElement.style.colorScheme = currentTheme

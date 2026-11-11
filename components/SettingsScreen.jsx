@@ -7,6 +7,7 @@ import {
   readBrightness,
   applyAppColor,
   applyBackgroundImage,
+  exitMoonlight,
   readBackgroundImage,
   applyBackgroundPhoto,
   readBackgroundPhoto,
@@ -1581,6 +1582,7 @@ export default function SettingsScreen({
               }}
               onClick={() => {
                 const next = bgEffectOn ? 'none' : 'atmosphere'
+                if (next === 'atmosphere' && exitMoonlight()) setTheme(readTheme())
                 applyBackgroundImage(next)
                 setBgEffectOn(next === 'atmosphere')
               }}

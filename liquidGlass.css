@@ -1446,7 +1446,7 @@ html body .tab-bar .tab-item .tab-icon {
 
 /* Default (uncolored) display modes: the page is always black; dark = white
    containers/black text, light = black containers/white text. Picking a color restores glass. */
-html[data-theme='dark'][data-bg-color='none'] {
+html[data-theme='dark'][data-bg-color='none'][data-moonlight='on'] {
   --atmosphere-effect-a: #000 !important;
   --atmosphere-effect-b: #000 !important;
   --atmosphere-effect-c: #000 !important;
@@ -1456,7 +1456,7 @@ html[data-theme='dark'][data-bg-color='none'] {
   --void: #000 !important;
   --atmosphere-base: #000 !important;
 }
-html[data-theme='light'][data-bg-color='none'] {
+html[data-theme='light'][data-bg-color='none'][data-moonlight='on'] {
   --atmosphere-effect-a: #000 !important;
   --atmosphere-effect-b: #000 !important;
   --atmosphere-effect-c: #000 !important;
@@ -1466,57 +1466,57 @@ html[data-theme='light'][data-bg-color='none'] {
   --void: #000 !important;
   --atmosphere-base: #000 !important;
 }
-html[data-theme='dark'][data-app-color='none'] body .settings-section:not(.is-profile-controls) .settings-card,
-html[data-theme='dark'][data-app-color='none'] body .settings-section.is-profile-controls .settings-row,
-html[data-theme='dark'][data-app-color='none'] body .settings-block,
-html[data-theme='dark'][data-app-color='none'] body .settings-theme-toggle,
-html[data-theme='dark'][data-app-color='none'] body .settings-account-active,
-html[data-theme='dark'][data-app-color='none'] body .settings-icon-tile,
-html[data-theme='dark'][data-app-color='none'] body .listing-box,
-html[data-theme='dark'][data-app-color='none'] body .listing-globe-trigger {
+html[data-theme='dark'][data-app-color='none'][data-moonlight='on'] body .settings-section:not(.is-profile-controls) .settings-card,
+html[data-theme='dark'][data-app-color='none'][data-moonlight='on'] body .settings-section.is-profile-controls .settings-row,
+html[data-theme='dark'][data-app-color='none'][data-moonlight='on'] body .settings-block,
+html[data-theme='dark'][data-app-color='none'][data-moonlight='on'] body .settings-theme-toggle,
+html[data-theme='dark'][data-app-color='none'][data-moonlight='on'] body .settings-account-active,
+html[data-theme='dark'][data-app-color='none'][data-moonlight='on'] body .settings-icon-tile,
+html[data-theme='dark'][data-app-color='none'][data-moonlight='on'] body .listing-box,
+html[data-theme='dark'][data-app-color='none'][data-moonlight='on'] body .listing-globe-trigger {
   background: #fff !important;
   border: 1.5px solid #000 !important;
   color: #000;
 }
-html[data-theme='dark'][data-app-color='none'] body .settings-section:not(.is-profile-controls) .settings-card *,
-html[data-theme='dark'][data-app-color='none'] body .settings-section.is-profile-controls .settings-row *,
-html[data-theme='dark'][data-app-color='none'] body .settings-block *,
-html[data-theme='dark'][data-app-color='none'] body .settings-theme-toggle *,
-html[data-theme='dark'][data-app-color='none'] body .settings-account-active *,
-html[data-theme='dark'][data-app-color='none'] body .settings-icon-tile *,
-html[data-theme='dark'][data-app-color='none'] body .listing-box *,
-html[data-theme='dark'][data-app-color='none'] body .listing-globe-trigger * {
+html[data-theme='dark'][data-app-color='none'][data-moonlight='on'] body .settings-section:not(.is-profile-controls) .settings-card *,
+html[data-theme='dark'][data-app-color='none'][data-moonlight='on'] body .settings-section.is-profile-controls .settings-row *,
+html[data-theme='dark'][data-app-color='none'][data-moonlight='on'] body .settings-block *,
+html[data-theme='dark'][data-app-color='none'][data-moonlight='on'] body .settings-theme-toggle *,
+html[data-theme='dark'][data-app-color='none'][data-moonlight='on'] body .settings-account-active *,
+html[data-theme='dark'][data-app-color='none'][data-moonlight='on'] body .settings-icon-tile *,
+html[data-theme='dark'][data-app-color='none'][data-moonlight='on'] body .listing-box *,
+html[data-theme='dark'][data-app-color='none'][data-moonlight='on'] body .listing-globe-trigger * {
   color: #000;
   --st-mute: #000;
 }
-html[data-theme='dark'][data-app-color='none'] body :is(.listing-box, .listing-globe-trigger) :is(input, textarea) {
+html[data-theme='dark'][data-app-color='none'][data-moonlight='on'] body :is(.listing-box, .listing-globe-trigger) :is(input, textarea) {
   color: #000;
   caret-color: #000;
 }
-html[data-theme='light'][data-app-color='none'] body .settings-section:not(.is-profile-controls) .settings-card,
-html[data-theme='light'][data-app-color='none'] body .settings-section.is-profile-controls .settings-row,
-html[data-theme='light'][data-app-color='none'] body .settings-block,
-html[data-theme='light'][data-app-color='none'] body .settings-theme-toggle,
-html[data-theme='light'][data-app-color='none'] body .settings-account-active,
-html[data-theme='light'][data-app-color='none'] body .settings-icon-tile,
-html[data-theme='light'][data-app-color='none'] body .listing-box,
-html[data-theme='light'][data-app-color='none'] body .listing-globe-trigger {
+html[data-theme='light'][data-app-color='none'][data-moonlight='on'] body .settings-section:not(.is-profile-controls) .settings-card,
+html[data-theme='light'][data-app-color='none'][data-moonlight='on'] body .settings-section.is-profile-controls .settings-row,
+html[data-theme='light'][data-app-color='none'][data-moonlight='on'] body .settings-block,
+html[data-theme='light'][data-app-color='none'][data-moonlight='on'] body .settings-theme-toggle,
+html[data-theme='light'][data-app-color='none'][data-moonlight='on'] body .settings-account-active,
+html[data-theme='light'][data-app-color='none'][data-moonlight='on'] body .settings-icon-tile,
+html[data-theme='light'][data-app-color='none'][data-moonlight='on'] body .listing-box,
+html[data-theme='light'][data-app-color='none'][data-moonlight='on'] body .listing-globe-trigger {
   background: #000 !important;
   border: 1.5px solid #fff !important;
   color: #fff;
 }
-html[data-theme='light'][data-app-color='none'] body .settings-section:not(.is-profile-controls) .settings-card *,
-html[data-theme='light'][data-app-color='none'] body .settings-section.is-profile-controls .settings-row *,
-html[data-theme='light'][data-app-color='none'] body .settings-block *,
-html[data-theme='light'][data-app-color='none'] body .settings-theme-toggle *,
-html[data-theme='light'][data-app-color='none'] body .settings-account-active *,
-html[data-theme='light'][data-app-color='none'] body .settings-icon-tile *,
-html[data-theme='light'][data-app-color='none'] body .listing-box *,
-html[data-theme='light'][data-app-color='none'] body .listing-globe-trigger * {
+html[data-theme='light'][data-app-color='none'][data-moonlight='on'] body .settings-section:not(.is-profile-controls) .settings-card *,
+html[data-theme='light'][data-app-color='none'][data-moonlight='on'] body .settings-section.is-profile-controls .settings-row *,
+html[data-theme='light'][data-app-color='none'][data-moonlight='on'] body .settings-block *,
+html[data-theme='light'][data-app-color='none'][data-moonlight='on'] body .settings-theme-toggle *,
+html[data-theme='light'][data-app-color='none'][data-moonlight='on'] body .settings-account-active *,
+html[data-theme='light'][data-app-color='none'][data-moonlight='on'] body .settings-icon-tile *,
+html[data-theme='light'][data-app-color='none'][data-moonlight='on'] body .listing-box *,
+html[data-theme='light'][data-app-color='none'][data-moonlight='on'] body .listing-globe-trigger * {
   color: #fff;
   --st-mute: #fff;
 }
-html[data-theme='light'][data-app-color='none'] body :is(.listing-box, .listing-globe-trigger) :is(input, textarea) {
+html[data-theme='light'][data-app-color='none'][data-moonlight='on'] body :is(.listing-box, .listing-globe-trigger) :is(input, textarea) {
   color: #fff;
   caret-color: #fff;
 }

@@ -54,7 +54,7 @@ test('black Settings backgrounds disable dark mode, preserve contrast, and survi
 
     reloaded.applyBgColor('none')
     assert.equal(root.dataset.theme, 'light', 'neutral background restores the saved light mode')
-    assert.equal(root.style.colorScheme, 'dark', 'default page stays black')
+    assert.equal(root.style.colorScheme, 'light')
 
     reloaded.applyTheme('dark')
     reloaded.applyCustomBgColor('#000000', { matchColor: true })
@@ -136,6 +136,12 @@ test('choosing no background after a black one restores the mode picked with the
     appearance.applyBgColor('none')
     assert.equal(appearance.readTheme(), 'dark')
     assert.equal(root.dataset.theme, 'dark')
+
+    assert.equal(appearance.readBackgroundImage(), 'none', 'moon button turns the effect off')
+    assert.equal(root.dataset.moonlight, 'on')
+    assert.equal(appearance.exitMoonlight(), true)
+    assert.equal(root.dataset.moonlight, 'off')
+    assert.equal(appearance.exitMoonlight(), false, 'turning the effect off again stays out of moonlight')
   } finally {
     delete globalThis.localStorage
     delete globalThis.document
