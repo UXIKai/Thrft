@@ -255,7 +255,7 @@ export default function CreateListing({ onPosted } = {}) {
     ...(isCloset ? ['date'] : isStore ? ['materials'] : []),
   ]
   const currentStep = step
-  const stepHeadingRef = useRef(null)
+  const walkthroughRef = useRef(null)
   const destinationRef = useRef(null)
   const stepIndex = steps.indexOf(step)
   const lastStep = stepIndex === steps.length - 1
@@ -263,22 +263,11 @@ export default function CreateListing({ onPosted } = {}) {
     isCloset, scanPreview, marketPhotos, title, brand, category, price,
     condition, description, materials, dateM, dateD, dateY,
   })
-  const stepTitles = {
-    photo: isCloset ? 'Scan your clothing' : 'Add photos',
-    title: 'Title',
-    details: 'Brand and Category',
-    price: 'Price',
-    condition: 'Condition',
-    description: 'Description',
-    date: 'Date',
-    materials: 'Materials',
-  }
-
   useEffect(() => {
     if (currentStep === 'destination') {
       destinationRef.current?.focus({ preventScroll: true })
     } else {
-      stepHeadingRef.current?.focus({ preventScroll: true })
+      walkthroughRef.current?.focus({ preventScroll: true })
     }
   }, [currentStep])
 
@@ -567,9 +556,10 @@ export default function CreateListing({ onPosted } = {}) {
     <section
       className={`create-listing is-walkthrough${addSheetOpen ? ' is-adding' : ''}`}
       aria-label="Create listing"
+      ref={walkthroughRef}
+      tabIndex={-1}
     >
       {currentStep !== 'destination' && <header className="listing-walkthrough-header">
-        <h1 tabIndex={-1} ref={stepHeadingRef}>{stepTitles[currentStep]}</h1>
         <p>{segmentLabel(segment)} · {stepIndex + 1} of {steps.length}</p>
       </header>}
       {addSheetOpen ? (

@@ -878,7 +878,9 @@ html body .listing-photo-hit {
 }
 
 html body .listing-photo-choice-btn {
-  color: light-dark(#000, #fff);
+  background: light-dark(#000, #fff) !important;
+  color: light-dark(#fff, #000);
+  border-radius: 16px;
   width: 56px;
   height: 56px;
   display: grid;
@@ -943,9 +945,7 @@ html body .listing-photo-choice-btn {
   text-align: center;
 }
 
-.listing-walkthrough-header h1 {
-  margin: 0;
-  font-size: clamp(1.2rem, 3vw, 1.65rem);
+.create-listing:focus {
   outline: none;
 }
 
