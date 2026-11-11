@@ -36,6 +36,30 @@ test('back repeatedly returns Home and cleanup removes the signed-in guard', () 
     assert.equal(entries.length, 2)
   }
   assert.equal(homes, 3)
+  let prevented = false
+  listeners.get('touchstart')({
+    touches: [{ clientX: 5, clientY: 200 }],
+    cancelable: true,
+    preventDefault: () => { prevented = true },
+  })
+  listeners.get('touchend')({ changedTouches: [{ clientX: 100, clientY: 210 }] })
+  assert.equal(prevented, true)
+  assert.equal(homes, 4)
+  listeners.get('touchstart')({
+    touches: [{ clientX: 100, clientY: 200 }],
+    cancelable: true,
+    preventDefault: () => { throw new Error('Normal swipes must not be blocked') },
+  })
+  listeners.get('touchend')({ changedTouches: [{ clientX: 200, clientY: 200 }] })
+  assert.equal(homes, 4)
+  listeners.get('touchstart')({
+    touches: [{ clientX: 5, clientY: 200 }],
+    cancelable: true,
+    preventDefault: () => {},
+  })
+  listeners.get('touchcancel')()
+  listeners.get('touchend')({ changedTouches: [{ clientX: 100, clientY: 200 }] })
+  assert.equal(homes, 4)
   stop()
   assert.equal(listeners.size, 0)
 })
