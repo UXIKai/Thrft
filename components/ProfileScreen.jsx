@@ -1962,7 +1962,7 @@ export default function ProfileScreen({
                 {musicSheet ? (
                   <div className="profile-link-editor">
                     <label className="profile-social-handle-field">
-                      <span className="profile-link-platform-icon" aria-hidden>
+                      <span className={`profile-link-platform-icon is-${musicSheet}`} aria-hidden>
                         {musicSheet === 'spotify' ? <SpotifyIcon /> : <AppleMusicIcon />}
                       </span>
                       <input

@@ -1330,6 +1330,14 @@
   color: light-dark(rgb(0, 0, 0), #fff);
 }
 
+.profile-link-platform-icon.is-apple {
+  color: #fc3c44;
+}
+
+.profile-link-platform-icon.is-spotify {
+  color: #1ed760;
+}
+
 .profile-social-handle-field .glass-input.is-handle,
 .profile-social-handle-field .profile-music-input {
   flex: 1;
