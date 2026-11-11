@@ -25,6 +25,15 @@ body,
   overscroll-behavior: none;
 }
 
+/* Status-bar strip: same shade as the page below it, never a brighter band */
+html {
+  background: color-mix(in srgb, var(--atmosphere-base, #000) 45%, #000);
+}
+
+html[data-bg-image='none'] {
+  background: #000;
+}
+
 body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
