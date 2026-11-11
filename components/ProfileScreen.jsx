@@ -890,6 +890,8 @@ export default function ProfileScreen({
   }, [musicSheet, musicDraft])
 
   function openMusic(service) {
+    setActiveSocial(null)
+    setSocialDraft('')
     setMusicSheet(service)
     setMusicDraft(musicLinks[service]?.url || '')
   }
@@ -1091,6 +1093,8 @@ export default function ProfileScreen({
   }
 
   function openSocial(id) {
+    setMusicSheet(null)
+    setMusicDraft('')
     setActiveSocial(id)
     setSocialDraft(socialHandles[id] || '')
   }
