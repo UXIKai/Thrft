@@ -2722,7 +2722,7 @@ export default function ChatScreen({
         </section>
       ) : null}
 
-      {!composer && <StageSlot active={!isDesktop}>
+      {!composer && searchOpen && <StageSlot active={!isDesktop}>
           <div className={`chat-bottom-dock${isDesktop ? ' is-desktop' : ''}${usersPickerOpen || memberGlobeVisible ? ' is-covered' : ''}`}>
             <div className={`chat-search-bar${searchOpen ? '' : ' is-collapsed'}`}>
               {searchOpen ? (
