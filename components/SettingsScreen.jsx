@@ -1445,6 +1445,7 @@ export default function SettingsScreen({
     if (readMoonlight()) {
       exitMoonlight()
       setTheme(readTheme())
+      setBrightness(applyBrightness(0))
     } else {
       setTheme(applyDisplayMode('dark'))
       setBrightness(applyBrightness(50))
@@ -1598,9 +1599,9 @@ export default function SettingsScreen({
                 if (next === 'atmosphere' && exitMoonlight()) {
                   setTheme(readTheme())
                   setMoonlightOn(false)
+                  setBrightness(applyBrightness(0))
                 }
                 applyBackgroundImage(next)
-                if (next === 'none') setBrightness(applyBrightness(50))
                 setBgEffectOn(next === 'atmosphere')
               }}
             >
