@@ -256,7 +256,7 @@ html body .home-search-blur::after {
   display: none;
 }
 
-html body .home-search-backdrop {
+html body .home-search-backdrop:not([style]) {
   background: #000;
 }
 

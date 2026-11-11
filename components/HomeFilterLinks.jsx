@@ -93,6 +93,9 @@ export default function HomeFilterLinks({
     '--card-ink': draftColor && !isBlackFamily ? cardHex : '#ffffff',
     '--search-card-background': '#000000',
   }
+  const effectOn = document.documentElement.dataset.bgImage !== 'none'
+  // Page behind the card stays black until the effect is on and a new color is scrolled onto.
+  const tintBackdrop = effectOn && !!draftColor && draftColor !== colorId
   const searchColor = (draftColor && colorHex(draftColor)) || '#ffffff'
   const searchRgb = searchColor.match(/[a-f0-9]{2}/gi)?.map((part) => parseInt(part, 16)).join(', ')
 
@@ -110,7 +113,7 @@ export default function HomeFilterLinks({
           <path d="M16 16l4.5 4.5" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
         </svg>
       </button>
-      {open && draftColor && (
+      {open && tintBackdrop && (
         <div
           className="home-search-blur"
           aria-hidden
@@ -135,6 +138,7 @@ export default function HomeFilterLinks({
       {open && (
         <div
           className="home-search-backdrop"
+          style={tintBackdrop ? { background: searchColor } : undefined}
           onPointerDown={(e) => {
             if (e.target === e.currentTarget) cancel()
           }}
