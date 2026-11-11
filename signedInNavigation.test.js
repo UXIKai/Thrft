@@ -8,6 +8,7 @@ test('back repeatedly returns Home and cleanup removes the signed-in guard', () 
   let homes = 0
   const listeners = new Map()
   const target = {
+    innerWidth: 390,
     location: { pathname: '/', search: '?shop=1', hash: '' },
     history: {
       get state() { return entries[index] },
@@ -44,14 +45,14 @@ test('back repeatedly returns Home and cleanup removes the signed-in guard', () 
   })
   listeners.get('touchend')({ changedTouches: [{ clientX: 100, clientY: 210 }] })
   assert.equal(prevented, true)
-  assert.equal(homes, 4)
+  assert.equal(homes, 3)
   listeners.get('touchstart')({
     touches: [{ clientX: 100, clientY: 200 }],
     cancelable: true,
     preventDefault: () => { throw new Error('Normal swipes must not be blocked') },
   })
   listeners.get('touchend')({ changedTouches: [{ clientX: 200, clientY: 200 }] })
-  assert.equal(homes, 4)
+  assert.equal(homes, 3)
   listeners.get('touchstart')({
     touches: [{ clientX: 5, clientY: 200 }],
     cancelable: true,
@@ -59,7 +60,21 @@ test('back repeatedly returns Home and cleanup removes the signed-in guard', () 
   })
   listeners.get('touchcancel')()
   listeners.get('touchend')({ changedTouches: [{ clientX: 100, clientY: 200 }] })
-  assert.equal(homes, 4)
+  assert.equal(homes, 3)
+  prevented = false
+  listeners.get('touchstart')({
+    touches: [{ clientX: 385, clientY: 200 }],
+    cancelable: true,
+    preventDefault: () => { prevented = true },
+  })
+  listeners.get('touchmove')({
+    touches: [{ clientX: 300, clientY: 200 }],
+    cancelable: true,
+    preventDefault: () => {},
+  })
+  listeners.get('touchend')({ changedTouches: [{ clientX: 280, clientY: 200 }] })
+  assert.equal(prevented, true)
+  assert.equal(homes, 3)
   stop()
   assert.equal(listeners.size, 0)
 })

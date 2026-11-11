@@ -19,44 +19,34 @@ export function guardSignedInNavigation(target, onHome) {
     history.replaceState(homeState, '', url)
     history.pushState({ ...homeState, thrftNavigation: 'app' }, '', url)
   }
-  let swipe = null
+  let blockingSwipe = false
   const onTouchStart = (event) => {
-    swipe = null
+    blockingSwipe = false
     if (event.touches.length !== 1) return
     const touch = event.touches[0]
-    if (touch.clientX > 20) return
-    swipe = { x: touch.clientX, y: touch.clientY }
+    if (touch.clientX > 20 && touch.clientX < target.innerWidth - 20) return
+    blockingSwipe = true
     if (event.cancelable) event.preventDefault()
   }
   const onTouchMove = (event) => {
-    if (!swipe) return
+    if (!blockingSwipe) return
     if (event.touches.length !== 1) {
-      swipe = null
+      blockingSwipe = false
       return
     }
     if (event.cancelable) event.preventDefault()
   }
-  const onTouchEnd = (event) => {
-    if (!swipe) return
-    const start = swipe
-    swipe = null
-    const touch = event.changedTouches[0]
-    if (!touch) return
-    const dx = touch.clientX - start.x
-    const dy = Math.abs(touch.clientY - start.y)
-    if (dx >= 60 && dx > dy * 1.5) showHome()
-  }
-  const onTouchCancel = () => { swipe = null }
+  const onTouchEnd = () => { blockingSwipe = false }
   target.addEventListener('popstate', onBack)
   target.addEventListener('touchstart', onTouchStart, { passive: false })
   target.addEventListener('touchmove', onTouchMove, { passive: false })
   target.addEventListener('touchend', onTouchEnd)
-  target.addEventListener('touchcancel', onTouchCancel)
+  target.addEventListener('touchcancel', onTouchEnd)
   return () => {
     target.removeEventListener('popstate', onBack)
     target.removeEventListener('touchstart', onTouchStart)
     target.removeEventListener('touchmove', onTouchMove)
     target.removeEventListener('touchend', onTouchEnd)
-    target.removeEventListener('touchcancel', onTouchCancel)
+    target.removeEventListener('touchcancel', onTouchEnd)
   }
 }
