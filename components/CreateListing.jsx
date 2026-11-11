@@ -282,6 +282,12 @@ export default function CreateListing({ onPosted } = {}) {
     }
   }, [currentStep])
 
+  useEffect(() => {
+    if (!postedProduct) return undefined
+    const timer = window.setTimeout(() => setPostedProduct(null), 2000)
+    return () => window.clearTimeout(timer)
+  }, [postedProduct])
+
   function navigateStep(direction) {
     if (direction > 0 && !stepFilled) return
     setPostError('')
@@ -576,7 +582,8 @@ export default function CreateListing({ onPosted } = {}) {
           onClick={closeAddSheet}
         />
       ) : null}
-      {currentStep === 'destination' && <div
+      {currentStep === 'destination' && <div className="listing-destination">
+      <div
         className="listing-segment"
         role="group"
         aria-label="Listing destination"
@@ -604,10 +611,22 @@ export default function CreateListing({ onPosted } = {}) {
             </button>
           )
         })}
+      </div>
+      {postedProduct && (
+        <div
+          className="listing-success"
+          role="status"
+          aria-label={postedProduct.segment === 'closet' ? 'Added to Closet' : `Posted to your ${segmentLabel(postedProduct.segment)}`}
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path pathLength="1" d="M5 12.5l4.5 4.5L19 7.5" />
+          </svg>
+        </div>
+      )}
       </div>}
 
       {currentStep === 'photo' && (isMarket || isStore) && (
-        <div className={`listing-photo-drop${marketPhotos.length ? ' has-preview' : ''}`} role="group" aria-label="Add photos">
+        <div className={`listing-photo-drop${marketPhotos.length ? ' has-preview' : ''}${photoChoice ? ' is-choosing' : ''}`} role="group" aria-label="Add photos">
           <input ref={photoCameraRef} type="file" accept="image/*" capture="environment" className="listing-scan-input" aria-hidden tabIndex={-1} onChange={onMarketPhoto} />
           <input ref={photoGalleryRef} type="file" accept="image/*" multiple className="listing-scan-input" aria-hidden tabIndex={-1} onChange={onMarketPhoto} />
           <button type="button" className="listing-photo-hit is-bare" aria-label="Add photos" title="Add photos" disabled={scanning} onClick={() => setPhotoChoice(true)}>
@@ -638,7 +657,7 @@ export default function CreateListing({ onPosted } = {}) {
         <>
           <input ref={scanInputRef} type="file" accept="image/*" capture="environment" className="listing-scan-input" aria-hidden tabIndex={-1} onChange={onScanFile} />
           <input ref={scanGalleryRef} type="file" accept="image/*" className="listing-scan-input" aria-hidden tabIndex={-1} onChange={onScanFile} />
-          <div className={`listing-scanner-btn${scanPreview ? ' has-preview' : ''}`} role="group" aria-label="Clothing scanner">
+          <div className={`listing-scanner-btn${scanPreview ? ' has-preview' : ''}${photoChoice ? ' is-choosing' : ''}`} role="group" aria-label="Clothing scanner">
             <button type="button" className="listing-photo-hit is-bare" aria-label="Clothing scanner" title="Clothing scanner" disabled={scanning} onClick={() => setPhotoChoice(true)}>
               {scanning ? <span role="status">Removing background...</span> : scanPreview ? (
                 <img className="listing-scanner-preview" src={scanImage || scanPreview} alt="Scanned clothing cutout" />
@@ -932,15 +951,6 @@ export default function CreateListing({ onPosted } = {}) {
           {postError}
         </p>
       ) : null}
-      {currentStep === 'destination' && postedProduct && (
-        <p className="listing-posted-note" role="status">
-          {postedProduct.segment === 'closet'
-            ? `Added to Closet · ${postedProduct.title || ''}`
-            : `Posted to your ${segmentLabel(postedProduct.segment)}${
-                postedProduct.title ? ` · ${postedProduct.title}` : ''
-              }`}
-        </p>
-      )}
       {numberLookupOpen && <ClosetNumberLookup
         brands={[...new Set([...LISTING_BRANDS, ...customBrands])]}
         initialBrand={brand}
