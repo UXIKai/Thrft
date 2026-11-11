@@ -1531,12 +1531,11 @@ html[data-bg-color='none'] body button.settings-effect-switch.is-on {
   border: 2px solid light-dark(#fff, #000) !important;
 }
 
-/* Moonlight: the switch sits on a contrasting container, so outline it to match the container edge */
-html[data-theme='dark'][data-moonlight='on'][data-app-color='none'] body button.settings-effect-switch,
-html[data-theme='dark'][data-moonlight='on'][data-app-color='none'] body button.settings-effect-switch.is-on {
-  border: 2px solid #000 !important;
+/* Moonlight: the switch sits on a contrasting container, so outline it to match the container edge.
+   The switch sets its border inline, so the color is passed through a variable. */
+html[data-theme='dark'][data-moonlight='on'][data-app-color='none'] body .settings-effect-switch {
+  --effect-switch-outline: #000;
 }
-html[data-theme='light'][data-moonlight='on'][data-app-color='none'] body button.settings-effect-switch,
-html[data-theme='light'][data-moonlight='on'][data-app-color='none'] body button.settings-effect-switch.is-on {
-  border: 2px solid #fff !important;
+html[data-theme='light'][data-moonlight='on'][data-app-color='none'] body .settings-effect-switch {
+  --effect-switch-outline: #fff;
 }

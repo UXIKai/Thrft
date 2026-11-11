@@ -1571,7 +1571,11 @@ export default function SettingsScreen({
                 el.style.setProperty('opacity', '1', 'important')
                 el.style.setProperty('filter', 'none', 'important')
                 el.style.setProperty('box-shadow', 'none', 'important')
-                el.style.setProperty('border', '0', 'important')
+                el.style.setProperty(
+                  'border',
+                  `2px solid var(--effect-switch-outline, ${bgEffectOn ? '#fff' : '#000'})`,
+                  'important',
+                )
                 el.style.setProperty('forced-color-adjust', 'none', 'important')
                 const knob = el.firstElementChild
                 knob?.style.setProperty(
