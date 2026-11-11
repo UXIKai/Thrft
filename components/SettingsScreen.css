@@ -118,6 +118,11 @@
   height: 0;
 }
 
+.settings-columns,
+.settings-column {
+  display: contents;
+}
+
 .settings-section {
   margin-bottom: 18px;
 }
@@ -1993,10 +1998,12 @@
   outline: none;
 }
 
-/* Desktop: present settings as a tidy centered glass panel */
+/* Desktop splits account options and customization into equal columns. */
 @media (min-width: 720px) {
   .settings-screen {
-    inset: 20px 0;
+    inset: 20px auto 20px 50%;
+    width: min(1440px, calc(100% - 48px));
+    transform: translateX(-50%);
     border-radius: 28px;
     border: 1px solid var(--glass-border, light-dark(rgba(0, 0, 0, 0.14), rgba(255, 255, 255, 0.14)));
     background: var(--glass-tint, transparent);
@@ -2013,6 +2020,28 @@
 
   .settings-scroll {
     padding-top: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .settings-columns {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(24px, 4vw, 72px);
+    flex: 1 0 auto;
+  }
+
+  .settings-column {
+    display: block;
+    min-width: 0;
+  }
+
+  .settings-scroll > .settings-signout {
+    width: min(240px, 100%);
+    flex-shrink: 0;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .settings-section {
@@ -2021,48 +2050,6 @@
 
   .settings-label {
     margin-left: 4px;
-  }
-}
-
-/* Desktop: keep content in a centered, comfortably narrow column */
-@media (min-width: 720px) {
-  .settings-screen {
-    left: 50%;
-    right: auto;
-    width: min(520px, 100%);
-    transform: translateX(-50%);
-  }
-
-  .settings-top,
-  .settings-scroll > * {
-    width: 100%;
-    max-width: 440px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .settings-scroll {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-  }
-}
-
-/* Desktop: panel fills the middle third of the screen */
-@media (min-width: 720px) {
-  .settings-screen {
-    width: max(360px, 33.333%);
-  }
-
-  .settings-top,
-  .settings-scroll > * {
-    max-width: none;
-  }
-}
-
-@media (min-width: 720px) {
-  .settings-screen {
-    width: max(360px, 33.333vw);
   }
 }
 

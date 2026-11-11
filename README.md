@@ -85,6 +85,7 @@ While signed in, browser back preserves the current app page, rather than revisi
 - Money controls and sales statistics use matching tile sizes, spacing, and glass styling.
 
 Settings & privacy starts with Profile followed by the active account. Other account and support options come next, followed by colors, sliders, and the four shop-tool buttons at the bottom.
+On desktop, account and support options occupy the left column and appearance controls and shop tools occupy the right, with Sign out centered below both. Mobile retains the single-column layout.
 Links and Money rows sit immediately below ID verification. Profile contains only username, email and password; Links contains music services and social handles under Media; Money contains the financial controls. Each page centers its content and section headings above the controls, retaining scrolling on shorter screens.
 
 Links shows the selected platform icon beside its input and opens only one platform editor at a time. Switching platforms discards unsaved drafts. Media buttons have a clear-glass highlight, with a stronger film on the selected platform.

@@ -1815,6 +1815,8 @@ export default function SettingsScreen({
         <h1 className="settings-title">Settings</h1>
         <span className="settings-top-spacer" aria-hidden />
       </header>
+      <div className="settings-columns">
+      <div className="settings-column">
         <Section label="Account Settings" className="is-profile-controls">
           <Row
             icon={<ProfileIcon />}
@@ -1897,7 +1899,11 @@ export default function SettingsScreen({
           <Row icon={<HelpIcon />} title="Q&A" iconOnly onClick={openHelpAssistant} />
         </Section>
 
+      </div>
+      <div className="settings-column">
         {customizationSections}
+      </div>
+      </div>
 
         <p className="settings-footer">ThrfT. v1.0.0</p>
 
