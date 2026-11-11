@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { flushSync } from 'react-dom'
 import { fetchSaved, recordInterest } from '../api.js'
 import { recordProductInterest, recordSearchHistory } from '../forYou.js'
 import { LISTING_BRANDS } from '../listingCatalog.js'
@@ -495,6 +496,21 @@ export default function SavedScreen({
 
   return (
     <section className="saved-screen" aria-label="Liked">
+      <header className="saved-page-header">
+        <h1 className="saved-list-title">Liked</h1>
+        <button
+          type="button"
+          className="saved-dock-search is-bare"
+          aria-label="Search liked"
+          aria-expanded={searchOpen}
+          onClick={() => {
+            flushSync(() => setSearchOpen(true))
+            document.getElementById('saved-search-input')?.focus({ preventScroll: true })
+          }}
+        >
+          <SearchIcon />
+        </button>
+      </header>
       <div
         className="saved-mode-switch"
         role="tablist"
@@ -679,17 +695,19 @@ export default function SavedScreen({
           : null}
       </div>
 
-      <StageSlot>
+      {searchOpen && <StageSlot>
       <div className={`saved-search-dock${globeOpen ? ' is-open' : ''}`}>
         <div className={`saved-search-bar${searchOpen ? '' : ' is-collapsed'}`}>
           {searchOpen ? (
             <button
-              ref={plusRef}
               type="button"
               className="saved-dock-search"
-              aria-label={globeOpen ? 'Close brand globe' : 'Open brand globe'}
-              aria-pressed={globeOpen}
-              onClick={onPlusClick}
+              aria-label="Close search"
+              onClick={() => {
+                if (globeOpen) closeGlobe()
+                setQuery('')
+                setSearchOpen(false)
+              }}
             >
               <SearchIcon />
             </button>
@@ -721,25 +739,18 @@ export default function SavedScreen({
             />
           ) : null}
           <button
+            ref={plusRef}
             type="button"
-            className={`saved-search-add${searchOpen ? ' is-search-open' : ''}`}
-            aria-label={searchOpen ? 'Close search' : 'Search'}
-            aria-expanded={searchOpen}
-            onClick={() => {
-              if (searchOpen) {
-                if (globeOpen) closeGlobe()
-                setQuery('')
-                setSearchOpen(false)
-              } else {
-                setSearchOpen(true)
-              }
-            }}
+            className="saved-search-add"
+            aria-label={globeOpen ? 'Close brand globe' : 'Open brand globe'}
+            aria-expanded={globeOpen}
+            onClick={onPlusClick}
           >
             <PlusIcon />
           </button>
         </div>
       </div>
-      </StageSlot>
+      </StageSlot>}
 
       {globePhase !== 'closed' && (
         <BrandGlobe

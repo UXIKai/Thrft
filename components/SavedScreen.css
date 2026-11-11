@@ -44,6 +44,16 @@
   pointer-events: none;
 }
 
+.saved-page-header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-height: 36px;
+  margin-bottom: 12px;
+  flex-shrink: 0;
+}
+
 .saved-filter-wrap {
   position: relative;
   z-index: 30;
@@ -557,14 +567,6 @@
   width: 18px;
   height: 18px;
   transition: transform 0.38s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.saved-search-add.is-search-open {
-  transform: rotate(45deg);
-}
-
-.saved-search-add.is-search-open .saved-dock-ico {
-  transform: rotate(0deg);
 }
 
 .saved-dock-ico {
