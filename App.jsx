@@ -276,6 +276,7 @@ export default function App() {
             ...prev,
             ...profile,
             email: session.profile?.email || profile.email || prev.email,
+            avatarUrl: session.profile?.avatarUrl || profile.avatarUrl || prev.avatarUrl || '',
             displayName:
               session.profile?.displayName ||
               profile.displayName ||

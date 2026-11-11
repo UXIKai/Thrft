@@ -1006,11 +1006,11 @@ export default function ProfileScreen({
     if (!file || !file.type?.startsWith('image/')) return
     try {
       const dataUrl = await compressImageFile(file)
+      await onSaveProfile?.({ avatarUrl: dataUrl })
       setAvatarUrl(dataUrl)
       setPhotoSheetOpen(false)
-      await onSaveProfile?.({ avatarUrl: dataUrl })
-    } catch {
-      /* ignore bad image */
+    } catch (error) {
+      window.alert(error?.message || 'Could not save your photo')
     }
   }
 

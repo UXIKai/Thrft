@@ -226,15 +226,18 @@ export async function fetchProfile() {
 export async function saveProfile(patch) {
   const base = readLocalProfile()
   const identity = Object.fromEntries(
-    ['username', 'displayName'].filter((key) => typeof patch?.[key] === 'string')
+    ['username', 'displayName', 'avatarUrl'].filter((key) => typeof patch?.[key] === 'string')
       .map((key) => [key, patch[key].trim()]),
   )
   const hasIdentity = Object.keys(identity).length > 0
   if (hasIdentity && isSupabaseConfigured()) {
     const supabase = getSupabase()
-    if (!supabase) throw new Error('Sign in to save your name')
-    const { error } = await supabase.auth.updateUser({ data: identity })
-    if (error) throw new Error(error.message || 'Could not save your name')
+    if (!supabase) throw new Error('Sign in to save your profile')
+    const { avatarUrl, ...metadata } = identity
+    const { error } = await supabase.auth.updateUser({
+      data: { ...metadata, ...(avatarUrl !== undefined ? { avatar_url: avatarUrl } : {}) },
+    })
+    if (error) throw new Error(error.message || 'Could not save your profile')
     const next = writeLocalProfile({ ...base, ...patch, ...identity })
     return { profile: next, source: 'supabase' }
   }

@@ -68,7 +68,7 @@ Home color search previews the chosen color behind the card, starting white for 
 
 The product quantity number opens a selected-products page with the quantity at the top and each unit's selected size beneath its product name. The cart quantity number opens the same page; its bottom check mark returns directly to the cart. Clicking a product container opens a screen showing only centered sizes; tapping a size only selects it; the bottom check mark saves it for that unit (quantity unchanged) and returns to the list. Tap outside the sizes or press Escape to cancel. Both pages close with a check mark at the bottom center (no top back button). Size selections persist in the bag.
 
-Name and username edits are saved to Supabase user metadata when Supabase authentication is configured, so new sessions retain them. Local API identity saves must succeed remotely; they do not silently fall back to device-only storage.
+Name, username, and profile photo edits are saved to Supabase user metadata when Supabase authentication is configured, so new sessions retain them. Photos use the `avatar_url` metadata field read during sign-in. Local API identity saves must succeed remotely; they do not silently fall back to device-only storage. Photo save failures are displayed without replacing the existing photo.
 
 ### Profile settings
 - Settings has a centered title with the back button at the far left of its header. The Profile control sits below at its original width, with the moon toggle on its right.
