@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import OrbitCarousel from './OrbitCarousel.jsx'
 import { COLOR_FAMILIES, colorHex } from '../colorsCatalog.js'
-import { applyBackgroundImage, applyBackgroundPhoto, applySearchBackground } from '../appAppearance.js'
+import { applySearchBackground } from '../appAppearance.js'
 import './HomeFilterLinks.css'
 
 /**
@@ -57,16 +57,19 @@ export default function HomeFilterLinks({
 
   function resetColor() {
     setDraftColor('')
-    applySearchBackground('#ffffff')
-    if (colorId) onPickColor?.('')
+  }
+
+  function cancel() {
+    setDraftBrand(brandId)
+    setDraftCategory(categoryId)
+    setDraftColor(colorId)
+    setOpen(false)
   }
 
   useEffect(() => {
     if (!open) return undefined
-    applyBackgroundImage('atmosphere')
-    applyBackgroundPhoto(null)
     const onKey = (e) => {
-      if (e.key === 'Escape') setOpen(false)
+      if (e.key === 'Escape') cancel()
     }
     document.addEventListener('keydown', onKey)
     const stage = document.querySelector('.stage')
@@ -75,7 +78,7 @@ export default function HomeFilterLinks({
       document.removeEventListener('keydown', onKey)
       stage?.classList.remove('is-home-search-open')
     }
-  }, [open])
+  }, [open, brandId, categoryId, colorId])
 
   const cardHex = draftColor ? colorHex(draftColor) || '#ffffff' : '#ffffff'
   const cardStyle = {
@@ -127,7 +130,7 @@ export default function HomeFilterLinks({
         <div
           className="home-search-backdrop"
           onPointerDown={(e) => {
-            if (e.target === e.currentTarget) done()
+            if (e.target === e.currentTarget) cancel()
           }}
         >
           <div
