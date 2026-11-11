@@ -842,6 +842,11 @@ html .brand-globe.is-brand-picker .brand-globe-center-hole {
   pointer-events: auto;
 }
 
+.brand-globe-center-search,
+.brand-globe-search-input {
+  touch-action: none;
+}
+
 .brand-globe-center-search.is-exact-match {
   background: transparent;
   color: transparent;

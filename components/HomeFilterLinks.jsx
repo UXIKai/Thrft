@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import OrbitCarousel from './OrbitCarousel.jsx'
 import { COLOR_FAMILIES, colorHex } from '../colorsCatalog.js'
-import { applySearchBackground } from '../appAppearance.js'
+import { applySearchBackground, clearSearchBackground } from '../appAppearance.js'
 import './HomeFilterLinks.css'
 
 /**
@@ -28,6 +28,7 @@ export default function HomeFilterLinks({
   const [draftBrand, setDraftBrand] = useState(brandId)
   const [draftCategory, setDraftCategory] = useState(categoryId)
   const [draftColor, setDraftColor] = useState(colorId)
+  const [resetRequested, setResetRequested] = useState(false)
 
   // Orbital picks (and external changes) flow back into the wheels.
   useEffect(() => setDraftBrand(brandId), [brandId])
@@ -48,7 +49,9 @@ export default function HomeFilterLinks({
   )
 
   function done() {
-    applySearchBackground((draftColor && colorHex(draftColor)) || '#ffffff')
+    if (draftColor) applySearchBackground(colorHex(draftColor))
+    else clearSearchBackground({ restoreDefault: resetRequested })
+    setResetRequested(false)
     setOpen(false)
     if (draftBrand !== brandId) onPickBrand?.(draftBrand)
     if (draftColor !== colorId) onPickColor?.(draftColor)
@@ -57,12 +60,14 @@ export default function HomeFilterLinks({
 
   function resetColor() {
     setDraftColor('')
+    setResetRequested(true)
   }
 
   function cancel() {
     setDraftBrand(brandId)
     setDraftCategory(categoryId)
     setDraftColor(colorId)
+    setResetRequested(false)
     setOpen(false)
   }
 
@@ -104,7 +109,7 @@ export default function HomeFilterLinks({
           <path d="M16 16l4.5 4.5" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
         </svg>
       </button>
-      {open && (
+      {open && draftColor && (
         <div
           className="home-search-blur"
           aria-hidden
@@ -194,7 +199,6 @@ export default function HomeFilterLinks({
               className="home-search-reset"
               aria-label="Reset color"
               title="Reset color"
-              disabled={!draftColor}
               onClick={resetColor}
             >
               <svg viewBox="0 0 24 24" aria-hidden>

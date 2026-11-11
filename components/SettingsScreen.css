@@ -2014,8 +2014,8 @@
     --st-pad: 28px;
   }
 
-  .settings-top {
-    padding: 14px 20px 10px;
+  html body .settings-screen .settings-top {
+    padding: 8px 0;
   }
 
   .settings-scroll {

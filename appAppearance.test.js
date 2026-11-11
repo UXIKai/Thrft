@@ -72,6 +72,13 @@ test('black Settings backgrounds disable dark mode, preserve contrast, and survi
     assert.equal(root.style.colorScheme, 'dark')
     reloaded.clearSearchBackground()
     assert.equal(tokens.get('--void'), originalVoid, 'clearing an inactive preview does not alter appearance')
+
+    reloaded.applyCustomBgColor('#ffffff', { matchColor: true })
+    reloaded.clearSearchBackground()
+    assert.equal(tokens.get('--void'), 'rgb(255, 255, 255)', 'confirming without a reset preserves the background')
+    reloaded.clearSearchBackground({ restoreDefault: true })
+    assert.equal(reloaded.readBgColor(), reloaded.DEFAULT_BG_COLOR, 'explicit reset recovers a legacy white background without a snapshot')
+    assert.equal(reloaded.readBackgroundImage(), reloaded.DEFAULT_BG_IMAGE)
   } finally {
     if (previousStorage) Object.defineProperty(globalThis, 'localStorage', previousStorage)
     else delete globalThis.localStorage

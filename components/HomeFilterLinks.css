@@ -305,11 +305,6 @@ html body .home-search-modal .home-search-reset {
   cursor: pointer;
 }
 
-html body .home-search-modal .home-search-reset:disabled {
-  opacity: 0.3;
-  cursor: default;
-}
-
 .home-search-reset svg {
   width: 20px;
   height: 20px;

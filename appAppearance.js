@@ -692,8 +692,14 @@ export function applyCustomBgColor(hex, { matchColor = false } = {}) {
 
 let searchBackgroundSnapshot = null
 
-export function clearSearchBackground() {
-  if (!searchBackgroundSnapshot) return
+export function clearSearchBackground({ restoreDefault = false } = {}) {
+  if (!searchBackgroundSnapshot) {
+    if (restoreDefault) {
+      applyBgColor(DEFAULT_BG_COLOR)
+      applyBackgroundImage(DEFAULT_BG_IMAGE)
+    }
+    return
+  }
   const saved = searchBackgroundSnapshot
   searchBackgroundSnapshot = null
   currentBgColorId = saved.color

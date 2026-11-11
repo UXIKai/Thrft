@@ -52,7 +52,6 @@ function GlobePeopleIcon() {
   )
 }
 
-const CIRCLE_LIMIT = 1.2
 /** Clear the visual select circle — no shell words inside (fraction of seat). */
 const CENTER_SELECT = 0.48
 /** Extra px clear of the seat so chips never clip / pop into the circle. */
@@ -1077,46 +1076,6 @@ function BrandGlobeView({
     }
   }
 
-  function pickNearest(clientX, clientY) {
-    if (brandsRef.current.length < 1) return null
-    const local = localPoint(clientX, clientY)
-    if (!local) return null
-    const { px, py } = local
-    // Allow the full stage — snug Type packs and outer rings must stay pickable.
-    if (Math.hypot(px, py) > Math.max(CIRCLE_LIMIT, 2.6)) return null
-
-    let bestId = null
-    let bestDist = Infinity
-    const pts = projectedRef.current
-    for (let i = 0; i < pts.length; i += 1) {
-      const slot = pts[i]
-      if (!slot?.brand) continue
-      // Prefer chips the pointer is actually over (hit box), else nearest.
-      const hw = (slot._w || chipWidthPx(slot.display, dense, veryDense)) / 2
-      const hh = (slot._h || chipHeightPx(dense, veryDense)) / 2
-      const half = Math.max(1, Math.min(stageSize.w, stageSize.h) * 0.5)
-      const dx = slot.x - px * half
-      const dy = slot.y - py * half
-      const inside = Math.abs(dx) <= hw + 10 && Math.abs(dy) <= hh + 10
-      const d = dx * dx + dy * dy
-      const score = inside ? d * 0.15 : d
-      if (score < bestDist) {
-        bestDist = score
-        bestId = slot.brand.id
-      }
-    }
-    return bestId
-  }
-
-  function applyFocusFromPointer(clientX, clientY) {
-    if (rotatingRef.current && !choosingRef.current) return
-    const id = pickNearest(clientX, clientY)
-    if (id && id !== focusRef.current) {
-      focusRef.current = id
-      setFocusId(id)
-    }
-  }
-
   function gestureSnapshot() {
     const points = [...touchesRef.current.values()]
     const a = points[0]
@@ -1166,9 +1125,6 @@ function BrandGlobeView({
       const local = localPoint(event.clientX, event.clientY)
       if (local) setPointer(local)
     }
-    // Reveal nearest into the seat now that choose has started.
-    syncFocusToCenter({ force: true })
-    if (!fromSearch) applyFocusFromPointer(event.clientX, event.clientY)
   }
 
   function endChoosing() {
@@ -1279,6 +1235,10 @@ function BrandGlobeView({
     if (event.target?.closest?.('.brand-globe-search-row, .brand-globe-search') && !searchInput)
       return
     searchPointerRef.current = Boolean(searchInput)
+    if (searchInput) {
+      event.preventDefault()
+      searchInput.focus({ preventScroll: true })
+    }
     if (showBrandLogos) {
       if (!searchInput) event.preventDefault()
       touchesRef.current.set(event.pointerId, { x: event.clientX, y: event.clientY })
@@ -1380,9 +1340,6 @@ function BrandGlobeView({
       }
       if (rotatingRef.current) {
         panFromDrag(event)
-      } else {
-        // Finger still on seat — scrub to the chip under the pointer.
-        applyFocusFromPointer(event.clientX, event.clientY)
       }
       const local = localPoint(event.clientX, event.clientY)
       if (local) setPointer(local)
@@ -1450,12 +1407,15 @@ function BrandGlobeView({
       return
     }
     if (choosingRef.current) {
-      if (searchPointerRef.current && !movedRef.current) {
+      if (event.type === 'pointercancel' || !movedRef.current) {
         choosingRef.current = false
+        rotatingRef.current = false
         setChoosing(false)
+        setRotating(false)
         setBrushing(false)
         setPointer(null)
         searchPointerRef.current = false
+        startOrbit()
         return
       }
       // Stop pan, then commit the seated brand.
