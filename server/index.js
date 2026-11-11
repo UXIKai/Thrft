@@ -389,6 +389,7 @@ const server = http.createServer(async (req, res) => {
             send(res, 409, { error: 'username_taken', message: err.message })
             return
           }
+          throw err
         }
       }
       const fresh = token ? await sessionFromToken(token) : null

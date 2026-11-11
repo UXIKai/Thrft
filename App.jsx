@@ -356,6 +356,9 @@ export default function App() {
         prev ? { ...prev, username: nextUsername } : { username: nextUsername },
       )
     }
+    if (patch && typeof patch.displayName === 'string') {
+      setAccount((prev) => prev ? { ...prev, displayName: patch.displayName.trim() } : prev)
+    }
     return result
   }
 

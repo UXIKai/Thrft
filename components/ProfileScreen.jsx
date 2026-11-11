@@ -995,6 +995,8 @@ export default function ProfileScreen({
         ...(username ? { username } : {}),
       })
       setNameSheetOpen(false)
+    } catch (error) {
+      window.alert(error?.message || 'Could not save your name')
     } finally {
       setNameSaving(false)
     }

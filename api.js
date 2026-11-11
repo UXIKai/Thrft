@@ -225,6 +225,19 @@ export async function fetchProfile() {
 
 export async function saveProfile(patch) {
   const base = readLocalProfile()
+  const identity = Object.fromEntries(
+    ['username', 'displayName'].filter((key) => typeof patch?.[key] === 'string')
+      .map((key) => [key, patch[key].trim()]),
+  )
+  const hasIdentity = Object.keys(identity).length > 0
+  if (hasIdentity && isSupabaseConfigured()) {
+    const supabase = getSupabase()
+    if (!supabase) throw new Error('Sign in to save your name')
+    const { error } = await supabase.auth.updateUser({ data: identity })
+    if (error) throw new Error(error.message || 'Could not save your name')
+    const next = writeLocalProfile({ ...base, ...patch, ...identity })
+    return { profile: next, source: 'supabase' }
+  }
   try {
     const profile = await api('/api/profile', {
       method: 'PUT',
@@ -234,7 +247,8 @@ export async function saveProfile(patch) {
     const merged = { ...base, ...profile, ...patch }
     writeLocalProfile(merged)
     return { profile: merged, source: 'database' }
-  } catch {
+  } catch (error) {
+    if (hasIdentity) throw error
     const next = writeLocalProfile({ ...base, ...patch })
     return { profile: next, source: 'local' }
   }
