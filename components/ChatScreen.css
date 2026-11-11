@@ -278,6 +278,7 @@
 }
 
 .chat-sidebar-header {
+  position: relative;
   display: flex;
   justify-content: flex-end;
   align-items: center;
@@ -294,8 +295,10 @@
 }
 
 .chat-sidebar-title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
   margin: 0;
-  margin-right: auto;
   font-size: 1.28rem;
   font-weight: 500;
   line-height: 36px;
