@@ -842,6 +842,13 @@ html .brand-globe.is-brand-picker .brand-globe-center-hole {
   pointer-events: auto;
 }
 
+.brand-globe-center-search.is-exact-match {
+  background: transparent;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  caret-color: transparent;
+}
+
 .brand-globe-brand-back {
   position: absolute;
   bottom: calc(20px + env(safe-area-inset-bottom, 0px));

@@ -584,6 +584,7 @@ function BrandGlobeView({
   const [centerSearching, setCenterSearching] = useState(false)
   const [searchStageSize, setSearchStageSize] = useState(null)
   const centerInputRef = useRef(null)
+  const searchPointerRef = useRef(false)
   const centerSearchAvailable = showBrandLogos && typeof onSearchChange === 'function'
 
   function openCenterSearch() {
@@ -881,13 +882,19 @@ function BrandGlobeView({
   // Seat name only while actively scrubbing / holding to choose.
   // Idle (and after settle): empty orb — no leftover brand popping in.
   const seatOpen = showBrandLogos || choosing || rotating || popping
-  // While typing in the search, the best match shows in the seat.
-  const typedBrand =
-    (!seatOpen || showBrandLogos) && typeof searchValue === 'string' && searchValue.trim()
-      ? brands[0] || null
-      : null
+  // Show a brand logo in the seat only after its full name is entered.
+  const searchTerm = typeof searchValue === 'string'
+    ? searchValue.trim().replace(/\s+/g, ' ').toLocaleLowerCase()
+    : ''
+  const typedBrand = showBrandLogos && searchTerm
+    ? brands.find((brand) =>
+        String(brand.label || '').trim().replace(/\s+/g, ' ').toLocaleLowerCase() === searchTerm,
+      ) || null
+    : null
   const focusBrand =
-    seatOpen && focusId
+    centerSearchAvailable && centerSearching
+      ? typedBrand
+      : seatOpen && focusId
       ? brands.find((b) => b.id === focusId) || null
       : typedBrand
   const focusLabel = focusBrand?.label || ''
@@ -900,6 +907,7 @@ function BrandGlobeView({
   const shellLabels = useMemo(() => {
     const candidates = []
     for (const slot of layout) {
+      if (showBrandLogos && typedBrand?.id === slot.brand.id) continue
       // Keep every orbit chip mounted — seat is the center button only.
       // Soft-hide only when a chip actually slides into the select circle.
       // Carousel rings (Type / members) already clear the orb, so don't erase them.
@@ -947,7 +955,7 @@ function BrandGlobeView({
       kept.push({ ...c, vis: c.baseVis * dim })
     }
     return kept
-  }, [layout, dense, veryDense, compact, snug, seatPx, showBrandLogos, zoom])
+  }, [layout, dense, veryDense, compact, snug, seatPx, showBrandLogos, typedBrand, zoom])
 
   useEffect(() => {
     if (!showBrandLogos) return
@@ -1132,7 +1140,7 @@ function BrandGlobeView({
     applyPan(x - (x - panXRef.current) * ratio, y - (y - panYRef.current) * ratio)
   }
 
-  function beginChoosing(event) {
+  function beginChoosing(event, { fromSearch = false } = {}) {
     stopOrbit()
     if (rafRef.current) {
       window.cancelAnimationFrame(rafRef.current)
@@ -1154,11 +1162,13 @@ function BrandGlobeView({
     lastDragRef.current = { x: event.clientX, y: event.clientY }
     setBrushing(true)
     stageRef.current?.setPointerCapture?.(event.pointerId)
-    const local = localPoint(event.clientX, event.clientY)
-    if (local) setPointer(local)
+    if (!fromSearch) {
+      const local = localPoint(event.clientX, event.clientY)
+      if (local) setPointer(local)
+    }
     // Reveal nearest into the seat now that choose has started.
     syncFocusToCenter({ force: true })
-    applyFocusFromPointer(event.clientX, event.clientY)
+    if (!fromSearch) applyFocusFromPointer(event.clientX, event.clientY)
   }
 
   function endChoosing() {
@@ -1261,14 +1271,21 @@ function BrandGlobeView({
 
   function onPointerDown(event) {
     if (event.button != null && event.button !== 0) return
-    if (event.target?.closest?.('.brand-globe-search-row, .brand-globe-search, .brand-globe-center-search'))
+    const searchInput = event.target?.closest?.(
+      '.brand-globe-search-input, .brand-globe-center-search',
+    )
+    const inStage = stageRef.current?.contains(event.target)
+    if (!inStage && !searchInput) return
+    if (event.target?.closest?.('.brand-globe-search-row, .brand-globe-search') && !searchInput)
       return
+    searchPointerRef.current = Boolean(searchInput)
     if (showBrandLogos) {
-      event.preventDefault()
+      if (!searchInput) event.preventDefault()
       touchesRef.current.set(event.pointerId, { x: event.clientX, y: event.clientY })
       if (touchesRef.current.size === 1) {
         movedRef.current = false
-        centerTapRef.current = Boolean(event.target.closest('.brand-globe-focus'))
+        centerTapRef.current =
+          Boolean(event.target.closest('.brand-globe-focus')) || Boolean(searchInput)
         setChoosing(centerTapRef.current)
         pointerDownRef.current = { x: event.clientX, y: event.clientY }
       } else {
@@ -1283,9 +1300,10 @@ function BrandGlobeView({
     }
 
     // Hold the center to start choosing.
-    if (event.target?.closest?.('.brand-globe-focus')) {
+    if (event.target?.closest?.('.brand-globe-focus') || searchInput) {
       event.stopPropagation()
-      beginChoosing(event)
+      if (!searchInput) event.preventDefault()
+      beginChoosing(event, { fromSearch: Boolean(searchInput) })
       return
     }
 
@@ -1402,11 +1420,13 @@ function BrandGlobeView({
       setBrushing(false)
       setChoosing(false)
       gestureRef.current = null
-      if (event.type !== 'pointercancel' && centerTapRef.current && !movedRef.current && !focusBrand && centerSearchAvailable) {
+      if (event.type !== 'pointercancel' && centerTapRef.current && !searchPointerRef.current && !movedRef.current && !focusBrand && centerSearchAvailable) {
         openCenterSearch()
       }
       if (event.type !== 'pointercancel' && centerTapRef.current) {
-        let selected = movedRef.current ? null : focusBrand
+        let selected = searchPointerRef.current && !movedRef.current
+          ? null
+          : movedRef.current ? null : focusBrand
         if (movedRef.current && Math.hypot(panXRef.current, panYRef.current) > 12) {
           let distance = seatPx
           for (let i = 0; i < slotsRef.current.length; i += 1) {
@@ -1426,14 +1446,24 @@ function BrandGlobeView({
         if (selected) pick(selected)
       }
       centerTapRef.current = false
+      searchPointerRef.current = false
       return
     }
     if (choosingRef.current) {
+      if (searchPointerRef.current && !movedRef.current) {
+        choosingRef.current = false
+        setChoosing(false)
+        setBrushing(false)
+        setPointer(null)
+        searchPointerRef.current = false
+        return
+      }
       // Stop pan, then commit the seated brand.
       rotatingRef.current = false
       setRotating(false)
       velocityRef.current = { x: 0, y: 0 }
       endChoosing()
+      searchPointerRef.current = false
       return
     }
 
@@ -1535,6 +1565,11 @@ function BrandGlobeView({
         showBrandLogos ? ' is-brand-picker' : ''
       }`}
       style={originStyle}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={onPointerUp}
+      onPointerCancel={onPointerUp}
+      onPointerLeave={onPointerLeave}
       role="dialog"
       aria-modal="true"
       aria-label={title}
@@ -1587,11 +1622,6 @@ function BrandGlobeView({
           }${rotating ? ' is-rotating' : ''}${choosing ? ' is-choosing' : ''}${
             popping ? ' is-popping' : ''
           }`}
-          onPointerDown={onPointerDown}
-          onPointerMove={onPointerMove}
-          onPointerUp={onPointerUp}
-          onPointerCancel={onPointerUp}
-          onPointerLeave={onPointerLeave}
         >
           {/* Soft limb + select circle — no ring guides. */}
           <div className="brand-globe-earth" aria-hidden />
@@ -1651,7 +1681,9 @@ function BrandGlobeView({
           {centerSearchAvailable && (
             <input
               ref={centerInputRef}
-              className={`brand-globe-center-search${centerSearching ? ' is-editing' : ''}`}
+              className={`brand-globe-center-search${centerSearching ? ' is-editing' : ''}${
+                typedBrand ? ' is-exact-match' : ''
+              }`}
               aria-label="Search brands"
               type="text"
               inputMode="search"
@@ -1665,7 +1697,11 @@ function BrandGlobeView({
               onChange={(event) => onSearchChange(event.target.value)}
               onBlur={() => setCenterSearching(false)}
               onKeyDown={(event) => {
-                if (event.key === 'Enter' || event.key === 'Escape') {
+                if (event.key === 'Enter') {
+                  event.preventDefault()
+                  if (typedBrand) pick(typedBrand)
+                  else event.currentTarget.blur()
+                } else if (event.key === 'Escape') {
                   event.preventDefault()
                   event.currentTarget.blur()
                 }
