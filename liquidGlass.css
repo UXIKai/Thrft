@@ -1463,10 +1463,10 @@ html[data-app-color='none'][data-moonlight='on'] body .settings-account-active,
 html[data-app-color='none'][data-moonlight='on'] body .settings-icon-tile,
 html[data-app-color='none'][data-moonlight='on'] body .listing-box,
 html[data-app-color='none'][data-moonlight='on'] body .listing-globe-trigger {
-  background: #fff !important;
-  border-color: #000 !important;
-  box-shadow: inset 0 0 0 1.5px #000 !important;
-  color: #000;
+  background: #000 !important;
+  border-color: #fff !important;
+  box-shadow: inset 0 0 0 1.5px #fff !important;
+  color: #fff;
 }
 html[data-app-color='none'][data-moonlight='on'] body .settings-section:not(.is-profile-controls) .settings-card *,
 html[data-app-color='none'][data-moonlight='on'] body .settings-section.is-profile-controls .settings-row *,
@@ -1476,12 +1476,12 @@ html[data-app-color='none'][data-moonlight='on'] body .settings-account-active *
 html[data-app-color='none'][data-moonlight='on'] body .settings-icon-tile *,
 html[data-app-color='none'][data-moonlight='on'] body .listing-box *,
 html[data-app-color='none'][data-moonlight='on'] body .listing-globe-trigger * {
-  color: #000;
-  --st-mute: #000;
+  color: #fff;
+  --st-mute: #fff;
 }
 html[data-app-color='none'][data-moonlight='on'] body :is(.listing-box, .listing-globe-trigger) :is(input, textarea) {
-  color: #000;
-  caret-color: #000;
+  color: #fff;
+  caret-color: #fff;
 }
 
 /* Effect switch: outline in the color opposite its track */
@@ -1495,12 +1495,13 @@ html[data-bg-color='none'] body button.settings-effect-switch.is-on {
 }
 
 html[data-moonlight='on'][data-app-color='none'] body .settings-effect-switch {
-  --effect-switch-outline: #000;
+  --effect-switch-outline: #fff;
 }
 
 html[data-app-color='none'][data-moonlight='on'] body .settings-account-active .settings-account-avatar {
   background: #000 !important;
   color: #fff !important;
+  box-shadow: inset 0 0 0 1.5px #fff;
 }
 
 /* Product image container: always a white outline on the black moonlight page */
@@ -1508,9 +1509,9 @@ html[data-moonlight='on'][data-app-color='none'] body .product-detail-photo {
   border-color: #fff !important;
 }
 
-/* Profile screen avatar initials follow the moon look: white circle, black initials */
+/* Profile screen avatar initials follow the moon look: black circle, white initials */
 html[data-moonlight='on'][data-app-color='none'] body :is(.pf-user-avatar, .profile-photo-view-avatar):not(.has-photo) {
-  background: #fff !important;
-  color: #000 !important;
+  background: #000 !important;
+  color: #fff !important;
   border-color: #fff !important;
 }
