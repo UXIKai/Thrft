@@ -1542,3 +1542,13 @@ html[data-theme='dark'][data-moonlight='on'][data-app-color='none'] body .settin
 html[data-theme='light'][data-moonlight='on'][data-app-color='none'] body .settings-effect-switch {
   --effect-switch-outline: #fff;
 }
+
+/* Account avatar: invert against its container so the initials stay readable */
+html[data-theme='dark'][data-app-color='none'][data-moonlight='on'] body .settings-account-active .settings-account-avatar {
+  background: #000 !important;
+  color: #fff;
+}
+html[data-theme='light'][data-app-color='none'][data-moonlight='on'] body .settings-account-active .settings-account-avatar {
+  background: #fff !important;
+  color: #000;
+}
