@@ -257,7 +257,7 @@ html body .home-search-blur::after {
 }
 
 html body .home-search-backdrop {
-  background: rgba(0, 0, 0, 0.92);
+  background: #000;
 }
 
 html body .home-search-modal {
