@@ -1755,6 +1755,10 @@ export default function SettingsScreen({
           </div>
         </Section>
 
+    </>
+  )
+
+  const shopTools = (
         <section className="settings-section is-icon-tools" aria-label="Shop tools">
           <div className="settings-icon-row" role="toolbar" aria-label="Shop tools">
             <button
@@ -1792,7 +1796,6 @@ export default function SettingsScreen({
           </div>
         </section>
 
-    </>
   )
 
   return (
@@ -1900,10 +1903,12 @@ export default function SettingsScreen({
         </Section>
 
       </div>
-      <div className="settings-column">
+      <div className="settings-column is-customization">
         {customizationSections}
       </div>
       </div>
+
+        {shopTools}
 
         <p className="settings-footer">ThrfT. v1.0.0</p>
 

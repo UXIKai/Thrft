@@ -2029,12 +2029,49 @@
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: clamp(24px, 4vw, 72px);
-    flex: 1 0 auto;
+    flex: 0 0 auto;
   }
 
   .settings-column {
-    display: block;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     min-width: 0;
+  }
+
+  .settings-column.is-customization {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .settings-column.is-customization > .settings-section,
+  .settings-column.is-customization .settings-card {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .settings-column.is-customization > .settings-section {
+    margin-bottom: 26px;
+  }
+
+  .settings-column.is-customization :is(.settings-palette-block, .settings-slider-block) {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    justify-content: space-evenly;
+  }
+
+  .settings-column.is-customization .settings-color-stack {
+    flex: 1;
+    justify-content: space-evenly;
+  }
+
+  .settings-scroll > .is-icon-tools {
+    width: min(520px, 100%);
+    margin-left: auto;
+    margin-right: auto;
+    flex-shrink: 0;
   }
 
   .settings-scroll > .settings-signout {
