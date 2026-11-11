@@ -683,7 +683,7 @@ export default function SavedScreen({
                   onClick={() => onOpenProduct?.(item)}
                   aria-label={item.title || item.brandName || 'Saved item'}
                 >
-                  <span className="saved-item-media" aria-hidden>
+                  <span className="saved-item-media is-product" aria-hidden>
                     {showPhoto ? (
                       <img
                         className="saved-item-photo"

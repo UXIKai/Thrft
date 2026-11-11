@@ -156,7 +156,7 @@ button.product-detail-brand {
   border-radius: 16px;
   overflow: hidden;
   border: 1px solid var(--glass-border, light-dark(rgba(0, 0, 0, 0.28), rgba(255, 255, 255, 0.28)));
-  background: var(--glass-tint, light-dark(rgba(0, 0, 0, 0.04), rgba(255, 255, 255, 0.04)));
+  background: #000;
 }
 
 .product-detail-photo img,
@@ -167,7 +167,7 @@ button.product-detail-brand {
 }
 
 .product-detail-photo img {
-  object-fit: cover;
+  object-fit: contain;
 }
 
 .product-detail-price {

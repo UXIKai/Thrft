@@ -126,7 +126,7 @@ export default function CartScreen({
                 </div>
                 <button
                   type="button"
-                  className="cart-line-photo"
+                  className="cart-line-photo is-bare"
                   aria-label={item.title}
                   onClick={() => onOpenProduct?.(item)}
                 >

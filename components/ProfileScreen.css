@@ -2715,7 +2715,7 @@
   width: 100%;
   aspect-ratio: 1;
   object-fit: contain;
-  background: none;
+  background: #000;
 }
 
 .closet-tile-fallback {
@@ -2723,7 +2723,7 @@
   width: 100%;
   aspect-ratio: 1;
   border-radius: 12px;
-  background: light-dark(rgba(0, 0, 0, 0.06), rgba(255, 255, 255, 0.06));
+  background: #000;
 }
 
 .closet-tile-meta {

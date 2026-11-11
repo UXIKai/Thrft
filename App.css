@@ -1057,15 +1057,10 @@ html[data-bg-color='none'] .stage.is-bg-none .atmosphere {
   font: inherit;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  /* Visible display containers under the leaderboard */
   border: 1px solid var(--glass-border, light-dark(rgba(0, 0, 0, 0.28), rgba(255, 255, 255, 0.28)));
   outline: none;
   box-shadow: var(--glass-depth, 0 8px 24px rgba(0, 0, 0, 0.28));
-  background: var(--glass-tint, light-dark(rgba(0, 0, 0, 0.04), rgba(255, 255, 255, 0.04)));
-  backdrop-filter: blur(var(--glass-blur, 3px)) saturate(var(--glass-sat, 1.55))
-    brightness(var(--glass-bright, 1));
-  -webkit-backdrop-filter: blur(var(--glass-blur, 3px)) saturate(var(--glass-sat, 1.55))
-    brightness(var(--glass-bright, 1));
+  background: #000;
   -webkit-mask-image: none;
   mask-image: none;
   transition:
@@ -1076,23 +1071,6 @@ html[data-bg-color='none'] .stage.is-bg-none .atmosphere {
 
 .product-box.is-empty {
   /* Blank containers — no inner copy */
-}
-
-.product-box::after {
-  content: '';
-  pointer-events: none;
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: var(--glass-specular, transparent);
-  opacity: var(--glass-specular-opacity, 0.35);
-  mix-blend-mode: var(--glass-specular-blend, soft-light);
-}
-
-/* Same glass for every product — no color stain */
-.product-box.tone-charcoal,
-.product-box.tone-olive {
-  background: var(--glass-tint, light-dark(rgba(0, 0, 0, 0.04), rgba(255, 255, 255, 0.04)));
 }
 
 .product-code {

@@ -428,10 +428,18 @@
   box-shadow: none;
 }
 
+.saved-item-media.is-product {
+  background: #000;
+}
+
+.saved-item-media.is-product .saved-item-mark {
+  color: #fff;
+}
+
 .saved-item-photo {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   object-position: center;
   display: block;
   border: none;

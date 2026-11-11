@@ -60,6 +60,8 @@ Product-number lookup requires a real catalog: set `THRFT_PRODUCT_CATALOG_PATH` 
 
 Home has equal-width, filled storefront (Store, left) and basket (Market, right) icon tabs with labels underneath between the leaderboard and product cards, spanning the mobile screen. Store (the default tab) shows the Supabase listings cards in scrolling rows. Market shows active catalog products from `/api/products` plus three sample products per demo brand, labeled Sample in their product details. Market uses a three-column grid with automatic rows that grows vertically with the number of products, without repeating cards to fill space. Brand, category, and color filters apply to the sample products too.
 
+Product placeholders and product image frames use black backgrounds regardless of the Home search color. Closet scans are transparent cutouts; existing product photos retain their original backgrounds until they are separately processed.
+
 The navigation's outer track uses a clear vertical sheen, 8px blur with brightness/contrast enhancement, asymmetric white rim highlights, and a soft drop shadow. The active bubble uses the quieter clear finish with a faint neutral edge and light blur. Mobile bubble spacing remains unchanged.
 
 Tab changes use a physical spring (stiffness 420, damping 26, mass 0.9), with a 0.92 press squish, a 1.12-by-0.94 release stretch, and a synchronized 1.15 icon pop. Dragging follows the finger directly before springing into the selected slot; reduced-motion mode disables these animations.
