@@ -551,6 +551,19 @@ export default function ChatScreen({
   const [dmNameDraft, setDmNameDraft] = useState('')
   const [query, setQuery] = useState('')
   const [searchOpen, setSearchOpen] = useState(false)
+  const searchBarRef = useRef(null)
+  useEffect(() => {
+    if (!searchOpen) return undefined
+    const dismiss = (event) => {
+      if (searchBarRef.current?.contains(event.target)) return
+      if (event.target.closest?.('[aria-label="Search conversations"]')) return
+      document.getElementById('chat-search-input')?.blur()
+      setQuery('')
+      setSearchOpen(false)
+    }
+    document.addEventListener('pointerdown', dismiss, true)
+    return () => document.removeEventListener('pointerdown', dismiss, true)
+  }, [searchOpen])
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [composer, setComposer] = useState(null) // null | { mode: 'create'|'edit', chatId? }
   const [draftName, setDraftName] = useState('')
@@ -2724,7 +2737,14 @@ export default function ChatScreen({
 
       {!composer && searchOpen && <StageSlot active={!isDesktop}>
           <div className={`chat-bottom-dock${isDesktop ? ' is-desktop' : ''}${usersPickerOpen || memberGlobeVisible ? ' is-covered' : ''}`}>
-            <div className={`chat-search-bar${searchOpen ? '' : ' is-collapsed'}`}>
+            <div
+              ref={searchBarRef}
+              className={`chat-search-bar${searchOpen ? '' : ' is-collapsed'}`}
+              onClick={(event) => {
+                if (event.target.closest('button')) return
+                document.getElementById('chat-search-input')?.focus({ preventScroll: true })
+              }}
+            >
               {searchOpen ? (
                 <button
                   type="button"

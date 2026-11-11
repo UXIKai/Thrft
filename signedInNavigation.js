@@ -18,7 +18,6 @@ export function guardSignedInNavigation(target) {
     const width = target.visualViewport?.width || target.innerWidth
     if (touch.clientX > 40 && touch.clientX < width - 40) return
     blockingSwipe = true
-    if (event.cancelable) event.preventDefault()
   }
   const onTouchMove = (event) => {
     if (!blockingSwipe) return

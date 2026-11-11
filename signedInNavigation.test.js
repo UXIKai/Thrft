@@ -50,7 +50,7 @@ test('back and edge swipes preserve the current page and cleanup removes the gua
     preventDefault: () => { prevented = true },
   })
   listeners.get('touchend')({ changedTouches: [{ clientX: 100, clientY: 210 }] })
-  assert.equal(prevented, true)
+  assert.equal(prevented, false)
   assert.equal(homes, 0)
   listeners.get('touchstart')({
     touches: [{ clientX: 100, clientY: 200 }],
@@ -76,7 +76,7 @@ test('back and edge swipes preserve the current page and cleanup removes the gua
   listeners.get('touchmove')({
     touches: [{ clientX: 300, clientY: 200 }],
     cancelable: true,
-    preventDefault: () => {},
+    preventDefault: () => { prevented = true },
   })
   listeners.get('touchend')({ changedTouches: [{ clientX: 280, clientY: 200 }] })
   assert.equal(prevented, true)

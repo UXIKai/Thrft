@@ -96,6 +96,7 @@ Links and Money rows sit immediately below ID verification. Profile contains onl
 - Pinned chats appear first in the regular conversation list, without separate pinned cards. The Chats heading is centered above the list, with search and the desktop sidebar toggle on the right. Search opens the bottom input; its plus opens a chooser with two-person group and one-person friend buttons. Collapsing leaves only the top-left toggle to restore the list.
 - Opening a conversation does not automatically focus the message field or summon the keyboard.
 - The new-chat plus appears only inside the open search bar, not as a standalone button at the bottom of Chats. The left search icon closes and clears the search. The sidebar heading reads Chats.
+- Tapping the chat search bar focuses its input. Tapping outside closes it and clears the filter without consuming the outside control's tap.
 - Hold a chat for 450ms to open Pin, Mark as Unread, Hide Alerts, and Delete actions. Moving or releasing early cancels the hold; unread and alert preferences persist with the chat.
 - Holding also shows a scrollable preview of recent messages above the actions, without opening or marking the conversation as read.
 - The edit menu sits above the list. Select shows selection circles and a bulk-delete button below the filter. Edit pins shows minus controls on pinned row avatars to unpin chats without deleting them; the check mark finishes editing.
