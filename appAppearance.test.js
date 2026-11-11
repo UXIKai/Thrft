@@ -111,3 +111,32 @@ test('black Settings backgrounds disable dark mode, preserve contrast, and survi
     else delete globalThis.document
   }
 })
+
+test('choosing no background after a black one restores the mode picked with the moon button', async () => {
+  const saved = new Map()
+  const root = { dataset: {}, style: { setProperty() {}, removeProperty() {} } }
+  Object.defineProperty(globalThis, 'localStorage', {
+    configurable: true,
+    value: {
+      getItem: (key) => saved.get(key) ?? null,
+      setItem: (key, value) => saved.set(key, String(value)),
+      removeItem: (key) => saved.delete(key),
+    },
+  })
+  Object.defineProperty(globalThis, 'document', {
+    configurable: true,
+    value: { documentElement: root, querySelector: () => ({ classList: { toggle() {} } }) },
+  })
+  try {
+    const appearance = await import('./appAppearance.js?user-theme-restore-test')
+    appearance.applyDisplayMode('dark')
+    appearance.applyCustomBgColor('#000000')
+    assert.equal(appearance.readTheme(), 'light')
+    appearance.applyBgColor('none')
+    assert.equal(appearance.readTheme(), 'dark')
+    assert.equal(root.dataset.theme, 'dark')
+  } finally {
+    delete globalThis.localStorage
+    delete globalThis.document
+  }
+})

@@ -17,6 +17,7 @@ export const CUSTOM_BG_COLOR_KEY = 'thrft-bg-color-hex-v1'
 export const BG_IMAGE_KEY = 'thrft-bg-image-v2'
 const BG_MATCH_KEY = 'thrft-bg-match-color-v1'
 export const THEME_KEY = 'thrft-theme-v1'
+export const USER_THEME_KEY = 'thrft-user-theme-v1'
 export const BRIGHTNESS_KEY = 'thrft-brightness-v1'
 export const DEFAULT_BRIGHTNESS = 100
 
@@ -104,6 +105,25 @@ export function readTheme() {
   } catch (error) {
     console.warn('Unable to read display mode.', error)
     return 'dark'
+  }
+}
+
+/** Mode the user picked with the moon button; a black background may override it temporarily. */
+export function readUserTheme() {
+  try {
+    const raw = localStorage.getItem(USER_THEME_KEY)
+    if (raw === 'light' || raw === 'dark') return raw
+  } catch {
+    /* ignore */
+  }
+  return readTheme()
+}
+
+function saveUserTheme(theme) {
+  try {
+    localStorage.setItem(USER_THEME_KEY, theme)
+  } catch {
+    /* ignore */
   }
 }
 
@@ -665,7 +685,8 @@ export function applyBgColor(id) {
   } catch {
     /* ignore */
   }
-  if (isBlackBackground) applyTheme('light')
+  const wanted = isBlackBackground ? 'light' : readUserTheme()
+  if (wanted !== currentTheme) applyTheme(wanted)
   else applyBgAtmosphereTokens()
   return currentBgColorId
 }
@@ -685,7 +706,8 @@ export function applyCustomBgColor(hex, { matchColor = false } = {}) {
   } catch {
     /* ignore */
   }
-  if (isBlackBackground) applyTheme('light')
+  const wanted = isBlackBackground ? 'light' : readUserTheme()
+  if (wanted !== currentTheme) applyTheme(wanted)
   else applyBgAtmosphereTokens()
   return currentCustomBgHex
 }
@@ -698,6 +720,7 @@ export function applyDisplayMode(theme) {
   }
   clearSearchBackground()
   applyAppColor(DEFAULT_APP_COLOR)
+  saveUserTheme(theme)
   applyBgColor(DEFAULT_BG_COLOR)
   return applyTheme(theme)
 }
