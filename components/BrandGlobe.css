@@ -879,3 +879,19 @@ html .brand-globe.is-brand-picker .brand-globe-center-hole {
 .brand-globe.is-brand-picker .brand-globe-focus .brand-logo-label {
   background: transparent;
 }
+
+/* Color picker starts dark: black scrim, white words, until a color tints it */
+.brand-globe.is-color-picker:not(.has-tint) {
+  color-scheme: dark;
+  background: #000;
+  color: #fff;
+}
+
+.brand-globe.is-color-picker:not(.has-tint) .brand-globe-scrim,
+.brand-globe.is-color-picker:not(.has-tint) .brand-globe-panel {
+  background: #000;
+}
+
+.brand-globe.is-color-picker:not(.has-tint) > .brand-globe-color-atmosphere {
+  display: none;
+}
