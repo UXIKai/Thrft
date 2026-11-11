@@ -332,6 +332,19 @@ export default function SavedScreen({
   const [items, setItems] = useState([])
   const [query, setQuery] = useState('')
   const [searchOpen, setSearchOpen] = useState(false)
+  const searchBarRef = useRef(null)
+  useEffect(() => {
+    if (!searchOpen) return undefined
+    const dismiss = (event) => {
+      if (searchBarRef.current?.contains(event.target)) return
+      if (event.target.closest?.('[aria-label="Search liked"], .brand-globe')) return
+      document.getElementById('saved-search-input')?.blur()
+      setSearchOpen(false)
+      setQuery('')
+    }
+    document.addEventListener('pointerdown', dismiss, true)
+    return () => document.removeEventListener('pointerdown', dismiss, true)
+  }, [searchOpen])
   const [favoriteBrands, setFavoriteBrands] = useState(() =>
     Array.isArray(favoredBrands) ? [...favoredBrands] : [],
   )
@@ -697,7 +710,14 @@ export default function SavedScreen({
 
       {searchOpen && <StageSlot>
       <div className={`saved-search-dock${globeOpen ? ' is-open' : ''}`}>
-        <div className={`saved-search-bar${searchOpen ? '' : ' is-collapsed'}`}>
+        <div
+          ref={searchBarRef}
+          className={`saved-search-bar${searchOpen ? '' : ' is-collapsed'}`}
+          onClick={(event) => {
+            if (event.target.closest('button')) return
+            document.getElementById('saved-search-input')?.focus({ preventScroll: true })
+          }}
+        >
           {searchOpen ? (
             <button
               type="button"

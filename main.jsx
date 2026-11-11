@@ -12,7 +12,7 @@ initAppearance()
 let maxHeight = 0
 let lastLandscape = null
 
-const DOCKED = '.chat-compose, .chat-bottom-dock, .chat-users-dock, .brand-globe-search-row, .closet-number-brand-search, .settings-assistant-dock, .settings-size-add-dock'
+const DOCKED = '.chat-compose, .chat-bottom-dock, .chat-users-dock, .saved-search-dock, .brand-globe-search-row, .closet-number-brand-search, .settings-assistant-dock, .settings-size-add-dock'
 let lastKb = 0
 let kbShift = 0
 
