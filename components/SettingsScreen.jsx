@@ -862,6 +862,7 @@ export default function SettingsScreen({
   const [addrStep, setAddrStep] = useState(0)
   const [addrEditing, setAddrEditing] = useState(true)
   const [confirmRemove, setConfirmRemove] = useState(null)
+  const [confirmSizeReset, setConfirmSizeReset] = useState(false)
   const genderTimerRef = useRef(null)
   const [sizeFromSummary, setSizeFromSummary] = useState(false)
   const [sizeScrub, setSizeScrub] = useState(null)
@@ -873,6 +874,32 @@ export default function SettingsScreen({
   const summaryListRef = useRef(null)
   const summaryPressRef = useRef({ timer: null, x: 0, y: 0, fired: false })
   const peekTimerRef = useRef(null)
+
+  useEffect(() => {
+    if (!confirmSizeReset) return undefined
+    const dismiss = (event) => {
+      if (event.key === 'Escape') setConfirmSizeReset(false)
+    }
+    document.addEventListener('keydown', dismiss)
+    return () => document.removeEventListener('keydown', dismiss)
+  }, [confirmSizeReset])
+
+  function resetSizes() {
+    setSheetDraft((d) => ({
+      ...d,
+      clothingSizes: {},
+      sizesByGender: {},
+      gender: '',
+      age: '',
+      sex: '',
+      height: '',
+      customGenders: [],
+      customCategories: [],
+      hiddenCategories: [],
+    }))
+    setConfirmSizeReset(false)
+    setWizStep(0)
+  }
   const peekFiredRef = useRef(false)
   const [sizeWheelId, setSizeWheelId] = useState(SIZE_GARMENTS[0]?.id)
   const sizeCatsRef = useRef(null)
@@ -2550,27 +2577,53 @@ export default function SettingsScreen({
                 type="button"
                 className="settings-size-reset is-bare"
                 aria-label="Reset"
-                onClick={() => {
-                  setSheetDraft((d) => ({
-                    ...d,
-                    clothingSizes: {},
-                    sizesByGender: {},
-                    gender: '',
-                    age: '',
-                    sex: '',
-                    height: '',
-                    customGenders: [],
-                    customCategories: [],
-                    hiddenCategories: [],
-                  }))
-                  setWizStep(0)
-                }}
+                onClick={() => setConfirmSizeReset(true)}
               >
                 <svg viewBox="0 0 24 24" aria-hidden>
                   <path d="M17.2 9A6.4 6.4 0 1 0 18.4 14" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
                   <path d="M17.6 4.8V9h-4.2" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </button>
+            )}
+            {confirmSizeReset && (
+              <div
+                className="settings-size-reset-confirm-pop"
+                role="alertdialog"
+                aria-modal="true"
+                aria-labelledby="settings-size-reset-confirm-title"
+                onPointerDown={(event) => {
+                  if (event.target === event.currentTarget) setConfirmSizeReset(false)
+                }}
+              >
+                <div className="settings-size-reset-confirm-card">
+                  <p id="settings-size-reset-confirm-title">
+                    Are you sure you want to reset the sizes?
+                  </p>
+                  <div className="settings-size-reset-confirm-actions">
+                    <button
+                      type="button"
+                      className="is-bare"
+                      aria-label="Cancel reset"
+                      autoFocus
+                      onClick={() => setConfirmSizeReset(false)}
+                    >
+                      <svg viewBox="0 0 24 24" aria-hidden>
+                        <path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                      </svg>
+                    </button>
+                    <button
+                      type="button"
+                      className="is-bare"
+                      aria-label="Confirm reset sizes"
+                      onClick={resetSizes}
+                    >
+                      <svg viewBox="0 0 24 24" aria-hidden>
+                        <path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
             )}
             {confirmRemove && (
                         <div className="settings-remove-pop">

@@ -192,6 +192,7 @@ function DateWheel({ label, items, value, onChange }) {
 
 export default function CreateListing({ onPosted } = {}) {
   const [segment, setSegment] = useState('store')
+  const [step, setStep] = useState('destination')
   const [title, setTitle] = useState('')
   const [brand, setBrand] = useState("Levi's")
   const [category, setCategory] = useState('Tees')
@@ -246,6 +247,48 @@ export default function CreateListing({ onPosted } = {}) {
   const isMarket = segment === 'market'
   const isStore = segment === 'store'
   const isCloset = segment === 'closet'
+  const steps = [
+    'photo', 'title', 'details', 'price',
+    ...(isMarket ? ['condition'] : []),
+    'description',
+    ...(isCloset ? ['date'] : isStore ? ['materials'] : []),
+  ]
+  const currentStep = posted ? 'complete' : step
+  const stepHeadingRef = useRef(null)
+  const stepIndex = steps.indexOf(step)
+  const lastStep = stepIndex === steps.length - 1
+  const stepTitles = {
+    destination: 'Where would you like to add this item?',
+    photo: isCloset ? 'Scan your clothing' : 'Add photos',
+    title: 'Title',
+    details: 'Brand and Category',
+    price: 'Price',
+    condition: 'Condition',
+    description: 'Description',
+    date: 'Date',
+    materials: 'Materials',
+    complete: 'Complete',
+  }
+
+  useEffect(() => {
+    stepHeadingRef.current?.focus({ preventScroll: true })
+  }, [currentStep])
+
+  function navigateStep(direction) {
+    setPostError('')
+    setPhotoChoice(false)
+    if (direction > 0) {
+      if (step === 'photo' && isCloset && !scanPreview) {
+        setPostError('Scan a clothing item first.')
+        return
+      }
+      if (step === 'title' && !isCloset && !title.trim()) {
+        setPostError('Add a title before continuing.')
+        return
+      }
+    }
+    setStep(steps[stepIndex + direction] || 'destination')
+  }
   const [numberLookupOpen, setNumberLookupOpen] = useState(false)
   const closeNumberLookup = useCallback(() => setNumberLookupOpen(false), [])
 
@@ -494,9 +537,15 @@ export default function CreateListing({ onPosted } = {}) {
 
   return (
     <section
-      className={`create-listing${addSheetOpen ? ' is-adding' : ''}`}
+      className={`create-listing is-walkthrough${addSheetOpen ? ' is-adding' : ''}`}
       aria-label="Create listing"
     >
+      <header className="listing-walkthrough-header">
+        <h1 tabIndex={-1} ref={stepHeadingRef}>{stepTitles[currentStep]}</h1>
+        {currentStep !== 'destination' && currentStep !== 'complete' && (
+          <p>{segmentLabel(segment)} · {stepIndex + 1} of {steps.length}</p>
+        )}
+      </header>
       {addSheetOpen ? (
         <button
           type="button"
@@ -507,9 +556,9 @@ export default function CreateListing({ onPosted } = {}) {
           onClick={closeAddSheet}
         />
       ) : null}
-      <div
+      {currentStep === 'destination' && <div
         className="listing-segment"
-        role="tablist"
+        role="group"
         aria-label="Listing destination"
       >
         {LISTING_SEGMENTS.map((seg) => {
@@ -518,26 +567,24 @@ export default function CreateListing({ onPosted } = {}) {
             <button
               key={seg.id}
               type="button"
-              role="tab"
-              aria-selected={active}
               aria-label={seg.label}
               className={`listing-seg-btn ${active ? 'is-active' : ''}`}
               onClick={() => {
                 setSegment(seg.id)
+                setStep('photo')
                 setPhotoChoice(false)
-                setMarketPhotos([])
                 setPosted(false)
                 setPostError('')
               }}
             >
               {segmentIcon(seg.icon)}
-              {seg.id === 'closet' && <span>{seg.label}</span>}
+              <span>{seg.label}</span>
             </button>
           )
         })}
-      </div>
+      </div>}
 
-      {(isMarket || isStore) && (
+      {currentStep === 'photo' && (isMarket || isStore) && (
         <div className="listing-photo-drop" role="group" aria-label="Add photos">
           <input ref={photoCameraRef} type="file" accept="image/*" capture="environment" className="listing-scan-input" aria-hidden tabIndex={-1} onChange={onMarketPhoto} />
           <input ref={photoGalleryRef} type="file" accept="image/*" multiple className="listing-scan-input" aria-hidden tabIndex={-1} onChange={onMarketPhoto} />
@@ -566,7 +613,7 @@ export default function CreateListing({ onPosted } = {}) {
         </div>
       )}
 
-      {isCloset && (
+      {currentStep === 'photo' && isCloset && (
         <>
           <input ref={scanInputRef} type="file" accept="image/*" capture="environment" className="listing-scan-input" aria-hidden tabIndex={-1} onChange={onScanFile} />
           <input ref={scanGalleryRef} type="file" accept="image/*" className="listing-scan-input" aria-hidden tabIndex={-1} onChange={onScanFile} />
@@ -626,7 +673,7 @@ export default function CreateListing({ onPosted } = {}) {
         </>
       )}
 
-      <label className="listing-field listing-title-field">
+      {currentStep === 'title' && <label className="listing-field listing-title-field">
         <span className={`listing-box${title ? ' is-filled' : ''}`}>
           <span className="listing-label">Title</span>
           <input
@@ -638,9 +685,9 @@ export default function CreateListing({ onPosted } = {}) {
             onChange={(e) => setTitle(e.target.value)}
           />
         </span>
-      </label>
+      </label>}
 
-      <div className={`listing-wheels-row${addSheetOpen ? ' is-adding' : ''}`}>
+      {currentStep === 'details' && <div className={`listing-wheels-row${addSheetOpen ? ' is-adding' : ''}`}>
         {addSheetOpen ? (
           <div
             className="listing-add-sheet"
@@ -715,7 +762,7 @@ export default function CreateListing({ onPosted } = {}) {
             </div>
           </div>
         )}
-      </div>
+      </div>}
 
       {pickerPhase !== 'closed' && picker && (
         <BrandGlobe
@@ -744,7 +791,7 @@ export default function CreateListing({ onPosted } = {}) {
         />
       )}
 
-      <label className="listing-field listing-price-field">
+      {currentStep === 'price' && <label className="listing-field listing-price-field">
         <span className={`listing-box${price ? ' is-filled' : ''}`}>
           <span className="listing-label">Price</span>
           <input
@@ -757,11 +804,11 @@ export default function CreateListing({ onPosted } = {}) {
             onChange={(e) => setPrice(e.target.value)}
           />
         </span>
-      </label>
+      </label>}
 
       {isCloset && (
         <>
-      <label className="listing-field">
+      {currentStep === 'description' && <label className="listing-field">
         <span className={`listing-box${description ? ' is-filled' : ''}`}>
           <span className="listing-label">Description</span>
           <textarea
@@ -773,21 +820,21 @@ export default function CreateListing({ onPosted } = {}) {
             onChange={(e) => setDescription(e.target.value)}
           />
         </span>
-      </label>
+      </label>}
 
-      <div className="listing-field listing-date-field">
+      {currentStep === 'date' && <div className="listing-field listing-date-field">
         <div className="listing-date-wheels">
           <DateWheel label="Month" items={MONTHS} value={dateM - 1} onChange={(i) => setDateM(i + 1)} />
           <DateWheel label="Day" items={DAYS.slice(0, daysInMonth)} value={Math.min(dateD, daysInMonth) - 1} onChange={(i) => setDateD(i + 1)} />
           <DateWheel label="Year" items={YEARS} value={dateY - YEARS[0]} onChange={(i) => setDateY(YEARS[0] + i)} />
         </div>
-      </div>
+      </div>}
         </>
       )}
 
       {!isCloset && (
         <>
-          {isMarket && <div className="listing-field">
+          {currentStep === 'condition' && isMarket && <div className="listing-field">
             <div className="listing-conditions" role="group" aria-label="Condition">
               {LISTING_CONDITIONS.map((c) => {
                 const active = condition === c
@@ -806,7 +853,7 @@ export default function CreateListing({ onPosted } = {}) {
             </div>
           </div>}
 
-          <label className="listing-field">
+          {currentStep === 'description' && <label className="listing-field">
             <span className={`listing-box${description ? ' is-filled' : ''}`}>
               <span className="listing-label">Description</span>
               <textarea
@@ -818,8 +865,8 @@ export default function CreateListing({ onPosted } = {}) {
                 onChange={(e) => setDescription(e.target.value)}
               />
             </span>
-          </label>
-          {!isMarket && <label className="listing-field">
+          </label>}
+          {currentStep === 'materials' && !isMarket && <label className="listing-field">
             <span className={`listing-box${materials ? ' is-filled' : ''}`}>
               <span className="listing-label">Materials</span>
               <textarea
@@ -836,16 +883,23 @@ export default function CreateListing({ onPosted } = {}) {
         </>
       )}
 
+      {currentStep !== 'destination' && currentStep !== 'complete' && (
+      <nav className="listing-walkthrough-actions" aria-label="Create listing steps">
+        <button type="button" className="is-bare" aria-label="Previous step" disabled={posting || scanning} onClick={() => navigateStep(-1)}>
+          <svg viewBox="0 0 24 24" aria-hidden><path d="m15 6-6 6 6 6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+        </button>
       <button
         type="button"
-        className={`listing-post${isCloset ? ' is-closet' : ''}`}
-        aria-label={isCloset ? 'Add to closet' : `Post to ${segmentLabel(segment)}`}
-        title={isCloset ? 'Add to closet' : `Post to ${segmentLabel(segment)}`}
+        className="is-bare"
+        aria-label={lastStep ? isCloset ? 'Add to closet' : `Post to ${segmentLabel(segment)}` : 'Next step'}
         disabled={posting || scanning}
-        onClick={submitListing}
+        onClick={lastStep ? submitListing : () => navigateStep(1)}
       >
-        <PostIcon />
+        {posting ? <span role="status">Saving...</span> : <svg viewBox="0 0 24 24" aria-hidden>
+          <path d={lastStep ? 'M5 12.5l4.5 4.5L19 7.5' : 'm9 6 6 6-6 6'} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>}
       </button>
+      </nav>)}
       {postError ? (
         <p className="listing-posted-note" role="alert">
           {postError}
@@ -860,6 +914,17 @@ export default function CreateListing({ onPosted } = {}) {
               }`}
         </p>
       )}
+      {posted && <button type="button" className="listing-walkthrough-restart" onClick={() => {
+        setPosted(false)
+        setStep('destination')
+        setTitle('')
+        setPrice('')
+        setDescription('')
+        setMaterials('')
+        setMarketPhotos([])
+        setScanPreview('')
+        setPostError('')
+      }}>Add another item</button>}
       {numberLookupOpen && <ClosetNumberLookup
         brands={[...new Set([...LISTING_BRANDS, ...customBrands])]}
         initialBrand={brand}

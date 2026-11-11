@@ -618,3 +618,42 @@ html body .product-detail .glass-overlay-back {
   text-decoration: underline;
   text-underline-offset: 6px;
 }
+
+@media (min-width: 720px) {
+  .product-detail .product-detail-body {
+    gap: 20px;
+    padding-top: clamp(44px, 6vh, 76px);
+  }
+
+  .product-detail-photo {
+    width: min(56vw, 440px);
+    border-radius: 20px;
+  }
+
+  .product-detail-brand,
+  .product-detail-title {
+    max-width: min(80vw, 34rem);
+    font-size: 1.45rem;
+  }
+
+  .product-store-size-panel {
+    width: min(100%, 760px);
+    margin-top: 0;
+  }
+
+  .product-store-size-grid {
+    gap: 14px 20px;
+    margin: 8px auto 12px;
+    max-width: 760px;
+  }
+
+  .product-store-size-grid button {
+    min-height: 56px;
+    font-size: 1.3rem;
+  }
+
+  .product-store-info-button {
+    margin-top: 12px;
+    font-size: 1rem;
+  }
+}

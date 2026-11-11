@@ -50,6 +50,8 @@ Brand orbitals show website logos instead of text for the orbiting brands and ce
 
 Product brand headings open a brand page containing every active catalog product and available marketplace listing for that brand. Catalog queries are brand-filtered without the home-feed cap; marketplace listings are paged through completely before brand matching. Sold/unlisted items and mock Market previews are excluded.
 
+Create starts with centered Store, Closet, and Market buttons, then walks through one screen per original form row: photo, title, Brand and Category together, price, Market condition, description, then Closet date or Store materials. Back preserves entered values, and the final check mark submits through the existing posting flow.
+
 Create → Closet removes the photo background with the AI scanner, crops transparent margins, and respects camera orientation. Failed scans display an error rather than saving a rough color-key replacement. The Straighten slider corrects angled photos; size adjustments keep the complete cutout inside the frame, and the saved image matches the preview.
 
 Create → Closet → camera chooser includes a centered plus button between Camera and Gallery. It opens a centered brand wheel; tapping the wheel expands a list with a bottom search field. Continue opens centered P/N Number and O/N Number fields (at least one is required). Matching products offer color choices; selecting one downloads its photo, removes the background with the existing scanner, and saves the cutout and color to Closet.
@@ -70,6 +72,8 @@ Home color search previews the chosen color behind the card. With no color selec
 
 The product quantity number opens a selected-products page with the quantity at the top and each unit's selected size beneath its product name. The cart quantity number opens the same page; its bottom check mark returns directly to the cart. Clicking a product container opens a screen showing only centered sizes; tapping a size only selects it; the bottom check mark saves it for that unit (quantity unchanged) and returns to the list. Tap outside the sizes or press Escape to cancel. Both pages close with a check mark at the bottom center (no top back button). Size selections persist in the bag.
 
+The bag shows four products per row on desktop and a single column on mobile; its quantity and checkout controls remain available.
+
 Name, username, and profile photo edits are saved to Supabase user metadata when Supabase authentication is configured, so new sessions retain them. Photos use the `avatar_url` metadata field read during sign-in. Local API identity saves must succeed remotely; they do not silently fall back to device-only storage. Photo save failures are displayed without replacing the existing photo.
 
 While signed in, browser back preserves the current app page, rather than revisiting the sign-in screen. Edge touch swipes are canceled on both sides during event capture, before page controls handle them, including on Create. Browser/OS gestures that cannot be canceled remain platform-controlled. Explicit sign-out and expired sessions still require authentication.
@@ -80,6 +84,7 @@ While signed in, browser back preserves the current app page, rather than revisi
 - A Dim–Bright slider below Short–Tall controls app brightness live and persists on this device. Bright preserves the normal appearance; Dim adds a screen-wide dark overlay without changing the theme or device brightness.
 - Tapping the profile photo pops it up full-size with a camera icon centered at the bottom that opens the system photo picker; tap outside or press Escape to close. There is no camera badge on the avatar.
 - Garment sizes use equal-sized buttons in centered rows, with the add-size control centered below them.
+- Resetting garment sizes asks for confirmation with cancel and confirm controls.
 - The settings gear beside the profile name opens Settings & privacy directly, without an intermediate popup.
 - A half-moon button beside the narrower Profile control switches between dark (white on black) and light (black on white) display modes. The choice persists on this device. Neutral UI colors follow the mode without inverting photos or brand colors; color previews choose their own readable contrast.
 - The profile shows only the username. Account editing keeps the person, @ and lock icons for username, email and password; email changes require authentication-provider confirmation.

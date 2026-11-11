@@ -317,3 +317,36 @@
 .cart-line-qty-trash { grid-area: trash; }
 .cart-line-act:disabled { opacity: 0.35; }
 .cart-line-qty { grid-template-areas: 'minus count plus'; }
+
+@media (min-width: 720px) {
+  .cart-screen .cart-list {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    align-items: start;
+    gap: 32px 20px;
+    width: min(100%, 1360px);
+  }
+
+  .cart-screen .cart-line {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .cart-line-head,
+  .cart-line-main {
+    max-width: 100%;
+  }
+
+  .cart-line-title {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .cart-line-photo {
+    width: min(100%, 220px);
+  }
+
+  .cart-line-qty {
+    column-gap: 8px;
+  }
+}

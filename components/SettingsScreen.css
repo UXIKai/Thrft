@@ -222,6 +222,60 @@
   display: none;
 }
 
+.settings-size-reset-confirm-pop {
+  position: fixed;
+  inset: 0;
+  z-index: 110;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.42);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.settings-size-reset-confirm-card {
+  width: min(100%, 340px);
+  box-sizing: border-box;
+  display: grid;
+  justify-items: center;
+  gap: 20px;
+  padding: 24px 22px 16px;
+  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.2));
+  border-radius: 22px;
+  background: rgba(var(--bg-color-rgb, 24, 24, 24), 0.94);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+  color: #fff;
+}
+
+.settings-size-reset-confirm-card p {
+  margin: 0;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.settings-size-reset-confirm-actions {
+  display: flex;
+  justify-content: center;
+  gap: 28px;
+}
+
+.settings-size-reset-confirm-actions button {
+  width: 48px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  padding: 10px;
+  color: inherit;
+}
+
+.settings-size-reset-confirm-actions svg {
+  width: 22px;
+  height: 22px;
+}
+
 .settings-size-section-label {
   margin: 4px 0 0;
   font-size: 0.72rem;

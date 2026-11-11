@@ -885,3 +885,77 @@ html body .listing-photo-choice-btn {
   object-fit: cover;
   border-radius: 10px;
 }
+
+.create-listing.is-walkthrough {
+  box-sizing: border-box;
+  min-height: calc(100dvh - 180px);
+  width: min(100%, 640px);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 24px;
+  padding: 32px 20px 48px;
+}
+
+.listing-walkthrough-header {
+  text-align: center;
+}
+
+.listing-walkthrough-header h1 {
+  margin: 0;
+  font-size: clamp(1.2rem, 3vw, 1.65rem);
+  outline: none;
+}
+
+.listing-walkthrough-header p {
+  margin: 10px 0 0;
+  font-size: 0.8rem;
+}
+
+.is-walkthrough .listing-segment {
+  margin: 0;
+}
+
+.is-walkthrough .listing-seg-btn {
+  min-height: 100px;
+}
+
+.is-walkthrough .listing-field,
+.is-walkthrough .listing-photo-drop,
+.is-walkthrough .listing-scanner-btn {
+  margin-bottom: 0;
+}
+
+.is-walkthrough .listing-wheels-row {
+  width: 100%;
+}
+
+.listing-walkthrough-actions {
+  display: flex;
+  justify-content: center;
+  gap: 48px;
+}
+
+.listing-walkthrough-actions button {
+  min-width: 48px;
+  min-height: 48px;
+  display: grid;
+  place-items: center;
+  color: inherit;
+}
+
+.listing-walkthrough-actions button:disabled {
+  opacity: 0.45;
+}
+
+.listing-walkthrough-actions svg {
+  width: 26px;
+  height: 26px;
+}
+
+.listing-walkthrough-restart {
+  align-self: center;
+  padding: 14px 24px;
+  color: inherit;
+}
