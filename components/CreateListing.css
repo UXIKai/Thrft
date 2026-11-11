@@ -955,6 +955,45 @@ html body .listing-photo-choice-btn {
   height: 26px;
 }
 
+.listing-walkthrough-actions.is-photo {
+  grid-template-columns: 48px;
+}
+
+.listing-walkthrough-actions.is-photo button {
+  grid-area: 1 / 1;
+  transition: transform 0.35s ease, opacity 0.2s ease, visibility 0s 0.35s;
+}
+
+.listing-walkthrough-actions.is-photo .listing-walkthrough-back,
+.listing-walkthrough-actions.is-photo .listing-walkthrough-forward,
+.listing-walkthrough-actions.is-photo.is-ready .listing-photo-close {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.listing-walkthrough-actions.is-photo.is-ready .listing-walkthrough-back,
+.listing-walkthrough-actions.is-photo.is-ready .listing-walkthrough-forward {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition: transform 0.35s ease, opacity 0.2s ease, visibility 0s;
+}
+
+.listing-walkthrough-actions.is-photo.is-ready .listing-walkthrough-back {
+  transform: translateX(-48px);
+}
+
+.listing-walkthrough-actions.is-photo.is-ready .listing-walkthrough-forward {
+  transform: translateX(48px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .listing-walkthrough-actions.is-photo button {
+    transition: none;
+  }
+}
+
 .listing-walkthrough-restart {
   align-self: center;
   padding: 14px 24px;

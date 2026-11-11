@@ -880,15 +880,22 @@ export default function CreateListing({ onPosted } = {}) {
       )}
 
       {currentStep !== 'destination' && currentStep !== 'complete' && (
-      <nav className="listing-walkthrough-actions" aria-label="Create listing steps">
-        <button type="button" className="is-bare" aria-label="Previous step" disabled={posting || scanning} onClick={() => navigateStep(-1)}>
+      <nav className={`listing-walkthrough-actions${step === 'photo' ? ` is-photo${stepFilled ? ' is-ready' : ''}` : ''}`} aria-label="Create listing steps">
+        {step === 'photo' && (
+          <button type="button" className="is-bare listing-photo-close" aria-label="Close photo step" aria-hidden={stepFilled} tabIndex={stepFilled ? -1 : undefined} disabled={stepFilled || scanning} onClick={() => navigateStep(-1)}>
+            <svg viewBox="0 0 24 24" aria-hidden><path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
+          </button>
+        )}
+        <button type="button" className="is-bare listing-walkthrough-back" aria-label="Previous step" aria-hidden={step === 'photo' && !stepFilled} tabIndex={step === 'photo' && !stepFilled ? -1 : undefined} disabled={posting || scanning || (step === 'photo' && !stepFilled)} onClick={() => navigateStep(-1)}>
           <svg viewBox="0 0 24 24" aria-hidden><path d="m15 6-6 6 6 6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
         </button>
-      {stepFilled && <button
+      {(stepFilled || step === 'photo') && <button
         type="button"
         className="is-bare listing-walkthrough-forward"
         aria-label={lastStep ? isCloset ? 'Add to closet' : `Post to ${segmentLabel(segment)}` : 'Next step'}
-        disabled={posting || scanning}
+        aria-hidden={step === 'photo' && !stepFilled}
+        tabIndex={step === 'photo' && !stepFilled ? -1 : undefined}
+        disabled={posting || scanning || !stepFilled}
         onClick={lastStep ? submitListing : () => navigateStep(1)}
       >
         {posting ? <span role="status">Saving...</span> : <svg viewBox="0 0 24 24" aria-hidden>

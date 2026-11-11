@@ -50,7 +50,7 @@ Brand orbitals show website logos instead of text for the orbiting brands and ce
 
 Product brand headings open a brand page containing every active catalog product and available marketplace listing for that brand. Catalog queries are brand-filtered without the home-feed cap; marketplace listings are paged through completely before brand matching. Sold/unlisted items and mock Market previews are excluded.
 
-Create starts with centered Store, Closet, and Market buttons, then walks through one screen per original form row: photo, title, Brand and Category together, price, Market condition, description, then Closet date or Store materials. Back preserves entered values; the forward arrow or final check mark appears only after the current step is filled. The check mark submits through the existing posting flow.
+Create starts with centered Store, Closet, and Market buttons, then walks through one screen per original form row: photo, title, Brand and Category together, price, Market condition, description, then Closet date or Store materials. The photo step starts with a centered X that returns to the destination chooser; adding an image reveals Back and Forward with a split animation. Back preserves entered values; the forward arrow or final check mark appears only after the current step is filled. The check mark submits through the existing posting flow.
 
 Create → Closet removes the photo background with the AI scanner, crops transparent margins, and respects camera orientation. Failed scans display an error rather than saving a rough color-key replacement. The Straighten slider corrects angled photos; size adjustments keep the complete cutout inside the frame, and the saved image matches the preview.
 
