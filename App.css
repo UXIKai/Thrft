@@ -1905,8 +1905,8 @@ html body .tab-bar.is-pressed .tab-pill::before {
 
 @media (min-width: 720px) {
   .tab-bar {
-    --tab-extra-width: 15px;
-    --tab-height-reduction: 10px;
+    --tab-extra-width: 20px;
+    --tab-height-reduction: 15px;
   }
 }
 
