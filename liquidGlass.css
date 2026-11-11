@@ -1445,7 +1445,7 @@ html body .tab-bar .tab-item .tab-icon {
   transition: none;
 }
 
-html[data-theme='dark'][data-bg-color='none'][data-moonlight='on'] {
+html[data-bg-color='none'][data-moonlight='on'] {
   --atmosphere-effect-a: #000 !important;
   --atmosphere-effect-b: #000 !important;
   --atmosphere-effect-c: #000 !important;
@@ -1455,31 +1455,31 @@ html[data-theme='dark'][data-bg-color='none'][data-moonlight='on'] {
   --void: #000 !important;
   --atmosphere-base: #000 !important;
 }
-html[data-theme='dark'][data-app-color='none'][data-moonlight='on'] body .settings-section:not(.is-profile-controls) .settings-card,
-html[data-theme='dark'][data-app-color='none'][data-moonlight='on'] body .settings-section.is-profile-controls .settings-row,
-html[data-theme='dark'][data-app-color='none'][data-moonlight='on'] body .settings-block,
-html[data-theme='dark'][data-app-color='none'][data-moonlight='on'] body .settings-theme-toggle,
-html[data-theme='dark'][data-app-color='none'][data-moonlight='on'] body .settings-account-active,
-html[data-theme='dark'][data-app-color='none'][data-moonlight='on'] body .settings-icon-tile,
-html[data-theme='dark'][data-app-color='none'][data-moonlight='on'] body .listing-box,
-html[data-theme='dark'][data-app-color='none'][data-moonlight='on'] body .listing-globe-trigger {
+html[data-app-color='none'][data-moonlight='on'] body .settings-section:not(.is-profile-controls) .settings-card,
+html[data-app-color='none'][data-moonlight='on'] body .settings-section.is-profile-controls .settings-row,
+html[data-app-color='none'][data-moonlight='on'] body .settings-block,
+html[data-app-color='none'][data-moonlight='on'] body .settings-theme-toggle,
+html[data-app-color='none'][data-moonlight='on'] body .settings-account-active,
+html[data-app-color='none'][data-moonlight='on'] body .settings-icon-tile,
+html[data-app-color='none'][data-moonlight='on'] body .listing-box,
+html[data-app-color='none'][data-moonlight='on'] body .listing-globe-trigger {
   background: #fff !important;
   border-color: #000 !important;
   box-shadow: inset 0 0 0 1.5px #000 !important;
   color: #000;
 }
-html[data-theme='dark'][data-app-color='none'][data-moonlight='on'] body .settings-section:not(.is-profile-controls) .settings-card *,
-html[data-theme='dark'][data-app-color='none'][data-moonlight='on'] body .settings-section.is-profile-controls .settings-row *,
-html[data-theme='dark'][data-app-color='none'][data-moonlight='on'] body .settings-block *,
-html[data-theme='dark'][data-app-color='none'][data-moonlight='on'] body .settings-theme-toggle *,
-html[data-theme='dark'][data-app-color='none'][data-moonlight='on'] body .settings-account-active *,
-html[data-theme='dark'][data-app-color='none'][data-moonlight='on'] body .settings-icon-tile *,
-html[data-theme='dark'][data-app-color='none'][data-moonlight='on'] body .listing-box *,
-html[data-theme='dark'][data-app-color='none'][data-moonlight='on'] body .listing-globe-trigger * {
+html[data-app-color='none'][data-moonlight='on'] body .settings-section:not(.is-profile-controls) .settings-card *,
+html[data-app-color='none'][data-moonlight='on'] body .settings-section.is-profile-controls .settings-row *,
+html[data-app-color='none'][data-moonlight='on'] body .settings-block *,
+html[data-app-color='none'][data-moonlight='on'] body .settings-theme-toggle *,
+html[data-app-color='none'][data-moonlight='on'] body .settings-account-active *,
+html[data-app-color='none'][data-moonlight='on'] body .settings-icon-tile *,
+html[data-app-color='none'][data-moonlight='on'] body .listing-box *,
+html[data-app-color='none'][data-moonlight='on'] body .listing-globe-trigger * {
   color: #000;
   --st-mute: #000;
 }
-html[data-theme='dark'][data-app-color='none'][data-moonlight='on'] body :is(.listing-box, .listing-globe-trigger) :is(input, textarea) {
+html[data-app-color='none'][data-moonlight='on'] body :is(.listing-box, .listing-globe-trigger) :is(input, textarea) {
   color: #000;
   caret-color: #000;
 }
@@ -1494,13 +1494,13 @@ html[data-bg-color='none'] body button.settings-effect-switch.is-on {
   border: 2px solid light-dark(#fff, #000) !important;
 }
 
-html[data-theme='dark'][data-moonlight='on'][data-app-color='none'] body .settings-effect-switch {
+html[data-moonlight='on'][data-app-color='none'] body .settings-effect-switch {
   --effect-switch-outline: #000;
 }
 
-html[data-theme='dark'][data-app-color='none'][data-moonlight='on'] body .settings-account-active .settings-account-avatar {
+html[data-app-color='none'][data-moonlight='on'] body .settings-account-active .settings-account-avatar {
   background: #000 !important;
-  color: #fff;
+  color: #fff !important;
 }
 
 /* Product image container: always a white outline on the black moonlight page */
