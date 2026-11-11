@@ -699,19 +699,6 @@ html .brand-globe .brand-globe-stage.is-choosing .brand-globe-center-hole {
   filter: none;
 }
 
-.brand-globe.is-color-picker > .brand-globe-color-atmosphere::after {
-  content: '';
-  position: absolute;
-  inset: 0 0 auto;
-  height: calc(env(safe-area-inset-top, 0px) + 100px);
-  z-index: 1;
-  background: linear-gradient(
-    to bottom,
-    var(--globe-tint) 0,
-    var(--globe-tint) env(safe-area-inset-top, 0px),
-    transparent 100%
-  );
-}
 
 .brand-globe.has-tint .brand-globe-scrim {
   background: color-mix(in srgb, var(--globe-tint) 75%, #000);
