@@ -144,7 +144,8 @@ export function colorSchemeForHex(hex) {
 /** Bright matched backgrounds get black text; dark ones get white. Otherwise the chosen theme. */
 function syncColorScheme() {
   const root = document.documentElement
-  let scheme = currentTheme
+  // The default page is always black; the mode only recolors containers.
+  let scheme = currentBgColorId === 'none' ? 'dark' : currentTheme
   if (matchBackgroundColor) {
     const color = resolveBgColor(currentBgColorId)
     if (color.id !== 'none') {
@@ -536,8 +537,8 @@ export function applyBgAtmosphereTokens() {
   root.style.setProperty('--bg-color-rgb', base.join(', '))
 
   // Deep void keeps the wash readable; hue lives in the flowing clouds.
-  const voidRgb = matchBackgroundColor && hasColor ? base : currentTheme === 'light'
-    ? (hasColor ? base.map((channel) => Math.round(238 + channel * 0.06)) : [250, 250, 250])
+  const voidRgb = matchBackgroundColor && hasColor ? base : hasColor && currentTheme === 'light'
+    ? base.map((channel) => Math.round(238 + channel * 0.06))
     : hasColor
     ? [
         Math.round(base[0] * 0.12),

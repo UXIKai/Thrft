@@ -53,7 +53,8 @@ test('black Settings backgrounds disable dark mode, preserve contrast, and survi
     assert.equal(tokens.get('--void'), 'rgb(8, 8, 8)')
 
     reloaded.applyBgColor('none')
-    assert.equal(root.style.colorScheme, 'light', 'neutral background restores the saved light mode')
+    assert.equal(root.dataset.theme, 'light', 'neutral background restores the saved light mode')
+    assert.equal(root.style.colorScheme, 'dark', 'default page stays black')
 
     reloaded.applyTheme('dark')
     reloaded.applyCustomBgColor('#000000', { matchColor: true })
@@ -88,8 +89,8 @@ test('black Settings backgrounds disable dark mode, preserve contrast, and survi
     reloaded.applyDisplayMode('light')
     assert.equal(reloaded.readAppColor(), 'none')
     assert.equal(reloaded.readBgColor(), 'none')
-    assert.equal(root.style.colorScheme, 'light')
-    assert.equal(tokens.get('--void'), 'rgb(250, 250, 250)')
+    assert.equal(root.style.colorScheme, 'dark', 'default page stays black in light mode')
+    assert.equal(tokens.get('--void'), 'rgb(5, 5, 5)')
     assert.equal(reloaded.readCustomBgColorHex(), '#ff0000', 'saved custom color is preserved')
     assert.equal(reloaded.readBackgroundImage(), 'none')
     assert.equal(reloaded.readBackgroundPhoto(), 'data:image/png;base64,abc')
