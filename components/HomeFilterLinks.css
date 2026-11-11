@@ -261,7 +261,7 @@ html body .home-search-backdrop {
 }
 
 html body .home-search-modal {
-  background: var(--search-card-background, #fff) !important;
+  background: var(--search-card-background, #000) !important;
   background-image: none !important;
   isolation: isolate;
   opacity: 1;
@@ -276,14 +276,14 @@ html body .home-search-modal {
 }
 
 html body .home-search-modal .home-search-label {
-  color: var(--card-ink, #000);
+  color: var(--card-ink, #fff);
   opacity: 0.6;
 }
 
 html body .home-search-modal .home-search-orbit .type-box,
 html body .home-search-modal .home-search-orbit .type-box.is-wheel,
 html body .home-search-modal .home-search-done {
-  color: var(--card-ink, #000);
+  color: var(--card-ink, #fff);
   text-shadow: none;
 }
 
@@ -302,7 +302,7 @@ html body .home-search-modal .home-search-reset {
   border-radius: 0;
   background: transparent;
   box-shadow: none;
-  color: var(--card-ink, #000);
+  color: var(--card-ink, #fff);
   cursor: pointer;
 }
 

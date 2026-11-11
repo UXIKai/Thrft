@@ -85,13 +85,13 @@ export default function HomeFilterLinks({
     }
   }, [open, brandId, categoryId, colorId])
 
-  const defaultCardIsWhite = false
   const cardHex = draftColor ? colorHex(draftColor) || '#ffffff' : '#ffffff'
+  const isBlackFamily = COLOR_FAMILIES.Black.some(
+    (label) => label.toLowerCase().replace(/\s+/g, '-') === draftColor,
+  )
   const cardStyle = {
-    '--card-ink': draftColor ? cardHex : defaultCardIsWhite ? '#000000' : '#ffffff',
-    '--search-card-background': (draftColor ? COLOR_FAMILIES.Black.some(
-      (label) => label.toLowerCase().replace(/\s+/g, '-') === draftColor,
-    ) : defaultCardIsWhite) ? '#ffffff' : '#000000',
+    '--card-ink': draftColor && !isBlackFamily ? cardHex : '#ffffff',
+    '--search-card-background': '#000000',
   }
   const searchColor = (draftColor && colorHex(draftColor)) || '#ffffff'
   const searchRgb = searchColor.match(/[a-f0-9]{2}/gi)?.map((part) => parseInt(part, 16)).join(', ')
