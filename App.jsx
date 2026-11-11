@@ -644,6 +644,7 @@ export default function App() {
       {activeProduct && (
         <ProductDetail
           product={activeProduct}
+          openQuantity={Boolean(productReturnRef.current?.quantity)}
           onClose={() => {
             setActiveProduct(null)
             const source = productReturnRef.current
@@ -669,8 +670,8 @@ export default function App() {
           shippingAddress={userProfile?.shippingAddress || ''}
           onClose={() => setCartOpen(false)}
           onChange={replaceItems}
-          onOpenProduct={(product) => {
-            productReturnRef.current = { cart: true }
+          onOpenProduct={(product, options) => {
+            productReturnRef.current = { cart: true, quantity: Boolean(options?.quantity) }
             setCartOpen(false)
             setActiveProduct(product)
           }}

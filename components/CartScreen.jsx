@@ -142,7 +142,7 @@ export default function CartScreen({
                     <button type="button" className="cart-line-act is-bare" aria-label="Fewer" onClick={() => (item.qty <= 1 ? remove(item.id) : setQty(item, item.qty - 1))}>
                       <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden><path fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" d="M6 12h12" /></svg>
                     </button>
-                    <span className="cart-line-count">{item.qty}</span>
+                    <button type="button" className="cart-line-count cart-line-act is-bare" aria-label={`View ${item.qty} selected ${item.title || 'products'}`} onClick={() => onOpenProduct?.(item, { quantity: true })}>{item.qty}</button>
                     <button type="button" className="cart-line-act is-bare" aria-label="More" onClick={() => setQty(item, item.qty + 1)}>
                       <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden><path fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" d="M12 5v14M5 12h14" /></svg>
                     </button>

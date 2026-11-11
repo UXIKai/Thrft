@@ -48,6 +48,7 @@ export default function ProductDetail({
   product,
   onClose,
   onOpenBrand,
+  openQuantity = false,
 }) {
   const [stageEl, setStageEl] = useState(null)
   const { items, addItem, replaceItems, removeItem } = useBag()
@@ -71,7 +72,7 @@ export default function ProductDetail({
   const [sizeMetric, setSizeMetric] = useState('EN')
   const [sizeFormat, setSizeFormat] = useState(null)
   const [showInformation, setShowInformation] = useState(false)
-  const [quantityOpen, setQuantityOpen] = useState(false)
+  const [quantityOpen, setQuantityOpen] = useState(openQuantity)
   const [editingSizeIndex, setEditingSizeIndex] = useState(null)
   const [draftSize, setDraftSize] = useState('')
 
@@ -86,12 +87,12 @@ export default function ProductDetail({
 
   useEffect(() => {
     setSizing(false)
-    setQuantityOpen(false)
+    setQuantityOpen(openQuantity)
     setEditingSizeIndex(null)
     setShowInformation(false)
     setSizeMetric('EN')
     setSizeFormat(null)
-  }, [product?.id])
+  }, [product?.id, openQuantity])
 
   useEffect(() => {
     if (editingSizeIndex === null) return undefined
@@ -279,7 +280,7 @@ export default function ProductDetail({
           type="button"
           className="product-detail-done is-bare"
           aria-label="Done"
-          onClick={() => setQuantityOpen(false)}
+          onClick={() => openQuantity ? onClose() : setQuantityOpen(false)}
         >
           <DoneCheckIcon />
         </button>
