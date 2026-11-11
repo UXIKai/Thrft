@@ -8,6 +8,7 @@ import {
   applyAppColor,
   applyBackgroundImage,
   exitMoonlight,
+  readMoonlight,
   readBackgroundImage,
   applyBackgroundPhoto,
   readBackgroundPhoto,
@@ -1440,7 +1441,12 @@ export default function SettingsScreen({
 
   function toggleDisplayMode() {
     // Flip from the live theme, not React state, which other background pickers can leave stale.
-    setTheme(applyDisplayMode(readTheme() === 'dark' ? 'light' : 'dark'))
+    if (readMoonlight()) {
+      exitMoonlight()
+      setTheme(readTheme())
+    } else {
+      setTheme(applyDisplayMode('light'))
+    }
     setAppColor(readAppColor())
     setBgColor(readBgColor())
     setHasPhoto(Boolean(readBackgroundPhoto()))
@@ -1871,8 +1877,8 @@ export default function SettingsScreen({
           <button
             type="button"
             className="settings-theme-toggle is-bare"
-            aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-            aria-pressed={theme === 'dark'}
+            aria-label={theme === 'light' ? 'Switch to normal mode' : 'Switch to light mode'}
+            aria-pressed={theme === 'light'}
             onClick={toggleDisplayMode}
           >
             <svg className="settings-row-ico" viewBox="0 0 24 24" aria-hidden="true">

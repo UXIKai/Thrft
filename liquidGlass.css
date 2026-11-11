@@ -1445,18 +1445,6 @@ html body .tab-bar .tab-item .tab-icon {
   transition: none;
 }
 
-/* Default (uncolored) display modes: the page is always black; dark = white
-   containers/black text, light = black containers/white text. Picking a color restores glass. */
-html[data-theme='dark'][data-bg-color='none'][data-moonlight='on'] {
-  --atmosphere-effect-a: #000 !important;
-  --atmosphere-effect-b: #000 !important;
-  --atmosphere-effect-c: #000 !important;
-  --atmosphere-effect-a-rgb: 0, 0, 0 !important;
-  --atmosphere-effect-b-rgb: 0, 0, 0 !important;
-  --atmosphere-effect-c-rgb: 0, 0, 0 !important;
-  --void: #000 !important;
-  --atmosphere-base: #000 !important;
-}
 html[data-theme='light'][data-bg-color='none'][data-moonlight='on'] {
   --atmosphere-effect-a: #000 !important;
   --atmosphere-effect-b: #000 !important;
@@ -1466,34 +1454,6 @@ html[data-theme='light'][data-bg-color='none'][data-moonlight='on'] {
   --atmosphere-effect-c-rgb: 0, 0, 0 !important;
   --void: #000 !important;
   --atmosphere-base: #000 !important;
-}
-html[data-theme='dark'][data-app-color='none'][data-moonlight='on'] body .settings-section:not(.is-profile-controls) .settings-card,
-html[data-theme='dark'][data-app-color='none'][data-moonlight='on'] body .settings-section.is-profile-controls .settings-row,
-html[data-theme='dark'][data-app-color='none'][data-moonlight='on'] body .settings-block,
-html[data-theme='dark'][data-app-color='none'][data-moonlight='on'] body .settings-theme-toggle,
-html[data-theme='dark'][data-app-color='none'][data-moonlight='on'] body .settings-account-active,
-html[data-theme='dark'][data-app-color='none'][data-moonlight='on'] body .settings-icon-tile,
-html[data-theme='dark'][data-app-color='none'][data-moonlight='on'] body .listing-box,
-html[data-theme='dark'][data-app-color='none'][data-moonlight='on'] body .listing-globe-trigger {
-  background: #fff !important;
-  border-color: #000 !important;
-  box-shadow: inset 0 0 0 1.5px #000 !important;
-  color: #000;
-}
-html[data-theme='dark'][data-app-color='none'][data-moonlight='on'] body .settings-section:not(.is-profile-controls) .settings-card *,
-html[data-theme='dark'][data-app-color='none'][data-moonlight='on'] body .settings-section.is-profile-controls .settings-row *,
-html[data-theme='dark'][data-app-color='none'][data-moonlight='on'] body .settings-block *,
-html[data-theme='dark'][data-app-color='none'][data-moonlight='on'] body .settings-theme-toggle *,
-html[data-theme='dark'][data-app-color='none'][data-moonlight='on'] body .settings-account-active *,
-html[data-theme='dark'][data-app-color='none'][data-moonlight='on'] body .settings-icon-tile *,
-html[data-theme='dark'][data-app-color='none'][data-moonlight='on'] body .listing-box *,
-html[data-theme='dark'][data-app-color='none'][data-moonlight='on'] body .listing-globe-trigger * {
-  color: #000;
-  --st-mute: #000;
-}
-html[data-theme='dark'][data-app-color='none'][data-moonlight='on'] body :is(.listing-box, .listing-globe-trigger) :is(input, textarea) {
-  color: #000;
-  caret-color: #000;
 }
 html[data-theme='light'][data-app-color='none'][data-moonlight='on'] body .settings-section:not(.is-profile-controls) .settings-card,
 html[data-theme='light'][data-app-color='none'][data-moonlight='on'] body .settings-section.is-profile-controls .settings-row,
@@ -1534,20 +1494,10 @@ html[data-bg-color='none'] body button.settings-effect-switch.is-on {
   border: 2px solid light-dark(#fff, #000) !important;
 }
 
-/* Moonlight: the switch sits on a contrasting container, so outline it to match the container edge.
-   The switch sets its border inline, so the color is passed through a variable. */
-html[data-theme='dark'][data-moonlight='on'][data-app-color='none'] body .settings-effect-switch {
-  --effect-switch-outline: #000;
-}
 html[data-theme='light'][data-moonlight='on'][data-app-color='none'] body .settings-effect-switch {
   --effect-switch-outline: #fff;
 }
 
-/* Account avatar: invert against its container so the initials stay readable */
-html[data-theme='dark'][data-app-color='none'][data-moonlight='on'] body .settings-account-active .settings-account-avatar {
-  background: #000 !important;
-  color: #fff;
-}
 html[data-theme='light'][data-app-color='none'][data-moonlight='on'] body .settings-account-active .settings-account-avatar {
   background: #fff !important;
   color: #000;
