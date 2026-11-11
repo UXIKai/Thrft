@@ -692,6 +692,16 @@ export function applyCustomBgColor(hex, { matchColor = false } = {}) {
 
 let searchBackgroundSnapshot = null
 
+export function applyDisplayMode(theme) {
+  if (theme !== 'dark' && theme !== 'light') {
+    throw new Error('Display mode must be dark or light.')
+  }
+  clearSearchBackground()
+  applyAppColor(DEFAULT_APP_COLOR)
+  applyBgColor(DEFAULT_BG_COLOR)
+  return applyTheme(theme)
+}
+
 export function clearSearchBackground({ restoreDefault = false } = {}) {
   if (!searchBackgroundSnapshot) {
     if (restoreDefault) {

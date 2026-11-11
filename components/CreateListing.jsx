@@ -8,6 +8,7 @@ import {
 } from '../customCatalog.js'
 import { createListingProduct } from '../api.js'
 import { isCreateStepFilled } from '../createWalkthrough.js'
+import { processCreatePhotos } from '../createPhotoProcessing.js'
 import { createListing } from '../listings.js'
 import { isSupabaseConfigured } from '../supabase.js'
 import {
@@ -208,7 +209,6 @@ export default function CreateListing({ onPosted } = {}) {
   useEffect(() => {
     setDateD((d) => Math.min(d, daysInMonth))
   }, [daysInMonth])
-  const [posted, setPosted] = useState(false)
   const [posting, setPosting] = useState(false)
   const [postError, setPostError] = useState('')
   const [postedProduct, setPostedProduct] = useState(null)
@@ -254,16 +254,16 @@ export default function CreateListing({ onPosted } = {}) {
     'description',
     ...(isCloset ? ['date'] : isStore ? ['materials'] : []),
   ]
-  const currentStep = posted ? 'complete' : step
+  const currentStep = step
   const stepHeadingRef = useRef(null)
+  const destinationRef = useRef(null)
   const stepIndex = steps.indexOf(step)
   const lastStep = stepIndex === steps.length - 1
-  const stepFilled = isCreateStepFilled(step, {
+  const stepFilled = (step !== 'photo' || (!scanning && !photoChoice)) && isCreateStepFilled(step, {
     isCloset, scanPreview, marketPhotos, title, brand, category, price,
     condition, description, materials, dateM, dateD, dateY,
   })
   const stepTitles = {
-    destination: 'Where would you like to add this item?',
     photo: isCloset ? 'Scan your clothing' : 'Add photos',
     title: 'Title',
     details: 'Brand and Category',
@@ -272,11 +272,14 @@ export default function CreateListing({ onPosted } = {}) {
     description: 'Description',
     date: 'Date',
     materials: 'Materials',
-    complete: 'Complete',
   }
 
   useEffect(() => {
-    stepHeadingRef.current?.focus({ preventScroll: true })
+    if (currentStep === 'destination') {
+      destinationRef.current?.focus({ preventScroll: true })
+    } else {
+      stepHeadingRef.current?.focus({ preventScroll: true })
+    }
   }, [currentStep])
 
   function navigateStep(direction) {
@@ -284,6 +287,30 @@ export default function CreateListing({ onPosted } = {}) {
     setPostError('')
     setPhotoChoice(false)
     setStep(steps[stepIndex + direction] || 'destination')
+  }
+
+  function finishListing(product, destination) {
+    const now = new Date()
+    setPostedProduct({ ...product, segment: destination })
+    setStep('destination')
+    setTitle('')
+    setBrand("Levi's")
+    setCategory('Tees')
+    setPrice('')
+    setCondition('Good')
+    setDescription('')
+    setMaterials('')
+    setDateM(now.getMonth() + 1)
+    setDateD(now.getDate())
+    setDateY(now.getFullYear())
+    setMarketPhotos([])
+    setScanPreview('')
+    setScanImage('')
+    setScanZoom(1)
+    setScanAngle(0)
+    setPhotoChoice(false)
+    setPostError('')
+    onPosted?.(product)
   }
   const [numberLookupOpen, setNumberLookupOpen] = useState(false)
   const closeNumberLookup = useCallback(() => setNumberLookupOpen(false), [])
@@ -402,15 +429,24 @@ export default function CreateListing({ onPosted } = {}) {
     closeAddSheet()
   }
 
-  function onMarketPhoto(event) {
-    const files = Array.from(event.target.files || [])
+  async function onMarketPhoto(event) {
+    const files = Array.from(event.target.files || []).slice(0, Math.max(0, 6 - marketPhotos.length))
     event.target.value = ''
+    if (!files.length) {
+      setPhotoChoice(false)
+      return
+    }
+    setScanning(true)
     setPhotoChoice(false)
-    files.slice(0, 6).forEach((file) => {
-      const reader = new FileReader()
-      reader.onload = () => setMarketPhotos((prev) => [...prev, String(reader.result)].slice(0, 6))
-      reader.readAsDataURL(file)
-    })
+    setPostError('')
+    try {
+      const cutouts = await processCreatePhotos(files, removeImageBackground)
+      setMarketPhotos((prev) => [...prev, ...cutouts].slice(0, 6))
+    } catch (error) {
+      setPostError(String(error?.message || 'Could not remove the photo background.'))
+    } finally {
+      setScanning(false)
+    }
   }
 
   async function onScanFile(event) {
@@ -457,12 +493,7 @@ export default function CreateListing({ onPosted } = {}) {
           scanned: true,
           backgroundRemoved: true,
         })
-        setPostedProduct({ ...item, segment: 'closet' })
-        setPosted(true)
-        setScanPreview('')
-        setPrice('')
-        setDescription('')
-        onPosted?.(item)
+        finishListing(item, 'closet')
       } catch (err) {
         setPostError(String(err?.message || 'Could not add to closet'))
       } finally {
@@ -490,10 +521,7 @@ export default function CreateListing({ onPosted } = {}) {
           segment: 'store',
           photoUrl: marketPhotos[0] || '',
         })
-        setPostedProduct({ ...product, segment: 'store' })
-        setPosted(true)
-        setMarketPhotos([])
-        onPosted?.(product)
+        finishListing(product, 'store')
       } catch (err) {
         setPostError(String(err?.message || 'Could not post to Store'))
       } finally {
@@ -516,9 +544,7 @@ export default function CreateListing({ onPosted } = {}) {
         description: description.trim(),
         imageUrl: 'placeholder',
       })
-      setPostedProduct({ ...product, segment })
-      setPosted(true)
-      onPosted?.(product)
+      finishListing(product, 'market')
     } catch (err) {
       const msg = String(err?.message || 'Could not post listing')
       if (/relation .*listings.* does not exist|Could not find the table/i.test(msg)) {
@@ -536,12 +562,10 @@ export default function CreateListing({ onPosted } = {}) {
       className={`create-listing is-walkthrough${addSheetOpen ? ' is-adding' : ''}`}
       aria-label="Create listing"
     >
-      <header className="listing-walkthrough-header">
+      {currentStep !== 'destination' && <header className="listing-walkthrough-header">
         <h1 tabIndex={-1} ref={stepHeadingRef}>{stepTitles[currentStep]}</h1>
-        {currentStep !== 'destination' && currentStep !== 'complete' && (
-          <p>{segmentLabel(segment)} · {stepIndex + 1} of {steps.length}</p>
-        )}
-      </header>
+        <p>{segmentLabel(segment)} · {stepIndex + 1} of {steps.length}</p>
+      </header>}
       {addSheetOpen ? (
         <button
           type="button"
@@ -556,6 +580,8 @@ export default function CreateListing({ onPosted } = {}) {
         className="listing-segment"
         role="group"
         aria-label="Listing destination"
+        ref={destinationRef}
+        tabIndex={-1}
       >
         {LISTING_SEGMENTS.map((seg) => {
           const active = segment === seg.id
@@ -569,7 +595,7 @@ export default function CreateListing({ onPosted } = {}) {
                 setSegment(seg.id)
                 setStep('photo')
                 setPhotoChoice(false)
-                setPosted(false)
+                setPostedProduct(null)
                 setPostError('')
               }}
             >
@@ -581,30 +607,29 @@ export default function CreateListing({ onPosted } = {}) {
       </div>}
 
       {currentStep === 'photo' && (isMarket || isStore) && (
-        <div className="listing-photo-drop" role="group" aria-label="Add photos">
+        <div className={`listing-photo-drop${marketPhotos.length ? ' has-preview' : ''}`} role="group" aria-label="Add photos">
           <input ref={photoCameraRef} type="file" accept="image/*" capture="environment" className="listing-scan-input" aria-hidden tabIndex={-1} onChange={onMarketPhoto} />
           <input ref={photoGalleryRef} type="file" accept="image/*" multiple className="listing-scan-input" aria-hidden tabIndex={-1} onChange={onMarketPhoto} />
-          {photoChoice ? (
+          <button type="button" className="listing-photo-hit is-bare" aria-label="Add photos" title="Add photos" disabled={scanning} onClick={() => setPhotoChoice(true)}>
+            {scanning ? <span role="status">Removing background...</span> : marketPhotos.length ? (
+              <span className={`listing-photo-thumbs${marketPhotos.length > 1 ? ' has-multiple' : ''}`}>
+                {marketPhotos.map((src, i) => (
+                  <img key={i} src={src} alt="" />
+                ))}
+              </span>
+            ) : (
+              <CameraIcon />
+            )}
+          </button>
+          {photoChoice && (
             <div className="listing-photo-choice">
-              <button type="button" className="listing-photo-choice-btn" aria-label="Take a photo" onClick={() => photoCameraRef.current?.click()}>
+              <button type="button" className="listing-photo-choice-btn is-bare" aria-label="Take a photo" onClick={() => photoCameraRef.current?.click()}>
                 <CameraChoiceIcon />
               </button>
-              <button type="button" className="listing-photo-choice-btn" aria-label="Choose from gallery" onClick={() => photoGalleryRef.current?.click()}>
+              <button type="button" className="listing-photo-choice-btn is-bare" aria-label="Choose from gallery" onClick={() => photoGalleryRef.current?.click()}>
                 <GalleryChoiceIcon />
               </button>
             </div>
-          ) : (
-            <button type="button" className="listing-photo-hit is-bare" aria-label="Add photos" title="Add photos" onClick={() => setPhotoChoice(true)}>
-              {marketPhotos.length ? (
-                <span className="listing-photo-thumbs">
-                  {marketPhotos.map((src, i) => (
-                    <img key={i} src={src} alt="" />
-                  ))}
-                </span>
-              ) : (
-                <CameraIcon />
-              )}
-            </button>
           )}
         </div>
       )}
@@ -614,7 +639,14 @@ export default function CreateListing({ onPosted } = {}) {
           <input ref={scanInputRef} type="file" accept="image/*" capture="environment" className="listing-scan-input" aria-hidden tabIndex={-1} onChange={onScanFile} />
           <input ref={scanGalleryRef} type="file" accept="image/*" className="listing-scan-input" aria-hidden tabIndex={-1} onChange={onScanFile} />
           <div className={`listing-scanner-btn${scanPreview ? ' has-preview' : ''}`} role="group" aria-label="Clothing scanner">
-            {photoChoice && !scanning ? (
+            <button type="button" className="listing-photo-hit is-bare" aria-label="Clothing scanner" title="Clothing scanner" disabled={scanning} onClick={() => setPhotoChoice(true)}>
+              {scanning ? <span role="status">Removing background...</span> : scanPreview ? (
+                <img className="listing-scanner-preview" src={scanImage || scanPreview} alt="Scanned clothing cutout" />
+              ) : (
+                <ScannerIcon />
+              )}
+            </button>
+            {photoChoice && !scanning && (
               <div className="listing-photo-choice">
                 <button type="button" className="listing-photo-choice-btn is-bare" aria-label="Take a photo" onClick={() => scanInputRef.current?.click()}>
                   <CameraChoiceIcon />
@@ -626,14 +658,6 @@ export default function CreateListing({ onPosted } = {}) {
                   <GalleryChoiceIcon />
                 </button>
               </div>
-            ) : (
-              <button type="button" className="listing-photo-hit is-bare" aria-label="Clothing scanner" title="Clothing scanner" disabled={scanning} onClick={() => setPhotoChoice(true)}>
-                {scanning ? <span role="status">Removing background...</span> : scanPreview ? (
-                  <img className="listing-scanner-preview" src={scanImage || scanPreview} alt="Scanned clothing cutout" />
-                ) : (
-                  <ScannerIcon />
-                )}
-              </button>
             )}
           </div>
           {scanPreview ? (
@@ -879,8 +903,8 @@ export default function CreateListing({ onPosted } = {}) {
         </>
       )}
 
-      {currentStep !== 'destination' && currentStep !== 'complete' && (
-      <nav className={`listing-walkthrough-actions${step === 'photo' ? ` is-photo${stepFilled ? ' is-ready' : ''}` : ''}`} aria-label="Create listing steps">
+      {currentStep !== 'destination' && (
+      <nav className={`listing-walkthrough-actions${step === 'photo' ? ' is-photo' : ''}${stepFilled ? ' is-ready' : ''}`} aria-label="Create listing steps">
         {step === 'photo' && (
           <button type="button" className="is-bare listing-photo-close" aria-label="Close photo step" aria-hidden={stepFilled} tabIndex={stepFilled ? -1 : undefined} disabled={stepFilled || scanning} onClick={() => navigateStep(-1)}>
             <svg viewBox="0 0 24 24" aria-hidden><path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
@@ -889,55 +913,41 @@ export default function CreateListing({ onPosted } = {}) {
         <button type="button" className="is-bare listing-walkthrough-back" aria-label="Previous step" aria-hidden={step === 'photo' && !stepFilled} tabIndex={step === 'photo' && !stepFilled ? -1 : undefined} disabled={posting || scanning || (step === 'photo' && !stepFilled)} onClick={() => navigateStep(-1)}>
           <svg viewBox="0 0 24 24" aria-hidden><path d="m15 6-6 6 6 6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
         </button>
-      {(stepFilled || step === 'photo') && <button
+      <button
         type="button"
         className="is-bare listing-walkthrough-forward"
         aria-label={lastStep ? isCloset ? 'Add to closet' : `Post to ${segmentLabel(segment)}` : 'Next step'}
-        aria-hidden={step === 'photo' && !stepFilled}
-        tabIndex={step === 'photo' && !stepFilled ? -1 : undefined}
+        aria-hidden={!stepFilled}
+        tabIndex={!stepFilled ? -1 : undefined}
         disabled={posting || scanning || !stepFilled}
         onClick={lastStep ? submitListing : () => navigateStep(1)}
       >
         {posting ? <span role="status">Saving...</span> : <svg viewBox="0 0 24 24" aria-hidden>
           <path d={lastStep ? 'M5 12.5l4.5 4.5L19 7.5' : 'm9 6 6 6-6 6'} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>}
-      </button>}
+      </button>
       </nav>)}
       {postError ? (
         <p className="listing-posted-note" role="alert">
           {postError}
         </p>
       ) : null}
-      {posted && postedProduct && (
+      {currentStep === 'destination' && postedProduct && (
         <p className="listing-posted-note" role="status">
-          {isCloset
+          {postedProduct.segment === 'closet'
             ? `Added to Closet · ${postedProduct.title || ''}`
             : `Posted to your ${segmentLabel(postedProduct.segment)}${
                 postedProduct.title ? ` · ${postedProduct.title}` : ''
               }`}
         </p>
       )}
-      {posted && <button type="button" className="listing-walkthrough-restart" onClick={() => {
-        setPosted(false)
-        setStep('destination')
-        setTitle('')
-        setPrice('')
-        setDescription('')
-        setMaterials('')
-        setMarketPhotos([])
-        setScanPreview('')
-        setPostError('')
-      }}>Add another item</button>}
       {numberLookupOpen && <ClosetNumberLookup
         brands={[...new Set([...LISTING_BRANDS, ...customBrands])]}
         initialBrand={brand}
         onClose={closeNumberLookup}
         onAdded={(item) => {
           setNumberLookupOpen(false)
-          setPhotoChoice(false)
-          setPostedProduct({ ...item, segment: 'closet' })
-          setPosted(true)
-          onPosted?.(item)
+          finishListing(item, 'closet')
         }}
       />}
     </section>

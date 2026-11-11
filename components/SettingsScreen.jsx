@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import {
-  applyTheme,
+  applyDisplayMode,
   readTheme,
   applyBrightness,
   readBrightness,
@@ -1437,6 +1437,14 @@ export default function SettingsScreen({
     rememberPaletteId(id)
   }
 
+  function toggleDisplayMode() {
+    setTheme(applyDisplayMode(theme === 'dark' ? 'light' : 'dark'))
+    setAppColor(readAppColor())
+    setBgColor(readBgColor())
+    setHasPhoto(Boolean(readBackgroundPhoto()))
+    setBgEffectOn(readBackgroundImage() === 'atmosphere')
+  }
+
   function onPhotoFile(e) {
     const file = e.target.files?.[0]
     e.target.value = ''
@@ -1858,7 +1866,7 @@ export default function SettingsScreen({
             className="settings-theme-toggle is-bare"
             aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
             aria-pressed={theme === 'dark'}
-            onClick={() => setTheme(applyTheme(theme === 'dark' ? 'light' : 'dark'))}
+            onClick={toggleDisplayMode}
           >
             <svg className="settings-row-ico" viewBox="0 0 24 24" aria-hidden="true">
               <circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" strokeWidth="1.6" />
