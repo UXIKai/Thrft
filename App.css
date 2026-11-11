@@ -114,7 +114,7 @@
 .app-column.is-home-wide .tab-bar {
   left: 50%;
   right: auto;
-  width: min(calc(100% - 40px), 520px);
+  width: min(calc(100% - 40px), calc(var(--tab-h, 64px) * 5.47));
   transform: translateX(-50%);
 }
 
@@ -1860,13 +1860,11 @@ html body .tab-bar.is-dragging .tab-pill {
   transform: none;
 }
 
-@media (max-width: 719px) {
-  html body .tab-bar .tab-pill {
-    top: 4px;
-    bottom: 4px;
-    left: calc(var(--tab-i, 0) * 20% + 4px);
-    width: calc(20% - 8px);
-  }
+html body .tab-bar .tab-pill {
+  top: var(--tab-gap);
+  bottom: var(--tab-gap);
+  left: calc(var(--tab-i, 0) * 20% + var(--tab-gap));
+  width: calc(20% - var(--tab-gap) * 2);
 }
 
 /* Held: the bubble swells past the bar like a water droplet on glass (works on iPhone too) */
@@ -1899,9 +1897,22 @@ html body .tab-bar.is-pressed .tab-pill::before {
   mask-image: radial-gradient(ellipse at 50% 50%, transparent 66%, #000 92%, transparent 100%);
 }
 
-/* Slimmer, wider nav so the lens reads as a pill */
+/* Nav keeps the phone proportions on every screen; everything scales from its height. */
 .tab-bar {
-  width: min(calc(420px + 4in), calc(100% - 26px));
+  --tab-h: clamp(64px, 52px + 1.5vw, 78px);
+  --tab-gap: calc(var(--tab-h) * 0.0625);
+}
+
+.tab-bar .tab-icon,
+.tab-bar .tab-lens-item .tab-icon {
+  width: calc(var(--tab-h) * 0.406);
+  height: calc(var(--tab-h) * 0.406);
+}
+
+.tab-bar .tab-icon-plus,
+.tab-bar .tab-lens-item .tab-icon-plus {
+  width: calc(var(--tab-h) * 0.375);
+  height: calc(var(--tab-h) * 0.375);
 }
 .app-column.is-home-wide .home-scroll > .home-segment-tabs {
   max-width: none;
