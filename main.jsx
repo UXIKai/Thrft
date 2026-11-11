@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import App from './App.jsx'
 import { BagProvider } from './BagContext.jsx'
 import { initAppearance } from './appAppearance.js'
+import { viewportOffset } from './viewportOffset.js'
 import './index.css'
 import './liquidGlass.css'
 
@@ -49,9 +50,13 @@ function fitScreen() {
   // Keyboard height: the page stays put and docked bars ride above the keyboard.
   const kb = vv ? Math.max(0, Math.round(window.innerHeight - vv.height)) : 0
   // iOS pans the visual viewport to reveal the field; pin the app to it so nothing appears to move.
-  const pan = vv ? Math.max(0, Math.round(vv.offsetTop)) : 0
   const app = document.getElementById('root')
-  const dy = pan - kbShift
+  const dy = viewportOffset({
+    editing: isTextField(document.activeElement),
+    keyboardHeight: kb,
+    offsetTop: vv?.offsetTop,
+    keyboardShift: kbShift,
+  })
   if (app) app.style.transform = dy ? `translateY(${dy}px)` : ''
   if (kb > 120) lastKb = kb
   const focusedField = document.activeElement?.closest?.(DOCKED)
@@ -74,12 +79,10 @@ function resetPage() {
     }, ms),
   )
 }
-const TEXT_TYPES = /^(text|search|email|password|url|tel|number)$/i
-
 function isTextField(t) {
   return (
     t instanceof HTMLTextAreaElement ||
-    (t instanceof HTMLInputElement && TEXT_TYPES.test(t.type))
+    (t instanceof HTMLInputElement && /^(text|search|email|password|url|tel|number)$/i.test(t.type))
   )
 }
 
