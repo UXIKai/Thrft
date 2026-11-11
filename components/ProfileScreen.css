@@ -1322,16 +1322,37 @@
   gap: 6px;
 }
 
-.profile-social-at {
+.profile-link-platform-icon {
+  display: grid;
+  place-items: center;
   flex: 0 0 auto;
-  font-family: var(--font-sans);
-  font-size: 1rem;
-  color: light-dark(rgba(0, 0, 0, 0.45), rgba(255, 255, 255, 0.45));
+  width: 28px;
+  color: light-dark(rgb(0, 0, 0), #fff);
 }
 
-.profile-social-handle-field .glass-input.is-handle {
+.profile-social-handle-field .glass-input.is-handle,
+.profile-social-handle-field .profile-music-input {
   flex: 1;
   min-width: 0;
+}
+
+.profile-edit-card :is(.profile-social-btn, .profile-music-btn) {
+  position: relative;
+}
+
+.profile-edit-card :is(.profile-social-btn, .profile-music-btn)::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.02) 60%);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.35);
+}
+
+.profile-edit-card :is(.profile-social-btn, .profile-music-btn)[aria-pressed='true']::after {
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.08) 60%);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.45), inset 0 1px 3px rgba(255, 255, 255, 0.4);
 }
 
 .profile-tools-row {

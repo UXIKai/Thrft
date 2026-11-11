@@ -1961,15 +1961,20 @@ export default function ProfileScreen({
                 </div>
                 {musicSheet ? (
                   <div className="profile-link-editor">
-                    <input
-                      ref={musicInputRef}
-                      className="profile-music-input"
-                      type="url"
-                      placeholder="URL"
-                      aria-label="Music link"
-                      value={musicDraft}
-                      onChange={(e) => setMusicDraft(e.target.value)}
-                    />
+                    <label className="profile-social-handle-field">
+                      <span className="profile-link-platform-icon" aria-hidden>
+                        {musicSheet === 'spotify' ? <SpotifyIcon /> : <AppleMusicIcon />}
+                      </span>
+                      <input
+                        ref={musicInputRef}
+                        className="profile-music-input"
+                        type="url"
+                        placeholder="URL"
+                        aria-label="Music link"
+                        value={musicDraft}
+                        onChange={(e) => setMusicDraft(e.target.value)}
+                      />
+                    </label>
                     <button
                       type="button"
                       className="profile-music-save"
@@ -1991,6 +1996,7 @@ export default function ProfileScreen({
                         key={platform.id}
                         type="button"
                         className={`profile-social-btn is-${platform.id}${filled ? ' has-handle' : ''}`}
+                        aria-pressed={activeSocial === platform.id}
                         aria-label={
                           filled
                             ? `${platform.label} @${socialHandles[platform.id]}`
@@ -2008,8 +2014,8 @@ export default function ProfileScreen({
                 {activeSocial ? (
                   <div className="profile-link-editor">
                 <label className="profile-social-handle-field">
-                  <span className="profile-social-at" aria-hidden>
-                    @
+                  <span className="profile-link-platform-icon" aria-hidden>
+                    {socialIcon(activeSocial)}
                   </span>
                   <input
                     className="glass-input is-handle"
@@ -2344,8 +2350,8 @@ export default function ProfileScreen({
               </div>
               <label className="glass-field">
                 <div className="profile-social-handle-field">
-                  <span className="profile-social-at" aria-hidden>
-                    @
+                  <span className="profile-link-platform-icon" aria-hidden>
+                    {socialIcon(activeSocial)}
                   </span>
                   <input
                     className="glass-input is-handle"

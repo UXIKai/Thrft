@@ -87,6 +87,8 @@ While signed in, browser back preserves the current app page, rather than revisi
 Settings & privacy starts with Profile followed by the active account. Other account and support options come next, followed by colors, sliders, and the four shop-tool buttons at the bottom.
 Links and Money rows sit immediately below ID verification. Profile contains only username, email and password; Links contains music services and social handles under Media; Money contains the financial controls. Each page centers its content and section headings above the controls, retaining scrolling on shorter screens.
 
+Links shows the selected platform icon beside its input. Media buttons have a clear-glass highlight, with a stronger film on the selected platform.
+
 ### Chat
 - Focusing conversation, friend, or group-member search opens the keyboard without lifting the whole page; only the search dock moves above the keyboard.
 - Friend and group-member searches query registered accounts by username or display name; demo contacts and locally saved names are never search suggestions. New group members retain their actual usernames for profile navigation.
