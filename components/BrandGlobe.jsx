@@ -1472,8 +1472,11 @@ function BrandGlobeView({
     onSelect?.(brand.id)
   }
 
-  const seatTint =
-    previewColors ? (focusBrand && colorHex(focusBrand.id)) || '#ffffff' : null
+  const initialColorRef = useRef(activeId || '')
+  const effectOn = typeof document !== 'undefined' && document.documentElement.dataset.bgImage !== 'none'
+  // Stay black (no tint) until the effect is on and a different color is scrolled onto.
+  const scrolledColor = focusBrand && focusBrand.id !== initialColorRef.current ? colorHex(focusBrand.id) : null
+  const seatTint = previewColors && effectOn ? scrolledColor : null
   const seatRgb = seatTint?.match(/[a-f0-9]{2}/gi)?.map((part) => parseInt(part, 16)).join(', ')
   const previewScheme = seatTint ? colorSchemeForHex(seatTint) : null
   useEffect(() => {
