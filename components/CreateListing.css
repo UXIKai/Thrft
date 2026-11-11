@@ -932,9 +932,10 @@ html body .listing-photo-choice-btn {
 }
 
 .listing-walkthrough-actions {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(2, 48px);
   justify-content: center;
-  gap: 48px;
+  column-gap: 48px;
 }
 
 .listing-walkthrough-actions button {

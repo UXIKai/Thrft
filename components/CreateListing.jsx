@@ -7,6 +7,7 @@ import {
   getCustomCategories,
 } from '../customCatalog.js'
 import { createListingProduct } from '../api.js'
+import { isCreateStepFilled } from '../createWalkthrough.js'
 import { createListing } from '../listings.js'
 import { isSupabaseConfigured } from '../supabase.js'
 import {
@@ -257,6 +258,10 @@ export default function CreateListing({ onPosted } = {}) {
   const stepHeadingRef = useRef(null)
   const stepIndex = steps.indexOf(step)
   const lastStep = stepIndex === steps.length - 1
+  const stepFilled = isCreateStepFilled(step, {
+    isCloset, scanPreview, marketPhotos, title, brand, category, price,
+    condition, description, materials, dateM, dateD, dateY,
+  })
   const stepTitles = {
     destination: 'Where would you like to add this item?',
     photo: isCloset ? 'Scan your clothing' : 'Add photos',
@@ -275,18 +280,9 @@ export default function CreateListing({ onPosted } = {}) {
   }, [currentStep])
 
   function navigateStep(direction) {
+    if (direction > 0 && !stepFilled) return
     setPostError('')
     setPhotoChoice(false)
-    if (direction > 0) {
-      if (step === 'photo' && isCloset && !scanPreview) {
-        setPostError('Scan a clothing item first.')
-        return
-      }
-      if (step === 'title' && !isCloset && !title.trim()) {
-        setPostError('Add a title before continuing.')
-        return
-      }
-    }
     setStep(steps[stepIndex + direction] || 'destination')
   }
   const [numberLookupOpen, setNumberLookupOpen] = useState(false)
@@ -888,9 +884,9 @@ export default function CreateListing({ onPosted } = {}) {
         <button type="button" className="is-bare" aria-label="Previous step" disabled={posting || scanning} onClick={() => navigateStep(-1)}>
           <svg viewBox="0 0 24 24" aria-hidden><path d="m15 6-6 6 6 6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
         </button>
-      <button
+      {stepFilled && <button
         type="button"
-        className="is-bare"
+        className="is-bare listing-walkthrough-forward"
         aria-label={lastStep ? isCloset ? 'Add to closet' : `Post to ${segmentLabel(segment)}` : 'Next step'}
         disabled={posting || scanning}
         onClick={lastStep ? submitListing : () => navigateStep(1)}
@@ -898,7 +894,7 @@ export default function CreateListing({ onPosted } = {}) {
         {posting ? <span role="status">Saving...</span> : <svg viewBox="0 0 24 24" aria-hidden>
           <path d={lastStep ? 'M5 12.5l4.5 4.5L19 7.5' : 'm9 6 6 6-6 6'} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>}
-      </button>
+      </button>}
       </nav>)}
       {postError ? (
         <p className="listing-posted-note" role="alert">
