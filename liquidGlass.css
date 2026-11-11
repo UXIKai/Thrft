@@ -1443,3 +1443,42 @@ html body .tab-bar .tab-item .tab-icon {
   animation: none;
   transition: none;
 }
+
+/* Default (uncolored) display modes: dark = black page + white containers,
+   light = white page + black containers. Picking a color restores glass. */
+html[data-theme='dark'][data-bg-color='none'][data-app-color='none'] {
+  --atmosphere-effect-a: #000 !important;
+  --atmosphere-effect-b: #000 !important;
+  --atmosphere-effect-c: #000 !important;
+  --atmosphere-effect-a-rgb: 0, 0, 0 !important;
+  --atmosphere-effect-b-rgb: 0, 0, 0 !important;
+  --atmosphere-effect-c-rgb: 0, 0, 0 !important;
+  --void: #000 !important;
+  --atmosphere-base: #000 !important;
+}
+html[data-theme='light'][data-bg-color='none'][data-app-color='none'] {
+  --atmosphere-effect-a: #fff !important;
+  --atmosphere-effect-b: #fff !important;
+  --atmosphere-effect-c: #fff !important;
+  --atmosphere-effect-a-rgb: 255, 255, 255 !important;
+  --atmosphere-effect-b-rgb: 255, 255, 255 !important;
+  --atmosphere-effect-c-rgb: 255, 255, 255 !important;
+  --void: #fff !important;
+  --atmosphere-base: #fff !important;
+}
+html[data-theme='dark'][data-app-color='none'] body :is(.settings-block, .settings-theme-toggle, .settings-account-active),
+html[data-theme='dark'][data-app-color='none'] body :is(.settings-block, .settings-theme-toggle, .settings-account-active) :is(*) {
+  color: #000;
+}
+html[data-theme='dark'][data-app-color='none'] body :is(.settings-block, .settings-theme-toggle, .settings-account-active) {
+  background: #fff !important;
+  border-color: #fff !important;
+}
+html[data-theme='light'][data-app-color='none'] body :is(.settings-block, .settings-theme-toggle, .settings-account-active),
+html[data-theme='light'][data-app-color='none'] body :is(.settings-block, .settings-theme-toggle, .settings-account-active) :is(*) {
+  color: #fff;
+}
+html[data-theme='light'][data-app-color='none'] body :is(.settings-block, .settings-theme-toggle, .settings-account-active) {
+  background: #000 !important;
+  border-color: #000 !important;
+}
