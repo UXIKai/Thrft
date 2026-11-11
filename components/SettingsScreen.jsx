@@ -779,6 +779,7 @@ export default function SettingsScreen({
   onEditMoney,
 }) {
   const [theme, setTheme] = useState(() => readTheme())
+  const [moonlightOn, setMoonlightOn] = useState(() => readMoonlight())
   const [appColor, setAppColor] = useState(() => readAppColor())
   const [customHex, setCustomHex] = useState(() => readCustomColorHex())
   const [bgColor, setBgColor] = useState(() => readBgColor())
@@ -1445,8 +1446,9 @@ export default function SettingsScreen({
       exitMoonlight()
       setTheme(readTheme())
     } else {
-      setTheme(applyDisplayMode('light'))
+      setTheme(applyDisplayMode('dark'))
     }
+    setMoonlightOn(readMoonlight())
     setAppColor(readAppColor())
     setBgColor(readBgColor())
     setHasPhoto(Boolean(readBackgroundPhoto()))
@@ -1592,7 +1594,10 @@ export default function SettingsScreen({
               }}
               onClick={() => {
                 const next = bgEffectOn ? 'none' : 'atmosphere'
-                if (next === 'atmosphere' && exitMoonlight()) setTheme(readTheme())
+                if (next === 'atmosphere' && exitMoonlight()) {
+                  setTheme(readTheme())
+                  setMoonlightOn(false)
+                }
                 applyBackgroundImage(next)
                 setBgEffectOn(next === 'atmosphere')
               }}
@@ -1877,8 +1882,8 @@ export default function SettingsScreen({
           <button
             type="button"
             className="settings-theme-toggle is-bare"
-            aria-label={theme === 'light' ? 'Switch to normal mode' : 'Switch to light mode'}
-            aria-pressed={theme === 'light'}
+            aria-label={moonlightOn ? 'Switch to normal mode' : 'Switch to moon mode'}
+            aria-pressed={moonlightOn}
             onClick={toggleDisplayMode}
           >
             <svg className="settings-row-ico" viewBox="0 0 24 24" aria-hidden="true">
