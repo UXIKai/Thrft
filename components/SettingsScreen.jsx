@@ -1438,7 +1438,8 @@ export default function SettingsScreen({
   }
 
   function toggleDisplayMode() {
-    setTheme(applyDisplayMode(theme === 'dark' ? 'light' : 'dark'))
+    // Flip from the live theme, not React state, which other background pickers can leave stale.
+    setTheme(applyDisplayMode(readTheme() === 'dark' ? 'light' : 'dark'))
     setAppColor(readAppColor())
     setBgColor(readBgColor())
     setHasPhoto(Boolean(readBackgroundPhoto()))
