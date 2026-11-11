@@ -1507,3 +1507,10 @@ html[data-theme='dark'][data-app-color='none'][data-moonlight='on'] body .settin
 html[data-moonlight='on'][data-app-color='none'] body .product-detail-photo {
   border-color: #fff !important;
 }
+
+/* Profile screen avatar initials follow the moon look: white circle, black initials */
+html[data-moonlight='on'][data-app-color='none'] body :is(.pf-user-avatar, .profile-photo-view-avatar):not(.has-photo) {
+  background: #fff !important;
+  color: #000 !important;
+  border-color: #fff !important;
+}
