@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import { guardSignedInNavigation } from './signedInNavigation.js'
 
-test('back repeatedly returns Home and cleanup removes the signed-in guard', () => {
+test('back and edge swipes preserve the current page and cleanup removes the guard', () => {
   const entries = [{ auth: true }]
   let index = 0
   let homes = 0
@@ -22,8 +22,14 @@ test('back repeatedly returns Home and cleanup removes the signed-in guard', () 
         index += 1
       },
     },
-    addEventListener: (name, callback) => listeners.set(name, callback),
-    removeEventListener: (name, callback) => {
+    addEventListener: (name, callback, options) => {
+      if (name === 'touchstart' || name === 'touchmove') {
+        assert.deepEqual(options, { passive: false, capture: true })
+      }
+      listeners.set(name, callback)
+    },
+    removeEventListener: (name, callback, capture) => {
+      if (name.startsWith('touch')) assert.equal(capture, true)
       assert.equal(listeners.get(name), callback)
       listeners.delete(name)
     },
@@ -36,23 +42,23 @@ test('back repeatedly returns Home and cleanup removes the signed-in guard', () 
     assert.equal(index, 1)
     assert.equal(entries.length, 2)
   }
-  assert.equal(homes, 3)
+  assert.equal(homes, 0)
   let prevented = false
   listeners.get('touchstart')({
-    touches: [{ clientX: 5, clientY: 200 }],
+    touches: [{ clientX: 35, clientY: 200 }],
     cancelable: true,
     preventDefault: () => { prevented = true },
   })
   listeners.get('touchend')({ changedTouches: [{ clientX: 100, clientY: 210 }] })
   assert.equal(prevented, true)
-  assert.equal(homes, 3)
+  assert.equal(homes, 0)
   listeners.get('touchstart')({
     touches: [{ clientX: 100, clientY: 200 }],
     cancelable: true,
     preventDefault: () => { throw new Error('Normal swipes must not be blocked') },
   })
   listeners.get('touchend')({ changedTouches: [{ clientX: 200, clientY: 200 }] })
-  assert.equal(homes, 3)
+  assert.equal(homes, 0)
   listeners.get('touchstart')({
     touches: [{ clientX: 5, clientY: 200 }],
     cancelable: true,
@@ -60,7 +66,7 @@ test('back repeatedly returns Home and cleanup removes the signed-in guard', () 
   })
   listeners.get('touchcancel')()
   listeners.get('touchend')({ changedTouches: [{ clientX: 100, clientY: 200 }] })
-  assert.equal(homes, 3)
+  assert.equal(homes, 0)
   prevented = false
   listeners.get('touchstart')({
     touches: [{ clientX: 385, clientY: 200 }],
@@ -74,7 +80,7 @@ test('back repeatedly returns Home and cleanup removes the signed-in guard', () 
   })
   listeners.get('touchend')({ changedTouches: [{ clientX: 280, clientY: 200 }] })
   assert.equal(prevented, true)
-  assert.equal(homes, 3)
+  assert.equal(homes, 0)
   stop()
   assert.equal(listeners.size, 0)
 })

@@ -187,24 +187,7 @@ export default function App() {
 
   useEffect(() => {
     if (!signedIn) return undefined
-    return guardSignedInNavigation(window, () => {
-      setActiveProduct(null)
-      productReturnRef.current = null
-      setActiveBrand(null)
-      setActiveAccount(null)
-      setActiveTypePage(null)
-      setCartOpen(false)
-      setChatThreadOpen(false)
-      setHomePicker(null)
-      setHomePickerPhase('closed')
-      setHomePickerQuery('')
-      setHomeBrand(null)
-      setClothingType('all')
-      setHomeColor('')
-      clearSearchBackground()
-      setTab('home')
-      scrollRef.current?.scrollTo({ top: 0 })
-    })
+    return guardSignedInNavigation(window)
   }, [signedIn])
 
   const byId = useMemo(

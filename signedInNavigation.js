@@ -1,21 +1,12 @@
-/** Keep in-app back navigation on Home without changing authentication. */
-export function guardSignedInNavigation(target, onHome) {
+/** Keep signed-in browser gestures from leaving the current app page. */
+export function guardSignedInNavigation(target) {
   const { history, location } = target
   const url = `${location.pathname}${location.search}${location.hash}`
   const homeState = { ...history.state, thrftNavigation: 'home' }
   history.replaceState(homeState, '', url)
   history.pushState({ ...homeState, thrftNavigation: 'app' }, '', url)
 
-  const showHome = () => {
-    const document = target.document
-    if (document?.startViewTransition && !target.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
-      document.startViewTransition(onHome)
-    } else {
-      onHome()
-    }
-  }
   const onBack = () => {
-    showHome()
     history.replaceState(homeState, '', url)
     history.pushState({ ...homeState, thrftNavigation: 'app' }, '', url)
   }
@@ -24,7 +15,8 @@ export function guardSignedInNavigation(target, onHome) {
     blockingSwipe = false
     if (event.touches.length !== 1) return
     const touch = event.touches[0]
-    if (touch.clientX > 20 && touch.clientX < target.innerWidth - 20) return
+    const width = target.visualViewport?.width || target.innerWidth
+    if (touch.clientX > 40 && touch.clientX < width - 40) return
     blockingSwipe = true
     if (event.cancelable) event.preventDefault()
   }
@@ -38,15 +30,15 @@ export function guardSignedInNavigation(target, onHome) {
   }
   const onTouchEnd = () => { blockingSwipe = false }
   target.addEventListener('popstate', onBack)
-  target.addEventListener('touchstart', onTouchStart, { passive: false })
-  target.addEventListener('touchmove', onTouchMove, { passive: false })
-  target.addEventListener('touchend', onTouchEnd)
-  target.addEventListener('touchcancel', onTouchEnd)
+  target.addEventListener('touchstart', onTouchStart, { passive: false, capture: true })
+  target.addEventListener('touchmove', onTouchMove, { passive: false, capture: true })
+  target.addEventListener('touchend', onTouchEnd, true)
+  target.addEventListener('touchcancel', onTouchEnd, true)
   return () => {
     target.removeEventListener('popstate', onBack)
-    target.removeEventListener('touchstart', onTouchStart)
-    target.removeEventListener('touchmove', onTouchMove)
-    target.removeEventListener('touchend', onTouchEnd)
-    target.removeEventListener('touchcancel', onTouchEnd)
+    target.removeEventListener('touchstart', onTouchStart, true)
+    target.removeEventListener('touchmove', onTouchMove, true)
+    target.removeEventListener('touchend', onTouchEnd, true)
+    target.removeEventListener('touchcancel', onTouchEnd, true)
   }
 }
