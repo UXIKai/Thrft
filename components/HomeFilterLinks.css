@@ -257,7 +257,7 @@ html body .home-search-blur::after {
 }
 
 html body .home-search-backdrop {
-  background: transparent;
+  background: rgba(0, 0, 0, 0.92);
 }
 
 html body .home-search-modal {
@@ -270,7 +270,8 @@ html body .home-search-modal {
   border: none;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
-  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.5);
+  /* Outline in the ink color; inset so the card size is unchanged */
+  box-shadow: inset 0 0 0 2px var(--card-ink, #fff), 0 14px 36px rgba(0, 0, 0, 0.5);
   transition: none;
 }
 

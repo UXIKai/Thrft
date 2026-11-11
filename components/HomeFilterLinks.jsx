@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import OrbitCarousel from './OrbitCarousel.jsx'
 import { COLOR_FAMILIES, colorHex } from '../colorsCatalog.js'
-import { applySearchBackground, clearSearchBackground, readTheme } from '../appAppearance.js'
+import { applySearchBackground, clearSearchBackground } from '../appAppearance.js'
 import './HomeFilterLinks.css'
 
 /**
@@ -85,7 +85,7 @@ export default function HomeFilterLinks({
     }
   }, [open, brandId, categoryId, colorId])
 
-  const defaultCardIsWhite = readTheme() === 'dark'
+  const defaultCardIsWhite = false
   const cardHex = draftColor ? colorHex(draftColor) || '#ffffff' : '#ffffff'
   const cardStyle = {
     '--card-ink': draftColor ? cardHex : defaultCardIsWhite ? '#000000' : '#ffffff',
