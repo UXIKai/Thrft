@@ -20,18 +20,9 @@ body,
   height: var(--app-height, 100dvh);
   min-height: 0;
   max-height: var(--app-height, 100dvh);
-  background: var(--orbital-preview-color, var(--atmosphere-base, light-dark(rgb(250, 250, 250), #050505)));
+  background: #000;
   color: light-dark(rgb(11, 11, 13), #f4f4f2);
   overscroll-behavior: none;
-}
-
-/* Match the dimmed app so the status-bar strip above the body isn't brighter than the page */
-html {
-  background: color-mix(
-    in srgb,
-    #000 calc(var(--app-dim-opacity, 0) * 100%),
-    var(--orbital-preview-color, var(--atmosphere-base, light-dark(rgb(250, 250, 250), #050505)))
-  );
 }
 
 body {
