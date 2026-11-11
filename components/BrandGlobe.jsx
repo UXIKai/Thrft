@@ -68,7 +68,7 @@ const RING_FILL = 0.92
 const DRAG_THRESHOLD = 6
 /** Drag / trackpad pan the flat canvas (px per px). */
 const PAN_DRAG = 1
-/** Two-finger trackpad / wheel → free pan (no mouse button held). */
+/** Wheel pan sensitivity for non-brand orbitals. */
 const PAN_WHEEL = 1.15
 /** Slow shared current — brands follow each other on their circle. */
 const ORBIT_SPIN = 0.0035
@@ -1188,8 +1188,7 @@ function BrandGlobeView({
     [],
   )
 
-  // Trackpad / mouse-wheel: free pan with no button held — scroll anywhere on
-  // the globe, then tap the middle button when the right brand is seated.
+  // Wheel zooms brand logos; other orbitals keep their existing wheel pan.
   useEffect(() => {
     if (phase === 'exit') return undefined
     const root = rootRef.current
@@ -1203,11 +1202,16 @@ function BrandGlobeView({
       event.preventDefault()
       event.stopPropagation()
       if (showBrandLogos) {
+        const unit = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? 320 : 1
         if (event.ctrlKey) {
-          zoomAt(zoomRef.current * Math.exp(-event.deltaY * 0.01), event.clientX, event.clientY)
+          zoomAt(zoomRef.current * Math.exp(-event.deltaY * unit * 0.01), event.clientX, event.clientY)
         } else {
-          const unit = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? 320 : 1
-          applyPan(panXRef.current - event.deltaX * unit, panYRef.current - event.deltaY * unit)
+          if (event.deltaY) {
+            zoomAt(zoomRef.current * Math.exp(-event.deltaY * unit * 0.002), event.clientX, event.clientY)
+          }
+          if (event.deltaX) {
+            applyPan(panXRef.current - event.deltaX * unit, panYRef.current)
+          }
         }
         return
       }
