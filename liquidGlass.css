@@ -1475,7 +1475,7 @@ html[data-theme='dark'][data-app-color='none'] body .settings-icon-tile,
 html[data-theme='dark'][data-app-color='none'] body .listing-box,
 html[data-theme='dark'][data-app-color='none'] body .listing-globe-trigger {
   background: #fff !important;
-  border-color: #fff !important;
+  border: 1.5px solid #000 !important;
   color: #000;
 }
 html[data-theme='dark'][data-app-color='none'] body .settings-section:not(.is-profile-controls) .settings-card *,
@@ -1502,7 +1502,7 @@ html[data-theme='light'][data-app-color='none'] body .settings-icon-tile,
 html[data-theme='light'][data-app-color='none'] body .listing-box,
 html[data-theme='light'][data-app-color='none'] body .listing-globe-trigger {
   background: #000 !important;
-  border-color: #000 !important;
+  border: 1.5px solid #fff !important;
   color: #fff;
 }
 html[data-theme='light'][data-app-color='none'] body .settings-section:not(.is-profile-controls) .settings-card *,
