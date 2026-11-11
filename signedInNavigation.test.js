@@ -1,0 +1,41 @@
+import assert from 'node:assert/strict'
+import test from 'node:test'
+import { guardSignedInNavigation } from './signedInNavigation.js'
+
+test('back repeatedly returns Home and cleanup removes the signed-in guard', () => {
+  const entries = [{ auth: true }]
+  let index = 0
+  let homes = 0
+  const listeners = new Map()
+  const target = {
+    location: { pathname: '/', search: '?shop=1', hash: '' },
+    history: {
+      get state() { return entries[index] },
+      replaceState(state, _, url) {
+        assert.equal(url, '/?shop=1')
+        entries[index] = state
+      },
+      pushState(state) {
+        entries.splice(index + 1)
+        entries.push(state)
+        index += 1
+      },
+    },
+    addEventListener: (name, callback) => listeners.set(name, callback),
+    removeEventListener: (name, callback) => {
+      assert.equal(listeners.get(name), callback)
+      listeners.delete(name)
+    },
+  }
+  const stop = guardSignedInNavigation(target, () => { homes += 1 })
+  for (let count = 0; count < 3; count += 1) {
+    index -= 1
+    listeners.get('popstate')()
+    assert.equal(entries[index].thrftNavigation, 'app')
+    assert.equal(index, 1)
+    assert.equal(entries.length, 2)
+  }
+  assert.equal(homes, 3)
+  stop()
+  assert.equal(listeners.size, 0)
+})

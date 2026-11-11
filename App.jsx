@@ -12,6 +12,7 @@ import HomeFilterLinks from './components/HomeFilterLinks.jsx'
 import LiquidGlassDefs from './components/LiquidGlassDefs.jsx'
 import CartScreen from './components/CartScreen.jsx'
 import ProductDetail from './components/ProductDetail.jsx'
+import { guardSignedInNavigation } from './signedInNavigation.js'
 import ProductRows from './components/ProductRows.jsx'
 import { MarketIcon, StoreIcon } from './components/SegmentIcons.jsx'
 import ProfileScreen from './components/ProfileScreen.jsx'
@@ -183,6 +184,28 @@ export default function App() {
   const scrollRef = useRef(null)
   const hideTabBar = tab === 'chat' || tab === 'saved'
   const showNav = !(tab === 'chat' && chatThreadOpen)
+
+  useEffect(() => {
+    if (!signedIn) return undefined
+    return guardSignedInNavigation(window, () => {
+      setActiveProduct(null)
+      productReturnRef.current = null
+      setActiveBrand(null)
+      setActiveAccount(null)
+      setActiveTypePage(null)
+      setCartOpen(false)
+      setChatThreadOpen(false)
+      setHomePicker(null)
+      setHomePickerPhase('closed')
+      setHomePickerQuery('')
+      setHomeBrand(null)
+      setClothingType('all')
+      setHomeColor('')
+      clearSearchBackground()
+      setTab('home')
+      scrollRef.current?.scrollTo({ top: 0 })
+    })
+  }, [signedIn])
 
   const byId = useMemo(
     () => new Map(profiles.map((p) => [p.id, p])),

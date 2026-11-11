@@ -70,6 +70,8 @@ The product quantity number opens a selected-products page with the quantity at 
 
 Name, username, and profile photo edits are saved to Supabase user metadata when Supabase authentication is configured, so new sessions retain them. Photos use the `avatar_url` metadata field read during sign-in. Local API identity saves must succeed remotely; they do not silently fall back to device-only storage. Photo save failures are displayed without replacing the existing photo.
 
+While signed in, browser back (including swipe-back) closes app overlays and returns to Home, rather than revisiting the sign-in screen. Explicit sign-out and expired sessions still require authentication.
+
 ### Profile settings
 - Settings has a centered title with the back button at the far left of its header. The Profile control sits below at its original width, with the moon toggle on its right.
 - Choosing a black or near-black Background swatch/custom color turns off the dark-mode toggle and saves that preference. The chosen background stays black, with automatic white text for contrast; Home search colors do not change the saved theme.
