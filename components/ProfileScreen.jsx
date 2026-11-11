@@ -1251,12 +1251,13 @@ export default function ProfileScreen({
               type="button"
               role="tab"
               aria-selected={spaceTab === id}
+              aria-label={label}
               className={`profile-panel-mode ${spaceTab === id ? 'is-active' : ''}`}
               onMouseDown={holdScroll}
               onClick={() => switchSpace(id)}
             >
               <Icon className="profile-mode-ico" />
-              <span>{label}</span>
+              {id === 'closet' && <span>{label}</span>}
             </button>
           ))}
         </div>

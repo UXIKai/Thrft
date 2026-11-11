@@ -551,13 +551,13 @@ export default function App() {
                   type="button"
                   role="tab"
                   id={`home-${segment}-tab`}
+                  aria-label={segment === 'market' ? 'Market' : 'Store'}
                   aria-controls="home-product-panel"
                   aria-selected={homeSegment === segment}
                   className={`home-segment-tab is-bare${homeSegment === segment ? ' is-active' : ''}`}
                   onClick={() => setHomeSegment(segment)}
                 >
                   {segment === 'market' ? <MarketIcon /> : <StoreIcon />}
-                  <span>{segment === 'market' ? 'Market' : 'Store'}</span>
                 </button>
               ))}
             </div>

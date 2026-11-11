@@ -520,6 +520,7 @@ export default function CreateListing({ onPosted } = {}) {
               type="button"
               role="tab"
               aria-selected={active}
+              aria-label={seg.label}
               className={`listing-seg-btn ${active ? 'is-active' : ''}`}
               onClick={() => {
                 setSegment(seg.id)
@@ -530,7 +531,7 @@ export default function CreateListing({ onPosted } = {}) {
               }}
             >
               {segmentIcon(seg.icon)}
-              <span>{seg.label}</span>
+              {seg.id === 'closet' && <span>{seg.label}</span>}
             </button>
           )
         })}
