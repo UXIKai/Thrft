@@ -1520,3 +1520,13 @@ html[data-theme='light'][data-app-color='none'][data-moonlight='on'] body :is(.l
   color: #fff;
   caret-color: #fff;
 }
+
+/* Effect switch: outline in the color opposite its track */
+html body button.settings-effect-switch,
+html[data-bg-color='none'] body button.settings-effect-switch {
+  border: 2px solid light-dark(#000, #fff) !important;
+}
+html body button.settings-effect-switch.is-on,
+html[data-bg-color='none'] body button.settings-effect-switch.is-on {
+  border: 2px solid light-dark(#fff, #000) !important;
+}
