@@ -370,12 +370,40 @@ export default function SavedScreen({
     movePillTo(el)
     setPillActive(true)
   }
+  const pointerXRef = useRef(null)
+  const glideRaf = useRef(0)
+  function stopGlide() {
+    cancelAnimationFrame(glideRaf.current)
+    glideRaf.current = 0
+  }
+  function startGlide() {
+    if (glideRaf.current) return
+    const tick = () => {
+      const row = brandRowRef.current
+      const x = pointerXRef.current
+      if (!row || x === null) { glideRaf.current = 0; return }
+      const rect = row.getBoundingClientRect()
+      const zone = 70
+      let speed = 0
+      if (x > rect.right - zone) speed = Math.min(1.8, (x - (rect.right - zone)) / zone)
+      else if (x < rect.left + zone) speed = -Math.min(1.8, ((rect.left + zone) - x) / zone)
+      if (speed) {
+        row.scrollLeft += speed * 9
+        const el = brandAtX(x)
+        if (el && el !== dragRef.current) {
+          if (dragRef.current) dragRef.current = el
+          movePillTo(el)
+        }
+      }
+      glideRaf.current = requestAnimationFrame(tick)
+    }
+    glideRaf.current = requestAnimationFrame(tick)
+  }
+  useEffect(() => stopGlide, [])
   function onBrandMove(e) {
+    pointerXRef.current = e.clientX
+    if (e.pointerType === 'mouse' || dragRef.current) startGlide()
     if (!dragRef.current) return
-    const row = brandRowRef.current
-    const rect = row.getBoundingClientRect()
-    if (e.clientX > rect.right - 40) row.scrollLeft += 12
-    else if (e.clientX < rect.left + 40) row.scrollLeft -= 12
     const el = brandAtX(e.clientX)
     if (el && el !== dragRef.current) {
       dragRef.current = el
@@ -385,6 +413,7 @@ export default function SavedScreen({
   function onBrandUp(e) {
     const el = dragRef.current
     dragRef.current = null
+    if (e.pointerType !== 'mouse') { pointerXRef.current = null; stopGlide() }
     if (e.pointerType !== 'mouse') setPillActive(false)
     if (!el) return
     const id = el.dataset.brandId
@@ -701,11 +730,11 @@ export default function SavedScreen({
           movePillTo(el)
           setPillActive(true)
         }}
-        onPointerLeave={(e) => { if (!dragRef.current && e.pointerType === 'mouse') setPillActive(false) }}
+        onPointerLeave={(e) => { if (!dragRef.current && e.pointerType === 'mouse') { setPillActive(false); pointerXRef.current = null; stopGlide() } }}
         onPointerDown={onBrandDown}
         onPointerMove={onBrandMove}
         onPointerUp={onBrandUp}
-        onPointerCancel={() => { dragRef.current = null; setPillActive(false) }}
+        onPointerCancel={() => { dragRef.current = null; pointerXRef.current = null; stopGlide(); setPillActive(false) }}
       >
         {favoriteBrandCards.length > 0 && brandPill && (
           <svg width="0" height="0" aria-hidden style={{ position: 'absolute' }}>
