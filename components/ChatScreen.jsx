@@ -818,6 +818,22 @@ export default function ChatScreen({
     return undefined
   }, [isDesktop, mobileNavOpen, activeNowOpen, navDragP, onlineDragP])
 
+  // The browser/status bar takes its tint from theme-color and the html background;
+  // match the open panel's card so no darker band shows above it.
+  useEffect(() => {
+    if (isDesktop || !(mobileNavOpen || activeNowOpen)) return undefined
+    const meta = document.querySelector('meta[name="theme-color"]')
+    const root = document.documentElement
+    const prevMeta = meta?.getAttribute('content')
+    const prevBg = root.style.background
+    meta?.setAttribute('content', '#1c1c1e')
+    root.style.background = '#1c1c1e'
+    return () => {
+      if (meta && prevMeta != null) meta.setAttribute('content', prevMeta)
+      root.style.background = prevBg
+    }
+  }, [isDesktop, mobileNavOpen, activeNowOpen])
+
   useEffect(() => () => {
     document.documentElement.style.removeProperty('--nav-shift')
     document.querySelector('.stage')?.classList.remove('is-chat-panel-dragging')
