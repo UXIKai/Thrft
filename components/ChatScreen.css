@@ -4337,3 +4337,14 @@ html body .chat-search-modal-row:hover {
 .chat-friends-tabs > .chat-friends-active-head.is-collapsed {
   width: 52px;
 }
+
+html body .chat-friends-active-head button.chat-friends-active-toggle,
+html body .chat-friends-active .chat-friends-active-head button.chat-friends-active-toggle {
+  left: auto;
+  right: 8px;
+}
+
+html body .chat-friends-active-head.is-collapsed button.chat-friends-active-toggle {
+  position: static;
+  transform: none;
+}
