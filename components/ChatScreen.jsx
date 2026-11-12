@@ -1832,9 +1832,6 @@ export default function ChatScreen({
         className="chat-thread"
         role="dialog"
         aria-label={activeChat.title}
-        onClick={(e) => {
-          if (isDesktop && e.target === e.currentTarget) setActiveChatId(null)
-        }}
       >
         {menuId &&
           createPortal(
