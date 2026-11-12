@@ -805,14 +805,23 @@ export default function ChatScreen({
     return () => onThreadActiveChange?.(false)
   }, [activeChatId, onThreadActiveChange])
 
-  // Lift the whole column above the bottom nav so the panels slide over it
-  const panelsOverNav = !isDesktop && (mobileNavOpen || activeNowOpen || navDragP > 0.01 || (onlineDragP !== null && onlineDragP > 0.01))
+  // The bottom nav rides along with the page card as the panels slide
   useEffect(() => {
-    const col = document.querySelector('.app-column')
-    if (!col) return undefined
-    col.classList.toggle('is-panel-over-nav', panelsOverNav)
-    return () => col.classList.remove('is-panel-over-nav')
-  }, [panelsOverNav])
+    const root = document.documentElement
+    const stage = document.querySelector('.stage')
+    if (isDesktop || !stage) return undefined
+    const navP = navDragP ?? (mobileNavOpen ? 1 : 0)
+    const onlineP = onlineDragP ?? (activeNowOpen ? 1 : 0)
+    const w = Math.min(window.innerWidth * 0.8, 340)
+    root.style.setProperty('--nav-shift', `${w * (navP - onlineP)}px`)
+    stage.classList.toggle('is-chat-panel-dragging', navDragP !== null || onlineDragP !== null)
+    return undefined
+  }, [isDesktop, mobileNavOpen, activeNowOpen, navDragP, onlineDragP])
+
+  useEffect(() => () => {
+    document.documentElement.style.removeProperty('--nav-shift')
+    document.querySelector('.stage')?.classList.remove('is-chat-panel-dragging')
+  }, [])
 
   useEffect(() => {
     if (!activeChatId) {

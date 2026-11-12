@@ -1951,6 +1951,11 @@ html body .tab-bar.is-pressed .tab-pill::before {
   filter: brightness(0.8);
 }
 
-.app-column.is-panel-over-nav {
-  z-index: 5;
+html body .stage .tab-bar {
+  translate: var(--nav-shift, 0px) 0;
+  transition: translate 0.3s cubic-bezier(0.22, 0.9, 0.3, 1), opacity 0.2s ease;
+}
+
+html body .stage.is-chat-panel-dragging .tab-bar {
+  transition: none;
 }
