@@ -5209,3 +5209,19 @@ html body .chat-friends-tabs.is-collapsible.is-tabs-open .chat-friends-tab-group
   pointer-events: auto;
   transform: translate(-50%, -50%);
 }
+
+html body .chat-friends-tabs.is-collapsible button.chat-friends-label,
+html body .chat-friends-tabs.is-collapsible button.chat-friends-label:hover,
+html body .chat-friends-tabs.is-collapsible button.chat-friends-label:focus,
+html body .chat-friends-tabs.is-collapsible button.chat-friends-label:focus-visible,
+html body .chat-friends-tabs.is-collapsible button.chat-friends-label:active {
+  border: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border-radius: 0 !important;
+  appearance: none;
+  -webkit-appearance: none;
+}
