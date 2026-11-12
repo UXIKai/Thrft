@@ -1855,3 +1855,23 @@ html body .chat-new-top button:focus-visible {
   -webkit-backdrop-filter: none !important;
   outline: none;
 }
+
+/* Walkthrough / room-choice buttons: heavy frosted blur with a light neutral tint */
+html body button.listing-seg-btn:not(#_),
+html body button.saved-room-btn:not(#_) {
+  background: light-dark(rgba(235, 235, 235, 0.22), rgba(120, 120, 120, 0.2)) !important;
+  backdrop-filter: blur(40px) saturate(1.4) !important;
+  -webkit-backdrop-filter: blur(40px) saturate(1.4) !important;
+}
+
+/* Chat page: same frosted layer behind the whole screen */
+.chat-screen::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: light-dark(rgba(235, 235, 235, 0.22), rgba(120, 120, 120, 0.2));
+  backdrop-filter: blur(40px) saturate(1.4);
+  -webkit-backdrop-filter: blur(40px) saturate(1.4);
+}
