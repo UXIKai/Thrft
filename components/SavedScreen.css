@@ -859,3 +859,44 @@ html body .saved-fab .saved-fab-toggle {
   width: 38px;
   height: 38px;
 }
+
+.saved-fab {
+  right: 0;
+}
+
+.saved-fab.is-open .saved-fab-toggle svg {
+  transform: rotate(-135deg);
+}
+
+.saved-fab-items {
+  top: -2px;
+  right: 44px;
+  width: auto;
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  gap: 8px;
+}
+
+.saved-fab-item.saved-edit-row {
+  grid-column: auto;
+}
+
+.saved-fab-item.saved-fab-item,
+.saved-fab-item.saved-filter-wrap,
+.saved-fab-item.saved-edit-row {
+  transform: translateX(32px) rotate(180deg) scale(0.3);
+}
+
+.saved-fab.is-open .saved-fab-item.saved-fab-item,
+.saved-fab.is-open .saved-fab-item.saved-filter-wrap,
+.saved-fab.is-open .saved-fab-item.saved-edit-row {
+  transform: none;
+}
+
+.saved-fab-item .saved-filter-menu,
+.saved-fab-item .saved-edit-menu {
+  top: calc(100% + 8px);
+  right: 0;
+  left: auto;
+}
