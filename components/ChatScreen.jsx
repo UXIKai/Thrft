@@ -2750,9 +2750,9 @@ export default function ChatScreen({
               <nav className="chat-friends-tabs" aria-label="Friends">
                 <span className="chat-friends-label">
                   <svg viewBox="0 0 24 24" aria-hidden width="20" height="20" fill="currentColor"><circle cx="9" cy="8" r="3.5" /><path d="M2.5 20c0-3.6 2.9-6 6.500-6s6.500 2.400 6.500 6z" /><path d="M18 8v6M15 11h6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" fill="none" /></svg>
-                  Friends
+                  Friends {friends.length}
                 </span>
-                <span className="chat-friends-dot" aria-hidden>•</span>
+                <div className="chat-friends-tab-group">
                 {[['online', 'Online'], ['all', 'All'], ['pending', 'Pending'], ['suggestions', 'Suggestions']].map(([id, label]) => (
                   <button
                     key={id}
@@ -2764,6 +2764,7 @@ export default function ChatScreen({
                     {label}
                   </button>
                 ))}
+                </div>
               </nav>
               <p className="chat-desktop-empty">Select a chat to view the conversation</p>
             </div>

@@ -3408,3 +3408,21 @@ html[data-moonlight='off'][data-bg-image='atmosphere'] .chat-screen {
     background: light-dark(rgba(0, 0, 0, 0.12), rgba(255, 255, 255, 0.16));
   }
 }
+
+@media (min-width: 720px) {
+  .chat-friends-tabs {
+    position: relative;
+    justify-content: center;
+  }
+
+  .chat-friends-label {
+    position: absolute;
+    left: 20px;
+  }
+
+  .chat-friends-tab-group {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+}
