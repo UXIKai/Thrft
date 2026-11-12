@@ -6,7 +6,6 @@ import { brandLogoUrl } from '../brandLogos.js'
 import { LISTING_BRANDS } from '../listingCatalog.js'
 import { SIZE_BRANDS } from '../sizeOptions.js'
 import BrandGlobe from './BrandGlobe.jsx'
-import { ClosetIcon, StoreIcon } from './SegmentIcons.jsx'
 import StageSlot from './StageSlot.jsx'
 import './GlassOverlay.css'
 import './SavedScreen.css'
@@ -353,8 +352,7 @@ export default function SavedScreen({
   const [selectedKeys, setSelectedKeys] = useState([])
   const toggleSelected = (key) =>
     setSelectedKeys((keys) => (keys.includes(key) ? keys.filter((k) => k !== key) : [...keys, key]))
-  const [browseMode, setBrowseMode] = useState('brands') // brands | items
-  const [room, setRoom] = useState(null) // null = chooser | brands | items
+  const [browseMode] = useState('brands')
   const [globePhase, setGlobePhase] = useState('closed') // closed | enter | open | exit
   const [globeOrigin, setGlobeOrigin] = useState({ dx: 0, dy: 120 })
   const [filterOpen, setFilterOpen] = useState(false)
@@ -364,15 +362,7 @@ export default function SavedScreen({
   const editMenuRef = useRef(null)
   const filterRef = useRef(null)
 
-  // Hide the bottom nav while a room is open; the back arrow brings it back.
-  useEffect(() => {
-    const stage = document.querySelector('.stage')
-    if (!stage) return undefined
-    stage.classList.toggle('is-saved-room-open', Boolean(room))
-    return () => stage.classList.remove('is-saved-room-open')
-  }, [room])
-
-  useEffect(() => {
+    useEffect(() => {
     let alive = true
     fetchSaved().then((remote) => {
       if (!alive) return
@@ -512,52 +502,11 @@ export default function SavedScreen({
   }
 
   const showBrands = browseMode === 'brands'
-  const showItems = browseMode === 'items'
-
-  if (!room) {
-    return (
-      <section className="saved-screen" aria-label="Liked">
-        <header className="saved-page-header">
-          <h1 className="saved-list-title" aria-label="Liked"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden fill="currentColor"><path d="M12 21s-7.5-4.6-9.6-9.2C.8 8.3 2.6 4.8 6.1 4.8c2 0 3.4 1.1 3.9 2.2.5-1.1 1.9-2.2 3.9-2.2 3.5 0 5.300 3.500 3.700 7-2.100 4.600-9.600 9.200-9.600 9.200z" transform="translate(0 0)"/></svg></h1>
-        </header>
-        <div className="saved-room-choice" role="group" aria-label="Choose a room">
-          <button
-            type="button"
-            className="saved-room-btn"
-            aria-label="Brands"
-            onClick={() => { setBrowseMode('brands'); setRoom('brands') }}
-          >
-            <StoreIcon className="saved-top-ico" />
-            <span>Brands</span>
-          </button>
-          <button
-            type="button"
-            className="saved-room-btn"
-            aria-label="Closet"
-            onClick={() => { setBrowseMode('items'); setRoom('items') }}
-          >
-            <ClosetIcon className="saved-room-ico" />
-            <span>Closet</span>
-          </button>
-        </div>
-      </section>
-    )
-  }
 
   return (
     <section className="saved-screen" aria-label="Liked">
       <header className="saved-page-header">
-        <button
-          type="button"
-          className="saved-dock-search is-bare saved-room-back"
-          aria-label="Back to rooms"
-          onClick={() => { if (globeOpen) closeGlobe(); setQuery(''); setSearchOpen(false); setRoom(null) }}
-        >
-          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 5l-7 7 7 7" /></svg>
-        </button>
-        <h1 className="saved-list-title" aria-label="Liked">
-          {room === 'brands' ? <StoreIcon className="saved-top-ico" /> : <ClosetIcon className="saved-top-ico" />}
-        </h1>
+        <h1 className="saved-list-title" aria-label="Liked"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden fill="currentColor"><path d="M12 21s-7.5-4.6-9.6-9.2C.8 8.3 2.6 4.8 6.1 4.8c2 0 3.4 1.1 3.9 2.2.5-1.1 1.9-2.2 3.9-2.2 3.5 0 5.300 3.500 3.700 7-2.100 4.600-9.600 9.200-9.600 9.200z"/></svg></h1>
 <div className={`saved-fab${fabOpen ? ' is-open' : ''}`}>
         <button
           type="button"
@@ -608,9 +557,8 @@ export default function SavedScreen({
         </div>
       </div>
       </header>
-      <div className="saved-grid">
-        {showBrands
-          ? favoriteBrandCards.map((brand) => (
+      <div className="saved-brand-row" aria-label="Favorite brands">
+        {favoriteBrandCards.map((brand) => (
               <button
                 key={`brand-${brand.id}`}
                 type="button"
@@ -620,10 +568,10 @@ export default function SavedScreen({
               >
                 <SavedBrandLogo name={brand.name} />
               </button>
-            ))
-          : null}
-        {showItems
-          ? visibleItems.map((item) => {
+            ))}
+      </div>
+      <div className="saved-grid is-products">
+        {visibleItems.map((item) => {
               const photo =
                 item.photoUrl || item.imageUrl || item.image_url || ''
               const showPhoto =
@@ -659,8 +607,7 @@ export default function SavedScreen({
                   </span>
                 </button>
               )
-            })
-          : null}
+            })}
       </div>
 
       {searchOpen && <StageSlot>

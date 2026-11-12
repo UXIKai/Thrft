@@ -921,3 +921,37 @@ html body .saved-fab .saved-fab-toggle {
   outline-offset: 4px;
   border-radius: 14px;
 }
+
+/* One page: favorite brands in a row on top, favorite products below, 5 across */
+.saved-brand-row {
+  display: flex;
+  gap: 14px;
+  flex: 0 0 auto;
+  margin-top: 16px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.saved-brand-row::-webkit-scrollbar {
+  display: none;
+}
+
+.saved-brand-row .saved-item {
+  flex: 0 0 72px;
+  width: 72px;
+}
+
+.saved-brand-row .saved-brand-logo {
+  width: 52px;
+  height: 52px;
+}
+
+.saved-grid.is-products {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 14px 8px;
+}
+
+.saved-grid.is-products .saved-item-name {
+  font-size: 0.6rem;
+}
