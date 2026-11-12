@@ -1389,6 +1389,21 @@ function BrandGlobeView({
       setBrushing(false)
       setChoosing(false)
       gestureRef.current = null
+      if (event.type !== 'pointercancel' && !movedRef.current && !searchPointerRef.current && !event.target?.closest?.('.brand-globe-search-row, .brand-globe-brand-back, .brand-globe-close')) {
+        const rect = stageRef.current?.getBoundingClientRect()
+        const slots = slotsRef.current
+        if (rect && slots.length) {
+          const cx = rect.left + rect.width / 2 + panXRef.current
+          const cy = rect.top + rect.height / 2 + panYRef.current
+          let reach = 0
+          for (let i = 0; i < slots.length; i += 1) reach = Math.max(reach, slots[i].r * zoomRef.current)
+          if (Math.hypot(event.clientX - cx, event.clientY - cy) > reach + 44) {
+            centerTapRef.current = false
+            onClose?.()
+            return
+          }
+        }
+      }
       if (event.type !== 'pointercancel' && centerTapRef.current && !searchPointerRef.current && !movedRef.current && !focusBrand && centerSearchAvailable) {
         openCenterSearch()
       }
