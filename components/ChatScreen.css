@@ -4444,3 +4444,11 @@ html body .chat-friends-tabs > .chat-friends-active-head.is-collapsed button.cha
 html body .chat-friends-tabs > .chat-friends-active-head.is-collapsed {
   width: 0;
 }
+
+html body .chat-new-card {
+  width: min(100%, 490px);
+}
+
+html body .chat-new-card .chat-new-list {
+  height: 260px;
+}
