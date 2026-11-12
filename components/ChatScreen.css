@@ -4912,3 +4912,16 @@ html body .chat-new-field {
     opacity: 1;
   }
 }
+
+@media (max-width: 719px), (max-height: 499px) {
+  html body .chat-screen .chat-list-section {
+    border-radius: 0 44px 44px 0;
+    border-right: 1px solid var(--glass-border);
+    box-shadow: 8px 0 40px rgba(0, 0, 0, 0.55);
+    padding-right: 24px;
+  }
+  html body .chat-friends-tabs > .chat-friends-active-head ~ *,
+  html body .chat-friends-active-aside {
+    border-radius: 44px 0 0 44px;
+  }
+}
