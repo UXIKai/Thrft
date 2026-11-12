@@ -153,3 +153,14 @@ createRoot(document.getElementById('root')).render(
     </BagProvider>
   </StrictMode>,
 )
+
+// Keep the browser chrome tint in step with the theme (it was always near-black)
+{
+  const root = document.documentElement
+  const syncThemeColor = () => {
+    const meta = document.querySelector('meta[name="theme-color"]')
+    if (meta) meta.setAttribute('content', root.dataset.theme === 'light' ? '#fafafa' : '#050505')
+  }
+  syncThemeColor()
+  new MutationObserver(syncThemeColor).observe(root, { attributes: true, attributeFilter: ['data-theme'] })
+}

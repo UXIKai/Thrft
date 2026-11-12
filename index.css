@@ -30,6 +30,11 @@ html {
   background: color-mix(in srgb, var(--atmosphere-base, #000) 45%, #000);
 }
 
+/* Light theme: the strip behind the status bar must be light too, not black */
+html[data-theme='light'] {
+  background: color-mix(in srgb, var(--atmosphere-base, #fafafa) 45%, #fafafa);
+}
+
 html[data-bg-image='none'] {
   background: #000;
 }

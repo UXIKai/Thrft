@@ -822,6 +822,7 @@ export default function ChatScreen({
   // match the open panel's card so no darker band shows above it.
   useEffect(() => {
     if (isDesktop || !(mobileNavOpen || activeNowOpen)) return undefined
+    if (document.documentElement.dataset.theme === 'light') return undefined
     const meta = document.querySelector('meta[name="theme-color"]')
     const root = document.documentElement
     const prevMeta = meta?.getAttribute('content')
