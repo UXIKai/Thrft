@@ -1797,7 +1797,7 @@ html body .chat-friends-tabs .chat-friends-tab:hover {
 }
 
 /* New chat tabs: bare icons, underline marks the selected one */
-html body .chat-new-tab {
+html body button.chat-new-tab.is-bare {
   background: transparent !important;
   border: none !important;
   border-bottom: 2px solid transparent !important;

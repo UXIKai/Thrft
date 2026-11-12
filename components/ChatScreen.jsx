@@ -2584,7 +2584,7 @@ export default function ChatScreen({
                   role="tab"
                   aria-selected={createTab === 'people'}
                   aria-label="Find friends and new people"
-                  className={`chat-new-tab${createTab === 'people' ? ' is-on' : ''}`}
+                  className={`chat-new-tab is-bare${createTab === 'people' ? ' is-on' : ''}`}
                   onClick={() => switchCreateTab('people')}
                 >
                   <PersonIcon />
@@ -2594,7 +2594,7 @@ export default function ChatScreen({
                   role="tab"
                   aria-selected={createTab === 'group'}
                   aria-label="Create group chat"
-                  className={`chat-new-tab${createTab === 'group' ? ' is-on' : ''}`}
+                  className={`chat-new-tab is-bare${createTab === 'group' ? ' is-on' : ''}`}
                   onClick={() => switchCreateTab('group')}
                 >
                   <PeopleIcon />
