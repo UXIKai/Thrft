@@ -597,6 +597,7 @@ export default function ChatScreen({
     return () => document.removeEventListener('pointerdown', dismiss, true)
   }, [searchOpen])
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  const [friendsTab, setFriendsTab] = useState('all')
   const [composer, setComposer] = useState(null) // null | { mode: 'create'|'edit', chatId? }
   const [draftName, setDraftName] = useState('')
   const [draftMembers, setDraftMembers] = useState([])
@@ -2745,7 +2746,27 @@ export default function ChatScreen({
           ) : activeChat ? (
             renderThread()
           ) : (
-            <p className="chat-desktop-empty">Select a chat to view the conversation</p>
+            <div className="chat-friends-empty">
+              <nav className="chat-friends-tabs" aria-label="Friends">
+                <span className="chat-friends-label">
+                  <svg viewBox="0 0 24 24" aria-hidden width="20" height="20" fill="currentColor"><circle cx="9" cy="8" r="3.5" /><path d="M2.5 20c0-3.6 2.9-6 6.500-6s6.500 2.400 6.500 6z" /><path d="M18 8v6M15 11h6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" fill="none" /></svg>
+                  Friends
+                </span>
+                <span className="chat-friends-dot" aria-hidden>•</span>
+                {[['online', 'Online'], ['all', 'All'], ['pending', 'Pending'], ['suggestions', 'Suggestions']].map(([id, label]) => (
+                  <button
+                    key={id}
+                    type="button"
+                    className={`chat-friends-tab${friendsTab === id ? ' is-active' : ''}`}
+                    aria-pressed={friendsTab === id}
+                    onClick={() => setFriendsTab(id)}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </nav>
+              <p className="chat-desktop-empty">Select a chat to view the conversation</p>
+            </div>
           )}
         </section>
       ) : null}

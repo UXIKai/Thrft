@@ -3359,3 +3359,52 @@ html[data-moonlight='off'][data-bg-image='atmosphere'] .chat-screen {
   object-fit: cover;
   border-radius: 12px;
 }
+
+@media (min-width: 720px) {
+  .chat-friends-empty {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .chat-friends-empty .chat-desktop-empty {
+    flex: 1;
+  }
+
+  .chat-friends-tabs {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 20px;
+    border-bottom: 1px solid light-dark(rgba(0, 0, 0, 0.18), rgba(255, 255, 255, 0.18));
+    color: light-dark(#000, #fff);
+  }
+
+  .chat-friends-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+  }
+
+  .chat-friends-dot {
+    opacity: 0.5;
+  }
+
+  .chat-friends-tab {
+    border: none;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    opacity: 0.75;
+  }
+
+  .chat-friends-tab.is-active {
+    opacity: 1;
+    background: light-dark(rgba(0, 0, 0, 0.12), rgba(255, 255, 255, 0.16));
+  }
+}
