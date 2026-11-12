@@ -910,3 +910,14 @@ html body .saved-fab .saved-fab-toggle {
 .saved-fab.is-open .saved-fab-item.saved-edit-row {
   transition-delay: calc(var(--i) * 60ms);
 }
+
+.saved-fab-btn.is-on {
+  background: light-dark(#111, #fff);
+  color: light-dark(#fff, #111);
+}
+
+.saved-item.is-selected {
+  outline: 2px solid light-dark(#111, #fff);
+  outline-offset: 4px;
+  border-radius: 14px;
+}

@@ -349,6 +349,10 @@ export default function SavedScreen({
     Array.isArray(favoredBrands) ? [...favoredBrands] : [],
   )
   const [fabOpen, setFabOpen] = useState(false)
+  const [selectMode, setSelectMode] = useState(false)
+  const [selectedKeys, setSelectedKeys] = useState([])
+  const toggleSelected = (key) =>
+    setSelectedKeys((keys) => (keys.includes(key) ? keys.filter((k) => k !== key) : [...keys, key]))
   const [browseMode, setBrowseMode] = useState('brands') // brands | items
   const [room, setRoom] = useState(null) // null = chooser | brands | items
   const [globePhase, setGlobePhase] = useState('closed') // closed | enter | open | exit
@@ -585,44 +589,21 @@ export default function SavedScreen({
               <SearchIcon />
             </button>
           </div>
-        <div className={`saved-edit-row saved-fab-item${editMenuOpen ? ' is-open' : ''}`} ref={editMenuRef} style={{ '--i': 1 }}>
+        <div className="saved-fab-item" style={{ '--i': 1 }}>
           <button
             type="button"
-            className="saved-pencil-btn"
-            aria-label="Edit"
-            aria-expanded={editMenuOpen}
-            aria-haspopup="menu"
+            className={`saved-fab-btn${selectMode ? ' is-on' : ''}`}
+            aria-label="Select"
+            aria-pressed={selectMode}
+            tabIndex={fabOpen ? 0 : -1}
             onClick={() => {
-              setFilterOpen(false)
-              setEditMenuOpen((open) => !open)
+              setSelectMode((on) => !on)
+              setSelectedKeys([])
+              setFabOpen(false)
             }}
           >
-            <PencilIcon />
+            <CheckCircleIcon />
           </button>
-          {editMenuOpen ? (
-            <div className="saved-edit-menu" role="menu" aria-label="Liked edit actions">
-              <button
-                type="button"
-                role="menuitem"
-                className="saved-edit-menu-btn"
-                aria-label="Select"
-                onClick={() => setEditMenuOpen(false)}
-              >
-                <CheckCircleIcon />
-                <span className="saved-edit-menu-label">Select</span>
-              </button>
-              <button
-                type="button"
-                role="menuitem"
-                className="saved-edit-menu-btn"
-                aria-label="Edit"
-                onClick={() => setEditMenuOpen(false)}
-              >
-                <PinIcon />
-                <span className="saved-edit-menu-label">Edit</span>
-              </button>
-            </div>
-          ) : null}
         </div>
         </div>
       </div>
@@ -633,8 +614,8 @@ export default function SavedScreen({
               <button
                 key={`brand-${brand.id}`}
                 type="button"
-                className="saved-item"
-                onClick={() => onOpenBrand?.(brand.id, brand.name)}
+                className={`saved-item${selectedKeys.includes(`brand-${brand.id}`) ? ' is-selected' : ''}`}
+                onClick={() => (selectMode ? toggleSelected(`brand-${brand.id}`) : onOpenBrand?.(brand.id, brand.name))}
                 aria-label={`${brand.name} listings`}
               >
                 <SavedBrandLogo name={brand.name} />
@@ -653,8 +634,8 @@ export default function SavedScreen({
                 <button
                   key={item.id}
                   type="button"
-                  className="saved-item"
-                  onClick={() => onOpenProduct?.(item)}
+                  className={`saved-item${selectedKeys.includes(`item-${item.id}`) ? ' is-selected' : ''}`}
+                  onClick={() => (selectMode ? toggleSelected(`item-${item.id}`) : onOpenProduct?.(item))}
                   aria-label={item.title || item.brandName || 'Saved item'}
                 >
                   <span className="saved-item-media is-product" aria-hidden>
