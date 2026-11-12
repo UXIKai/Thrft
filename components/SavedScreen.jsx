@@ -381,10 +381,10 @@ export default function SavedScreen({
       movePillTo(el)
     }
   }
-  function onBrandUp() {
+  function onBrandUp(e) {
     const el = dragRef.current
     dragRef.current = null
-    setPillActive(false)
+    if (e.pointerType !== 'mouse') setPillActive(false)
     if (!el) return
     const id = el.dataset.brandId
     if (selectMode) toggleSelected(`brand-${id}`)
@@ -693,6 +693,14 @@ export default function SavedScreen({
         ref={brandRowRef}
         className={`saved-fav-brands${fabOpen ? ' is-fab-open' : ''}`}
         aria-label="Favorite brands"
+        onPointerOver={(e) => {
+          if (e.pointerType !== 'mouse' || dragRef.current) return
+          const el = e.target.closest?.('.saved-item')
+          if (!el) return
+          movePillTo(el)
+          setPillActive(true)
+        }}
+        onPointerLeave={(e) => { if (!dragRef.current && e.pointerType === 'mouse') setPillActive(false) }}
         onPointerDown={onBrandDown}
         onPointerMove={onBrandMove}
         onPointerUp={onBrandUp}
