@@ -900,3 +900,13 @@ html body .saved-fab .saved-fab-toggle {
   right: 0;
   left: auto;
 }
+
+.saved-fab-item.saved-fab-item,
+.saved-fab-item.saved-edit-row {
+  transition-delay: calc((1 - var(--i)) * 40ms);
+}
+
+.saved-fab.is-open .saved-fab-item.saved-fab-item,
+.saved-fab.is-open .saved-fab-item.saved-edit-row {
+  transition-delay: calc(var(--i) * 60ms);
+}

@@ -585,60 +585,7 @@ export default function SavedScreen({
               <SearchIcon />
             </button>
           </div>
-        <div className="saved-filter-wrap saved-fab-item" style={{ '--i': 1 }} ref={filterRef}>
-          <button
-            type="button"
-            className={`saved-filter-btn${filterOpen ? ' is-on' : ''}`}
-            aria-label="Filter liked"
-            aria-expanded={filterOpen}
-            aria-haspopup="menu"
-            onClick={() => {
-              setEditMenuOpen(false)
-              setFilterOpen((open) => !open)
-            }}
-          >
-            <FilterIcon />
-          </button>
-          {filterOpen ? (
-            <div
-              className="saved-filter-menu"
-              role="menu"
-              aria-label="Liked filters"
-            >
-              {LIKED_FILTER_OPTIONS.map(({ id, label, Icon }) => (
-                <button
-                  key={id}
-                  type="button"
-                  role="menuitemradio"
-                  aria-checked={listFilter === id}
-                  className={`saved-filter-menu-item${
-                    listFilter === id ? ' is-on' : ''
-                  }`}
-                  onClick={() => {
-                    setListFilter(id)
-                    setFilterOpen(false)
-                  }}
-                >
-                  <span className="saved-filter-menu-check-slot" aria-hidden>
-                    {listFilter === id ? <FilterCheckIcon /> : null}
-                  </span>
-                  <Icon />
-                  <span className="saved-filter-menu-label">{label}</span>
-                </button>
-              ))}
-              <div className="saved-filter-menu-sep" role="separator" />
-              <button
-                type="button"
-                role="menuitem"
-                className="saved-filter-menu-item is-manage"
-                onClick={() => setFilterOpen(false)}
-              >
-                <span className="saved-filter-menu-label">Manage Filtering</span>
-              </button>
-            </div>
-          ) : null}
-        </div>
-        <div className={`saved-edit-row saved-fab-item${editMenuOpen ? ' is-open' : ''}`} ref={editMenuRef} style={{ '--i': 2 }}>
+        <div className={`saved-edit-row saved-fab-item${editMenuOpen ? ' is-open' : ''}`} ref={editMenuRef} style={{ '--i': 1 }}>
           <button
             type="button"
             className="saved-pencil-btn"
