@@ -2906,15 +2906,15 @@ export default function ChatScreen({
         aria-label="Chat controls"
       >
         <div className="chat-sidebar-header">
-          <button
+          {!isDesktop && <button
             type="button"
             className="chat-sidebar-control is-bare chat-sidebar-back"
             aria-label={isDesktop ? 'Back to Home' : mobileNavOpen ? 'Close chats' : 'Open chats'}
             aria-expanded={isDesktop ? undefined : mobileNavOpen}
             onClick={isDesktop ? backToChats : () => { setActiveNowOpen(false); setMobileNavOpen((open) => !open) }}
           >
-            {isDesktop ? <BackIcon /> : <ToggleIcon />}
-          </button>
+            <ToggleIcon />
+          </button>}
           <h1 className="chat-sidebar-title">Chats</h1>
           <button
             type="button"
