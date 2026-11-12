@@ -4826,3 +4826,9 @@ html body .chat-new-field .chat-new-input {
   background: transparent !important;
   border: 0 !important;
 }
+
+html body .chat-new-field {
+  width: calc(100% - 15px) !important;
+  margin-left: auto;
+  margin-right: auto;
+}
