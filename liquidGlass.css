@@ -1648,3 +1648,17 @@ html body .chat-friends-tab.is-active {
   backdrop-filter: blur(16px) saturate(170%) !important;
   -webkit-backdrop-filter: blur(16px) saturate(170%) !important;
 }
+
+/* Selected friends tab stays clear glass, not a filled pill */
+html body .chat-friends-tab.is-active {
+  background: light-dark(rgba(0, 0, 0, 0.015), rgba(255, 255, 255, 0.015)) !important;
+  backdrop-filter: blur(3px) !important;
+  -webkit-backdrop-filter: blur(3px) !important;
+  opacity: 1;
+}
+
+html body .chat-friends-tab.is-active:hover {
+  background: light-dark(rgba(0, 0, 0, 0.16), rgba(255, 255, 255, 0.2)) !important;
+  backdrop-filter: blur(16px) saturate(170%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(170%) !important;
+}
