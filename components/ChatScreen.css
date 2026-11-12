@@ -4715,3 +4715,9 @@ html body .chat-new-card {
     padding-left: 44px;
   }
 }
+
+@media (max-width: 719px), (max-height: 499px) {
+  .chat-desktop-thread .chat-friends-panel .chat-desktop-empty {
+    display: none;
+  }
+}
