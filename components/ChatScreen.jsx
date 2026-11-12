@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { Fragment, useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal, flushSync } from 'react-dom'
 import { fetchSaved, searchAccounts } from '../api.js'
 import BrandGlobe from './BrandGlobe.jsx'
@@ -599,6 +599,7 @@ export default function ChatScreen({
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [friendsTab, setFriendsTab] = useState('all')
   const [friendsQuery, setFriendsQuery] = useState('')
+  const [pinnedCollapsed, setPinnedCollapsed] = useState(false)
   const [composer, setComposer] = useState(null) // null | { mode: 'create'|'edit', chatId? }
   const [draftName, setDraftName] = useState('')
   const [draftMembers, setDraftMembers] = useState([])
@@ -2846,9 +2847,25 @@ export default function ChatScreen({
           </button>
         </nav>
         <ul className="chat-list">
-          {filtered.all.map((chat) => (
+          {filtered.all.map((chat, index) => (
+            <Fragment key={chat.id}>
+            {chat.pinned && index === 0 && (
+              <li className="chat-folder-head">
+                <button
+                  type="button"
+                  className="chat-folder-toggle"
+                  aria-expanded={!pinnedCollapsed}
+                  onClick={() => setPinnedCollapsed((c) => !c)}
+                >
+                  <span>Pinned</span>
+                  <svg className={`chat-folder-chevron${pinnedCollapsed ? '' : ' is-open'}`} viewBox="0 0 24 24" width="14" height="14" aria-hidden>
+                    <path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </button>
+              </li>
+            )}
+            {!(pinnedCollapsed && chat.pinned) && (
             <li
-              key={chat.id}
               className={`chat-row-wrap${menuId === chat.id ? ' is-menu-open' : ''}`}
             >
               <button
@@ -2935,6 +2952,8 @@ export default function ChatScreen({
                 </span>
               )}
             </li>
+            )}
+            </Fragment>
           ))}
           {filtered.all.length === 0 && (
             <li className="chat-empty-list" aria-hidden />
@@ -3018,9 +3037,6 @@ export default function ChatScreen({
                   </button>
                 ))}
                 </div>
-                <button type="button" className="chat-friends-add" aria-label="Add friend" onClick={openCreateGroup}>
-                  <PlusIcon />
-                </button>
               </nav>
               <div className="chat-friends-body">
               <div className="chat-friends-panel">

@@ -4051,3 +4051,30 @@ html body .chat-friends-tabs .chat-friends-add:focus-visible {
   filter: brightness(1.15);
   outline: none;
 }
+
+.chat-folder-head {
+  list-style: none;
+}
+
+.chat-folder-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 4px;
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: inherit;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.chat-folder-chevron {
+  transition: transform 0.2s ease;
+}
+
+.chat-folder-chevron.is-open {
+  transform: rotate(90deg);
+}
