@@ -789,7 +789,8 @@ export default function ChatScreen({
       suggestions: 'No suggestions right now.',
     }
     const list = names.filter(match)
-    return { list, title: titles[friendsTab], empty: empty[friendsTab] }
+    const counts = { all: friends.length, pending: 0, suggestions: allMemberNames.filter((n) => !friendKeys.has(String(n).toLowerCase())).length }
+    return { list, title: titles[friendsTab], empty: empty[friendsTab], counts }
   }, [friends, friendsTab, friendsQuery, allMemberNames])
 
   useEffect(() => {
@@ -3099,7 +3100,7 @@ export default function ChatScreen({
                     aria-pressed={friendsTab === id}
                     onClick={() => setFriendsTab(id)}
                   >
-                    {label}
+                    {label}<span className="chat-friends-tab-count">{friendsView.counts[id]}</span>
                   </button>
                 ))}
                 </div>
@@ -3128,7 +3129,6 @@ export default function ChatScreen({
                   value={friendsQuery}
                   onChange={(e) => setFriendsQuery(e.target.value)}
                 />
-                <p className="chat-friends-heading">{friendsView.title} — {friendsView.list.length}</p>
                 {friendsView.list.length === 0 ? (
                   <p className="chat-desktop-empty">{friendsView.empty}</p>
                 ) : (
