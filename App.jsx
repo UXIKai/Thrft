@@ -185,6 +185,14 @@ export default function App() {
   const hideTabBar = tab === 'chat' || tab === 'saved'
   const showNav = !(tab === 'chat' && chatThreadOpen)
 
+  // A product page covers the app: its nav bar must not be reachable
+  useEffect(() => {
+    const stage = stageRef.current
+    if (!stage) return undefined
+    stage.classList.toggle('is-product-open', Boolean(activeProduct))
+    return () => stage.classList.remove('is-product-open')
+  }, [activeProduct])
+
   // Desktop: the nav bar stays hidden until the mouse nears the bottom edge
   useEffect(() => {
     const stage = stageRef.current

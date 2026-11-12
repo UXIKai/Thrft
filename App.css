@@ -1989,3 +1989,9 @@ html body .stage.is-nav-autohide.is-nav-near .tab-bar {
   opacity: 1;
   pointer-events: auto;
 }
+
+html body .stage.is-product-open .tab-bar {
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+}
