@@ -4452,3 +4452,8 @@ html body .chat-new-card {
 html body .chat-new-card .chat-new-list {
   height: 260px;
 }
+
+html body .chat-new-card {
+  width: min(100%, 560px);
+  flex: none;
+}
