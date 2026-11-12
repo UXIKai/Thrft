@@ -4813,3 +4813,16 @@ html body .chat-search-modal .chat-search-modal-head button.chat-search-modal-cl
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
 }
+
+html body .chat-new-field {
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 999px !important;
+  overflow: hidden;
+}
+html body .chat-new-field .chat-new-input {
+  border-radius: 999px !important;
+  padding-left: 18px !important;
+  padding-right: 18px !important;
+  background: transparent !important;
+  border: 0 !important;
+}
