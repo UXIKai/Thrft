@@ -811,3 +811,16 @@
   right: calc(100% + 8px);
   left: auto;
 }
+
+.saved-fab-items {
+  width: 88px;
+  display: grid;
+  grid-template-columns: 40px 40px;
+  justify-content: space-between;
+  row-gap: 8px;
+  justify-items: center;
+}
+
+.saved-fab-item.saved-edit-row {
+  grid-column: 1 / -1;
+}
