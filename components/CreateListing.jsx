@@ -193,8 +193,8 @@ function DateWheel({ label, items, value, onChange }) {
 }
 
 export default function CreateListing({ onPosted } = {}) {
-  const [segment, setSegment] = useState('store')
-  const [step, setStep] = useState('destination')
+  const [segment, setSegment] = useState('market')
+  const [step, setStep] = useState('photo')
   const [title, setTitle] = useState('')
   const [brand, setBrand] = useState("Levi's")
   const [category, setCategory] = useState('Tees')
@@ -273,7 +273,10 @@ export default function CreateListing({ onPosted } = {}) {
 
   useEffect(() => {
     if (!postedProduct) return undefined
-    const timer = window.setTimeout(() => setPostedProduct(null), 2000)
+    const timer = window.setTimeout(() => {
+      setPostedProduct(null)
+      setStep((cur) => (cur === 'destination' ? 'photo' : cur))
+    }, 2000)
     return () => window.clearTimeout(timer)
   }, [postedProduct])
 
@@ -281,7 +284,7 @@ export default function CreateListing({ onPosted } = {}) {
     if (direction > 0 && !stepFilled) return
     setPostError('')
     setPhotoChoice(false)
-    setStep(steps[stepIndex + direction] || 'destination')
+    setStep(steps[stepIndex + direction] || 'photo')
   }
 
   function finishListing(product, destination) {
@@ -573,35 +576,6 @@ export default function CreateListing({ onPosted } = {}) {
         />
       ) : null}
       {currentStep === 'destination' && <div className="listing-destination">
-      <div
-        className="listing-segment"
-        role="group"
-        aria-label="Listing destination"
-        ref={destinationRef}
-        tabIndex={-1}
-      >
-        {LISTING_SEGMENTS.map((seg) => {
-          const active = segment === seg.id
-          return (
-            <button
-              key={seg.id}
-              type="button"
-              aria-label={seg.label}
-              className={`listing-seg-btn ${active ? 'is-active' : ''}`}
-              onClick={() => {
-                setSegment(seg.id)
-                setStep('photo')
-                setPhotoChoice(false)
-                setPostedProduct(null)
-                setPostError('')
-              }}
-            >
-              {segmentIcon(seg.icon)}
-              <span>{seg.label}</span>
-            </button>
-          )
-        })}
-      </div>
       {postedProduct && (
         <div
           className="listing-success"
