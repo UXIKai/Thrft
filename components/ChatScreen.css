@@ -3986,3 +3986,46 @@ html body .chat-friends-tabs .chat-friends-pill {
   flex: 1 1 auto;
   min-width: 0;
 }
+
+.chat-friends-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  align-items: stretch;
+}
+
+.chat-friends-body > .chat-friends-panel {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.chat-friends-active {
+  flex: 0 0 clamp(200px, 26%, 300px);
+  box-sizing: border-box;
+  padding: 12px 16px;
+  border-left: 1px solid light-dark(rgba(0, 0, 0, 0.18), rgba(255, 255, 255, 0.18));
+}
+
+.chat-friends-active-title {
+  margin: 4px 0 16px;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.chat-friends-active-empty {
+  margin: 0 0 6px;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.chat-friends-active-hint {
+  margin: 0;
+  font-size: 0.8rem;
+  opacity: 0.65;
+}
+
+@media (max-width: 719px) {
+  .chat-friends-active {
+    display: none;
+  }
+}
