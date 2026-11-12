@@ -5165,3 +5165,30 @@ html body .chat-new-field {
     transition: none;
   }
 }
+
+/* Page card: one flat shade top to bottom, no fades or glass from the button defaults */
+@media (max-width: 719px), (max-height: 499px) {
+  html body .chat-screen .chat-mobile-nav-scrim {
+    -webkit-appearance: none;
+    appearance: none;
+    padding: 0;
+    background-image: none;
+    box-shadow: none;
+    filter: none;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+  html body .chat-mobile-nav-scrim::before {
+    background: light-dark(rgba(60, 60, 60, 0.9), #1c1c1e);
+    background-image: none;
+    box-shadow: none;
+    filter: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+  html body .chat-mobile-nav-scrim::after {
+    content: none;
+  }
+}
