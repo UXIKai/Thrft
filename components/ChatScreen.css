@@ -4163,3 +4163,23 @@ html body .chat-friends-active-toggle:hover {
 .chat-friends-active .chat-friends-active-empty {
   text-align: center;
 }
+
+html body .chat-friends-active .chat-friends-active-head button.chat-friends-active-toggle,
+html body .chat-friends-active .chat-friends-active-head button.chat-friends-active-toggle:hover,
+html body .chat-friends-active .chat-friends-active-head button.chat-friends-active-toggle:active,
+html body .chat-friends-active .chat-friends-active-head button.chat-friends-active-toggle:focus-visible {
+  right: auto;
+  left: 0;
+  border: none !important;
+  outline: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  min-height: 0 !important;
+}
+
+html body .chat-friends-active.is-collapsed .chat-friends-active-head button.chat-friends-active-toggle {
+  left: auto;
+}
