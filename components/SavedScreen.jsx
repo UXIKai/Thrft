@@ -328,6 +328,19 @@ export default function SavedScreen({
 }) {
   const [items, setItems] = useState([])
   const [query, setQuery] = useState('')
+  const [searchOpen, setSearchOpen] = useState(false)
+  const searchWrapRef = useRef(null)
+  useEffect(() => {
+    if (!searchOpen) return undefined
+    const dismiss = (event) => {
+      if (searchWrapRef.current?.contains(event.target)) return
+      if (event.target.closest?.('[aria-label="Search liked"]')) return
+      setSearchOpen(false)
+      setQuery('')
+    }
+    document.addEventListener('pointerdown', dismiss, true)
+    return () => document.removeEventListener('pointerdown', dismiss, true)
+  }, [searchOpen])
   const [favoriteBrands, setFavoriteBrands] = useState(() =>
     Array.isArray(favoredBrands) ? [...favoredBrands] : [],
   )
@@ -506,6 +519,22 @@ export default function SavedScreen({
           <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M12 5v14M5 12h14" /></svg>
         </button>
         <div className="saved-fab-items" aria-hidden={!fabOpen}>
+        <div className="saved-fab-item" style={{ '--i': 0 }}>
+          <button
+            type="button"
+            className="saved-fab-btn"
+            aria-label="Search liked"
+            aria-expanded={searchOpen}
+            tabIndex={fabOpen ? 0 : -1}
+            onClick={() => {
+              setFabOpen(false)
+              setSearchOpen(true)
+              window.setTimeout(() => document.getElementById('saved-search-input')?.focus({ preventScroll: true }), 0)
+            }}
+          >
+            <SearchIcon />
+          </button>
+        </div>
         <div className="saved-fab-item" style={{ '--i': 1 }}>
           <button
             type="button"
@@ -539,6 +568,22 @@ export default function SavedScreen({
         </div>
         </div>
       </div>
+        {searchOpen && (
+          <div className="saved-inline-search" ref={searchWrapRef}>
+            <SearchIcon />
+            <input
+              id="saved-search-input"
+              type="text"
+              inputMode="search"
+              autoComplete="off"
+              spellCheck={false}
+              aria-label="Search liked"
+              placeholder="Search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+          </div>
+        )}
       </header>
       <div className="saved-fav-brands" aria-label="Favorite brands">
         {favoriteBrandCards.map((brand) => (

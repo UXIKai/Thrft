@@ -1035,3 +1035,45 @@ html body .saved-fab .saved-fab-item.saved-fab-item:nth-child(2) {
   --fab-x: 0px;
   --fab-y: 58px;
 }
+
+/* Search lives in the header, not in a bar at the bottom */
+.saved-inline-search {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(56%, 300px);
+  height: 36px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 14px;
+  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.2));
+  border-radius: 999px;
+  background: var(--glass-clear-tint, rgba(255, 255, 255, 0.08));
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  color: light-dark(#111, #fff);
+  z-index: 34;
+}
+
+.saved-inline-search .saved-dock-ico {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+}
+
+.saved-inline-search input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+}
+
+/* Fan of three: search, select, add */
+html body .saved-fab .saved-fab-item.saved-fab-item:nth-child(1) { --fab-x: -58px; --fab-y: 0px; }
+html body .saved-fab .saved-fab-item.saved-fab-item:nth-child(2) { --fab-x: -41px; --fab-y: 41px; }
+html body .saved-fab .saved-fab-item.saved-fab-item:nth-child(3) { --fab-x: 0px; --fab-y: 58px; }
