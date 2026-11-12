@@ -3775,3 +3775,23 @@ html body .chat-friends-tabs .chat-friends-pill {
   left: 0;
   width: 25%;
 }
+
+/* Fixed-size card so switching tabs never shifts the icons or content */
+.chat-new-card {
+  height: min(72vh, 480px);
+  max-height: none;
+}
+
+.chat-new-panel {
+  flex: 1 1 auto;
+}
+
+.chat-new-list {
+  flex: 1 1 auto;
+  max-height: none;
+}
+
+.chat-new-foot {
+  margin-top: auto;
+  min-height: 44px;
+}
