@@ -1632,3 +1632,19 @@ html body .tab-bar.is-pressed .tab-pill {
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
 }
+
+/* Friends tabs: slightly visible containers with glass hover/press */
+html body .chat-friends-tab {
+  background: light-dark(rgba(0, 0, 0, 0.07), rgba(255, 255, 255, 0.09)) !important;
+  backdrop-filter: blur(8px) saturate(140%) !important;
+  -webkit-backdrop-filter: blur(8px) saturate(140%) !important;
+  transition: background 0.18s ease, transform 0.18s ease, backdrop-filter 0.18s ease;
+}
+
+html body .chat-friends-tab:hover,
+html body .chat-friends-tab:active,
+html body .chat-friends-tab.is-active {
+  background: light-dark(rgba(0, 0, 0, 0.16), rgba(255, 255, 255, 0.2)) !important;
+  backdrop-filter: blur(16px) saturate(170%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(170%) !important;
+}
