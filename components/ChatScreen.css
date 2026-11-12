@@ -4202,3 +4202,108 @@ html body .chat-new-card {
 html body .chat-new-card .chat-new-list {
   height: 240px;
 }
+
+.chat-search-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  pointer-events: none;
+}
+
+html body .chat-search-modal {
+  pointer-events: auto;
+  box-sizing: border-box;
+  width: min(100%, 560px);
+  max-height: min(70vh, 520px);
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  border-radius: 24px;
+  border: 1px solid light-dark(rgba(0, 0, 0, 0.18), rgba(255, 255, 255, 0.22));
+  background: light-dark(rgba(70, 70, 70, 0.8), rgba(0, 0, 0, 0.8));
+  color: #fff;
+  backdrop-filter: blur(24px) saturate(1.2);
+  -webkit-backdrop-filter: blur(24px) saturate(1.2);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.35);
+}
+
+.chat-search-modal-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+html body .chat-search-modal-input {
+  flex: 1;
+  min-width: 0;
+  padding: 8px 4px;
+  border: none !important;
+  outline: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: inherit;
+  font: inherit;
+  font-size: 1.05rem;
+}
+
+html body .chat-search-modal-close {
+  width: 32px;
+  height: 32px;
+  padding: 0 !important;
+  display: grid;
+  place-items: center;
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: inherit;
+  cursor: pointer;
+}
+
+.chat-search-modal-label {
+  margin: 12px 4px 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  opacity: 0.7;
+}
+
+.chat-search-modal-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+}
+
+html body .chat-search-modal-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 6px;
+  border: none !important;
+  border-radius: 12px;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+html body .chat-search-modal-row:hover {
+  background: rgba(255, 255, 255, 0.12) !important;
+}
+
+.chat-search-modal-row .chat-avatar {
+  width: 32px;
+  height: 32px;
+  flex: none;
+  font-size: 0.75rem;
+}
+
+.chat-search-modal-empty {
+  padding: 8px 6px;
+  opacity: 0.7;
+}

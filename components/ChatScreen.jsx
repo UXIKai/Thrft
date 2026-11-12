@@ -3149,7 +3149,48 @@ export default function ChatScreen({
         </section>
       ) : null}
 
-      {!composer && searchOpen && <StageSlot active={!isDesktop}>
+      {!composer && searchOpen && isDesktop && (
+        <div className="chat-search-modal-overlay">
+          <div ref={searchBarRef} className="chat-search-modal" role="dialog" aria-label="Search chats">
+            <div className="chat-search-modal-head">
+              <input
+                id="chat-search-input"
+                className="chat-search-modal-input"
+                type="text"
+                autoFocus
+                autoComplete="off"
+                spellCheck={false}
+                placeholder="Search..."
+                aria-label="Search chats"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={(e) => { if (e.key === 'Escape') { setQuery(''); setSearchOpen(false) } }}
+              />
+              <button type="button" className="chat-search-modal-close" aria-label="Close search" onClick={() => { setQuery(''); setSearchOpen(false) }}>
+                <CloseIcon />
+              </button>
+            </div>
+            <p className="chat-search-modal-label">{query.trim() ? 'Results' : 'Recent chats'}</p>
+            <ul className="chat-search-modal-list">
+              {filtered.all.map((chat) => (
+                <li key={chat.id}>
+                  <button
+                    type="button"
+                    className="chat-search-modal-row"
+                    onClick={() => { setQuery(''); setSearchOpen(false); openThread(chat) }}
+                  >
+                    <span className="chat-avatar" aria-hidden>{chat.initials}</span>
+                    <span className="chat-search-modal-title">{chat.title}</span>
+                  </button>
+                </li>
+              ))}
+              {filtered.all.length === 0 && <li className="chat-search-modal-empty">No chats found</li>}
+            </ul>
+          </div>
+        </div>
+      )}
+
+      {!composer && searchOpen && !isDesktop && <StageSlot active={!isDesktop}>
           <div className={`chat-bottom-dock${isDesktop ? ' is-desktop' : ''}${usersPickerOpen || memberGlobeVisible ? ' is-covered' : ''}`}>
             <div
               ref={searchBarRef}
