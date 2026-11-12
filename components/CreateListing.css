@@ -1106,3 +1106,10 @@ html body .listing-photo-choice-btn {
 .is-walkthrough .listing-segment .listing-seg-btn {
   flex: 0 0 140px;
 }
+
+/* Destination step: true center of the page */
+.create-listing.is-walkthrough {
+  min-height: 100dvh;
+  padding-top: 0;
+  padding-bottom: 0;
+}
