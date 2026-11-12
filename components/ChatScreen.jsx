@@ -585,7 +585,7 @@ export default function ChatScreen({
   const [isDesktop, setIsDesktop] = useState(
     () => typeof window !== 'undefined' && window.matchMedia('(min-width: 720px)').matches,
   )
-  const [mobileNavOpen, setMobileNavOpen] = useState(true)
+  const [mobileNavOpen, setMobileNavOpen] = useState(false)
   const [memberDraft, setMemberDraft] = useState('')
   const [menuId, setMenuId] = useState(null)
   const [dmRenaming, setDmRenaming] = useState(false)
