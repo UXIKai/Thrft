@@ -1572,3 +1572,22 @@ html[data-theme='light'][data-moonlight='on'][data-app-color='none'] body :is(.p
   color: #000 !important;
   border-color: #000 !important;
 }
+
+/* Moon modes: the navigation bar gets a solid backdrop (white in light, black in dark) */
+html[data-moonlight='on'] body .tab-bar {
+  background: #000 !important;
+  background-image: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border-color: #fff !important;
+  color: #fff;
+}
+html[data-moonlight='on'][data-theme='light'] body .tab-bar {
+  background: #fff !important;
+  border-color: #000 !important;
+  color: #000;
+}
+html[data-moonlight='on'] body .tab-bar::before,
+html[data-moonlight='on'] body .tab-bar::after {
+  display: none;
+}
