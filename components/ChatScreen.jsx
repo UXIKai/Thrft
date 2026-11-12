@@ -645,6 +645,9 @@ export default function ChatScreen({
   const [likedSelected, setLikedSelected] = useState([]) // item keys, max 10
   const [pinsMenuOpen, setPinsMenuOpen] = useState(false)
   const [imagesOnly, setImagesOnly] = useState(false)
+  useEffect(() => {
+    if (activeChatId) setImagesOnly(false)
+  }, [activeChatId])
   const [pinsMode, setPinsMode] = useState(null) // null | 'select' | 'pins'
   const [pinSelectedIds, setPinSelectedIds] = useState([])
   const [listFilterOpen, setListFilterOpen] = useState(false)
@@ -666,6 +669,11 @@ export default function ChatScreen({
     if (!attachOpen) setFriendListOpen(false)
   }, [attachOpen])
   const activeChat = chats.find((c) => c.id === activeChatId) || null
+  const allChatImages = chats.flatMap((c) =>
+    (c.messages || [])
+      .filter((m) => m.kind === 'image' && m.imageUrl)
+      .map((m) => ({ ...m, chatId: c.id })),
+  )
   const threadMessages = activeChat?.messages || []
   const managedMembers = useMemo(() => {
     if (!activeChat || activeChat.kind !== 'group') return []
@@ -2617,10 +2625,7 @@ export default function ChatScreen({
           </button>
         </nav>
         <ul className="chat-list">
-          {(imagesOnly
-            ? filtered.all.filter((c) => (c.messages || []).some((m) => m.kind === 'image'))
-            : filtered.all
-          ).map((chat) => (
+          {filtered.all.map((chat) => (
             <li
               key={chat.id}
               className={`chat-row-wrap${menuId === chat.id ? ' is-menu-open' : ''}`}
@@ -2718,7 +2723,26 @@ export default function ChatScreen({
 
       {isDesktop ? (
         <section className="chat-desktop-thread" aria-label="Conversation">
-          {activeChat ? (
+          {imagesOnly ? (
+            <div className="chat-images-gallery">
+              <h2 className="chat-images-title">Images</h2>
+              {allChatImages.length ? (
+                <div className="chat-images-grid">
+                  {allChatImages.map((m) => (
+                    <img
+                      key={`${m.chatId}-${m.id}`}
+                      className="chat-images-item"
+                      src={m.imageUrl}
+                      alt={m.fileName || 'Photo'}
+                      loading="lazy"
+                    />
+                  ))}
+                </div>
+              ) : (
+                <p className="chat-desktop-empty">No images yet</p>
+              )}
+            </div>
+          ) : activeChat ? (
             renderThread()
           ) : (
             <p className="chat-desktop-empty">Select a chat to view the conversation</p>

@@ -3331,3 +3331,30 @@ html[data-moonlight='off'][data-bg-image='atmosphere'] .chat-screen {
   background: rgba(0, 0, 0, 0.8);
   color: #fff;
 }
+
+.chat-images-gallery {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.chat-images-title {
+  margin: 0 0 14px;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.chat-images-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 8px;
+}
+
+.chat-images-item {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 12px;
+}
