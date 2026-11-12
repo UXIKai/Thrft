@@ -5031,22 +5031,6 @@ html body .chat-new-field {
   }
 }
 
-/* Mobile hides the bottom nav in Chat, so nothing needs to reserve space for it */
-@media (max-width: 719px), (max-height: 499px) {
-  html body .chat-screen > .chat-section:last-of-type {
-    padding-bottom: env(safe-area-inset-bottom, 0px);
-  }
-  html body .chat-screen > .chat-desktop-thread {
-    padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
-  }
-  html body .chat-screen .chat-thread-scroll {
-    padding-bottom: calc(16px + max(env(safe-area-inset-bottom, 0px) - 22px, var(--kb-height, 0px)));
-  }
-  html body .chat-screen .chat-bottom-dock {
-    bottom: max(calc(12px + env(safe-area-inset-bottom, 0px)), calc(8px + var(--kb-height, 0px)));
-  }
-}
-
 /* Online panel on mobile: flat black panel with the page kept as a rounded card on the left */
 @media (max-width: 719px), (max-height: 499px) {
   html body .chat-desktop-thread .chat-friends-active:not([hidden]) {
