@@ -2800,3 +2800,25 @@ html body .settings-screen .settings-signout {
 html body .settings-screen .settings-icon-tile {
   border-radius: 12px;
 }
+
+/* Left-column cards are just wrappers now so every button shows a single, identical fill (no card + row stacking) */
+html body .settings-screen .settings-column:not(.is-customization) .settings-card {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+html body .settings-screen .settings-account-active {
+  background: var(--glass-clear-tint) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 16px;
+  box-shadow: none !important;
+}
+
+html body .settings-screen .settings-section .settings-card .settings-row,
+html body .settings-screen .settings-icon-tile,
+html body .settings-screen .settings-signout {
+  background-clip: padding-box;
+}
