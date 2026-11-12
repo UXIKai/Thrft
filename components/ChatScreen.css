@@ -4477,3 +4477,35 @@ html body .chat-friends-tabs > .chat-friends-active-head.is-collapsed {
 html body .chat-new-card {
   background: light-dark(rgba(70, 70, 70, 0.35), rgba(0, 0, 0, 0.35));
 }
+
+/* Mobile: chats + quick actions live in a slide-in drawer opened by the toggle */
+@media (max-width: 719px) {
+  .chat-screen .chat-list-section {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 60;
+    width: min(84vw, 340px);
+    box-sizing: border-box;
+    padding: max(56px, calc(env(safe-area-inset-top, 0px) + 16px)) 16px calc(24px + env(safe-area-inset-bottom, 0px));
+    overflow-y: auto;
+    background: light-dark(rgba(245, 235, 238, 0.97), rgba(10, 10, 12, 0.97));
+    transform: translateX(-102%);
+    visibility: hidden;
+    transition: transform 0.25s ease, visibility 0.25s;
+  }
+
+  .chat-screen.is-mobile-nav-open .chat-list-section {
+    transform: none;
+    visibility: visible;
+  }
+
+  .chat-mobile-nav-scrim {
+    position: fixed;
+    inset: 0;
+    z-index: 59;
+    border: none;
+    background: rgba(0, 0, 0, 0.4);
+  }
+}

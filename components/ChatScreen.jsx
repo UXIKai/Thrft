@@ -568,6 +568,14 @@ function usernameForName(name) {
     .slice(0, 24)
 }
 
+function ToggleIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden>
+      <path d="M4 8h16M4 16h10" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+    </svg>
+  )
+}
+
 export default function ChatScreen({
   onBack,
   onOpenAccount,
@@ -577,6 +585,7 @@ export default function ChatScreen({
   const [isDesktop, setIsDesktop] = useState(
     () => typeof window !== 'undefined' && window.matchMedia('(min-width: 720px)').matches,
   )
+  const [mobileNavOpen, setMobileNavOpen] = useState(true)
   const [memberDraft, setMemberDraft] = useState('')
   const [menuId, setMenuId] = useState(null)
   const [dmRenaming, setDmRenaming] = useState(false)
@@ -2768,7 +2777,7 @@ export default function ChatScreen({
 
   return (
     <div
-      className={`chat-screen${composer?.mode === 'create' ? ' is-new-chat' : ''}${isDesktop ? ' is-desktop' : ''}${isDesktop && sidebarCollapsed ? ' is-sidebar-collapsed' : ''}`}
+      className={`chat-screen${composer?.mode === 'create' ? ' is-new-chat' : ''}${isDesktop ? ' is-desktop' : ''}${isDesktop && sidebarCollapsed ? ' is-sidebar-collapsed' : ''}${!isDesktop && mobileNavOpen ? ' is-mobile-nav-open' : ''}`}
       onClick={(e) => {
         const onContent = e.target.closest?.('button,a,input,textarea,select,label,img,li,svg,.chat-new-card,.chat-thread,.chat-friends-tab-group,.chat-sidebar-header,.chat-images-grid,.chat-images-title,.chat-desktop-empty')
         if (isDesktop && !onContent) {
@@ -2795,10 +2804,11 @@ export default function ChatScreen({
           <button
             type="button"
             className="chat-sidebar-control is-bare chat-sidebar-back"
-            aria-label="Back to Home"
-            onClick={backToChats}
+            aria-label={isDesktop ? 'Back to Home' : mobileNavOpen ? 'Close chats' : 'Open chats'}
+            aria-expanded={isDesktop ? undefined : mobileNavOpen}
+            onClick={isDesktop ? backToChats : () => setMobileNavOpen((open) => !open)}
           >
-            <BackIcon />
+            {isDesktop ? <BackIcon /> : <ToggleIcon />}
           </button>
           <h1 className="chat-sidebar-title">Chats</h1>
           <button
@@ -2834,7 +2844,16 @@ export default function ChatScreen({
         </div>
       </section>
 
-      <section className="chat-section chat-list-section" aria-label="Chats">
+      {!isDesktop && mobileNavOpen && (
+        <button type="button" className="chat-mobile-nav-scrim" aria-label="Close chats" onClick={() => setMobileNavOpen(false)} />
+      )}
+      <section
+        className="chat-section chat-list-section"
+        aria-label="Chats"
+        onClick={(e) => {
+          if (!isDesktop && e.target.closest('.chat-list-quick-btn, .chat-row')) setMobileNavOpen(false)
+        }}
+      >
         <nav className="chat-list-quick" aria-label="Quick actions">
           <button type="button" className={`chat-list-quick-btn is-bare${composer?.mode === 'create' ? ' is-on' : ''}`} onClick={() => (composer?.mode === 'create' ? closeComposer() : openCreateGroup())}>
             <ComposeIcon />
