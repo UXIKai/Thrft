@@ -21,7 +21,7 @@
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  background: rgba(var(--app-color-rgb, 36, 36, 36), 0.3);
+  background: light-dark(rgba(255, 255, 255, 0.45), rgba(0, 0, 0, 0.6));
   backdrop-filter: blur(calc(var(--glass-blur, 16px) * 0.6 + 6px)) saturate(1.2);
   -webkit-backdrop-filter: blur(calc(var(--glass-blur, 16px) * 0.6 + 6px)) saturate(1.2);
 }
@@ -1334,7 +1334,7 @@
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  background: rgba(var(--app-color-rgb, 36, 36, 36), 0.3);
+  background: light-dark(rgba(255, 255, 255, 0.45), rgba(0, 0, 0, 0.6));
   backdrop-filter: blur(calc(var(--glass-blur, 16px) * 0.6 + 6px)) saturate(1.2);
   -webkit-backdrop-filter: blur(calc(var(--glass-blur, 16px) * 0.6 + 6px)) saturate(1.2);
 }
@@ -3216,6 +3216,10 @@ html body button.chat-contact-nick-save {
 
   .chat-screen.is-sidebar-collapsed .chat-desktop-thread {
     border-left: none;
+  }
+
+  .chat-desktop-thread .chat-thread::before {
+    display: none;
   }
 
   .chat-desktop-thread .chat-thread {
