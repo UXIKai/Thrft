@@ -1943,3 +1943,9 @@ html body .tab-bar.is-pressed .tab-pill::before {
   line-height: 1;
   text-transform: uppercase;
 }
+
+/* App-wide 20% background blur; independent of the glass slider. Oversized so blurred edges stay off-screen. */
+.stage > .atmosphere {
+  inset: -48px;
+  filter: blur(20px);
+}
