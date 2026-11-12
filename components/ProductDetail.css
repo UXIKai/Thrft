@@ -657,3 +657,33 @@ html body .product-detail .glass-overlay-back {
     font-size: 1rem;
   }
 }
+
+/* Product photo container: glass, 30% tint + blur, shine along the edges */
+html body .product-detail-photo {
+  position: relative;
+  background: light-dark(rgba(255, 255, 255, 0.3), rgba(40, 40, 46, 0.3));
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  backdrop-filter: blur(18px) saturate(1.4);
+  border: 1px solid light-dark(rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.28));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.55),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.12),
+    inset 1px 0 0 rgba(255, 255, 255, 0.3),
+    inset -1px 0 0 rgba(255, 255, 255, 0.3),
+    inset 0 0 18px rgba(255, 255, 255, 0.08),
+    0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+html body .product-detail-photo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.28), transparent 28%, transparent 72%, rgba(255, 255, 255, 0.16));
+  mix-blend-mode: soft-light;
+}
+
+html body .product-detail-photo img {
+  background: transparent;
+}
