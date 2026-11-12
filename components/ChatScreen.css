@@ -4412,3 +4412,20 @@ html body .chat-search-modal .chat-search-modal-head button.chat-search-modal-cl
   -webkit-backdrop-filter: none !important;
   min-height: 0 !important;
 }
+
+html body .chat-search-modal {
+  position: relative;
+}
+
+html body .chat-search-modal .chat-search-modal-head button.chat-search-modal-close,
+html body .chat-search-modal .chat-search-modal-head button.chat-search-modal-close:hover,
+html body .chat-search-modal .chat-search-modal-head button.chat-search-modal-close:active,
+html body .chat-search-modal .chat-search-modal-head button.chat-search-modal-close:focus-visible {
+  position: absolute;
+  top: -48px;
+  right: 0;
+  width: 36px;
+  height: 36px;
+  border: 1px solid light-dark(rgba(0, 0, 0, 0.45), rgba(255, 255, 255, 0.6)) !important;
+  border-radius: 999px !important;
+}
