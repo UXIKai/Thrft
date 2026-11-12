@@ -3886,3 +3886,24 @@ html body .chat-friends-tabs .chat-friends-pill {
     border-left: none;
   }
 }
+
+.chat-new-back {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.chat-new-back svg {
+  width: 22px;
+  height: 22px;
+}
+
+.chat-new-top {
+  min-height: 36px;
+}

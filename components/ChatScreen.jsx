@@ -611,6 +611,8 @@ export default function ChatScreen({
   const [memberGlobePhase, setMemberGlobePhase] = useState('closed')
   const [memberSearch, setMemberSearch] = useState('')
   const [groupNameStep, setGroupNameStep] = useState(false)
+  const [createPick, setCreatePick] = useState(null)
+  useEffect(() => { if (composer?.mode !== 'create') setCreatePick(null) }, [composer?.mode])
   const [createTab, setCreateTab] = useState('people') // people | group
   const [createQuery, setCreateQuery] = useState('')
   const memberGlobeVisible =
@@ -1103,6 +1105,7 @@ export default function ChatScreen({
   function switchCreateTab(tab) {
     setCreateTab(tab)
     setCreateQuery('')
+    setCreatePick(null)
     setGroupNameStep(false)
   }
 
@@ -2580,19 +2583,20 @@ export default function ChatScreen({
     <div className="chat-new-card">
               {!groupNameStep && (
                 <div className="chat-new-top">
-                  <button type="button" className="chat-new-foot-btn" aria-label="Back to chats" onClick={closeComposer}>
+                  <button type="button" className="chat-new-back is-bare" aria-label="Back to chats" onClick={closeComposer}>
                     <BackIcon />
                   </button>
-                  {createTab === 'group' && (
+                  {createQuery.trim() && (createTab === 'group' ? draftMembers.length > 0 : createPick) && (
                     <button
                       type="button"
-                      className="chat-new-foot-btn is-primary"
-                      aria-label={`Done, ${draftMembers.length} selected`}
-                      disabled={draftMembers.length === 0}
-                      onClick={() => { setGroupNameStep(true); setDraftName(''); setCreateQuery('') }}
+                      className="chat-new-back is-bare"
+                      aria-label={createTab === 'group' ? `Done, ${draftMembers.length} selected` : `Message ${createPick}`}
+                      onClick={() => {
+                        if (createTab === 'group') { setGroupNameStep(true); setDraftName(''); setCreateQuery('') }
+                        else startChatWithUser(createPick)
+                      }}
                     >
                       <svg viewBox="0 0 24 24" aria-hidden><path d="m5 12.5 4.5 4.5L19 7.5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                      {draftMembers.length > 0 && <span>{draftMembers.length}</span>}
                     </button>
                   )}
                 </div>
@@ -2715,9 +2719,7 @@ export default function ChatScreen({
                                 >
                                   {friend ? <CheckCircleIcon className="chat-ico" /> : <PlusIcon />}
                                 </button>
-                                <button type="button" className="chat-users-action is-message" aria-label={`Message ${name}`} onClick={() => startChatWithUser(name)}>
-                                  <PersonIcon />
-                                </button>
+                                <input type="checkbox" className="chat-new-check" checked={createPick === name} onChange={() => setCreatePick((c) => (c === name ? null : name))} aria-label={`Select ${name}`} />
                               </div>
                             </div>
                           </li>
