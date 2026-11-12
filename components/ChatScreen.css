@@ -5091,3 +5091,13 @@ html body .chat-new-field {
     border-radius: 44px;
   }
 }
+
+/* Only the card is painted; the corners around it show what is behind, top and bottom alike */
+@media (max-width: 719px), (max-height: 499px) {
+  html body .chat-screen .chat-mobile-nav-scrim {
+    background: transparent;
+    margin: 0;
+    top: 0;
+    bottom: 0;
+  }
+}
