@@ -4636,13 +4636,17 @@ html body .chat-new-card {
     font-size: 1.5rem;
     font-weight: 600;
     line-height: 36px;
+    text-align: center;
   }
 
   .chat-friends-active .chat-friends-active-empty {
-    text-align: left;
+    text-align: center;
   }
 
-  html body .chat-desktop-thread .chat-friends-active-head {
+  html body .chat-desktop-thread .chat-friends-active-head:not(.is-collapsed) {
+    position: fixed;
+    top: calc(max(8px, env(safe-area-inset-top, 0px)) + 14px);
+    right: calc(min(80vw, 340px) - 52px);
     z-index: 61;
   }
 

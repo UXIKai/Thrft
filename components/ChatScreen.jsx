@@ -797,9 +797,9 @@ export default function ChatScreen({
   }, [chats])
 
   useEffect(() => {
-    onThreadActiveChange?.(Boolean(activeChatId) || (!isDesktop && mobileNavOpen))
+    onThreadActiveChange?.(Boolean(activeChatId) || (!isDesktop && (mobileNavOpen || activeNowOpen)))
     return () => onThreadActiveChange?.(false)
-  }, [activeChatId, isDesktop, mobileNavOpen, onThreadActiveChange])
+  }, [activeChatId, isDesktop, mobileNavOpen, activeNowOpen, onThreadActiveChange])
 
   useEffect(() => {
     if (!activeChatId) {
