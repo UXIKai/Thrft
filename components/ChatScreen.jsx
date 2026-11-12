@@ -588,6 +588,7 @@ export default function ChatScreen({
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
   const [navDragP, setNavDragP] = useState(null)
   const navDragRef = useRef(null)
+  const [onlineDragP, setOnlineDragP] = useState(null)
   const [memberDraft, setMemberDraft] = useState('')
   const [menuId, setMenuId] = useState(null)
   const [dmRenaming, setDmRenaming] = useState(false)
@@ -2780,12 +2781,20 @@ export default function ChatScreen({
 
   return (
     <div
-      className={`chat-screen${composer?.mode === 'create' ? ' is-new-chat' : ''}${isDesktop ? ' is-desktop' : ''}${isDesktop && sidebarCollapsed ? ' is-sidebar-collapsed' : ''}${!isDesktop && (mobileNavOpen || (navDragP ?? 0) > 0.01) ? ' is-mobile-nav-open' : ''}${navDragP !== null ? ' is-nav-dragging' : ''}`}
-      style={!isDesktop ? { '--nav-p': navDragP ?? (mobileNavOpen ? 1 : 0) } : undefined}
+      className={`chat-screen${composer?.mode === 'create' ? ' is-new-chat' : ''}${isDesktop ? ' is-desktop' : ''}${isDesktop && sidebarCollapsed ? ' is-sidebar-collapsed' : ''}${!isDesktop && (mobileNavOpen || (navDragP ?? 0) > 0.01) ? ' is-mobile-nav-open' : ''}${navDragP !== null || onlineDragP !== null ? ' is-nav-dragging' : ''}`}
+      style={!isDesktop ? { '--nav-p': navDragP ?? (mobileNavOpen ? 1 : 0), '--online-p': onlineDragP ?? (activeNowOpen ? 1 : 0) } : undefined}
       onTouchStart={(e) => {
         if (isDesktop || e.touches.length !== 1 || e.target.closest?.('input,textarea,select')) return
         const t = e.touches[0]
-        navDragRef.current = { x: t.clientX, y: t.clientY, open: mobileNavOpen, dir: null }
+        navDragRef.current = {
+          x: t.clientX,
+          y: t.clientY,
+          navOpen: mobileNavOpen,
+          onlineOpen: activeNowOpen,
+          hasOnline: Boolean(e.currentTarget.querySelector('.chat-friends-active')),
+          side: null,
+          dir: null,
+        }
       }}
       onTouchMove={(e) => {
         const d = navDragRef.current
@@ -2795,23 +2804,40 @@ export default function ChatScreen({
         const dy = t.clientY - d.y
         if (!d.dir) {
           if (Math.abs(dx) < 12 && Math.abs(dy) < 12) return
-          d.dir = Math.abs(dx) > Math.abs(dy) * 1.3 && (d.open ? dx < 0 : dx > 0) ? 'h' : 'v'
+          d.dir = 'v'
+          if (Math.abs(dx) > Math.abs(dy) * 1.3) {
+            if (d.navOpen) { if (dx < 0) { d.dir = 'h'; d.side = 'nav' } }
+            else if (d.onlineOpen && d.hasOnline) { if (dx > 0) { d.dir = 'h'; d.side = 'online' } }
+            else if (dx > 0) { d.dir = 'h'; d.side = 'nav' }
+            else if (d.hasOnline) { d.dir = 'h'; d.side = 'online' }
+          }
         }
         if (d.dir !== 'h') return
         const width = Math.min(window.innerWidth * 0.8, 340)
-        d.p = Math.max(0, Math.min(1, (d.open ? 1 : 0) + dx / width))
-        setNavDragP(d.p)
+        if (d.side === 'nav') {
+          d.p = Math.max(0, Math.min(1, (d.navOpen ? 1 : 0) + dx / width))
+          setNavDragP(d.p)
+        } else {
+          d.p = Math.max(0, Math.min(1, (d.onlineOpen ? 1 : 0) - dx / width))
+          setOnlineDragP(d.p)
+        }
       }}
       onTouchEnd={() => {
         const d = navDragRef.current
         navDragRef.current = null
         if (!d || d.dir !== 'h') return
         const open = (d.p ?? 0) > 0.5
-        if (open) setActiveNowOpen(false)
-        setMobileNavOpen(open)
-        setNavDragP(null)
+        if (d.side === 'nav') {
+          if (open) setActiveNowOpen(false)
+          setMobileNavOpen(open)
+          setNavDragP(null)
+        } else {
+          if (open) setMobileNavOpen(false)
+          setActiveNowOpen(open)
+          setOnlineDragP(null)
+        }
       }}
-      onTouchCancel={() => { navDragRef.current = null; setNavDragP(null) }}
+      onTouchCancel={() => { navDragRef.current = null; setNavDragP(null); setOnlineDragP(null) }}
       onClick={(e) => {
         const onContent = e.target.closest?.('button,a,input,textarea,select,label,img,li,svg,.chat-new-card,.chat-thread,.chat-friends-tab-group,.chat-sidebar-header,.chat-images-grid,.chat-images-title,.chat-desktop-empty')
         if (isDesktop && !onContent) {
@@ -3217,12 +3243,12 @@ export default function ChatScreen({
                   </ul>
                 )}
               </div>
-              {!isDesktop && activeNowOpen && (
+              {!isDesktop && (activeNowOpen || onlineDragP !== null) && (
                 <button type="button" className="chat-mobile-nav-scrim is-online" aria-label="Close Online" onClick={() => setActiveNowOpen(false)} />
               )}
-              <aside className={`chat-friends-active${activeNowOpen ? '' : ' is-collapsed'}`} aria-label="Online" hidden={!activeNowOpen}>
-                {activeNowOpen && <h3 className="chat-friends-active-aside-title">Online</h3>}
-                {activeNowOpen && <p className="chat-friends-active-empty">It's quiet for now…</p>}
+              <aside className={`chat-friends-active${activeNowOpen ? '' : ' is-collapsed'}`} aria-label="Online" hidden={!activeNowOpen && onlineDragP === null}>
+                {(activeNowOpen || onlineDragP !== null) && <h3 className="chat-friends-active-aside-title">Online</h3>}
+                {(activeNowOpen || onlineDragP !== null) && <p className="chat-friends-active-empty">It's quiet for now…</p>}
               </aside>
               </div>
             </div>

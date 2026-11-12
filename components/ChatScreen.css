@@ -5116,3 +5116,19 @@ html body .chat-new-field {
     border-width: 0 1px 0 0;
   }
 }
+
+/* Swipe-driven Online panel: --online-p (0..1) follows the finger */
+@media (max-width: 719px), (max-height: 499px) {
+  html body .chat-desktop-thread .chat-friends-active:not([hidden]) {
+    transform: translateX(calc((1 - var(--online-p, 1)) * 102%));
+    transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  html body .chat-screen .chat-mobile-nav-scrim.is-online {
+    width: calc(100% - min(80vw, 340px) * var(--online-p, 1) + 44px);
+    transition: width 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  html body .chat-screen.is-nav-dragging .chat-friends-active,
+  html body .chat-screen.is-nav-dragging .chat-mobile-nav-scrim.is-online {
+    transition: none;
+  }
+}
