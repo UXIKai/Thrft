@@ -1616,3 +1616,19 @@ html[data-scheme='light']:not([data-moonlight='on']) body .tab-bar .tab-item,
 html[data-scheme='light']:not([data-moonlight='on']) body .tab-bar .tab-item * {
   color: #fff !important;
 }
+
+/* Navigation bar is an 80% tint in every mode; the slider button on it is clear */
+html:not([data-moonlight='on']) body .tab-bar {
+  background: rgba(0, 0, 0, 0.8) !important;
+  background-image: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+html body .tab-bar .tab-pill,
+html body .tab-bar.is-dragging .tab-pill,
+html body .tab-bar.is-pressed .tab-pill {
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
