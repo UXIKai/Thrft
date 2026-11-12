@@ -1728,49 +1728,9 @@ export default function ChatScreen({
             document.body,
           )}
         <header className="chat-thread-top">
-          <button
-            type="button"
-            className="chat-top-btn"
-            aria-label="Back to chats"
-            onClick={() => {
-              setActiveChatId(null)
-              setDraftMessage('')
-              setAttachOpen(false)
-              setLikedPickerOpen(false)
-              setContactSheetOpen(false)
-              setMembersSheetOpen(false)
-              setEditingNick(false)
-              setPeerProfile(null)
-            }}
-          >
-            <BackIcon />
-          </button>
+          <span className="chat-top-btn" aria-hidden />
           <span className="chat-thread-heading" aria-hidden />
-          {activeChat.kind === 'group' ? (
-            <button
-              type="button"
-              className="chat-top-btn"
-              aria-label="More"
-              onClick={openContactSheet}
-            >
-              <DotsIcon />
-            </button>
-          ) : activeChat.kind === 'dm' ? (
-            <span className="chat-top-btn" aria-hidden />
-          ) : (
-            <button
-              type="button"
-              className="chat-top-btn"
-              aria-label="More"
-              ref={(el) => {
-                if (el) dotsRefs.current.set(activeChat.id, el)
-                else dotsRefs.current.delete(activeChat.id)
-              }}
-              onClick={() => openMenu(activeChat.id)}
-            >
-              <DotsIcon />
-            </button>
-          )}
+          <span className="chat-top-btn" aria-hidden />
         </header>
         <div className="chat-thread-hero">
           <button
@@ -1873,6 +1833,23 @@ export default function ChatScreen({
         >
           {/* Full-width bar; + and send live inside. Attach tray still floats above. */}
           <div className="chat-compose-box" ref={attachWrapRef}>
+            <button
+            type="button"
+            className="chat-compose-back"
+            aria-label="Back to chats"
+            onClick={() => {
+              setActiveChatId(null)
+              setDraftMessage('')
+              setAttachOpen(false)
+              setLikedPickerOpen(false)
+              setContactSheetOpen(false)
+              setMembersSheetOpen(false)
+              setEditingNick(false)
+              setPeerProfile(null)
+            }}
+          >
+            <BackIcon />
+          </button>
             <div className="chat-compose-attach">
               {attachOpen ? (
                 <div

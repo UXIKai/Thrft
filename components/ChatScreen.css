@@ -3205,3 +3205,15 @@ html body button.chat-contact-nick-save {
     font-size: 0.9rem;
   }
 }
+
+.chat-compose-back {
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: none;
+  background: none;
+  color: inherit;
+}
