@@ -1188,3 +1188,11 @@ html body .saved-brand-pill {
     backdrop-filter: url('#lg-brand-bubble');
   }
 }
+
+/* Snap points fight the edge glide */
+html body .saved-fav-brands {
+  scroll-snap-type: none;
+  scroll-behavior: auto;
+  overflow-x: auto;
+}
+html body .saved-fav-brands .saved-item { scroll-snap-align: none; }
