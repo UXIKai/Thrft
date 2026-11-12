@@ -1883,12 +1883,13 @@ html body .tab-bar.is-pressed .tab-pill::before {
 .tab-bar {
   --tab-h: clamp(64px, 52px + 1.5vw, 78px);
   --tab-gap: calc(var(--tab-h) * 0.0625);
+  --tab-height-reduction: 15px;
 }
 
 @media (min-width: 720px) {
   .tab-bar {
     --tab-extra-width: 20px;
-    --tab-height-reduction: 15px;
+    --tab-height-reduction: 30px;
   }
 }
 
