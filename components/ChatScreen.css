@@ -4340,8 +4340,8 @@ html body .chat-search-modal-row:hover {
 
 html body .chat-friends-active-head button.chat-friends-active-toggle,
 html body .chat-friends-active .chat-friends-active-head button.chat-friends-active-toggle {
-  left: auto;
-  right: 8px;
+  right: auto;
+  left: 8px;
 }
 
 html body .chat-friends-active-head.is-collapsed button.chat-friends-active-toggle {
