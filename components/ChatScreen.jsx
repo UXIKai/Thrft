@@ -3121,14 +3121,6 @@ export default function ChatScreen({
               </nav>
               <div className="chat-friends-body">
               <div className="chat-friends-panel">
-                <input
-                  type="search"
-                  className="chat-friends-search"
-                  placeholder="Search"
-                  aria-label="Search friends"
-                  value={friendsQuery}
-                  onChange={(e) => setFriendsQuery(e.target.value)}
-                />
                 {friendsView.list.length === 0 ? (
                   <p className="chat-desktop-empty">{friendsView.empty}</p>
                 ) : (
