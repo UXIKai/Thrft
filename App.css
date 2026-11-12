@@ -1995,3 +1995,12 @@ html body .stage.is-product-open .tab-bar {
   pointer-events: none;
   visibility: hidden;
 }
+
+/* Create walkthrough: nav hidden on mobile, hover-revealed on desktop via auto-hide */
+@media (max-width: 719px), (max-height: 499px) {
+  .stage.is-create-walkthrough .tab-bar {
+    opacity: 0;
+    pointer-events: none;
+    visibility: hidden;
+  }
+}
