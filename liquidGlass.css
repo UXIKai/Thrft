@@ -1685,3 +1685,28 @@ html body .chat-friends-tab:active {
     inset 0 2px 4px rgba(0, 0, 0, 0.5),
     inset 0 -1px 0 rgba(255, 255, 255, 0.5) !important;
 }
+
+/* Friends tabs: true liquid glass (refraction filter, no frosted blur or haze) */
+html body .chat-friends-tab,
+html body .chat-friends-tab.is-active {
+  background: light-dark(rgba(0, 0, 0, 0.015), rgba(255, 255, 255, 0.015)) !important;
+  backdrop-filter: blur(1px) !important;
+  -webkit-backdrop-filter: blur(1px) !important;
+}
+
+@supports (backdrop-filter: url('#lg-btn')) {
+  html body .chat-friends-tab,
+  html body .chat-friends-tab.is-active,
+  html body .chat-friends-tab:hover,
+  html body .chat-friends-tab:active,
+  html body .chat-friends-tab.is-active:hover {
+    backdrop-filter: blur(1px) url('#lg-btn') !important;
+    -webkit-backdrop-filter: blur(1px) url('#lg-btn') !important;
+  }
+}
+
+html body .chat-friends-tab:hover,
+html body .chat-friends-tab:active,
+html body .chat-friends-tab.is-active:hover {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0.02) 50%, rgba(0, 0, 0, 0.12) 100%) !important;
+}
