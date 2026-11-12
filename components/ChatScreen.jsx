@@ -1279,6 +1279,7 @@ export default function ChatScreen({
   }
 
   function backToChats() {
+    if (isDesktop) onBack?.()
     setActiveChatId(null)
     setDraftMessage('')
     setAttachOpen(false)
