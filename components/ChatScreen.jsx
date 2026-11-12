@@ -247,6 +247,21 @@ function PeopleIcon() {
   )
 }
 
+function ComposeIcon() {
+  return (
+    <svg className="chat-ico" viewBox="0 0 24 24" aria-hidden>
+      <path
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M11 4H6.5A2.5 2.5 0 0 0 4 6.5v11A2.5 2.5 0 0 0 6.5 20h11a2.5 2.5 0 0 0 2.5-2.5V13M18.4 3.6a1.8 1.8 0 0 1 2.5 2.5L12 15l-3.5 1 1-3.5z"
+      />
+    </svg>
+  )
+}
+
 function PencilIcon() {
   return (
     <svg className="chat-ico" viewBox="0 0 24 24" aria-hidden>
@@ -2571,7 +2586,7 @@ export default function ChatScreen({
       <section className="chat-section chat-list-section" aria-label="Chats">
         <nav className="chat-list-quick" aria-label="Quick actions">
           <button type="button" className="chat-list-quick-btn is-bare" onClick={openCreateGroup}>
-            <PencilIcon />
+            <ComposeIcon />
             <span>New chat</span>
           </button>
           <button
