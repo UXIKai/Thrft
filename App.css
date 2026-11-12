@@ -1062,7 +1062,9 @@ html[data-bg-color='none'] .stage.is-bg-none .atmosphere {
   border: 1px solid var(--glass-border, light-dark(rgba(0, 0, 0, 0.28), rgba(255, 255, 255, 0.28)));
   outline: none;
   box-shadow: var(--glass-depth, 0 8px 24px rgba(0, 0, 0, 0.28));
-  background: #000;
+  background: var(--glass-tint, light-dark(rgba(219, 219, 219, 0.06), rgba(36, 36, 36, 0.06)));
+  backdrop-filter: blur(25px) saturate(var(--glass-sat, 1.2));
+  -webkit-backdrop-filter: blur(25px) saturate(var(--glass-sat, 1.2));
   -webkit-mask-image: none;
   mask-image: none;
   transition:

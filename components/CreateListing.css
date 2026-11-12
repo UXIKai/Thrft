@@ -812,9 +812,9 @@ html body .listing-wheel .listing-wheel-input {
   align-self: center;
   box-sizing: border-box;
   border: none;
-  background: #000 !important;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
+  background: var(--glass-tint, light-dark(rgba(219, 219, 219, 0.06), rgba(36, 36, 36, 0.06))) !important;
+  backdrop-filter: blur(25px) saturate(var(--glass-sat, 1.2));
+  -webkit-backdrop-filter: blur(25px) saturate(var(--glass-sat, 1.2));
   box-shadow: none;
   overflow: hidden;
 }
@@ -844,7 +844,7 @@ html body .listing-photo-choice-btn {
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
   border-radius: 0;
-  color: #fff;
+  color: inherit;
   padding: 0;
 }
 
@@ -875,8 +875,8 @@ html body .listing-photo-hit {
 }
 
 html body .listing-photo-choice-btn {
-  background: rgba(255, 255, 255, 0.12) !important;
-  color: #fff;
+  background: var(--glass-tint, light-dark(rgba(219, 219, 219, 0.06), rgba(36, 36, 36, 0.06))) !important;
+  color: light-dark(rgb(0, 0, 0), #fff);
   border-radius: 16px;
   width: 56px;
   height: 56px;
