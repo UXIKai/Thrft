@@ -4974,3 +4974,34 @@ html body .chat-new-field {
     background: light-dark(rgba(60, 60, 60, 0.55), rgba(24, 24, 26, 0.96));
   }
 }
+
+@media (max-width: 719px), (max-height: 499px) {
+  html body .chat-screen .chat-list-section {
+    border-radius: 0;
+    top: 0;
+    bottom: 0;
+  }
+  html body .chat-screen.is-mobile-nav-open .chat-sidebar-title {
+    left: 24px;
+  }
+  html body .chat-screen.is-mobile-nav-open .chat-sidebar-control[aria-label='Search conversations'] {
+    left: calc(min(80vw, 340px) - 64px);
+    top: calc(max(8px, env(safe-area-inset-top, 0px)) + 10px);
+  }
+  html body .chat-mobile-nav-scrim {
+    left: calc(min(80vw, 340px) - 44px);
+    border-radius: 0;
+    background: #000;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    overflow: hidden;
+  }
+  html body .chat-mobile-nav-scrim::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 0 44px;
+    border-radius: 44px 0 0 44px;
+    background: light-dark(rgba(60, 60, 60, 0.9), #161618);
+    border-left: 1px solid rgba(255, 255, 255, 0.08);
+  }
+}
