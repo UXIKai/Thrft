@@ -347,9 +347,49 @@ export default function SavedScreen({
   const [fabOpen, setFabOpen] = useState(false)
   const brandRowRef = useRef(null)
   const [brandPill, setBrandPill] = useState(null)
-  useEffect(() => {
-    movePillTo(brandRowRef.current?.querySelector('.saved-item'))
-  }, [favoriteBrands.length, items.length])
+  const [pillActive, setPillActive] = useState(false)
+  const dragRef = useRef(null)
+  function brandAtX(clientX) {
+    const row = brandRowRef.current
+    if (!row) return null
+    let best = null
+    let bestDist = Infinity
+    row.querySelectorAll('.saved-item').forEach((el) => {
+      const r = el.getBoundingClientRect()
+      const d = Math.abs(clientX - (r.left + r.width / 2))
+      if (d < bestDist) { best = el; bestDist = d }
+    })
+    return best
+  }
+  function onBrandDown(e) {
+    const el = e.target.closest?.('.saved-item')
+    if (!el) return
+    e.currentTarget.setPointerCapture?.(e.pointerId)
+    dragRef.current = el
+    movePillTo(el)
+    setPillActive(true)
+  }
+  function onBrandMove(e) {
+    if (!dragRef.current) return
+    const row = brandRowRef.current
+    const rect = row.getBoundingClientRect()
+    if (e.clientX > rect.right - 40) row.scrollLeft += 12
+    else if (e.clientX < rect.left + 40) row.scrollLeft -= 12
+    const el = brandAtX(e.clientX)
+    if (el && el !== dragRef.current) {
+      dragRef.current = el
+      movePillTo(el)
+    }
+  }
+  function onBrandUp() {
+    const el = dragRef.current
+    dragRef.current = null
+    setPillActive(false)
+    if (!el) return
+    const id = el.dataset.brandId
+    if (selectMode) toggleSelected(`brand-${id}`)
+    else onOpenBrand?.(id, el.dataset.brandName)
+  }
   function movePillTo(el) {
     if (!el) return
     setBrandPill({ left: el.offsetLeft, top: el.offsetTop, width: el.offsetWidth, height: el.offsetHeight })
@@ -653,12 +693,14 @@ export default function SavedScreen({
         ref={brandRowRef}
         className={`saved-fav-brands${fabOpen ? ' is-fab-open' : ''}`}
         aria-label="Favorite brands"
-        onPointerOver={(e) => movePillTo(e.target.closest?.('.saved-item'))}
-        onPointerDown={(e) => movePillTo(e.target.closest?.('.saved-item'))}
+        onPointerDown={onBrandDown}
+        onPointerMove={onBrandMove}
+        onPointerUp={onBrandUp}
+        onPointerCancel={() => { dragRef.current = null; setPillActive(false) }}
       >
         {favoriteBrandCards.length > 0 && (
           <span
-            className="saved-brand-pill"
+            className={`saved-brand-pill${pillActive ? ' is-active' : ''}`}
             aria-hidden
             style={brandPill ? { transform: `translate(${brandPill.left - 6}px, ${brandPill.top - 6}px)`, width: brandPill.width + 12, height: brandPill.height + 12 } : { opacity: 0 }}
           />
@@ -668,7 +710,13 @@ export default function SavedScreen({
                 key={`brand-${brand.id}`}
                 type="button"
                 className={`saved-item${selectedKeys.includes(`brand-${brand.id}`) ? ' is-selected' : ''}`}
-                onClick={() => (selectMode ? toggleSelected(`brand-${brand.id}`) : onOpenBrand?.(brand.id, brand.name))}
+                data-brand-id={brand.id}
+                data-brand-name={brand.name}
+                onClick={(e) => {
+                  if (e.detail !== 0) return
+                  if (selectMode) toggleSelected(`brand-${brand.id}`)
+                  else onOpenBrand?.(brand.id, brand.name)
+                }}
                 aria-label={`${brand.name} listings`}
               >
                 <SavedBrandLogo name={brand.name} />

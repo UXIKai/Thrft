@@ -1122,3 +1122,16 @@ html body .saved-fav-brands .saved-item { position: relative; z-index: 1; }
 }
 
 html body .saved-fav-brands:empty { display: none !important; }
+
+/* Clearer glass strip; bubble only appears while pressing */
+html body .saved-fav-brands {
+  background: rgba(255, 255, 255, 0.03);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  border-color: rgba(255, 255, 255, 0.14);
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.saved-brand-pill { opacity: 0; transform-origin: center; }
+.saved-brand-pill.is-active { opacity: 1; }
