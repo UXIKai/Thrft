@@ -3045,7 +3045,7 @@ export default function ChatScreen({
               <nav className="chat-friends-tabs" aria-label="Friends">
                 <span className="chat-friends-label">
                   <svg viewBox="-3 0 24 24" aria-hidden width="20" height="20" fill="currentColor"><circle cx="9" cy="8" r="3.5" /><path d="M2.5 20c0-3.6 2.9-6 6.500-6s6.500 2.400 6.500 6z" /></svg>
-                  Friends {friends.length}
+                  {friends.length}
                 </span>
                 <div
                   className="chat-friends-tab-group"
