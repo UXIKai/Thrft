@@ -1,8 +1,9 @@
 export function MarketIcon({ className }) {
   return (
-    <svg className={className} viewBox="0 0 24 24" aria-hidden="true">
-      <path fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" d="M7 10 10 3.5M17 10l-3-6.5" />
-      <path fill="currentColor" fillRule="evenodd" d="M2.5 9h19a1 1 0 0 1 1 1v1.2a1 1 0 0 1-1 1h-.3l-1.6 8.1a1.6 1.6 0 0 1-1.6 1.3H6a1.6 1.6 0 0 1-1.6-1.3l-1.6-8.1h-.3a1 1 0 0 1-1-1V10a1 1 0 0 1 1-1Zm5.3 5a.9.9 0 0 0-.9.9v3.4a.9.9 0 0 0 1.8 0v-3.4a.9.9 0 0 0-.9-.9Zm4.2 0a.9.9 0 0 0-.9.9v3.4a.9.9 0 0 0 1.8 0v-3.4a.9.9 0 0 0-.9-.9Zm4.2 0a.9.9 0 0 0-.9.9v3.4a.9.9 0 0 0 1.8 0v-3.4a.9.9 0 0 0-.9-.9Z" />
+    <svg className={className} viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M5.5 4h13l2.2 4.6c0 1.1-.9 2-2 2s-2-.9-2-2c0 1.1-.9 2-2 2s-2-.9-2-2c0 1.1-.9 2-2 2s-2-.9-2-2c0 1.1-.9 2-2 2s-2-.9-2-2L5.5 4Z" />
+      <path d="M5.4 10.4V20M18.6 10.4V20M3.5 20h17" />
+      <path d="M8 20v-5.2h3.2V20M14 13h3v3h-3z" />
     </svg>
   )
 }
