@@ -4457,3 +4457,7 @@ html body .chat-new-card {
   width: min(100%, 560px);
   flex: none;
 }
+
+html body .chat-new-card {
+  width: min(100%, 700px);
+}
