@@ -811,11 +811,11 @@ html body .listing-wheel .listing-wheel-input {
   width: calc(100% - 15px);
   align-self: center;
   box-sizing: border-box;
-  border: none;
-  background: var(--glass-tint, light-dark(rgba(219, 219, 219, 0.06), rgba(36, 36, 36, 0.06))) !important;
-  backdrop-filter: blur(25px) saturate(var(--glass-sat, 1.2));
-  -webkit-backdrop-filter: blur(25px) saturate(var(--glass-sat, 1.2));
-  box-shadow: none;
+  background: var(--glass-clear-tint, light-dark(rgba(219, 219, 219, 0.04), rgba(36, 36, 36, 0.04))) !important;
+  backdrop-filter: blur(var(--glass-clear-blur, 2px)) saturate(var(--glass-sat, 1.55));
+  -webkit-backdrop-filter: blur(var(--glass-clear-blur, 2px)) saturate(var(--glass-sat, 1.55));
+  border: 1px solid var(--glass-border, light-dark(rgba(87, 87, 87, 0.18), rgba(168, 168, 168, 0.18)));
+  box-shadow: var(--glass-clear-depth);
   overflow: hidden;
 }
 
@@ -875,7 +875,7 @@ html body .listing-photo-hit {
 }
 
 html body .listing-photo-choice-btn {
-  background: var(--glass-tint, light-dark(rgba(219, 219, 219, 0.06), rgba(36, 36, 36, 0.06))) !important;
+  background: var(--glass-clear-tint, light-dark(rgba(219, 219, 219, 0.04), rgba(36, 36, 36, 0.04))) !important;
   color: light-dark(rgb(0, 0, 0), #fff);
   border-radius: 16px;
   width: 56px;
