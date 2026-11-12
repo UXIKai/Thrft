@@ -1591,3 +1591,15 @@ html[data-moonlight='on'] body .tab-bar::before,
 html[data-moonlight='on'] body .tab-bar::after {
   display: none;
 }
+
+/* Normal look with the effect on: nav buttons are white */
+html[data-moonlight='off'][data-bg-image='atmosphere'] body .tab-bar .tab-item,
+html[data-moonlight='off'][data-bg-image='atmosphere'] body .tab-bar .tab-item.is-active,
+html[data-moonlight='off'][data-bg-image='atmosphere'] body .tab-bar .tab-item * {
+  color: #fff !important;
+}
+
+html[data-moonlight='off'][data-bg-image='atmosphere'] body .tab-bar .tab-item svg {
+  fill: currentColor;
+  stroke: currentColor;
+}
