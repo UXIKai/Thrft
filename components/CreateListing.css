@@ -810,7 +810,7 @@ html body .listing-wheel .listing-wheel-input {
   height: auto;
   box-sizing: border-box;
   border: none;
-  background: light-dark(#000, #fff) !important;
+  background: #000 !important;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
   box-shadow: none;
@@ -842,7 +842,7 @@ html body .listing-photo-choice-btn {
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
   border-radius: 0;
-  color: light-dark(#fff, #000);
+  color: #fff;
   padding: 0;
 }
 
@@ -878,8 +878,8 @@ html body .listing-photo-hit {
 }
 
 html body .listing-photo-choice-btn {
-  background: light-dark(#000, #fff) !important;
-  color: light-dark(#fff, #000);
+  background: #000 !important;
+  color: #fff;
   border-radius: 16px;
   width: 56px;
   height: 56px;
