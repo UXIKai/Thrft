@@ -422,7 +422,7 @@ function rgba(rgb, a) {
  * Linear with the thumb so pulling toward Clear actually clears the glass.
  */
 export function applyGlassTokens() {
-  const percent = DEFAULT_BAR_TRANSPARENCY
+  const percent = currentGlassPct
   const clear = percent / 100
   const opaque = 1 - clear
   const color = resolveColor(currentColorId)
@@ -463,10 +463,12 @@ export function applyGlassTokens() {
   root.style.setProperty('--app-color-rgb', frostBase.join(', '))
 
   root.style.setProperty('--glass-transparency', String(percent))
-  root.style.setProperty('--glass-clear-tint', rgba(base, 0.2))
-  root.style.setProperty('--glass-clear-tint-active', rgba(base, 0.2))
-  root.style.setProperty('--glass-tint', rgba(base, 0.2))
-  root.style.setProperty('--glass-tint-active', rgba(base, 0.2))
+  // Slider only drives button/container fill; 20 (default) = 20% opaque, 0 = 80%, 100 = clear
+  const fill = percent <= 20 ? 0.8 - percent * 0.03 : (0.2 * (100 - percent)) / 80
+  root.style.setProperty('--glass-clear-tint', rgba(base, fill))
+  root.style.setProperty('--glass-clear-tint-active', rgba(base, Math.min(1, fill + 0.06)))
+  root.style.setProperty('--glass-tint', rgba(base, fill))
+  root.style.setProperty('--glass-tint-active', rgba(base, Math.min(1, fill + 0.06)))
   root.style.setProperty('--glass-border', rgba(rim, border))
   root.style.setProperty('--glass-blur', `${blur.toFixed(2)}px`)
   root.style.setProperty('--glass-clear-blur', `${clearBlur.toFixed(2)}px`)
@@ -604,7 +606,7 @@ export function applyBgAtmosphereTokens() {
 }
 
 export function applyBarTransparency(pct) {
-  currentGlassPct = DEFAULT_BAR_TRANSPARENCY
+  currentGlassPct = clampPct(pct)
   try {
     localStorage.setItem(GLASS_TRANSPARENCY_KEY, String(currentGlassPct))
   } catch {
@@ -618,7 +620,7 @@ export function readBarTransparency() {
   try {
     const raw = localStorage.getItem(GLASS_TRANSPARENCY_KEY)
     if (raw == null) return DEFAULT_BAR_TRANSPARENCY
-    return DEFAULT_BAR_TRANSPARENCY
+    return clampPct(raw)
   } catch {
     return DEFAULT_BAR_TRANSPARENCY
   }
