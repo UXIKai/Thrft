@@ -710,3 +710,104 @@
   color: light-dark(#111, #fff);
   fill: currentColor;
 }
+
+.saved-page-header { z-index: 30; }
+
+.saved-fab {
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 35;
+  width: 40px;
+}
+
+.saved-fab-toggle {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 36px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: light-dark(#111, #fff);
+  cursor: pointer;
+}
+
+.saved-fab-toggle svg {
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.saved-fab.is-open .saved-fab-toggle svg {
+  transform: rotate(135deg);
+}
+
+.saved-fab-items {
+  position: absolute;
+  top: 40px;
+  right: 0;
+  width: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.saved-fab.is-open .saved-fab-items {
+  pointer-events: auto;
+}
+
+.saved-fab-item.saved-fab-item,
+.saved-fab-item.saved-filter-wrap,
+.saved-fab-item.saved-edit-row {
+  --pins-edit-w: 40px;
+  --pins-edit-h: 40px;
+  position: relative;
+  width: 40px;
+  height: 40px;
+  min-height: 40px;
+  margin: 0;
+  opacity: 0;
+  transform: translateY(-24px) rotate(-180deg) scale(0.3);
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.2s ease;
+  transition-delay: calc((2 - var(--i)) * 40ms);
+}
+
+.saved-fab.is-open .saved-fab-item.saved-fab-item,
+.saved-fab.is-open .saved-fab-item.saved-filter-wrap,
+.saved-fab.is-open .saved-fab-item.saved-edit-row {
+  opacity: 1;
+  transform: none;
+  transition-delay: calc(var(--i) * 60ms);
+}
+
+.saved-fab-btn,
+.saved-fab-item .saved-filter-btn,
+.saved-fab-item .saved-pencil-btn {
+  box-sizing: border-box;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 50%;
+  border: 1.5px solid light-dark(#111, #fff);
+  background: var(--glass-clear-tint, transparent);
+  color: light-dark(#111, #fff);
+  cursor: pointer;
+}
+
+.saved-fab-btn svg,
+.saved-fab-item .saved-filter-ico,
+.saved-fab-item .saved-pencil-ico {
+  width: 18px;
+  height: 18px;
+  transform: none;
+}
+
+.saved-fab-item .saved-filter-menu,
+.saved-fab-item .saved-edit-menu {
+  top: 0;
+  right: calc(100% + 8px);
+  left: auto;
+}

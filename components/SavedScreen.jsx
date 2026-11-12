@@ -348,6 +348,7 @@ export default function SavedScreen({
   const [favoriteBrands, setFavoriteBrands] = useState(() =>
     Array.isArray(favoredBrands) ? [...favoredBrands] : [],
   )
+  const [fabOpen, setFabOpen] = useState(false)
   const [browseMode, setBrowseMode] = useState('brands') // brands | items
   const [room, setRoom] = useState(null) // null = chooser | brands | items
   const [globePhase, setGlobePhase] = useState('closed') // closed | enter | open | exit
@@ -553,60 +554,38 @@ export default function SavedScreen({
         <h1 className="saved-list-title" aria-label="Liked">
           {room === 'brands' ? <StoreIcon className="saved-top-ico" /> : <ClosetIcon className="saved-top-ico" />}
         </h1>
+<div className={`saved-fab${fabOpen ? ' is-open' : ''}`}>
         <button
           type="button"
-          className="saved-dock-search is-bare"
-          aria-label="Search liked"
-          aria-expanded={searchOpen}
+          className="saved-fab-toggle"
+          aria-label={fabOpen ? 'Close actions' : 'Open actions'}
+          aria-expanded={fabOpen}
           onClick={() => {
-            flushSync(() => setSearchOpen(true))
-            document.getElementById('saved-search-input')?.focus({ preventScroll: true })
+            setEditMenuOpen(false)
+            setFilterOpen(false)
+            setFabOpen((open) => !open)
           }}
         >
-          <SearchIcon />
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M12 5v14M5 12h14" /></svg>
         </button>
-      </header>
-      <div className="saved-list-toolbar">
-        <div className={`saved-edit-row${editMenuOpen ? ' is-open' : ''}`} ref={editMenuRef}>
-          <button
-            type="button"
-            className="saved-pencil-btn"
-            aria-label="Edit"
-            aria-expanded={editMenuOpen}
-            aria-haspopup="menu"
-            onClick={() => {
-              setFilterOpen(false)
-              setEditMenuOpen((open) => !open)
-            }}
-          >
-            <PencilIcon />
-          </button>
-          {editMenuOpen ? (
-            <div className="saved-edit-menu" role="menu" aria-label="Liked edit actions">
-              <button
-                type="button"
-                role="menuitem"
-                className="saved-edit-menu-btn"
-                aria-label="Select"
-                onClick={() => setEditMenuOpen(false)}
-              >
-                <CheckCircleIcon />
-                <span className="saved-edit-menu-label">Select</span>
-              </button>
-              <button
-                type="button"
-                role="menuitem"
-                className="saved-edit-menu-btn"
-                aria-label="Edit"
-                onClick={() => setEditMenuOpen(false)}
-              >
-                <PinIcon />
-                <span className="saved-edit-menu-label">Edit</span>
-              </button>
-            </div>
-          ) : null}
-        </div>
-        <div className="saved-filter-wrap" ref={filterRef}>
+        <div className="saved-fab-items" aria-hidden={!fabOpen}>
+          <div className="saved-fab-item" style={{ '--i': 0 }}>
+            <button
+              type="button"
+              className="saved-fab-btn"
+              aria-label="Search liked"
+              aria-expanded={searchOpen}
+              tabIndex={fabOpen ? 0 : -1}
+              onClick={() => {
+                setFabOpen(false)
+                flushSync(() => setSearchOpen(true))
+                document.getElementById('saved-search-input')?.focus({ preventScroll: true })
+              }}
+            >
+              <SearchIcon />
+            </button>
+          </div>
+        <div className="saved-filter-wrap saved-fab-item" style={{ '--i': 1 }} ref={filterRef}>
           <button
             type="button"
             className={`saved-filter-btn${filterOpen ? ' is-on' : ''}`}
@@ -659,8 +638,48 @@ export default function SavedScreen({
             </div>
           ) : null}
         </div>
+        <div className={`saved-edit-row saved-fab-item${editMenuOpen ? ' is-open' : ''}`} ref={editMenuRef} style={{ '--i': 2 }}>
+          <button
+            type="button"
+            className="saved-pencil-btn"
+            aria-label="Edit"
+            aria-expanded={editMenuOpen}
+            aria-haspopup="menu"
+            onClick={() => {
+              setFilterOpen(false)
+              setEditMenuOpen((open) => !open)
+            }}
+          >
+            <PencilIcon />
+          </button>
+          {editMenuOpen ? (
+            <div className="saved-edit-menu" role="menu" aria-label="Liked edit actions">
+              <button
+                type="button"
+                role="menuitem"
+                className="saved-edit-menu-btn"
+                aria-label="Select"
+                onClick={() => setEditMenuOpen(false)}
+              >
+                <CheckCircleIcon />
+                <span className="saved-edit-menu-label">Select</span>
+              </button>
+              <button
+                type="button"
+                role="menuitem"
+                className="saved-edit-menu-btn"
+                aria-label="Edit"
+                onClick={() => setEditMenuOpen(false)}
+              >
+                <PinIcon />
+                <span className="saved-edit-menu-label">Edit</span>
+              </button>
+            </div>
+          ) : null}
+        </div>
+        </div>
       </div>
-
+      </header>
       <div className="saved-grid">
         {showBrands
           ? favoriteBrandCards.map((brand) => (
