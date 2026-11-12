@@ -4398,3 +4398,17 @@ html body .chat-friends-tabs > .chat-friends-active-head,
 html body .chat-friends-tabs > .chat-friends-active-head.is-collapsed {
   border-left: none !important;
 }
+
+html body .chat-search-modal .chat-search-modal-head button.chat-search-modal-close,
+html body .chat-search-modal .chat-search-modal-head button.chat-search-modal-close:hover,
+html body .chat-search-modal .chat-search-modal-head button.chat-search-modal-close:active,
+html body .chat-search-modal .chat-search-modal-head button.chat-search-modal-close:focus-visible {
+  border: none !important;
+  outline: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  min-height: 0 !important;
+}
