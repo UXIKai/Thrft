@@ -1351,6 +1351,7 @@ export default function ProfileScreen({
               )
             })()
           ) : (
+            stageEl && createPortal(
             <div className="closet-browse is-page">
               <header className="closet-page-head">
                 <button
@@ -1657,7 +1658,9 @@ export default function ProfileScreen({
                 </div>,
                 stageEl,
               )}
-            </div>
+            </div>,
+            stageEl,
+            )
           )}
         </div>
       </section>
