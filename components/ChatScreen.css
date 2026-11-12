@@ -4183,3 +4183,13 @@ html body .chat-friends-active .chat-friends-active-head button.chat-friends-act
 html body .chat-friends-active.is-collapsed .chat-friends-active-head button.chat-friends-active-toggle {
   left: auto;
 }
+
+html body .chat-new-card {
+  padding: 16px;
+  border-radius: 24px;
+  border: 1px solid light-dark(rgba(0, 0, 0, 0.18), rgba(255, 255, 255, 0.22));
+  background: rgba(var(--app-color-rgb, 36, 36, 36), 0.8);
+  backdrop-filter: blur(var(--glass-blur, 16px)) saturate(var(--glass-sat, 1.4));
+  -webkit-backdrop-filter: blur(var(--glass-blur, 16px)) saturate(var(--glass-sat, 1.4));
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.28);
+}
