@@ -4509,3 +4509,12 @@ html body .chat-new-card {
     background: rgba(0, 0, 0, 0.4);
   }
 }
+
+@media (max-width: 719px) {
+  .chat-screen.is-mobile-nav-open .chat-sidebar-back {
+    position: fixed;
+    top: max(12px, calc(env(safe-area-inset-top, 0px) + 8px));
+    left: calc(min(84vw, 340px) - 52px);
+    z-index: 61;
+  }
+}
