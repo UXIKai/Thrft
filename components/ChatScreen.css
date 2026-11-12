@@ -4924,3 +4924,21 @@ html body .chat-new-field {
     border-radius: 44px 0 0 44px;
   }
 }
+
+@media (max-width: 719px), (max-height: 499px) {
+  html body .chat-screen .chat-list-section {
+    border-radius: 44px;
+    border: 0;
+    box-shadow: none;
+    background: light-dark(rgba(250, 242, 244, 0.98), #000);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  html body .chat-mobile-nav-scrim {
+    left: calc(min(80vw, 340px) - 44px);
+    border-radius: 44px 0 0 44px;
+    background: light-dark(rgba(60, 60, 60, 0.45), rgba(34, 34, 36, 0.82));
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+  }
+}
