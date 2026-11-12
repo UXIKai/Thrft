@@ -611,6 +611,8 @@ export default function ChatScreen({
   const [memberGlobePhase, setMemberGlobePhase] = useState('closed')
   const [memberSearch, setMemberSearch] = useState('')
   const [groupNameStep, setGroupNameStep] = useState(false)
+  const [createTab, setCreateTab] = useState('people') // people | group
+  const [createQuery, setCreateQuery] = useState('')
   const memberGlobeVisible =
     memberGlobeOpen && memberGlobePhase !== 'closed'
 
@@ -683,7 +685,16 @@ export default function ChatScreen({
 
 
   const [accountSearch, setAccountSearch] = useState({ query: '', names: [], error: '', loading: false })
-  const accountQuery = (usersPickerOpen ? usersQuery : memberGlobeVisible && !groupNameStep ? memberSearch : '').trim()
+  const createSearching = composer?.mode === 'create' && !(createTab === 'group' && groupNameStep)
+  const accountQuery = (
+    usersPickerOpen
+      ? usersQuery
+      : memberGlobeVisible && !groupNameStep
+        ? memberSearch
+        : createSearching
+          ? createQuery
+          : ''
+  ).trim()
   const allMemberNames = accountSearch.query === accountQuery ? accountSearch.names : []
   const accountSearchError = accountSearch.query === accountQuery ? accountSearch.error : ''
 
@@ -867,6 +878,8 @@ export default function ChatScreen({
     setMemberGlobePhase('closed')
     setMemberSearch('')
     setGroupNameStep(false)
+    setCreateTab('people')
+    setCreateQuery('')
     setComposer({ mode: 'create' })
     setMenuId(null)
     setMenuPos(null)
@@ -983,6 +996,7 @@ export default function ChatScreen({
     setMemberGlobePhase('closed')
     setMemberSearch('')
     setGroupNameStep(false)
+    setCreateQuery('')
   }
 
   function onGroupButtonClick() {
@@ -1072,6 +1086,21 @@ export default function ChatScreen({
     setPeerProfile(null)
     setActiveChatId(openId)
     setDraftMessage('')
+  }
+
+  function toggleDraftMember(name) {
+    const key = name.toLowerCase()
+    setDraftMembers((prev) =>
+      prev.some((m) => m.toLowerCase() === key)
+        ? prev.filter((m) => m.toLowerCase() !== key)
+        : [...prev, name],
+    )
+  }
+
+  function switchCreateTab(tab) {
+    setCreateTab(tab)
+    setCreateQuery('')
+    setGroupNameStep(false)
   }
 
   function removeMember(name) {
@@ -2963,7 +2992,7 @@ export default function ChatScreen({
         </div>
       )}
 
-      {composer && !usersPickerOpen && (
+      {composer && composer.mode !== 'create' && !usersPickerOpen && (
         <StageSlot>
         <div
           className="chat-sheet is-clear"
@@ -3056,6 +3085,164 @@ export default function ChatScreen({
             )}
           </div>
         </div>
+        </StageSlot>
+      )}
+
+      {composer?.mode === 'create' && (
+        <StageSlot>
+          <div className="chat-new-pop" role="dialog" aria-modal="true" aria-label="New chat">
+            <button type="button" className="chat-new-scrim" aria-label="Dismiss" onClick={closeComposer} />
+            <div className="chat-new-card">
+              <div className="chat-new-tabs" role="tablist">
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={createTab === 'people'}
+                  aria-label="Find friends and new people"
+                  className={`chat-new-tab${createTab === 'people' ? ' is-on' : ''}`}
+                  onClick={() => switchCreateTab('people')}
+                >
+                  <PersonIcon />
+                </button>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={createTab === 'group'}
+                  aria-label="Create group chat"
+                  className={`chat-new-tab${createTab === 'group' ? ' is-on' : ''}`}
+                  onClick={() => switchCreateTab('group')}
+                >
+                  <PeopleIcon />
+                </button>
+                <button type="button" className="chat-new-close" aria-label="Close" onClick={closeComposer}>
+                  <CloseIcon />
+                </button>
+              </div>
+
+              <div className="chat-new-panel">
+                {createTab === 'group' && groupNameStep ? (
+                  <>
+                    <p className="chat-new-label">
+                      Name your group · {draftMembers.length} {draftMembers.length === 1 ? 'member' : 'members'}
+                    </p>
+                    <div className="chat-new-field">
+                      <input
+                        className="chat-new-input"
+                        type="text"
+                        autoFocus
+                        autoComplete="off"
+                        spellCheck={false}
+                        placeholder="Group name"
+                        aria-label="Group name"
+                        value={draftName}
+                        onChange={(e) => setDraftName(e.target.value)}
+                        onKeyDown={(e) => { if (e.key === 'Enter') onMemberGlobeConfirm() }}
+                      />
+                    </div>
+                    <div className="chat-new-foot">
+                      <button type="button" className="chat-new-foot-btn" aria-label="Back to members" onClick={() => setGroupNameStep(false)}>
+                        <BackIcon />
+                      </button>
+                      <button type="button" className="chat-new-foot-btn is-primary" aria-label="Create group chat" onClick={onMemberGlobeConfirm}>
+                        <svg viewBox="0 0 24 24" aria-hidden><path d="m5 12.5 4.5 4.5L19 7.5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                        <span>Create</span>
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="chat-new-field">
+                      <input
+                        className="chat-new-input"
+                        type="text"
+                        inputMode="search"
+                        name={createTab === 'group' ? 'thrft_group_members_search' : 'thrft_users_search'}
+                        autoComplete="off"
+                        autoCorrect="off"
+                        spellCheck={false}
+                        placeholder={createTab === 'group' ? 'Search people to add' : 'Search friends and new people'}
+                        aria-label={createTab === 'group' ? 'Search members' : 'Search users'}
+                        value={createQuery}
+                        onChange={(e) => setCreateQuery(e.target.value)}
+                      />
+                    </div>
+                    <ul className="chat-new-list">
+                      {createTab === 'group' && draftMembers
+                        .filter((m) => !allMemberNames.some((n) => n.toLowerCase() === m.toLowerCase()))
+                        .map((name) => (
+                          <li key={`sel-${name}`}>
+                            <label className="chat-new-row">
+                              <span className="chat-users-avatar" aria-hidden>{(name[0] || '?').toUpperCase()}</span>
+                              <span className="chat-users-name">{name}</span>
+                              <input type="checkbox" className="chat-new-check" checked onChange={() => toggleDraftMember(name)} aria-label={`Remove ${name}`} />
+                            </label>
+                          </li>
+                        ))}
+                      {accountSearchError && <li role="alert" className="chat-new-note">{accountSearchError}</li>}
+                      {!accountQuery && <li role="status" className="chat-new-note">Search for an account</li>}
+                      {accountQuery && !accountSearchError && (
+                        accountSearch.loading || accountSearch.query !== accountQuery
+                          ? <li role="status" className="chat-new-note">Searching accounts...</li>
+                          : filteredUsers.length === 0 && <li role="status" className="chat-new-note">No accounts found.</li>
+                      )}
+                      {filteredUsers.map((name) => {
+                        const initials = name.split(/\s+/).slice(0, 2).map((w) => w[0]?.toUpperCase() || '').join('')
+                        if (createTab === 'group') {
+                          const checked = draftMembers.some((m) => m.toLowerCase() === name.toLowerCase())
+                          return (
+                            <li key={name}>
+                              <label className="chat-new-row">
+                                <span className="chat-users-avatar" aria-hidden>{initials || '?'}</span>
+                                <span className="chat-users-name">{name}</span>
+                                <input type="checkbox" className="chat-new-check" checked={checked} onChange={() => toggleDraftMember(name)} aria-label={`Select ${name}`} />
+                              </label>
+                            </li>
+                          )
+                        }
+                        const friend = isFriend(name)
+                        return (
+                          <li key={name}>
+                            <div className="chat-new-row">
+                              <span className="chat-users-avatar" aria-hidden>{initials || '?'}</span>
+                              <span className="chat-users-name">{name}</span>
+                              <div className="chat-users-actions">
+                                <button
+                                  type="button"
+                                  className={`chat-users-action${friend ? ' is-on' : ''}`}
+                                  aria-label={friend ? `Remove ${name} from friends` : `Add ${name} as friend`}
+                                  aria-pressed={friend}
+                                  onClick={() => toggleFriend(name)}
+                                >
+                                  {friend ? <CheckCircleIcon className="chat-ico" /> : <PlusIcon />}
+                                </button>
+                                <button type="button" className="chat-users-action is-message" aria-label={`Message ${name}`} onClick={() => startChatWithUser(name)}>
+                                  <PersonIcon />
+                                </button>
+                              </div>
+                            </div>
+                          </li>
+                        )
+                      })}
+                    </ul>
+                    {createTab === 'group' && (
+                      <div className="chat-new-foot">
+                        <button
+                          type="button"
+                          className="chat-new-foot-btn is-primary"
+                          aria-label={`Done, ${draftMembers.length} selected`}
+                          disabled={draftMembers.length === 0}
+                          onClick={() => { setGroupNameStep(true); setDraftName(''); setCreateQuery('') }}
+                        >
+                          <svg viewBox="0 0 24 24" aria-hidden><path d="m5 12.5 4.5 4.5L19 7.5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                          <span>{draftMembers.length} selected</span>
+                        </button>
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
         </StageSlot>
       )}
 
