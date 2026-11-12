@@ -3114,9 +3114,6 @@ export default function ChatScreen({
                 >
                   <PeopleIcon />
                 </button>
-                <button type="button" className="chat-new-close is-bare" aria-label="Close" onClick={closeComposer}>
-                  <CloseIcon />
-                </button>
               </div>
 
               <div className="chat-new-panel">
@@ -3241,6 +3238,9 @@ export default function ChatScreen({
                   </>
                 )}
               </div>
+              <button type="button" className="chat-new-close is-bare" aria-label="Close" onClick={closeComposer}>
+                <CloseIcon />
+              </button>
             </div>
           </div>
         </StageSlot>

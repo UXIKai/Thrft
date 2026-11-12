@@ -3460,51 +3460,27 @@ html body .chat-menu {
 }
 
 .chat-new-tabs {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  justify-items: center;
   align-items: center;
-  justify-content: center;
-  gap: 12px;
-  position: relative;
 }
 
 .chat-new-tab,
 .chat-new-close {
   display: grid;
   place-items: center;
-  width: 64px;
-  height: 48px;
-  padding: 0;
-  border-radius: 16px;
-  border: 1px solid light-dark(rgba(0, 0, 0, 0.3), rgba(255, 255, 255, 0.3));
-  background: light-dark(rgba(0, 0, 0, 0.06), rgba(255, 255, 255, 0.06));
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  color: inherit;
-  cursor: pointer;
-}
-
-.chat-new-tab.is-on {
-  background: light-dark(rgba(0, 0, 0, 0.16), rgba(255, 255, 255, 0.2));
-  border-color: light-dark(rgba(0, 0, 0, 0.6), rgba(255, 255, 255, 0.7));
-}
-
-.chat-new-tab svg,
-.chat-new-close svg {
-  width: 22px;
-  height: 22px;
-}
-
-.chat-new-close {
-  position: absolute;
-  right: 0;
-  top: 4px;
+  align-self: center;
   width: 40px;
   height: 40px;
+  padding: 0;
   border: none;
   border-radius: 0;
   background: transparent;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
+  color: inherit;
+  cursor: pointer;
 }
 
 .chat-new-panel {
