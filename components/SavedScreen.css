@@ -679,3 +679,8 @@
   top: 50%;
   transform: translateY(-50%);
 }
+
+.saved-room-choice {
+  max-width: 420px;
+  margin: 28vh auto 0;
+}
