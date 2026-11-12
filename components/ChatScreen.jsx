@@ -3218,7 +3218,7 @@ export default function ChatScreen({
                 )}
               </div>
               {!isDesktop && activeNowOpen && (
-                <button type="button" className="chat-mobile-nav-scrim" aria-label="Close Online" onClick={() => setActiveNowOpen(false)} />
+                <button type="button" className="chat-mobile-nav-scrim is-online" aria-label="Close Online" onClick={() => setActiveNowOpen(false)} />
               )}
               <aside className={`chat-friends-active${activeNowOpen ? '' : ' is-collapsed'}`} aria-label="Online" hidden={!activeNowOpen}>
                 {activeNowOpen && <h3 className="chat-friends-active-aside-title">Online</h3>}
