@@ -4591,7 +4591,7 @@ html body .chat-new-card {
   html body .chat-desktop-thread .chat-friends-active-head {
     position: absolute;
     top: 0;
-    right: -40px;
+    right: -60px;
     z-index: 5;
     width: 36px;
     height: 36px;
@@ -4658,7 +4658,7 @@ html body .chat-new-card {
     flex-wrap: nowrap;
     width: auto;
     height: 36px;
-    margin: 0 40px 10px;
+    margin: 0 60px 10px;
     align-items: center;
   }
 
@@ -4709,7 +4709,8 @@ html body .chat-new-card {
   }
 
   html body .chat-desktop-thread .chat-friends-tab {
-    font-size: 0.72rem;
+    padding-inline: 2px;
+    font-size: 0.66rem;
   }
 
   .chat-desktop-thread .chat-friends-search {
