@@ -3668,3 +3668,16 @@ html body .chat-new-foot-btn.is-primary {
   -webkit-backdrop-filter: none !important;
   box-shadow: none !important;
 }
+
+/* Collapsed sidebar: keep the floating toggle clear of the Friends label */
+@media (min-width: 720px) {
+  .chat-screen.is-sidebar-collapsed .chat-friends-label {
+    left: 72px;
+  }
+
+  .chat-screen.is-sidebar-collapsed .chat-friends-tabs {
+    margin: 0;
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
