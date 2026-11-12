@@ -4488,7 +4488,7 @@ html body .chat-new-card {
     z-index: 60;
     width: min(80vw, 340px);
     box-sizing: border-box;
-    padding: calc(max(8px, env(safe-area-inset-top, 0px)) + 14px + 48px) 16px calc(24px + env(safe-area-inset-bottom, 0px));
+    padding: calc(max(8px, env(safe-area-inset-top, 0px)) + 16px + 48px) 16px calc(24px + env(safe-area-inset-bottom, 0px));
     overflow-y: auto;
     background: light-dark(rgba(245, 235, 238, 0.97), rgba(10, 10, 12, 0.97));
     transform: translateX(-102%);
@@ -4513,7 +4513,7 @@ html body .chat-new-card {
 @media (max-width: 719px), (max-height: 499px) {
   .chat-screen.is-mobile-nav-open .chat-sidebar-back {
     position: fixed;
-    top: calc(max(8px, env(safe-area-inset-top, 0px)) + 14px);
+    top: calc(max(8px, env(safe-area-inset-top, 0px)) + 16px);
     left: auto;
     right: 16px;
     z-index: 61;
@@ -4528,7 +4528,7 @@ html body .chat-new-card {
 
   .chat-screen.is-mobile-nav-open .chat-sidebar-title {
     position: fixed;
-    top: calc(max(8px, env(safe-area-inset-top, 0px)) + 14px);
+    top: calc(max(8px, env(safe-area-inset-top, 0px)) + 16px);
     left: 16px;
     transform: none;
     z-index: 61;
@@ -4538,7 +4538,7 @@ html body .chat-new-card {
 
   .chat-screen.is-mobile-nav-open .chat-sidebar-control[aria-label='Search conversations'] {
     position: fixed;
-    top: calc(max(8px, env(safe-area-inset-top, 0px)) + 14px);
+    top: calc(max(8px, env(safe-area-inset-top, 0px)) + 16px);
     left: calc(min(80vw, 340px) - 52px);
     z-index: 61;
   }
@@ -4625,7 +4625,7 @@ html body .chat-new-card {
     display: block;
     box-sizing: border-box;
     width: min(80vw, 340px);
-    padding: calc(max(8px, env(safe-area-inset-top, 0px)) + 14px) 16px 24px;
+    padding: calc(max(8px, env(safe-area-inset-top, 0px)) + 16px) 16px 24px;
     overflow-y: auto;
     border: none !important;
     border-left: 1px solid light-dark(rgba(0, 0, 0, 0.18), rgba(255, 255, 255, 0.18)) !important;
@@ -4648,7 +4648,7 @@ html body .chat-new-card {
 
   html body .chat-desktop-thread .chat-friends-active-head:not(.is-collapsed) {
     position: fixed;
-    top: calc(max(8px, env(safe-area-inset-top, 0px)) + 14px);
+    top: calc(max(8px, env(safe-area-inset-top, 0px)) + 16px);
     right: calc(min(80vw, 340px) - 52px);
     z-index: 61;
   }
@@ -4693,7 +4693,7 @@ html body .chat-new-card {
 
 @media (max-width: 719px), (max-height: 499px) {
   .chat-screen {
-    padding-top: calc(max(8px, env(safe-area-inset-top, 0px)) + 14px);
+    padding-top: calc(max(8px, env(safe-area-inset-top, 0px)) + 16px);
   }
 
   .chat-screen .chat-sidebar-header {
