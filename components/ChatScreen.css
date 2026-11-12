@@ -5030,3 +5030,19 @@ html body .chat-new-field {
     opacity: var(--nav-p, 1);
   }
 }
+
+/* Mobile hides the bottom nav in Chat, so nothing needs to reserve space for it */
+@media (max-width: 719px), (max-height: 499px) {
+  html body .chat-screen > .chat-section:last-of-type {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  html body .chat-screen > .chat-desktop-thread {
+    padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  }
+  html body .chat-screen .chat-thread-scroll {
+    padding-bottom: calc(16px + max(env(safe-area-inset-bottom, 0px) - 22px, var(--kb-height, 0px)));
+  }
+  html body .chat-screen .chat-bottom-dock {
+    bottom: max(calc(12px + env(safe-area-inset-bottom, 0px)), calc(8px + var(--kb-height, 0px)));
+  }
+}
