@@ -4832,3 +4832,24 @@ html body .chat-new-field {
   margin-left: auto;
   margin-right: auto;
 }
+
+@media (min-width: 720px) and (min-height: 500px) {
+  html body .chat-desktop-thread .chat-friends-tabs[aria-label='Friends'] {
+    position: relative;
+  }
+  html body .chat-desktop-thread .chat-friends-tabs[aria-label='Friends'] .chat-friends-tab-group {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    flex: none;
+    width: min(520px, calc(100% - 200px));
+  }
+}
+
+@media (min-width: 720px) and (min-height: 500px) {
+  html body .chat-desktop-thread .chat-friends-tabs[aria-label='Friends']:has(.chat-friends-active-title) .chat-friends-tab-group {
+    left: calc(50% - 116px);
+    width: min(520px, calc(100% - 520px));
+  }
+}
