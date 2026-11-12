@@ -25,10 +25,7 @@ import './CreateListing.css'
 function CameraIcon() {
   return (
     <svg className="listing-photo-icon" viewBox="0 0 24 24" aria-hidden>
-      <path
-        fill="currentColor"
-        d="M9.2 5.2h5.6l1.2 1.6H19A1.8 1.8 0 0 1 20.8 8.6v9A1.8 1.8 0 0 1 19 19.4H5A1.8 1.8 0 0 1 3.2 17.6v-9A1.8 1.8 0 0 1 5 6.8h2.9L9.2 5.2zM12 9.4A3.6 3.6 0 1 0 12 16.6 3.6 3.6 0 0 0 12 9.4zm0 1.6a2 2 0 1 1 0 4 2 2 0 0 1 0-4z"
-      />
+      <path fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" d="M12 5v14M5 12h14" />
     </svg>
   )
 }

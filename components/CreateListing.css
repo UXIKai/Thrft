@@ -1113,3 +1113,15 @@ html body .listing-photo-choice-btn {
   padding-top: 0;
   padding-bottom: 0;
 }
+
+html body .create-listing .listing-photo-choice .listing-photo-choice-btn,
+html body .create-listing .listing-photo-choice .listing-photo-choice-btn:hover,
+html body .create-listing .listing-photo-choice .listing-photo-choice-btn:focus,
+html body .create-listing .listing-photo-choice .listing-photo-choice-btn:focus-visible,
+html body .create-listing .listing-photo-choice .listing-photo-choice-btn:active {
+  background: transparent !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+  -webkit-tap-highlight-color: transparent;
+}
