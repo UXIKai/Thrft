@@ -578,6 +578,8 @@ function BrandGlobeView({
   showBrandLogos = title === 'Brands',
 }) {
   const [focusId, setFocusId] = useState(null)
+  // Dragging down onto the bottom bar clears the seat so releasing picks nothing.
+  const overBarRef = useRef(false)
   const [failedCenterLogos, setFailedCenterLogos] = useState(() => new Set())
   const [logoBackgrounds, setLogoBackgrounds] = useState({})
   const [centerSearching, setCenterSearching] = useState(false)
@@ -1042,6 +1044,7 @@ function BrandGlobeView({
   /** Keep the middle button on whoever is closest right now. */
   function syncFocusToCenter({ force = false } = {}) {
     if (showBrandLogos) return focusRef.current
+    if (overBarRef.current) return null
     if (focusLockRef.current && !force) return
     const id = nearestToCenter()
     if (id && id !== focusRef.current) {
@@ -1131,6 +1134,7 @@ function BrandGlobeView({
     const focused =
       focusRef.current &&
       brandsRef.current.find((b) => b.id === focusRef.current)
+    overBarRef.current = false
     choosingRef.current = false
     setChoosing(false)
     setPopping(true)
@@ -1338,8 +1342,16 @@ function BrandGlobeView({
           setRotating(true)
         }
       }
+      const bar = rootRef.current?.querySelector('.brand-globe-search-row')
+      const barRect = bar?.getBoundingClientRect()
+      const overBar = Boolean(barRect && event.clientY >= barRect.top)
+      overBarRef.current = overBar
       if (rotatingRef.current) {
         panFromDrag(event)
+      }
+      if (overBar && focusRef.current) {
+        focusRef.current = null
+        setFocusId(null)
       }
       const local = localPoint(event.clientX, event.clientY)
       if (local) setPointer(local)
@@ -1408,6 +1420,7 @@ function BrandGlobeView({
     }
     if (choosingRef.current) {
       if (event.type === 'pointercancel' || !movedRef.current) {
+        overBarRef.current = false
         choosingRef.current = false
         rotatingRef.current = false
         setChoosing(false)
