@@ -161,7 +161,8 @@
 }
 
 /* Group-chat members globe: hide the nav until the popup closes. */
-.stage.is-member-globe-open .tab-bar {
+.stage.is-member-globe-open .tab-bar,
+.stage.is-saved-room-open .tab-bar {
   opacity: 0;
   pointer-events: none;
   visibility: hidden;

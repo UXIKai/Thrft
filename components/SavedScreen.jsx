@@ -332,6 +332,14 @@ export default function SavedScreen({
   const editMenuRef = useRef(null)
   const filterRef = useRef(null)
 
+  // Hide the bottom nav while a room is open; the back arrow brings it back.
+  useEffect(() => {
+    const stage = document.querySelector('.stage')
+    if (!stage) return undefined
+    stage.classList.toggle('is-saved-room-open', Boolean(room))
+    return () => stage.classList.remove('is-saved-room-open')
+  }, [room])
+
   useEffect(() => {
     let alive = true
     fetchSaved().then((remote) => {
