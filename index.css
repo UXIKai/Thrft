@@ -108,3 +108,8 @@ select {
 * {
   -webkit-tap-highlight-color: transparent;
 }
+
+button,
+[role='button'] {
+  color: var(--ink);
+}
