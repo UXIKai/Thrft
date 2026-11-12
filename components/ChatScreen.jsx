@@ -583,7 +583,7 @@ export default function ChatScreen({
 } = {}) {
   const [chats, setChats] = useState(() => readStoredChats())
   const [isDesktop, setIsDesktop] = useState(
-    () => typeof window !== 'undefined' && window.matchMedia('(min-width: 720px)').matches,
+    () => typeof window !== 'undefined' && window.matchMedia('(min-width: 720px) and (min-height: 500px)').matches,
   )
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
   const [memberDraft, setMemberDraft] = useState('')
@@ -640,7 +640,7 @@ export default function ChatScreen({
     memberGlobeOpen && memberGlobePhase !== 'closed'
 
   useEffect(() => {
-    const media = window.matchMedia('(min-width: 720px)')
+    const media = window.matchMedia('(min-width: 720px) and (min-height: 500px)')
     const updateDesktop = () => setIsDesktop(media.matches)
     updateDesktop()
     media.addEventListener('change', updateDesktop)
@@ -3002,7 +3002,7 @@ export default function ChatScreen({
         </ul>
       </section>
 
-      {isDesktop ? (
+      {(
         <section
           className="chat-desktop-thread"
           aria-label="Conversation"
@@ -3013,7 +3013,7 @@ export default function ChatScreen({
             if (composer?.mode === 'create') closeComposer()
           }}
         >
-          {newChatPanel ? (
+          {isDesktop && newChatPanel ? (
             <div className="chat-new-screen">{newChatPanel}</div>
           ) : imagesOnly ? (
             <div className="chat-images-gallery">
@@ -3167,7 +3167,7 @@ export default function ChatScreen({
             </div>
           )}
         </section>
-      ) : null}
+      )}
 
       {!composer && searchOpen && isDesktop && (
         <div className="chat-search-modal-overlay">

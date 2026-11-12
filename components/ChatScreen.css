@@ -1951,7 +1951,7 @@ html body .chat-friend-item {
   max-width: calc(100% - 26px);
 }
 
-@media (min-width: 720px) {
+@media (min-width: 720px) and (min-height: 500px) {
   .stage > .chat-liked-picker {
     border: none;
     border-radius: 0;
@@ -3137,7 +3137,7 @@ html body button.chat-contact-nick-save {
   user-select: none;
 }
 
-@media (min-width: 720px) {
+@media (min-width: 720px) and (min-height: 500px) {
   .chat-screen.is-desktop {
     display: grid;
     grid-template-columns: minmax(260px, 340px) minmax(0, 1fr);
@@ -3383,7 +3383,7 @@ html body .chat-menu {
   border-radius: 12px;
 }
 
-@media (min-width: 720px) {
+@media (min-width: 720px) and (min-height: 500px) {
   .chat-friends-empty {
     display: flex;
     flex-direction: column;
@@ -3432,7 +3432,7 @@ html body .chat-menu {
   }
 }
 
-@media (min-width: 720px) {
+@media (min-width: 720px) and (min-height: 500px) {
   .chat-friends-tabs {
     position: relative;
     justify-content: center;
@@ -3700,7 +3700,7 @@ html body .chat-new-foot-btn.is-primary {
 }
 
 /* Collapsed sidebar: keep the floating toggle clear of the Friends label */
-@media (min-width: 720px) {
+@media (min-width: 720px) and (min-height: 500px) {
   .chat-screen.is-sidebar-collapsed .chat-friends-label {
     left: 72px;
   }
@@ -3713,7 +3713,7 @@ html body .chat-new-foot-btn.is-primary {
 }
 
 /* Friends row shares the sidebar toggle's 36px row so everything lines up */
-@media (min-width: 720px) {
+@media (min-width: 720px) and (min-height: 500px) {
   .chat-friends-tabs {
     box-sizing: border-box;
     height: 48px;
@@ -3784,7 +3784,7 @@ html body .chat-friends-pill {
 }
 
 /* Capsule is 44px tall (36px slots + 4px inset) so the pill sits inside it */
-@media (min-width: 720px) {
+@media (min-width: 720px) and (min-height: 500px) {
   html body .chat-friends-tabs .chat-friends-tab-group {
     height: 44px;
     align-items: stretch;
@@ -3795,7 +3795,7 @@ html body .chat-friends-pill {
   padding: 0 !important;
 }
 
-@media (min-width: 720px) {
+@media (min-width: 720px) and (min-height: 500px) {
   html body .chat-friends-tabs .chat-friends-tab-group {
     height: 36px;
   }
@@ -3839,7 +3839,7 @@ html body .chat-friends-tabs .chat-friends-pill {
   margin: auto;
 }
 
-@media (min-width: 720px) {
+@media (min-width: 720px) and (min-height: 500px) {
   .chat-images-gallery {
     padding-top: 0;
   }
@@ -3901,7 +3901,7 @@ html body .chat-friends-tabs .chat-friends-pill {
   justify-content: space-between;
 }
 
-@media (min-width: 720px) {
+@media (min-width: 720px) and (min-height: 500px) {
   .chat-screen.is-desktop.is-new-chat {
     grid-template-columns: 0 minmax(0, 1fr);
     column-gap: 0;
@@ -4019,7 +4019,7 @@ html body .chat-friends-tabs .chat-friends-pill {
 }
 
 
-@media (max-width: 719px) {
+@media (max-width: 719px), (max-height: 499px) {
   .chat-friends-active {
     display: none;
   }
@@ -4479,7 +4479,7 @@ html body .chat-new-card {
 }
 
 /* Mobile: chats + quick actions live in a slide-in drawer opened by the toggle */
-@media (max-width: 719px) {
+@media (max-width: 719px), (max-height: 499px) {
   .chat-screen .chat-list-section {
     position: fixed;
     top: 0;
@@ -4510,7 +4510,7 @@ html body .chat-new-card {
   }
 }
 
-@media (max-width: 719px) {
+@media (max-width: 719px), (max-height: 499px) {
   .chat-screen.is-mobile-nav-open .chat-sidebar-back {
     position: fixed;
     top: calc(max(8px, env(safe-area-inset-top, 0px)) + 24px);
@@ -4520,7 +4520,7 @@ html body .chat-new-card {
   }
 }
 
-@media (max-width: 719px) {
+@media (max-width: 719px), (max-height: 499px) {
   .chat-screen:not(.is-mobile-nav-open) .chat-sidebar-title,
   .chat-screen:not(.is-mobile-nav-open) .chat-sidebar-control[aria-label='Search conversations'] {
     display: none;
@@ -4541,5 +4541,69 @@ html body .chat-new-card {
     top: calc(max(8px, env(safe-area-inset-top, 0px)) + 24px);
     left: calc(min(80vw, 340px) - 52px);
     z-index: 61;
+  }
+}
+
+/* Mobile main page: friends / requests / images fit a single narrow column */
+@media (max-width: 719px), (max-height: 499px) {
+  .chat-screen > .chat-desktop-thread {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 56px 0 calc(96px + env(safe-area-inset-bottom, 0px));
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .chat-desktop-thread .chat-friends-empty {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    height: auto;
+  }
+
+  html body .chat-desktop-thread .chat-friends-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  html body .chat-desktop-thread .chat-friends-tabs .chat-friends-tab-group {
+    flex: 1 1 100%;
+    width: 100%;
+    min-width: 0;
+  }
+
+  html body .chat-desktop-thread .chat-friends-tab {
+    padding-inline: 6px;
+    font-size: 0.8rem;
+  }
+
+  .chat-desktop-thread .chat-friends-active,
+  .chat-desktop-thread .chat-friends-active-head {
+    display: none;
+  }
+
+  .chat-desktop-thread .chat-friends-body {
+    display: block;
+  }
+
+  .chat-desktop-thread .chat-friends-panel {
+    width: 100%;
+    max-width: none;
+    border: none;
+  }
+
+  .chat-desktop-thread .chat-images-gallery {
+    padding: 0;
+  }
+
+  .chat-desktop-thread .chat-images-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
