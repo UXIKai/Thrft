@@ -15,3 +15,13 @@ export function StoreIcon({ className }) {
     </svg>
   )
 }
+
+export function ClosetIcon({ className }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" aria-hidden="true">
+      <path fill="currentColor" fillRule="evenodd" d="M5 2.5h6.2v17H3.5v-15.5A1.5 1.5 0 0 1 5 2.5Zm4 7.2a.9.9 0 0 0-.9.9v1.8a.9.9 0 0 0 1.8 0v-1.8a.9.9 0 0 0-.9-.9Z" />
+      <path fill="currentColor" fillRule="evenodd" d="M12.8 2.5H19a1.5 1.5 0 0 1 1.5 1.5v15.5h-7.7v-17Zm2.2 7.2a.9.9 0 0 0-.9.9v1.8a.9.9 0 0 0 1.8 0v-1.8a.9.9 0 0 0-.9-.9Z" />
+      <path fill="currentColor" d="M4.5 20.3h3v1.7h-3Zm12 0h3v1.7h-3Z" />
+    </svg>
+  )
+}
