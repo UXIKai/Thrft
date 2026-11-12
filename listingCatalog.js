@@ -3,7 +3,6 @@
 /** Create destinations: peer marketplace + personal closet. */
 export const LISTING_SEGMENTS = [
   { id: 'store', label: 'Store', icon: 'store' },
-  { id: 'closet', label: 'Closet', icon: 'closet' },
   { id: 'market', label: 'Market', icon: 'market' },
 ]
 

@@ -10,7 +10,8 @@ import {
   filterClosetItems,
   removeClosetItem,
 } from '../closet.js'
-import { getCustomCategories } from '../customCatalog.js'
+import { getCustomBrands, getCustomCategories } from '../customCatalog.js'
+import ClosetNumberLookup from './ClosetNumberLookup.jsx'
 import { LISTING_BRANDS, LISTING_CATEGORIES } from '../listingCatalog.js'
 import { createListing, fetchMyListings, fetchSellerSalesStats, formatListingPrice } from '../listings.js'
 import { ClosetIcon, MarketIcon, StoreIcon } from './SegmentIcons.jsx'
@@ -616,6 +617,7 @@ export default function ProfileScreen({
     getCustomCategories(),
   )
   const [closetSelected, setClosetSelected] = useState(null)
+  const [closetLookupOpen, setClosetLookupOpen] = useState(false)
   const [closetPosting, setClosetPosting] = useState(false)
   const [closetPostError, setClosetPostError] = useState('')
   const [settingsOpen, setSettingsOpen] = useState(false)
@@ -903,6 +905,13 @@ export default function ProfileScreen({
     setMusicSheet(null)
     setMusicDraft('')
   }
+
+  useEffect(() => {
+    const stage = document.querySelector('.stage')
+    if (!stage || spaceTab !== 'closet') return undefined
+    stage.classList.add('is-saved-room-open')
+    return () => stage.classList.remove('is-saved-room-open')
+  }, [spaceTab])
 
   function switchSpace(which) {
     if (which === spaceTab) return
@@ -1342,7 +1351,34 @@ export default function ProfileScreen({
               )
             })()
           ) : (
-            <div className="closet-browse">
+            <div className="closet-browse is-page">
+              <header className="closet-page-head">
+                <button
+                  type="button"
+                  className="closet-page-btn is-bare"
+                  aria-label="Back to profile"
+                  onClick={() => setSpaceTab('store')}
+                >
+                  <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 5l-7 7 7 7" /></svg>
+                </button>
+                <ClosetIcon className="closet-page-ico" />
+                <button
+                  type="button"
+                  className="closet-page-btn is-bare"
+                  aria-label="Add to closet by product number"
+                  onClick={() => setClosetLookupOpen(true)}
+                >
+                  <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M12 5v14M5 12h14" /></svg>
+                </button>
+              </header>
+              {closetLookupOpen && <ClosetNumberLookup
+                brands={[...new Set([...LISTING_BRANDS, ...getCustomBrands()])]}
+                onClose={() => setClosetLookupOpen(false)}
+                onAdded={() => {
+                  setClosetLookupOpen(false)
+                  setClosetItems(fetchClosetItems())
+                }}
+              />}
               <div
                 className="closet-browse-wheels"
                 role="group"

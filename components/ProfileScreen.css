@@ -3064,3 +3064,36 @@
 .profile-name-field input {
   font-size: 16px;
 }
+
+/* Closet opens as its own page: icon on top, wheels below, plus (scanner) top right */
+.closet-browse.is-page {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  min-height: 0;
+  overflow-y: auto;
+  padding: calc(max(8px, env(safe-area-inset-top, 0px)) + 16px) 16px calc(24px + env(safe-area-inset-bottom, 0px));
+  background: var(--atmosphere-base, light-dark(#fafafa, #050505));
+}
+
+.closet-page-head {
+  display: grid;
+  grid-template-columns: 44px 1fr 44px;
+  align-items: center;
+  justify-items: center;
+  flex: 0 0 auto;
+}
+
+.closet-page-ico {
+  width: 28px;
+  height: 28px;
+}
+
+.closet-page-btn {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  color: inherit;
+  cursor: pointer;
+}
