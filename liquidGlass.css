@@ -1817,3 +1817,27 @@ html body .chat-new-tab:hover {
 html body .chat-new-tab.is-on {
   border-bottom-color: currentColor !important;
 }
+
+/* New chat tab underline: drawn by a pseudo element so icons never move */
+html body button.chat-new-tab.is-bare {
+  position: relative;
+  border: none !important;
+  transform: none !important;
+}
+
+html body button.chat-new-tab.is-bare::after {
+  content: '';
+  position: absolute;
+  left: 20%;
+  right: 20%;
+  bottom: 0;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  opacity: 0;
+  transition: opacity 0.18s ease;
+}
+
+html body button.chat-new-tab.is-bare.is-on::after {
+  opacity: 1;
+}
