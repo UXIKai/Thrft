@@ -1841,3 +1841,17 @@ html body button.chat-new-tab.is-bare::after {
 html body button.chat-new-tab.is-bare.is-on::after {
   opacity: 1;
 }
+
+/* New chat back/check: never boxed */
+html body .chat-new-top button,
+html body .chat-new-top button:hover,
+html body .chat-new-top button:active,
+html body .chat-new-top button:focus-visible {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  outline: none;
+}
