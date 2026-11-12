@@ -194,3 +194,46 @@
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
 }
+
+/* Straight columns: every logo in one vertical line, every name starting at the same x */
+html body .closet-number-content .brand-logo-label {
+  display: grid !important;
+  grid-template-columns: 40px minmax(0, 1fr) !important;
+  align-items: center;
+  justify-content: start !important;
+  justify-items: start;
+  width: 240px !important;
+  max-width: 100%;
+  margin: 0 auto !important;
+  gap: 16px !important;
+  text-align: left;
+}
+
+html body .closet-number-content .brand-logo-label > .brand-logo {
+  grid-column: 1;
+  width: 40px !important;
+  height: 40px !important;
+  object-fit: contain;
+  justify-self: center;
+}
+
+html body .closet-number-content .brand-logo-label > span {
+  grid-column: 2 !important;
+  text-align: left;
+}
+
+/* No big containers around each brand */
+html body .closet-number-content .closet-number-brands {
+  gap: 0;
+}
+
+html body .closet-number-content .closet-number-brands button {
+  min-height: 56px;
+  padding: 6px 0;
+  border: 0 !important;
+  border-radius: 0;
+  background: transparent !important;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: none !important;
+}
