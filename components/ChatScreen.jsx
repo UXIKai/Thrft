@@ -800,7 +800,7 @@ export default function ChatScreen({
   }, [chats])
 
   useEffect(() => {
-    onThreadActiveChange?.(Boolean(activeChatId) || (!isDesktop && (mobileNavOpen || activeNowOpen)))
+    onThreadActiveChange?.(Boolean(activeChatId) || !isDesktop)
     return () => onThreadActiveChange?.(false)
   }, [activeChatId, isDesktop, mobileNavOpen, activeNowOpen, onThreadActiveChange])
 
@@ -2918,6 +2918,12 @@ export default function ChatScreen({
         }}
       >
         <nav className="chat-list-quick" aria-label="Quick actions">
+          {!isDesktop && (
+            <button type="button" className="chat-list-quick-btn is-bare" onClick={() => { setMobileNavOpen(false); onBack?.() }}>
+              <svg className="chat-ico" viewBox="0 0 24 24" aria-hidden width="20" height="20"><path d="M4 11l8-7 8 7v8.500a1 1 0 0 1-1 1h-4.500v-6h-5v6H5a1 1 0 0 1-1-1z" fill="none" stroke="currentColor" strokeWidth="1.700" strokeLinejoin="round" /></svg>
+              <span>Home</span>
+            </button>
+          )}
           <button type="button" className={`chat-list-quick-btn is-bare${composer?.mode === 'create' ? ' is-on' : ''}`} onClick={() => (composer?.mode === 'create' ? closeComposer() : openCreateGroup())}>
             <ComposeIcon />
             <span>New chat</span>
