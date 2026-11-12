@@ -610,6 +610,16 @@ export default function ChatScreen({
   }, [searchOpen])
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [friendsTab, setFriendsTab] = useState('all')
+  const [friendsTabsOpen, setFriendsTabsOpen] = useState(false)
+  useEffect(() => {
+    if (!friendsTabsOpen) return undefined
+    const dismiss = (event) => {
+      if (event.target.closest?.('.chat-friends-tab-group, .chat-friends-label')) return
+      setFriendsTabsOpen(false)
+    }
+    document.addEventListener('pointerdown', dismiss, true)
+    return () => document.removeEventListener('pointerdown', dismiss, true)
+  }, [friendsTabsOpen])
   const [friendsQuery, setFriendsQuery] = useState('')
   const [pinnedCollapsed, setPinnedCollapsed] = useState(false)
   const [requestsView, setRequestsView] = useState(false)
@@ -3184,11 +3194,17 @@ export default function ChatScreen({
             renderThread()
           ) : (
             <div className="chat-friends-empty">
-              <nav className="chat-friends-tabs" aria-label="Friends">
-                <span className="chat-friends-label">
+              <nav className={`chat-friends-tabs is-collapsible${friendsTabsOpen ? ' is-tabs-open' : ''}`} aria-label="Friends">
+                <button
+                  type="button"
+                  className="chat-friends-label"
+                  aria-label={friendsTabsOpen ? 'Close friends menu' : 'Open friends menu'}
+                  aria-expanded={friendsTabsOpen}
+                  onClick={() => setFriendsTabsOpen((o) => !o)}
+                >
                   <svg viewBox="-3 0 24 24" aria-hidden width="20" height="20" fill="currentColor"><circle cx="9" cy="8" r="3.5" /><path d="M2.5 20c0-3.6 2.9-6 6.500-6s6.500 2.400 6.500 6z" /></svg>
                   {friends.length}
-                </span>
+                </button>
                 <div
                   className="chat-friends-tab-group"
                   style={{ '--tab-index': ['all', 'pending', 'suggestions'].indexOf(friendsTab), touchAction: 'pan-y' }}

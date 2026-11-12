@@ -5176,3 +5176,36 @@ html body .chat-new-field {
     content: none;
   }
 }
+
+/* Friends: the All / Pending / Suggestions tabs live behind the person icon and slide out to the middle */
+html body .chat-friends-tabs.is-collapsible {
+  position: relative;
+}
+
+html body .chat-friends-tabs.is-collapsible .chat-friends-label {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  z-index: 2;
+}
+
+html body .chat-friends-tabs.is-collapsible .chat-friends-tab-group {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: 0;
+  z-index: 1;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-260%, -50%) scale(0.6);
+  transform-origin: left center;
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.25s ease;
+}
+
+html body .chat-friends-tabs.is-collapsible.is-tabs-open .chat-friends-tab-group {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, -50%);
+}
