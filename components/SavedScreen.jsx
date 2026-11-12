@@ -20,10 +20,11 @@ function PlusIcon() {
 function ChestIcon({ open }) {
   return (
     <svg className="saved-chest-ico" viewBox="0 0 24 24" width="26" height="26" aria-hidden fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M4 12.5h16V19a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z" />
-      <path d="M12 12.5v3.5M10.700 16h2.600" />
+      <path d="M4 13.500h16V19a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z" />
+      <path d="M12 13.500V16.500" />
       <g className={`saved-chest-lid${open ? ' is-open' : ''}`}>
-        <path d="M4 12.5V10a5 5 0 0 1 5-5h6a5 5 0 0 1 5 5v2.500z" />
+        <path d="M4 13.500V11a4.500 4.500 0 0 1 4.500-4.500h7A4.500 4.500 0 0 1 20 11v2.500z" />
+        <path d="M4 13.500h16" />
       </g>
     </svg>
   )

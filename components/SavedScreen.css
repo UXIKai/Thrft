@@ -1260,7 +1260,7 @@ html body .saved-brands-toggle .saved-top-ico { fill: #fff; color: #fff; }
 
 .saved-chest-lid {
   transform-box: view-box;
-  transform-origin: 4px 12.5px;
+  transform-origin: 12px 13.5px;
   transition: transform 0.35s cubic-bezier(0.3, 1.4, 0.5, 1);
 }
-.saved-chest-lid.is-open { transform: rotate(-38deg) translate(0, -1px); }
+.saved-chest-lid.is-open { transform: translateY(-4px) scaleY(0.6); }
