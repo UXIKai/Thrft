@@ -1024,3 +1024,14 @@ html body .saved-fab .saved-fab-item.saved-fab-item:nth-child(3) {
   --fab-x: 0px;
   --fab-y: 58px;
 }
+
+/* Search removed: the two remaining actions sit at the ends of the arc */
+html body .saved-fab .saved-fab-item.saved-fab-item:nth-child(1) {
+  --fab-x: -58px;
+  --fab-y: 0px;
+}
+
+html body .saved-fab .saved-fab-item.saved-fab-item:nth-child(2) {
+  --fab-x: 0px;
+  --fab-y: 58px;
+}

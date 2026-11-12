@@ -1,12 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { flushSync } from 'react-dom'
 import { fetchSaved, recordInterest } from '../api.js'
 import { recordProductInterest, recordSearchHistory } from '../forYou.js'
 import { brandLogoUrl } from '../brandLogos.js'
 import { LISTING_BRANDS } from '../listingCatalog.js'
 import { SIZE_BRANDS } from '../sizeOptions.js'
 import BrandGlobe from './BrandGlobe.jsx'
-import StageSlot from './StageSlot.jsx'
 import './GlassOverlay.css'
 import './SavedScreen.css'
 
@@ -330,20 +328,6 @@ export default function SavedScreen({
 }) {
   const [items, setItems] = useState([])
   const [query, setQuery] = useState('')
-  const [searchOpen, setSearchOpen] = useState(false)
-  const searchBarRef = useRef(null)
-  useEffect(() => {
-    if (!searchOpen) return undefined
-    const dismiss = (event) => {
-      if (searchBarRef.current?.contains(event.target)) return
-      if (event.target.closest?.('[aria-label="Search liked"], .brand-globe')) return
-      document.getElementById('saved-search-input')?.blur()
-      setSearchOpen(false)
-      setQuery('')
-    }
-    document.addEventListener('pointerdown', dismiss, true)
-    return () => document.removeEventListener('pointerdown', dismiss, true)
-  }, [searchOpen])
   const [favoriteBrands, setFavoriteBrands] = useState(() =>
     Array.isArray(favoredBrands) ? [...favoredBrands] : [],
   )
@@ -522,22 +506,6 @@ export default function SavedScreen({
           <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M12 5v14M5 12h14" /></svg>
         </button>
         <div className="saved-fab-items" aria-hidden={!fabOpen}>
-          <div className="saved-fab-item" style={{ '--i': 0 }}>
-            <button
-              type="button"
-              className="saved-fab-btn"
-              aria-label="Search liked"
-              aria-expanded={searchOpen}
-              tabIndex={fabOpen ? 0 : -1}
-              onClick={() => {
-                setFabOpen(false)
-                flushSync(() => setSearchOpen(true))
-                document.getElementById('saved-search-input')?.focus({ preventScroll: true })
-              }}
-            >
-              <SearchIcon />
-            </button>
-          </div>
         <div className="saved-fab-item" style={{ '--i': 1 }}>
           <button
             type="button"
@@ -557,12 +525,12 @@ export default function SavedScreen({
         <div className="saved-fab-item" style={{ '--i': 2 }}>
           <button
             type="button"
+            ref={plusRef}
             className="saved-fab-btn"
             aria-label="Add brands and products"
             tabIndex={fabOpen ? 0 : -1}
             onClick={() => {
               setFabOpen(false)
-              flushSync(() => setSearchOpen(true))
               openGlobe()
             }}
           >
@@ -624,70 +592,6 @@ export default function SavedScreen({
               )
             })}
       </div>
-
-      {searchOpen && <StageSlot>
-      <div className={`saved-search-dock${globeOpen ? ' is-open' : ''}`}>
-        <div
-          ref={searchBarRef}
-          className={`saved-search-bar${searchOpen ? '' : ' is-collapsed'}`}
-          onClick={(event) => {
-            if (event.target.closest('button')) return
-            document.getElementById('saved-search-input')?.focus({ preventScroll: true })
-          }}
-        >
-          {searchOpen ? (
-            <button
-              type="button"
-              className="saved-dock-search"
-              aria-label="Close search"
-              onClick={() => {
-                if (globeOpen) closeGlobe()
-                setQuery('')
-                setSearchOpen(false)
-              }}
-            >
-              <SearchIcon />
-            </button>
-          ) : null}
-          {searchOpen ? (
-            <input
-              id="saved-search-input"
-              className="saved-search-input"
-              type="text"
-              inputMode="search"
-              enterKeyHint="search"
-              name="thrft_saved_search"
-              autoComplete="off"
-              autoCorrect="off"
-              spellCheck={false}
-              data-lpignore="true"
-              data-1p-ignore="true"
-              data-form-type="other"
-              placeholder=""
-              aria-label={
-                globeOpen
-                  ? 'Filter brands on globe'
-                  : showBrands
-                    ? 'Search brands'
-                    : 'Search clothing items'
-              }
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-            />
-          ) : null}
-          <button
-            ref={plusRef}
-            type="button"
-            className="saved-search-add"
-            aria-label={globeOpen ? 'Close brand globe' : 'Open brand globe'}
-            aria-expanded={globeOpen}
-            onClick={onPlusClick}
-          >
-            <PlusIcon />
-          </button>
-        </div>
-      </div>
-      </StageSlot>}
 
       {globePhase !== 'closed' && (
         <BrandGlobe
