@@ -2747,7 +2747,7 @@ export default function ChatScreen({
       onClick={(e) => {
         const onContent = e.target.closest?.('button,a,input,textarea,select,label,img,li,svg,.chat-new-card,.chat-thread,.chat-friends-tab-group,.chat-sidebar-header,.chat-images-grid,.chat-images-title,.chat-desktop-empty')
         if (isDesktop && !onContent) {
-          if (activeChat && !sidebarCollapsed) setActiveChatId(null)
+          if (activeChat && !sidebarCollapsed && !e.target.closest(".chat-desktop-thread")) setActiveChatId(null)
           if (imagesOnly) setImagesOnly(false)
           if (composer?.mode === 'create') closeComposer()
         }
