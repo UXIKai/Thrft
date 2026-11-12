@@ -2578,6 +2578,25 @@ export default function ChatScreen({
 
   const newChatPanel = composer?.mode === 'create' ? (
     <div className="chat-new-card">
+              {!groupNameStep && (
+                <div className="chat-new-top">
+                  <button type="button" className="chat-new-foot-btn" aria-label="Back to chats" onClick={closeComposer}>
+                    <BackIcon />
+                  </button>
+                  {createTab === 'group' && (
+                    <button
+                      type="button"
+                      className="chat-new-foot-btn is-primary"
+                      aria-label={`Done, ${draftMembers.length} selected`}
+                      disabled={draftMembers.length === 0}
+                      onClick={() => { setGroupNameStep(true); setDraftName(''); setCreateQuery('') }}
+                    >
+                      <svg viewBox="0 0 24 24" aria-hidden><path d="m5 12.5 4.5 4.5L19 7.5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                      {draftMembers.length > 0 && <span>{draftMembers.length}</span>}
+                    </button>
+                  )}
+                </div>
+              )}
               <div className="chat-new-tabs" role="tablist">
                 <button
                   type="button"
@@ -2647,18 +2666,6 @@ export default function ChatScreen({
                         value={createQuery}
                         onChange={(e) => setCreateQuery(e.target.value)}
                       />
-                      {createTab === 'group' && (
-                        <button
-                          type="button"
-                          className="chat-new-foot-btn is-primary chat-new-done"
-                          aria-label={`Done, ${draftMembers.length} selected`}
-                          disabled={draftMembers.length === 0}
-                          onClick={() => { setGroupNameStep(true); setDraftName(''); setCreateQuery('') }}
-                        >
-                          <svg viewBox="0 0 24 24" aria-hidden><path d="m5 12.5 4.5 4.5L19 7.5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                          {draftMembers.length > 0 && <span>{draftMembers.length}</span>}
-                        </button>
-                      )}
                     </div>
                     <ul className="chat-new-list">
                       {createTab === 'group' && draftMembers
@@ -2727,7 +2734,7 @@ export default function ChatScreen({
 
   return (
     <div
-      className={`chat-screen${isDesktop ? ' is-desktop' : ''}${isDesktop && sidebarCollapsed ? ' is-sidebar-collapsed' : ''}`}
+      className={`chat-screen${composer?.mode === 'create' ? ' is-new-chat' : ''}${isDesktop ? ' is-desktop' : ''}${isDesktop && sidebarCollapsed ? ' is-sidebar-collapsed' : ''}`}
       onClick={(e) => {
         if (isDesktop && e.target === e.currentTarget) {
           if (activeChat) setActiveChatId(null)

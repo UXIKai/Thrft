@@ -3862,3 +3862,27 @@ html body .chat-friends-tabs .chat-friends-pill {
   height: 36px;
   padding: 0 8px;
 }
+
+/* New chat takes over the page: everything else hides, stack centred */
+.chat-new-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@media (min-width: 720px) {
+  .chat-screen.is-desktop.is-new-chat {
+    grid-template-columns: 0 minmax(0, 1fr);
+    column-gap: 0;
+  }
+
+  .chat-screen.is-new-chat > .chat-pins-section,
+  .chat-screen.is-new-chat > .chat-list-section,
+  .chat-screen.is-new-chat .chat-bottom-dock {
+    display: none;
+  }
+
+  .chat-screen.is-new-chat .chat-desktop-thread {
+    border-left: none;
+  }
+}
