@@ -5276,3 +5276,20 @@ html body .chat-thread-scroll > .chat-thread-body {
   flex: 0 0 auto;
   min-height: 0;
 }
+
+.chat-friends-find {
+  display: block;
+  width: min(100%, 360px);
+  margin: 0 auto 14px;
+  height: 38px;
+  padding: 0 16px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  color: inherit;
+  font: inherit;
+  outline: none;
+}
+.chat-friends-find::placeholder { color: inherit; opacity: 0.5; }

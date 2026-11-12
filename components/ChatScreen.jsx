@@ -733,8 +733,8 @@ export default function ChatScreen({
         ? memberSearch
         : createSearching
           ? createQuery
-          : ''
-  ).trim()
+          : friendsQuery
+  ).trim().replace(/^@/, '')
   const allMemberNames = accountSearch.query === accountQuery ? accountSearch.names : []
   const accountSearchError = accountSearch.query === accountQuery ? accountSearch.error : ''
 
@@ -801,7 +801,11 @@ export default function ChatScreen({
       pending: 'No pending requests.',
       suggestions: 'No suggestions right now.',
     }
-    const list = names.filter(match)
+    let list = names.filter(match)
+    if (q && friendsTab === 'all') {
+      const shown = new Set(list.map((n) => n.toLowerCase()))
+      list = [...list, ...allMemberNames.filter((n) => !shown.has(String(n).toLowerCase()))]
+    }
     const counts = { all: friends.length, pending: 0, suggestions: allMemberNames.filter((n) => !friendKeys.has(String(n).toLowerCase())).length }
     return { list, title: titles[friendsTab], empty: empty[friendsTab], counts }
   }, [friends, friendsTab, friendsQuery, allMemberNames])
@@ -3257,8 +3261,18 @@ export default function ChatScreen({
               </nav>
               <div className="chat-friends-body">
               <div className="chat-friends-panel">
+                <input
+                  type="search"
+                  className="chat-friends-find"
+                  aria-label="Search people"
+                  placeholder="Search people"
+                  autoComplete="off"
+                  spellCheck={false}
+                  value={friendsQuery}
+                  onChange={(e) => setFriendsQuery(e.target.value)}
+                />
                 {friendsView.list.length === 0 ? (
-                  <p className="chat-desktop-empty">{friendsView.empty}</p>
+                  <p className="chat-desktop-empty">{accountSearchError || (friendsQuery.trim() && (accountSearch.loading || accountSearch.query !== accountQuery) ? 'Searching…' : friendsQuery.trim() ? 'No accounts found.' : friendsView.empty)}</p>
                 ) : (
                   <ul className="chat-friends-list">
                     {friendsView.list.map((name) => {
