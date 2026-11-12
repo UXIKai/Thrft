@@ -3073,7 +3073,10 @@
   min-height: 0;
   overflow-y: auto;
   padding: calc(max(8px, env(safe-area-inset-top, 0px)) + 16px) 16px calc(24px + env(safe-area-inset-bottom, 0px));
-  background: var(--atmosphere-base, light-dark(#fafafa, #050505));
+  background:
+    radial-gradient(120% 70% at 50% 0%, rgba(var(--atmosphere-effect-a-rgb, 120, 150, 200), 0.35), transparent 70%),
+    radial-gradient(120% 70% at 50% 100%, rgba(var(--atmosphere-effect-a-rgb, 120, 150, 200), 0.25), transparent 70%),
+    color-mix(in srgb, var(--atmosphere-base, #fafafa) 80%, rgb(var(--atmosphere-effect-a-rgb, 120, 150, 200)));
 }
 
 .closet-page-head {
