@@ -1710,3 +1710,43 @@ html body .chat-friends-tab:active,
 html body .chat-friends-tab.is-active:hover {
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0.02) 50%, rgba(0, 0, 0, 0.12) 100%) !important;
 }
+
+/* Friends tabs sit in one capsule exactly like the navigation bar */
+html body .chat-friends-tab-group {
+  gap: 0 !important;
+  padding: 0;
+  border-radius: 999px;
+  background: light-dark(rgba(247, 247, 247, 0.35), rgba(8, 8, 8, 0.35));
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow:
+    inset 0 1px 1.5px rgba(255, 255, 255, 0.55),
+    inset 0 -1px 1px rgba(255, 255, 255, 0.25),
+    0 4px 10px rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(24px) saturate(140%);
+  -webkit-backdrop-filter: blur(24px) saturate(140%);
+}
+
+html body .chat-friends-tab-group .chat-friends-tab,
+html body .chat-friends-tab-group .chat-friends-tab:hover,
+html body .chat-friends-tab-group .chat-friends-tab:active {
+  height: 36px;
+  padding: 0 16px;
+  border: 0.5px solid transparent !important;
+  border-radius: 999px;
+  background: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  transform: none;
+}
+
+html body .chat-friends-tab-group .chat-friends-tab.is-active {
+  background: light-dark(rgba(0, 0, 0, 0.015), rgba(255, 255, 255, 0.015)) !important;
+  border: 0.5px solid light-dark(rgba(0, 0, 0, 0.32), rgba(255, 255, 255, 0.32)) !important;
+  box-shadow:
+    inset 0 0 0 0.5px rgba(0, 0, 0, 0.3),
+    inset 0 1px 2px rgba(0, 0, 0, 0.22),
+    0 1px 0 rgba(255, 255, 255, 0.18) !important;
+  backdrop-filter: blur(4px) !important;
+  -webkit-backdrop-filter: blur(4px) !important;
+}
