@@ -3795,3 +3795,33 @@ html body .chat-friends-tabs .chat-friends-pill {
   margin-top: auto;
   min-height: 44px;
 }
+
+/* Centre the new chat card in the pane; keep Images title clear of the toggle */
+.chat-desktop-thread > .chat-new-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 0;
+}
+
+.chat-new-screen .chat-new-card {
+  margin: auto;
+}
+
+@media (min-width: 720px) {
+  .chat-images-gallery {
+    padding-top: 0;
+  }
+
+  .chat-images-title {
+    display: flex;
+    align-items: center;
+    height: 36px;
+    margin: 0 0 14px;
+  }
+
+  .chat-screen.is-sidebar-collapsed .chat-images-title {
+    padding-left: 52px;
+  }
+}
