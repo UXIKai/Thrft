@@ -1950,3 +1950,7 @@ html body .tab-bar.is-pressed .tab-pill::before {
 .stage > .atmosphere {
   filter: brightness(0.8);
 }
+
+.app-column.is-panel-over-nav {
+  z-index: 5;
+}

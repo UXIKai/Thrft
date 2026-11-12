@@ -801,9 +801,18 @@ export default function ChatScreen({
   }, [chats])
 
   useEffect(() => {
-    onThreadActiveChange?.(Boolean(activeChatId) || (!isDesktop && (mobileNavOpen || activeNowOpen)))
+    onThreadActiveChange?.(Boolean(activeChatId))
     return () => onThreadActiveChange?.(false)
-  }, [activeChatId, isDesktop, mobileNavOpen, activeNowOpen, onThreadActiveChange])
+  }, [activeChatId, onThreadActiveChange])
+
+  // Lift the whole column above the bottom nav so the panels slide over it
+  const panelsOverNav = !isDesktop && (mobileNavOpen || activeNowOpen || navDragP > 0.01 || (onlineDragP !== null && onlineDragP > 0.01))
+  useEffect(() => {
+    const col = document.querySelector('.app-column')
+    if (!col) return undefined
+    col.classList.toggle('is-panel-over-nav', panelsOverNav)
+    return () => col.classList.remove('is-panel-over-nav')
+  }, [panelsOverNav])
 
   useEffect(() => {
     if (!activeChatId) {
