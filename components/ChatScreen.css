@@ -5238,3 +5238,10 @@ html body .chat-screen .chat-desktop-sidebar,
 html body .chat-screen .chat-desktop-list {
   border-color: light-dark(rgba(0, 0, 0, 0.05), rgba(255, 255, 255, 0.06)) !important;
 }
+
+html body .chat-screen .chat-sidebar,
+html body .chat-screen .chat-friends-empty,
+html body .chat-screen .chat-friends-body,
+html body .chat-screen .chat-friends-panel {
+  border-color: light-dark(rgba(0, 0, 0, 0.05), rgba(255, 255, 255, 0.06)) !important;
+}
