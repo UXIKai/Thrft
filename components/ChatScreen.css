@@ -3267,3 +3267,25 @@ html body button.chat-contact-nick-save {
   width: 18px;
   height: 18px;
 }
+
+/* Flat list rows and menu: no blur or glass, highlight on hover only */
+html body .chat-row-wrap {
+  border: none;
+  box-shadow: none;
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+html body .chat-row-wrap:hover,
+html body .chat-row-wrap.is-menu-open {
+  background: light-dark(rgba(0, 0, 0, 0.08), rgba(255, 255, 255, 0.12));
+}
+
+html body .chat-menu {
+  background: light-dark(#e9e9e9, #2f2f2f);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  border-radius: 18px;
+}
