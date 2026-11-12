@@ -2949,7 +2949,11 @@ export default function ChatScreen({
                   <svg viewBox="0 0 24 24" aria-hidden width="20" height="20" fill="currentColor"><circle cx="9" cy="8" r="3.5" /><path d="M2.5 20c0-3.6 2.9-6 6.500-6s6.500 2.400 6.500 6z" /><path d="M18 8v6M15 11h6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" fill="none" /></svg>
                   Friends {friends.length}
                 </span>
-                <div className="chat-friends-tab-group">
+                <div
+                  className="chat-friends-tab-group"
+                  style={{ '--tab-index': ['online', 'all', 'pending', 'suggestions'].indexOf(friendsTab) }}
+                >
+                  <span className="chat-friends-pill" aria-hidden />
                 {[['online', 'Online'], ['all', 'All'], ['pending', 'Pending'], ['suggestions', 'Suggestions']].map(([id, label]) => (
                   <button
                     key={id}
