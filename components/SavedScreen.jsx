@@ -557,7 +557,7 @@ export default function SavedScreen({
         </div>
       </div>
       </header>
-      <div className="saved-brand-row" aria-label="Favorite brands">
+      <div className="saved-fav-brands" aria-label="Favorite brands">
         {favoriteBrandCards.map((brand) => (
               <button
                 key={`brand-${brand.id}`}
