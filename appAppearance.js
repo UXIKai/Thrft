@@ -155,6 +155,12 @@ function syncColorScheme() {
       scheme = relativeLuminance(color.rgb) > 0.179 ? 'light' : 'dark'
     }
   }
+  if (!moonlightOn && currentBg === 'none') {
+    // Effect off: the chosen background or container color is the page itself.
+    for (const color of [resolveBgColor(currentBgColorId), resolveColor(currentColorId)]) {
+      if (color.id !== 'none' && relativeLuminance(color.rgb) > 0.4) scheme = 'light'
+    }
+  }
   if (!moonlightOn && !matchBackgroundColor && currentBg !== 'none') {
     // Bright effect clouds wash out light text, so switch to dark ink.
     const lums = currentBgEffects.map((hex) => relativeLuminance(hexToRgb(hex) || [0, 0, 0]))
@@ -456,6 +462,7 @@ export function applyGlassTokens() {
 
   const root = document.documentElement
   root.dataset.appColor = color.id
+  syncColorScheme()
   root.dataset.glass = String(percent)
   root.style.setProperty('--app-color-id', color.id)
   root.style.setProperty('--app-color-swatch', color.swatch === 'transparent' ? '#8c8c8c' : color.swatch)
