@@ -3114,7 +3114,7 @@ export default function ChatScreen({
                 >
                   <PeopleIcon />
                 </button>
-                <button type="button" className="chat-new-close" aria-label="Close" onClick={closeComposer}>
+                <button type="button" className="chat-new-close is-bare" aria-label="Close" onClick={closeComposer}>
                   <CloseIcon />
                 </button>
               </div>
