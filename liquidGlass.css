@@ -1598,8 +1598,3 @@ html[data-moonlight='off'][data-bg-image='atmosphere'] body .tab-bar .tab-item.i
 html[data-moonlight='off'][data-bg-image='atmosphere'] body .tab-bar .tab-item * {
   color: #fff !important;
 }
-
-html[data-moonlight='off'][data-bg-image='atmosphere'] body .tab-bar .tab-item svg {
-  fill: currentColor;
-  stroke: currentColor;
-}
