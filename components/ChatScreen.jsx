@@ -262,6 +262,23 @@ function ComposeIcon() {
   )
 }
 
+function GalleryIcon() {
+  return (
+    <svg className="chat-ico" viewBox="0 0 24 24" aria-hidden>
+      <rect x="4" y="4" width="16" height="16" rx="2.5" fill="none" stroke="currentColor" strokeWidth="1.6" />
+      <circle cx="9" cy="9.2" r="1.4" fill="currentColor" />
+      <path
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="m4.5 17 4.8-4.6 3.2 3 2.4-2.2 4.6 4.3"
+      />
+    </svg>
+  )
+}
+
 function PencilIcon() {
   return (
     <svg className="chat-ico" viewBox="0 0 24 24" aria-hidden>
@@ -2595,7 +2612,7 @@ export default function ChatScreen({
             aria-pressed={imagesOnly}
             onClick={() => setImagesOnly((on) => !on)}
           >
-            <ImageAttachIcon />
+            <GalleryIcon />
             <span>Images</span>
           </button>
         </nav>
