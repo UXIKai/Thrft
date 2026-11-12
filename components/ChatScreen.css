@@ -4473,3 +4473,7 @@ html body .chat-new-card .chat-new-list {
 html body .chat-friends-tabs > .chat-friends-active-head.is-collapsed {
   border-left: none !important;
 }
+
+html body .chat-new-card {
+  background: light-dark(rgba(70, 70, 70, 0.35), rgba(0, 0, 0, 0.35));
+}
