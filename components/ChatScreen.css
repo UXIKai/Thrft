@@ -5225,3 +5225,16 @@ html body .chat-friends-tabs.is-collapsible button.chat-friends-label:active {
   appearance: none;
   -webkit-appearance: none;
 }
+
+/* Chat page: dividers are barely-there */
+html body .chat-screen .chat-desktop-thread,
+html body .chat-screen .chat-friends-tabs,
+html body .chat-screen .chat-friends-row,
+html body .chat-screen .chat-friends-active,
+html body .chat-screen .chat-friends-tabs > .chat-friends-active-head,
+html body .chat-screen .chat-friends-active-aside-title,
+html body .chat-screen .chat-list-section,
+html body .chat-screen .chat-desktop-sidebar,
+html body .chat-screen .chat-desktop-list {
+  border-color: light-dark(rgba(0, 0, 0, 0.05), rgba(255, 255, 255, 0.06)) !important;
+}
