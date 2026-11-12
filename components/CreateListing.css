@@ -806,8 +806,10 @@ html body .listing-wheel .listing-wheel-input {
 .listing-photo-drop,
 .listing-scanner-btn,
 .listing-scanner-btn.has-preview {
-  min-height: 188px;
+  min-height: 218px;
   height: auto;
+  width: calc(100% - 15px);
+  align-self: center;
   box-sizing: border-box;
   border: none;
   background: #000 !important;
@@ -852,7 +854,7 @@ html body .listing-photo-hit {
   align-items: center;
   justify-content: center;
   width: 100%;
-  min-height: 188px;
+  min-height: 218px;
   height: auto;
   cursor: pointer;
   border-radius: inherit;
@@ -868,17 +870,12 @@ html body .listing-photo-hit {
   background: transparent;
 }
 
-.listing-photo-drop.is-choosing,
-.listing-scanner-btn.is-choosing {
-  background: transparent !important;
-}
-
 .is-choosing .listing-photo-hit {
   visibility: hidden;
 }
 
 html body .listing-photo-choice-btn {
-  background: #000 !important;
+  background: rgba(255, 255, 255, 0.12) !important;
   color: #fff;
   border-radius: 16px;
   width: 56px;
