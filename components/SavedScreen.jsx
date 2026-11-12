@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { flushSync } from 'react-dom'
 import { fetchSaved, recordInterest } from '../api.js'
 import { recordProductInterest, recordSearchHistory } from '../forYou.js'
+import { brandLogoUrl } from '../brandLogos.js'
 import { LISTING_BRANDS } from '../listingCatalog.js'
 import { SIZE_BRANDS } from '../sizeOptions.js'
 import BrandGlobe from './BrandGlobe.jsx'
@@ -294,6 +295,32 @@ const BRAND_CATALOG = buildBrandCatalog()
  * Favorites tab — saved products + favorite brands (feeds Home For You).
  * Dock + rotates open; brand globe emerges from the plus and sucks back on close.
  */
+function SavedBrandLogo({ name }) {
+  const src = brandLogoUrl(name)
+  const [failed, setFailed] = useState(false)
+  if (src && !failed) {
+    return (
+      <span className="saved-item-media is-brand-logo" aria-hidden>
+        <img
+          className="saved-brand-logo"
+          src={src}
+          alt=""
+          referrerPolicy="no-referrer"
+          onError={() => setFailed(true)}
+        />
+      </span>
+    )
+  }
+  return (
+    <>
+      <span className="saved-item-media" aria-hidden>
+        <span className="saved-item-mark">{name.slice(0, 2).toUpperCase()}</span>
+      </span>
+      <span className="saved-item-name">{name}</span>
+    </>
+  )
+}
+
 export default function SavedScreen({
   onBack,
   onOpenProduct,
@@ -644,12 +671,7 @@ export default function SavedScreen({
                 onClick={() => onOpenBrand?.(brand.id, brand.name)}
                 aria-label={`${brand.name} listings`}
               >
-                <span className="saved-item-media" aria-hidden>
-                  <span className="saved-item-mark">
-                    {brand.name.slice(0, 2).toUpperCase()}
-                  </span>
-                </span>
-                <span className="saved-item-name">{brand.name}</span>
+                <SavedBrandLogo name={brand.name} />
               </button>
             ))
           : null}

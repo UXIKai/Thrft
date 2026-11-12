@@ -428,6 +428,18 @@
   box-shadow: none;
 }
 
+.saved-item-media.is-brand-logo {
+  aspect-ratio: 1;
+}
+
+.saved-brand-logo {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  border-radius: 12px;
+  background: #fff;
+}
+
 .saved-item-media.is-product {
   background: #000;
 }

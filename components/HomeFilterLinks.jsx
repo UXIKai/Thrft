@@ -85,19 +85,23 @@ export default function HomeFilterLinks({
     }
   }, [open, brandId, categoryId, colorId])
 
-  const cardHex = draftColor ? colorHex(draftColor) || '#ffffff' : '#ffffff'
-  const isBlackFamily = COLOR_FAMILIES.Black.some(
-    (label) => label.toLowerCase().replace(/\s+/g, '-') === draftColor,
-  )
-  const cardStyle = {
-    '--card-ink': draftColor && !isBlackFamily ? cardHex : '#ffffff',
-    '--search-card-background': '#000000',
-  }
-  const effectOn = document.documentElement.dataset.bgImage !== 'none'
-  // Page behind the card stays black until the effect is on and a new color is scrolled onto.
-  const tintBackdrop = effectOn && !!draftColor && draftColor !== colorId
   const searchColor = (draftColor && colorHex(draftColor)) || '#ffffff'
-  const searchRgb = searchColor.match(/[a-f0-9]{2}/gi)?.map((part) => parseInt(part, 16)).join(', ')
+  const searchRgb = searchColor.match(/[a-f0-9]{2}/gi)?.map((part) => parseInt(part, 16)) || [255, 255, 255]
+  const luminance = (0.299 * searchRgb[0] + 0.587 * searchRgb[1] + 0.114 * searchRgb[2]) / 255
+  const effectOn = document.documentElement.dataset.bgImage !== 'none'
+  // The card starts white with black text; picking a color tints the card, not the page.
+  const tintCard = !!draftColor
+  const cardStyle = {
+    '--card-ink': tintCard && luminance < 0.5 ? '#ffffff' : '#000000',
+    '--search-card-background': tintCard ? searchColor : '#ffffff',
+    ...(tintCard ? {
+      '--search-tint': searchColor,
+      '--atmosphere-base-rgb': searchRgb.join(', '),
+      '--atmosphere-effect-a-rgb': searchRgb.map((part) => Math.round(part * 0.6)).join(', '),
+      '--atmosphere-effect-b-rgb': searchRgb.join(', '),
+      '--atmosphere-effect-c-rgb': searchRgb.map((part) => Math.round(part * 0.35)).join(', '),
+    } : {}),
+  }
 
   return (
     <div className="home-search">
@@ -113,32 +117,9 @@ export default function HomeFilterLinks({
           <path d="M16 16l4.5 4.5" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
         </svg>
       </button>
-      {open && tintBackdrop && (
-        <div
-          className="home-search-blur"
-          aria-hidden
-          style={{
-            '--search-tint': searchColor,
-            ...(searchRgb ? {
-              '--atmosphere-base-rgb': searchRgb,
-              '--atmosphere-effect-a-rgb': searchRgb.split(', ').map((part) => Math.round(Number(part) * 0.6)).join(', '),
-              '--atmosphere-effect-b-rgb': searchRgb,
-              '--atmosphere-effect-c-rgb': searchRgb.split(', ').map((part) => Math.round(Number(part) * 0.35)).join(', '),
-            } : {}),
-          }}
-        >
-          <div className="atmosphere" aria-hidden>
-            <span className="atmosphere-bloom atmosphere-bloom-a" />
-            <span className="atmosphere-bloom atmosphere-bloom-b" />
-            <span className="atmosphere-bloom atmosphere-bloom-c" />
-            <span className="atmosphere-bloom atmosphere-bloom-d" />
-          </div>
-        </div>
-      )}
       {open && (
         <div
           className="home-search-backdrop"
-          style={tintBackdrop ? { background: searchColor } : undefined}
           onPointerDown={(e) => {
             if (e.target === e.currentTarget) cancel()
           }}
@@ -150,6 +131,16 @@ export default function HomeFilterLinks({
             aria-label="Search"
             style={cardStyle}
           >
+            {tintCard && effectOn && (
+              <div className="home-search-blur" aria-hidden>
+                <div className="atmosphere" aria-hidden>
+                  <span className="atmosphere-bloom atmosphere-bloom-a" />
+                  <span className="atmosphere-bloom atmosphere-bloom-b" />
+                  <span className="atmosphere-bloom atmosphere-bloom-c" />
+                  <span className="atmosphere-bloom atmosphere-bloom-d" />
+                </div>
+              </div>
+            )}
             <div className="home-search-wheel">
               <p className="home-search-label">Brand</p>
               <OrbitCarousel

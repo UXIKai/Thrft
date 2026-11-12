@@ -233,7 +233,10 @@
 }
 
 /* Keep the flowing atmosphere behind, never on, the solid color card. */
-html body .home-search-blur {
+html body .home-search-modal .home-search-blur {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
   background: var(--search-tint, #fff) !important;
   transition: background-color 0.4s ease;
   background-image: none !important;
@@ -256,8 +259,20 @@ html body .home-search-blur::after {
   display: none;
 }
 
-html body .home-search-backdrop:not([style]) {
-  background: #000;
+html body .home-search-modal > :not(.home-search-blur) {
+  position: relative;
+  z-index: 1;
+}
+
+html body .home-search-modal > .home-search-done,
+html body .home-search-modal > .home-search-reset {
+  position: absolute;
+}
+
+html body .home-search-backdrop {
+  background: rgba(var(--app-color-rgb, 36, 36, 36), 0.8);
+  backdrop-filter: blur(var(--glass-blur, 16px)) saturate(var(--glass-sat, 1.4));
+  -webkit-backdrop-filter: blur(var(--glass-blur, 16px)) saturate(var(--glass-sat, 1.4));
 }
 
 html body .home-search-modal {
