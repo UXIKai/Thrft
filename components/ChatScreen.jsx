@@ -610,7 +610,6 @@ export default function ChatScreen({
   const [friendsQuery, setFriendsQuery] = useState('')
   const [pinnedCollapsed, setPinnedCollapsed] = useState(false)
   const [requestsView, setRequestsView] = useState(false)
-  const [activeNowOpen, setActiveNowOpen] = useState(isDesktop)
   const [requestsTab, setRequestsTab] = useState('requests')
   const [composer, setComposer] = useState(null) // null | { mode: 'create'|'edit', chatId? }
   const [draftName, setDraftName] = useState('')
@@ -797,9 +796,9 @@ export default function ChatScreen({
   }, [chats])
 
   useEffect(() => {
-    onThreadActiveChange?.(Boolean(activeChatId) || (!isDesktop && (mobileNavOpen || activeNowOpen)))
+    onThreadActiveChange?.(Boolean(activeChatId) || (!isDesktop && mobileNavOpen))
     return () => onThreadActiveChange?.(false)
-  }, [activeChatId, isDesktop, mobileNavOpen, activeNowOpen, onThreadActiveChange])
+  }, [activeChatId, isDesktop, mobileNavOpen, onThreadActiveChange])
 
   useEffect(() => {
     if (!activeChatId) {
@@ -2806,7 +2805,7 @@ export default function ChatScreen({
             className="chat-sidebar-control is-bare chat-sidebar-back"
             aria-label={isDesktop ? 'Back to Home' : mobileNavOpen ? 'Close chats' : 'Open chats'}
             aria-expanded={isDesktop ? undefined : mobileNavOpen}
-            onClick={isDesktop ? backToChats : () => { setActiveNowOpen(false); setMobileNavOpen((open) => !open) }}
+            onClick={isDesktop ? backToChats : () => setMobileNavOpen((open) => !open)}
           >
             {isDesktop ? <BackIcon /> : <ToggleIcon />}
           </button>
@@ -3103,20 +3102,6 @@ export default function ChatScreen({
                   </button>
                 ))}
                 </div>
-                <div className={`chat-friends-active-head${activeNowOpen ? '' : ' is-collapsed'}`}>
-                  {activeNowOpen && <h3 className="chat-friends-active-title">Active Now</h3>}
-                  <button
-                    type="button"
-                    className="chat-friends-active-toggle"
-                    aria-label={activeNowOpen ? 'Close Active Now' : 'Open Active Now'}
-                    aria-expanded={activeNowOpen}
-                    onClick={() => setActiveNowOpen((o) => !o)}
-                  >
-                    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden style={{ transform: activeNowOpen ? 'none' : 'scaleX(-1)' }}>
-                      <path d="M4 12h11M11 8l4 4-4 4M20 5v14" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  </button>
-                </div>
               </nav>
               <div className="chat-friends-body">
               <div className="chat-friends-panel">
@@ -3160,13 +3145,6 @@ export default function ChatScreen({
                   </ul>
                 )}
               </div>
-              {!isDesktop && activeNowOpen && (
-                <button type="button" className="chat-mobile-nav-scrim" aria-label="Close Active Now" onClick={() => setActiveNowOpen(false)} />
-              )}
-              <aside className={`chat-friends-active${activeNowOpen ? '' : ' is-collapsed'}`} aria-label="Active Now" hidden={!activeNowOpen}>
-                {activeNowOpen && <h3 className="chat-friends-active-aside-title">Active Now</h3>}
-                {activeNowOpen && <p className="chat-friends-active-empty">It's quiet for now…</p>}
-              </aside>
               </div>
             </div>
           )}
