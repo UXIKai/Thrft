@@ -811,9 +811,9 @@ html body .listing-wheel .listing-wheel-input {
   width: calc(100% - 15px);
   align-self: center;
   box-sizing: border-box;
-  background: var(--glass-clear-tint, light-dark(rgba(219, 219, 219, 0.04), rgba(36, 36, 36, 0.04))) !important;
-  backdrop-filter: blur(var(--glass-clear-blur, 2px)) saturate(var(--glass-sat, 1.55));
-  -webkit-backdrop-filter: blur(var(--glass-clear-blur, 2px)) saturate(var(--glass-sat, 1.55));
+  background: light-dark(rgba(235, 235, 235, 0.22), rgba(120, 120, 120, 0.2)) !important;
+  backdrop-filter: blur(40px) saturate(1.4);
+  -webkit-backdrop-filter: blur(40px) saturate(1.4);
   border: 1px solid var(--glass-border, light-dark(rgba(87, 87, 87, 0.18), rgba(168, 168, 168, 0.18)));
   box-shadow: var(--glass-clear-depth);
   overflow: hidden;
