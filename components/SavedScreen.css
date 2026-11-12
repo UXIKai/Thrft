@@ -696,3 +696,17 @@
   max-width: 420px;
   margin: 28vh auto 0;
 }
+
+.saved-room-btn {
+  border: 1.5px solid light-dark(#111, #fff);
+  color: light-dark(#111, #fff);
+}
+
+.saved-room-btn span {
+  color: light-dark(#111, #fff);
+}
+
+.saved-room-btn svg {
+  color: light-dark(#111, #fff);
+  fill: currentColor;
+}
