@@ -3835,3 +3835,30 @@ html body .chat-friends-tabs .chat-friends-pill {
 .chat-list-quick-btn:hover {
   background: light-dark(rgba(0, 0, 0, 0.08), rgba(255, 255, 255, 0.12));
 }
+
+/* Centre the whole stack; check mark sits beside the search field */
+.chat-new-card {
+  height: auto;
+}
+
+.chat-new-list {
+  flex: none;
+  height: 220px;
+}
+
+.chat-new-field {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.chat-new-field .chat-new-input {
+  flex: 1 1 auto;
+}
+
+.chat-new-done {
+  flex: 0 0 auto;
+  min-width: 36px;
+  height: 36px;
+  padding: 0 8px;
+}

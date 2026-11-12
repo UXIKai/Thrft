@@ -2647,6 +2647,18 @@ export default function ChatScreen({
                         value={createQuery}
                         onChange={(e) => setCreateQuery(e.target.value)}
                       />
+                      {createTab === 'group' && (
+                        <button
+                          type="button"
+                          className="chat-new-foot-btn is-primary chat-new-done"
+                          aria-label={`Done, ${draftMembers.length} selected`}
+                          disabled={draftMembers.length === 0}
+                          onClick={() => { setGroupNameStep(true); setDraftName(''); setCreateQuery('') }}
+                        >
+                          <svg viewBox="0 0 24 24" aria-hidden><path d="m5 12.5 4.5 4.5L19 7.5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                          {draftMembers.length > 0 && <span>{draftMembers.length}</span>}
+                        </button>
+                      )}
                     </div>
                     <ul className="chat-new-list">
                       {createTab === 'group' && draftMembers
@@ -2705,20 +2717,6 @@ export default function ChatScreen({
                         )
                       })}
                     </ul>
-                    {createTab === 'group' && (
-                      <div className="chat-new-foot">
-                        <button
-                          type="button"
-                          className="chat-new-foot-btn is-primary"
-                          aria-label={`Done, ${draftMembers.length} selected`}
-                          disabled={draftMembers.length === 0}
-                          onClick={() => { setGroupNameStep(true); setDraftName(''); setCreateQuery('') }}
-                        >
-                          <svg viewBox="0 0 24 24" aria-hidden><path d="m5 12.5 4.5 4.5L19 7.5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                          <span>{draftMembers.length} selected</span>
-                        </button>
-                      </div>
-                    )}
                   </>
                 )}
               </div>
