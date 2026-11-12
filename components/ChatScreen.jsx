@@ -2817,6 +2817,7 @@ export default function ChatScreen({
             aria-label="Search conversations"
             aria-expanded={searchOpen}
             onClick={() => {
+              setMobileNavOpen(false)
               flushSync(() => setSearchOpen(true))
               document.getElementById('chat-search-input')?.focus({ preventScroll: true })
             }}
