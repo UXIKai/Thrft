@@ -1655,6 +1655,7 @@ export default function ChatScreen({
   function openThread(chat) {
     setChats((prev) => prev.map((row) => row.id === chat.id ? { ...row, unread: false } : row))
     setActiveChatId(chat.id)
+    if (isDesktop) setSidebarCollapsed(true)
     setDraftMessage('')
     setContactSheetOpen(false)
     setMembersSheetOpen(false)
