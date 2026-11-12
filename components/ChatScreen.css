@@ -4621,17 +4621,25 @@ html body .chat-new-card {
     border: none !important;
   }
 
-  html body .chat-desktop-thread .chat-friends-label {
+  html body .chat-desktop-thread .chat-friends-tabs[aria-label='Friends'] {
     position: fixed;
     top: calc(max(8px, env(safe-area-inset-top, 0px)) + 6px);
-    left: 50%;
-    transform: translateX(-50%);
+    left: 56px;
+    right: 56px;
     z-index: 5;
-    display: flex;
-    align-items: center;
-    gap: 4px;
+    flex-wrap: nowrap;
+    width: auto;
     height: 36px;
-    margin: 0;
+    align-items: center;
+  }
+
+  html body .chat-desktop-thread .chat-friends-tabs[aria-label='Friends'] .chat-friends-label {
+    display: none;
+  }
+
+  html body .chat-desktop-thread .chat-friends-tabs[aria-label='Friends'] .chat-friends-tab-group {
+    flex: 1 1 auto;
+    height: 32px;
   }
 
   .chat-desktop-thread .chat-friends-active {
