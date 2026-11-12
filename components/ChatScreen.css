@@ -5005,3 +5005,28 @@ html body .chat-new-field {
     border-left: 1px solid rgba(255, 255, 255, 0.08);
   }
 }
+
+/* Swipe-driven drawer: --nav-p (0..1) is set from the drag or the open state */
+@media (max-width: 719px), (max-height: 499px) {
+  html body .chat-screen .chat-list-section,
+  html body .chat-screen.is-mobile-nav-open .chat-list-section {
+    transform: translateX(calc((1 - var(--nav-p, 0)) * -102%));
+    visibility: visible;
+    transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0.28s;
+  }
+  html body .chat-screen:not(.is-mobile-nav-open) .chat-list-section {
+    visibility: hidden;
+  }
+  html body .chat-screen.is-nav-dragging .chat-list-section,
+  html body .chat-screen.is-nav-dragging .chat-mobile-nav-scrim {
+    transition: none;
+  }
+  html body .chat-screen .chat-mobile-nav-scrim {
+    left: calc(min(80vw, 340px) * var(--nav-p, 0) - 44px);
+    transition: left 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  html body .chat-screen.is-mobile-nav-open .chat-sidebar-title,
+  html body .chat-screen.is-mobile-nav-open .chat-sidebar-control[aria-label='Search conversations'] {
+    opacity: var(--nav-p, 1);
+  }
+}

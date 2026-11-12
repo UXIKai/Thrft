@@ -586,6 +586,8 @@ export default function ChatScreen({
     () => typeof window !== 'undefined' && window.matchMedia('(min-width: 720px) and (min-height: 500px)').matches,
   )
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
+  const [navDragP, setNavDragP] = useState(null)
+  const navDragRef = useRef(null)
   const [memberDraft, setMemberDraft] = useState('')
   const [menuId, setMenuId] = useState(null)
   const [dmRenaming, setDmRenaming] = useState(false)
@@ -2778,7 +2780,38 @@ export default function ChatScreen({
 
   return (
     <div
-      className={`chat-screen${composer?.mode === 'create' ? ' is-new-chat' : ''}${isDesktop ? ' is-desktop' : ''}${isDesktop && sidebarCollapsed ? ' is-sidebar-collapsed' : ''}${!isDesktop && mobileNavOpen ? ' is-mobile-nav-open' : ''}`}
+      className={`chat-screen${composer?.mode === 'create' ? ' is-new-chat' : ''}${isDesktop ? ' is-desktop' : ''}${isDesktop && sidebarCollapsed ? ' is-sidebar-collapsed' : ''}${!isDesktop && (mobileNavOpen || (navDragP ?? 0) > 0.01) ? ' is-mobile-nav-open' : ''}${navDragP !== null ? ' is-nav-dragging' : ''}`}
+      style={!isDesktop ? { '--nav-p': navDragP ?? (mobileNavOpen ? 1 : 0) } : undefined}
+      onTouchStart={(e) => {
+        if (isDesktop || e.touches.length !== 1 || e.target.closest?.('input,textarea,select')) return
+        const t = e.touches[0]
+        navDragRef.current = { x: t.clientX, y: t.clientY, open: mobileNavOpen, dir: null }
+      }}
+      onTouchMove={(e) => {
+        const d = navDragRef.current
+        if (!d) return
+        const t = e.touches[0]
+        const dx = t.clientX - d.x
+        const dy = t.clientY - d.y
+        if (!d.dir) {
+          if (Math.abs(dx) < 12 && Math.abs(dy) < 12) return
+          d.dir = Math.abs(dx) > Math.abs(dy) * 1.3 && (d.open ? dx < 0 : dx > 0) ? 'h' : 'v'
+        }
+        if (d.dir !== 'h') return
+        const width = Math.min(window.innerWidth * 0.8, 340)
+        d.p = Math.max(0, Math.min(1, (d.open ? 1 : 0) + dx / width))
+        setNavDragP(d.p)
+      }}
+      onTouchEnd={() => {
+        const d = navDragRef.current
+        navDragRef.current = null
+        if (!d || d.dir !== 'h') return
+        const open = (d.p ?? 0) > 0.5
+        if (open) setActiveNowOpen(false)
+        setMobileNavOpen(open)
+        setNavDragP(null)
+      }}
+      onTouchCancel={() => { navDragRef.current = null; setNavDragP(null) }}
       onClick={(e) => {
         const onContent = e.target.closest?.('button,a,input,textarea,select,label,img,li,svg,.chat-new-card,.chat-thread,.chat-friends-tab-group,.chat-sidebar-header,.chat-images-grid,.chat-images-title,.chat-desktop-empty')
         if (isDesktop && !onContent) {
@@ -2874,7 +2907,7 @@ export default function ChatScreen({
         )}
       </section>
 
-      {!isDesktop && mobileNavOpen && (
+      {!isDesktop && (mobileNavOpen || navDragP !== null) && (
         <button type="button" className="chat-mobile-nav-scrim" aria-label="Close chats" onClick={() => setMobileNavOpen(false)} />
       )}
       <section
