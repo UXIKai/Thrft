@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { MAP_X, MAP_Y } from './TabBar.jsx'
 import { fetchSaved, recordInterest, saveSavedItems } from '../api.js'
 import { recordProductInterest, recordSearchHistory } from '../forYou.js'
 import { brandLogoUrl } from '../brandLogos.js'
@@ -706,6 +707,18 @@ export default function SavedScreen({
         onPointerUp={onBrandUp}
         onPointerCancel={() => { dragRef.current = null; setPillActive(false) }}
       >
+        {favoriteBrandCards.length > 0 && brandPill && (
+          <svg width="0" height="0" aria-hidden style={{ position: 'absolute' }}>
+            <defs>
+              <filter id="lg-brand-bubble" filterUnits="userSpaceOnUse" primitiveUnits="userSpaceOnUse" x="0" y="0" width={brandPill.width + 12} height={brandPill.height + 12} colorInterpolationFilters="sRGB">
+                <feImage href={MAP_X} x="0" y="0" width={brandPill.width + 12} height={brandPill.height + 12} preserveAspectRatio="none" result="mx" />
+                <feImage href={MAP_Y} x="0" y="0" width={brandPill.width + 12} height={brandPill.height + 12} preserveAspectRatio="none" result="my" />
+                <feComposite in="mx" in2="my" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" result="map" />
+                <feDisplacementMap in="SourceGraphic" in2="map" scale="14" xChannelSelector="R" yChannelSelector="G" />
+              </filter>
+            </defs>
+          </svg>
+        )}
         {favoriteBrandCards.length > 0 && (
           <span
             className={`saved-brand-pill${pillActive ? ' is-active' : ''}`}
