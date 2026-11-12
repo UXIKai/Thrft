@@ -483,8 +483,9 @@ export default function SavedScreen({
             b.name.toLowerCase().includes(q) || b.id.toLowerCase().includes(q),
         )
       : BRAND_CATALOG
-    return list.map((b) => ({ id: b.id, label: b.name }))
-  }, [query])
+    const liked = new Set(favoriteBrands.map(String))
+    return list.filter((b) => !liked.has(String(b.id))).map((b) => ({ id: b.id, label: b.name }))
+  }, [query, favoriteBrands])
 
   const favoriteBrandCards = useMemo(() => {
     return favoriteBrands
