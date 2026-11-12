@@ -1008,3 +1008,19 @@ html body .saved-fab .saved-fab-item.saved-fab-item:nth-child(3) {
   --fab-x: -50px;
   --fab-y: 88px;
 }
+
+/* Quarter-circle fan around the plus: left, diagonal, down (radius 58px) */
+html body .saved-fab .saved-fab-item.saved-fab-item {
+  --fab-x: -58px;
+  --fab-y: 0px;
+}
+
+html body .saved-fab .saved-fab-item.saved-fab-item:nth-child(2) {
+  --fab-x: -41px;
+  --fab-y: 41px;
+}
+
+html body .saved-fab .saved-fab-item.saved-fab-item:nth-child(3) {
+  --fab-x: 0px;
+  --fab-y: 58px;
+}
