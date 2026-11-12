@@ -4188,8 +4188,9 @@ html body .chat-new-card {
   padding: 16px;
   border-radius: 24px;
   border: 1px solid light-dark(rgba(0, 0, 0, 0.18), rgba(255, 255, 255, 0.22));
-  background: rgba(var(--app-color-rgb, 36, 36, 36), 0.8);
-  backdrop-filter: blur(var(--glass-blur, 16px)) saturate(var(--glass-sat, 1.4));
-  -webkit-backdrop-filter: blur(var(--glass-blur, 16px)) saturate(var(--glass-sat, 1.4));
+  background: light-dark(rgba(70, 70, 70, 0.8), rgba(0, 0, 0, 0.8));
+  color: #fff;
+  backdrop-filter: blur(24px) saturate(1.2);
+  -webkit-backdrop-filter: blur(24px) saturate(1.2);
   box-shadow: 0 12px 36px rgba(0, 0, 0, 0.28);
 }
