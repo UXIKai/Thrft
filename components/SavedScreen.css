@@ -1102,3 +1102,21 @@ html body .saved-fav-brands {
 /* Keep the fan clear of the brand row */
 html body .saved-fab { right: -14px; z-index: 40; }
 html body .saved-fav-brands.is-fab-open { margin-top: 62px; }
+
+/* Nav-style glass bubble that slides to the brand you touch */
+html body .saved-fav-brands { position: relative; }
+html body .saved-fav-brands .saved-item { position: relative; z-index: 1; }
+.saved-brand-pill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 2;
+  pointer-events: none;
+  border-radius: 20px;
+  border: 0.5px solid rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.08);
+  -webkit-backdrop-filter: blur(2px) saturate(1.4);
+  backdrop-filter: blur(2px) saturate(1.4);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.5), inset 0 -1px 1px rgba(255, 255, 255, 0.15), 0 4px 14px rgba(0, 0, 0, 0.2);
+  transition: transform 0.35s cubic-bezier(0.3, 1.3, 0.4, 1), width 0.35s ease, height 0.35s ease, opacity 0.2s;
+}

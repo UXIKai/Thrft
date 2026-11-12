@@ -345,6 +345,15 @@ export default function SavedScreen({
     Array.isArray(favoredBrands) ? [...favoredBrands] : [],
   )
   const [fabOpen, setFabOpen] = useState(false)
+  const brandRowRef = useRef(null)
+  const [brandPill, setBrandPill] = useState(null)
+  useEffect(() => {
+    movePillTo(brandRowRef.current?.querySelector('.saved-item'))
+  }, [favoriteBrands.length, items.length])
+  function movePillTo(el) {
+    if (!el) return
+    setBrandPill({ left: el.offsetLeft, top: el.offsetTop, width: el.offsetWidth, height: el.offsetHeight })
+  }
   const [selectMode, setSelectMode] = useState(false)
   const [selectedKeys, setSelectedKeys] = useState([])
   const toggleSelected = (key) =>
@@ -640,7 +649,20 @@ export default function SavedScreen({
           </div>
         )}
       </header>
-      <div className={`saved-fav-brands${fabOpen ? ' is-fab-open' : ''}`} aria-label="Favorite brands">
+      <div
+        ref={brandRowRef}
+        className={`saved-fav-brands${fabOpen ? ' is-fab-open' : ''}`}
+        aria-label="Favorite brands"
+        onPointerOver={(e) => movePillTo(e.target.closest?.('.saved-item'))}
+        onPointerDown={(e) => movePillTo(e.target.closest?.('.saved-item'))}
+      >
+        {favoriteBrandCards.length > 0 && (
+          <span
+            className="saved-brand-pill"
+            aria-hidden
+            style={brandPill ? { transform: `translate(${brandPill.left - 6}px, ${brandPill.top - 6}px)`, width: brandPill.width + 12, height: brandPill.height + 12 } : { opacity: 0 }}
+          />
+        )}
         {favoriteBrandCards.map((brand) => (
               <button
                 key={`brand-${brand.id}`}
