@@ -3195,7 +3195,7 @@ export default function ChatScreen({
                   </button>
                 ))}
                 </div>
-                <div className={`chat-friends-active-head${activeNowOpen ? '' : ' is-collapsed'}`}>
+                <div className={`chat-friends-active-head${activeNowOpen || onlineDragP !== null ? '' : ' is-collapsed'}`}>
                   {activeNowOpen && <h3 className="chat-friends-active-title">Online</h3>}
                   <button
                     type="button"

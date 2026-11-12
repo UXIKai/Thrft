@@ -5132,3 +5132,36 @@ html body .chat-new-field {
     transition: none;
   }
 }
+
+/* Controls ride along with the panel or page they belong to while sliding */
+@media (max-width: 719px), (max-height: 499px) {
+  html body .chat-screen.is-mobile-nav-open .chat-sidebar-back {
+    right: auto;
+    left: 16px;
+    transform: translateX(calc(min(80vw, 340px) * var(--nav-p, 1)));
+    transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  html body .chat-screen.is-mobile-nav-open .chat-sidebar-title {
+    left: 24px;
+    opacity: 1;
+    transform: translateX(calc((1 - var(--nav-p, 1)) * -1 * min(80vw, 340px)));
+    transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  html body .chat-screen.is-mobile-nav-open .chat-sidebar-control[aria-label='Search conversations'] {
+    left: calc(min(80vw, 340px) - 64px);
+    opacity: 1;
+    transform: translateX(calc((1 - var(--nav-p, 1)) * -1 * min(80vw, 340px)));
+    transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  html body .chat-desktop-thread .chat-friends-active-head:not(.is-collapsed) {
+    right: 20px;
+    transform: translateX(calc(-1 * (min(80vw, 340px) - 72px) * var(--online-p, 1)));
+    transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  html body .chat-screen.is-nav-dragging .chat-sidebar-back,
+  html body .chat-screen.is-nav-dragging .chat-sidebar-title,
+  html body .chat-screen.is-nav-dragging .chat-sidebar-control[aria-label='Search conversations'],
+  html body .chat-screen.is-nav-dragging .chat-friends-active-head {
+    transition: none;
+  }
+}
