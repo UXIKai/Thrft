@@ -322,14 +322,14 @@ export default function CreateListing({ onPosted } = {}) {
     setPickerPhase('closed')
   }, [segment])
 
-  // Hide nav while the add sheet or Brand/Type globe is open.
+  // Hide nav while the add sheet, Brand/Type globe, or listing walkthrough is open.
   useEffect(() => {
     const stage = document.querySelector('.stage')
     if (!stage) return undefined
-    const hideNav = addSheetOpen || pickerPhase !== 'closed' || numberLookupOpen
+    const hideNav = addSheetOpen || pickerPhase !== 'closed' || numberLookupOpen || step !== 'destination'
     stage.classList.toggle('is-create-adding', hideNav)
     return () => stage.classList.remove('is-create-adding')
-  }, [addSheetOpen, pickerPhase, numberLookupOpen])
+  }, [addSheetOpen, pickerPhase, numberLookupOpen, step])
 
   function openPicker(kind) {
     setAddSheetOpen(false)
