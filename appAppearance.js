@@ -441,7 +441,7 @@ export function applyGlassTokens() {
   const clearTintActive = hasColor ? lerp(0.22, 0.42, opaque) : lerp(0, 0.3, opaque)
   const tint = hasColor ? lerp(0.2, 0.4, opaque) : lerp(0, 0.28, opaque)
   const tintActive = hasColor ? lerp(0.26, 0.48, opaque) : lerp(0, 0.36, opaque)
-  const border = hasColor ? lerp(0.62, 0.42, opaque) : lerp(0.28, 0.16, opaque)
+  const border = 0.9
 
   const blur = hasColor ? lerp(12, 22, opaque) : lerp(0, 16, opaque)
   const clearBlur = hasColor ? lerp(10, 18, opaque) : lerp(0, 12, opaque)
