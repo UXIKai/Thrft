@@ -4488,7 +4488,7 @@ html body .chat-new-card {
     z-index: 60;
     width: min(84vw, 340px);
     box-sizing: border-box;
-    padding: max(56px, calc(env(safe-area-inset-top, 0px) + 16px)) 16px calc(24px + env(safe-area-inset-bottom, 0px));
+    padding: calc(max(8px, env(safe-area-inset-top, 0px)) + 24px + 48px) 16px calc(24px + env(safe-area-inset-bottom, 0px));
     overflow-y: auto;
     background: light-dark(rgba(245, 235, 238, 0.97), rgba(10, 10, 12, 0.97));
     transform: translateX(-102%);
@@ -4513,7 +4513,7 @@ html body .chat-new-card {
 @media (max-width: 719px) {
   .chat-screen.is-mobile-nav-open .chat-sidebar-back {
     position: fixed;
-    top: max(12px, calc(env(safe-area-inset-top, 0px) + 8px));
+    top: calc(max(8px, env(safe-area-inset-top, 0px)) + 24px);
     left: calc(min(84vw, 340px) - 52px);
     z-index: 61;
   }
