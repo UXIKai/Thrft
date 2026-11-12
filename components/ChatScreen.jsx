@@ -1725,7 +1725,14 @@ export default function ChatScreen({
   function renderThread() {
     if (!activeChat) return null
     return (
-      <div className="chat-thread" role="dialog" aria-label={activeChat.title}>
+      <div
+        className="chat-thread"
+        role="dialog"
+        aria-label={activeChat.title}
+        onClick={(e) => {
+          if (isDesktop && e.target === e.currentTarget) setActiveChatId(null)
+        }}
+      >
         {menuId &&
           createPortal(
             <div className="chat-dm-portal">
@@ -2479,7 +2486,12 @@ export default function ChatScreen({
   if (activeChat && !isDesktop) return renderThread()
 
   return (
-    <div className={`chat-screen${isDesktop ? ' is-desktop' : ''}${isDesktop && sidebarCollapsed ? ' is-sidebar-collapsed' : ''}`}>
+    <div
+      className={`chat-screen${isDesktop ? ' is-desktop' : ''}${isDesktop && sidebarCollapsed ? ' is-sidebar-collapsed' : ''}`}
+      onClick={(e) => {
+        if (isDesktop && activeChat && e.target === e.currentTarget) setActiveChatId(null)
+      }}
+    >
       {menuId && chats.find((c) => c.id === menuId)?.kind !== 'dm' && (
         <button
           type="button"
