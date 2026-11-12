@@ -3736,7 +3736,7 @@ html body .chat-new-foot-btn.is-primary {
 .chat-friends-tab-group {
   position: relative;
   display: grid !important;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   width: 440px;
   max-width: 100%;
   padding: 4px !important;
@@ -3748,7 +3748,7 @@ html body .chat-new-foot-btn.is-primary {
   top: 4px;
   bottom: 4px;
   left: 4px;
-  width: calc((100% - 8px) / 4);
+  width: calc((100% - 8px) / 3);
   border-radius: 999px;
   transform: translateX(calc(var(--tab-index, 0) * 100%));
   transition: transform 0.38s cubic-bezier(0.34, 1.3, 0.5, 1);

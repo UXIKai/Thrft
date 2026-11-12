@@ -3070,28 +3070,28 @@ export default function ChatScreen({
                 </span>
                 <div
                   className="chat-friends-tab-group"
-                  style={{ '--tab-index': ['online', 'all', 'pending', 'suggestions'].indexOf(friendsTab), touchAction: 'pan-y' }}
+                  style={{ '--tab-index': ['all', 'pending', 'suggestions'].indexOf(friendsTab), touchAction: 'pan-y' }}
                   onPointerDown={(e) => {
                     const el = e.currentTarget
                     el.dataset.drag = '1'
                     el.setPointerCapture?.(e.pointerId)
                     const r = el.getBoundingClientRect()
-                    const i = Math.max(0, Math.min(3, Math.floor(((e.clientX - r.left) / r.width) * 4)))
-                    setFriendsTab(['online', 'all', 'pending', 'suggestions'][i])
+                    const i = Math.max(0, Math.min(2, Math.floor(((e.clientX - r.left) / r.width) * 3)))
+                    setFriendsTab(['all', 'pending', 'suggestions'][i])
                   }}
                   onPointerMove={(e) => {
                     const el = e.currentTarget
                     if (el.dataset.drag !== '1') return
                     const r = el.getBoundingClientRect()
-                    const i = Math.max(0, Math.min(3, Math.floor(((e.clientX - r.left) / r.width) * 4)))
-                    const id = ['online', 'all', 'pending', 'suggestions'][i]
+                    const i = Math.max(0, Math.min(2, Math.floor(((e.clientX - r.left) / r.width) * 3)))
+                    const id = ['all', 'pending', 'suggestions'][i]
                     if (id !== friendsTab) setFriendsTab(id)
                   }}
                   onPointerUp={(e) => { e.currentTarget.dataset.drag = '0' }}
                   onPointerCancel={(e) => { e.currentTarget.dataset.drag = '0' }}
                 >
                   <span className="chat-friends-pill" aria-hidden />
-                {[['online', 'Online'], ['all', 'All'], ['pending', 'Pending'], ['suggestions', 'Suggestions']].map(([id, label]) => (
+                {[['all', 'All'], ['pending', 'Pending'], ['suggestions', 'Suggestions']].map(([id, label]) => (
                   <button
                     key={id}
                     type="button"
@@ -3104,11 +3104,11 @@ export default function ChatScreen({
                 ))}
                 </div>
                 <div className={`chat-friends-active-head${activeNowOpen ? '' : ' is-collapsed'}`}>
-                  {activeNowOpen && <h3 className="chat-friends-active-title">Active Now</h3>}
+                  {activeNowOpen && <h3 className="chat-friends-active-title">Online</h3>}
                   <button
                     type="button"
                     className="chat-friends-active-toggle"
-                    aria-label={activeNowOpen ? 'Close Active Now' : 'Open Active Now'}
+                    aria-label={activeNowOpen ? 'Close Online' : 'Open Online'}
                     aria-expanded={activeNowOpen}
                     onClick={() => setActiveNowOpen((o) => !o)}
                   >
@@ -3161,10 +3161,10 @@ export default function ChatScreen({
                 )}
               </div>
               {!isDesktop && activeNowOpen && (
-                <button type="button" className="chat-mobile-nav-scrim" aria-label="Close Active Now" onClick={() => setActiveNowOpen(false)} />
+                <button type="button" className="chat-mobile-nav-scrim" aria-label="Close Online" onClick={() => setActiveNowOpen(false)} />
               )}
-              <aside className={`chat-friends-active${activeNowOpen ? '' : ' is-collapsed'}`} aria-label="Active Now" hidden={!activeNowOpen}>
-                {activeNowOpen && <h3 className="chat-friends-active-aside-title">Active Now</h3>}
+              <aside className={`chat-friends-active${activeNowOpen ? '' : ' is-collapsed'}`} aria-label="Online" hidden={!activeNowOpen}>
+                {activeNowOpen && <h3 className="chat-friends-active-aside-title">Online</h3>}
                 {activeNowOpen && <p className="chat-friends-active-empty">It's quiet for now…</p>}
               </aside>
               </div>
