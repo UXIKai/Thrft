@@ -1977,3 +1977,15 @@ html body .stage.is-chat-panel-dragging .tab-bar {
     var(--atmosphere-base, var(--void, light-dark(rgb(250, 250, 250), #050505)));
   animation: none;
 }
+
+/* Desktop chat: nav fades away until the mouse comes near the bottom edge */
+html body .stage.is-nav-autohide .tab-bar {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+html body .stage.is-nav-autohide.is-nav-near .tab-bar {
+  opacity: 1;
+  pointer-events: auto;
+}
