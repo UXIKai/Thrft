@@ -2952,7 +2952,14 @@ export default function ChatScreen({
                 <div
                   className="chat-friends-tab-group"
                   style={{ '--tab-index': ['online', 'all', 'pending', 'suggestions'].indexOf(friendsTab), touchAction: 'pan-y' }}
-                  onPointerDown={(e) => { e.currentTarget.dataset.drag = '1'; e.currentTarget.setPointerCapture?.(e.pointerId) }}
+                  onPointerDown={(e) => {
+                    const el = e.currentTarget
+                    el.dataset.drag = '1'
+                    el.setPointerCapture?.(e.pointerId)
+                    const r = el.getBoundingClientRect()
+                    const i = Math.max(0, Math.min(3, Math.floor(((e.clientX - r.left) / r.width) * 4)))
+                    setFriendsTab(['online', 'all', 'pending', 'suggestions'][i])
+                  }}
                   onPointerMove={(e) => {
                     const el = e.currentTarget
                     if (el.dataset.drag !== '1') return
