@@ -4791,3 +4791,13 @@ html body .chat-search-modal .chat-search-modal-head button.chat-search-modal-cl
   opacity: 0.7;
   font-size: 0.85em;
 }
+
+html body .chat-friends-tab .chat-friends-tab-count {
+  margin-left: 14px;
+}
+
+@media (max-width: 719px), (max-height: 499px) {
+  html body .chat-friends-tab .chat-friends-tab-count {
+    margin-left: 8px;
+  }
+}
