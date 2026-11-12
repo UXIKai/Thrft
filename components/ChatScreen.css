@@ -4393,3 +4393,8 @@ html body .chat-friends-active {
 html body .chat-friends-tabs > .chat-friends-active-head {
   border-left: 1px solid light-dark(rgba(0, 0, 0, 0.18), rgba(255, 255, 255, 0.18)) !important;
 }
+
+html body .chat-friends-tabs > .chat-friends-active-head,
+html body .chat-friends-tabs > .chat-friends-active-head.is-collapsed {
+  border-left: none !important;
+}
