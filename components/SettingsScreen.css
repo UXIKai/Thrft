@@ -2765,3 +2765,12 @@ html:not([data-moonlight='on']) body .settings-section.is-profile-controls .sett
 html[data-scheme='light']:not([data-moonlight='on']) .settings-screen {
   background: color-mix(in srgb, var(--bg-color-swatch, #fff) 80%, transparent);
 }
+
+/* The plate everything sits on is a fixed 80% opaque, independent of the glass slider */
+html:not([data-moonlight='on']) .settings-screen {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+html[data-scheme='light']:not([data-moonlight='on']) .settings-screen {
+  background: color-mix(in srgb, var(--bg-color-swatch, #fff) 80%, transparent);
+}
