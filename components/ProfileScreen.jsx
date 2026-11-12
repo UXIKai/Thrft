@@ -547,6 +547,7 @@ function PriceTagIcon() {
  */
 const SPACE_MODES = [
   { id: 'store', label: 'Store', Icon: StoreIcon },
+  { id: 'closet', label: 'Closet', Icon: ClosetIcon },
   { id: 'market', label: 'Market', Icon: MarketIcon },
 ]
 
@@ -1262,7 +1263,6 @@ export default function ProfileScreen({
               onClick={() => switchSpace(id)}
             >
               <Icon className="profile-mode-ico" />
-              {id === 'closet' && <span>{label}</span>}
             </button>
           ))}
         </div>
