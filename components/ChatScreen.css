@@ -3760,3 +3760,18 @@ html body .chat-friends-pill {
     align-items: stretch;
   }
 }
+
+.chat-friends-tab-group {
+  padding: 0 !important;
+}
+
+@media (min-width: 720px) {
+  html body .chat-friends-tabs .chat-friends-tab-group {
+    height: 36px;
+  }
+}
+
+html body .chat-friends-tabs .chat-friends-pill {
+  left: 0;
+  width: 25%;
+}
