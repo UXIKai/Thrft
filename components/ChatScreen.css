@@ -4763,3 +4763,25 @@ html body .chat-new-card {
     display: block;
   }
 }
+
+html body .chat-search-modal {
+  width: min(100%, 700px);
+  height: auto;
+  max-height: none;
+  background: light-dark(rgba(70, 70, 70, 0.35), rgba(0, 0, 0, 0.35));
+}
+
+html body .chat-search-modal .chat-search-modal-list {
+  height: 310px;
+  overflow-y: auto;
+}
+
+html body .chat-search-modal .chat-search-modal-head button.chat-search-modal-close,
+html body .chat-search-modal .chat-search-modal-head button.chat-search-modal-close:hover,
+html body .chat-search-modal .chat-search-modal-head button.chat-search-modal-close:active,
+html body .chat-search-modal .chat-search-modal-head button.chat-search-modal-close:focus-visible {
+  position: static;
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
+}
