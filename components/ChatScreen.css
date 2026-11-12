@@ -3324,3 +3324,10 @@ html body .chat-menu {
 .chat-list-quick-btn.is-on {
   background: light-dark(rgba(0, 0, 0, 0.08), rgba(255, 255, 255, 0.12));
 }
+
+/* Effect on: the chat container is an 80% opaque dark plate with white words */
+html[data-moonlight='off'][data-bg-image='atmosphere'] .chat-screen {
+  color-scheme: dark;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+}

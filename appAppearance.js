@@ -161,12 +161,6 @@ function syncColorScheme() {
       if (color.id !== 'none' && relativeLuminance(color.rgb) > 0.4) scheme = 'light'
     }
   }
-  if (!moonlightOn && !matchBackgroundColor && currentBg !== 'none') {
-    // Bright effect clouds wash out light text, so switch to dark ink.
-    const lums = currentBgEffects.map((hex) => relativeLuminance(hexToRgb(hex) || [0, 0, 0]))
-    const mean = lums.reduce((a, b) => a + b, 0) / lums.length
-    if (mean > 0.45) scheme = 'light'
-  }
   root.style.colorScheme = scheme
   root.dataset.scheme = scheme
 }
