@@ -1325,7 +1325,18 @@
   color: light-dark(rgb(11, 11, 13), #f4f4f2);
   font-family: var(--font-sans);
   overflow: hidden;
-  background: light-dark(rgb(255, 255, 255), #000);
+  background: transparent;
+}
+
+.chat-thread::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: rgba(var(--app-color-rgb, 36, 36, 36), 0.3);
+  backdrop-filter: blur(calc(var(--glass-blur, 16px) * 0.6 + 6px)) saturate(1.2);
+  -webkit-backdrop-filter: blur(calc(var(--glass-blur, 16px) * 0.6 + 6px)) saturate(1.2);
 }
 
 .chat-thread-top {
