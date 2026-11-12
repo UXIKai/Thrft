@@ -1196,3 +1196,26 @@ html body .saved-fav-brands {
   overflow-x: auto;
 }
 html body .saved-fav-brands .saved-item { scroll-snap-align: none; }
+
+/* Select mode: the container grows downward, 8 brands per row */
+html body .saved-fav-brands.is-expanded {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: 12px 8px;
+  justify-items: center;
+  overflow: visible;
+  touch-action: auto;
+  padding: 14px 12px;
+}
+html body .saved-fav-brands.is-expanded .saved-item {
+  flex: none;
+  width: 100%;
+  max-width: 64px;
+}
+html body .saved-fav-brands.is-expanded .saved-brand-logo,
+html body .saved-fav-brands.is-expanded .saved-item-media.is-brand-logo {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+}
+html body .saved-fav-brands.is-expanded .saved-brand-pill { display: none; }

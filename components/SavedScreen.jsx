@@ -721,7 +721,7 @@ export default function SavedScreen({
       </header>
       <div
         ref={brandRowRef}
-        className={`saved-fav-brands${fabOpen ? ' is-fab-open' : ''}`}
+        className={`saved-fav-brands${fabOpen ? ' is-fab-open' : ''}${selectMode ? ' is-expanded' : ''}`}
         aria-label="Favorite brands"
         onPointerOver={(e) => {
           if (e.pointerType !== 'mouse' || dragRef.current) return
