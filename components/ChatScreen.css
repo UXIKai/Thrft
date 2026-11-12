@@ -5074,3 +5074,9 @@ html body .chat-new-field {
     z-index: 5;
   }
 }
+
+@media (max-width: 719px), (max-height: 499px) {
+  html body .chat-screen .chat-list-section {
+    margin: 0;
+  }
+}
