@@ -2732,7 +2732,11 @@ export default function ChatScreen({
     <div
       className={`chat-screen${isDesktop ? ' is-desktop' : ''}${isDesktop && sidebarCollapsed ? ' is-sidebar-collapsed' : ''}`}
       onClick={(e) => {
-        if (isDesktop && activeChat && e.target === e.currentTarget) setActiveChatId(null)
+        if (isDesktop && e.target === e.currentTarget) {
+          if (activeChat) setActiveChatId(null)
+          if (imagesOnly) setImagesOnly(false)
+          if (composer?.mode === 'create') closeComposer()
+        }
       }}
     >
       {menuId && chats.find((c) => c.id === menuId)?.kind !== 'dm' && (
@@ -2905,7 +2909,16 @@ export default function ChatScreen({
       </section>
 
       {isDesktop ? (
-        <section className="chat-desktop-thread" aria-label="Conversation">
+        <section
+          className="chat-desktop-thread"
+          aria-label="Conversation"
+          onClick={(e) => {
+            const blank = e.target === e.currentTarget || e.target.classList.contains('chat-new-screen') || e.target.classList.contains('chat-images-gallery')
+            if (!blank) return
+            if (imagesOnly) setImagesOnly(false)
+            if (composer?.mode === 'create') closeComposer()
+          }}
+        >
           {newChatPanel ? (
             <div className="chat-new-screen">{newChatPanel}</div>
           ) : imagesOnly ? (
@@ -3245,7 +3258,12 @@ export default function ChatScreen({
 
       {!isDesktop && newChatPanel && (
         <StageSlot>
-          <div className="chat-new-screen is-overlay" role="dialog" aria-label="New chat">
+          <div
+            className="chat-new-screen is-overlay"
+            role="dialog"
+            aria-label="New chat"
+            onClick={(e) => { if (e.target === e.currentTarget) closeComposer() }}
+          >
             {newChatPanel}
           </div>
         </StageSlot>
