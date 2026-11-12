@@ -1959,3 +1959,17 @@ html body .stage .tab-bar {
 html body .stage.is-chat-panel-dragging .tab-bar {
   transition: none;
 }
+
+/* The wash had no light in its top ~25%, so the base showed as a dark band; add a soft top glow */
+.stage:not(.is-bg-none) .atmosphere::after {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 45%;
+  pointer-events: none;
+  background: radial-gradient(
+    120% 100% at 50% 0%,
+    rgba(var(--atmosphere-effect-c-rgb, 160, 160, 160), 0.42),
+    transparent 75%
+  );
+}
