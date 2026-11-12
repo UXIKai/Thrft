@@ -4465,3 +4465,7 @@ html body .chat-new-card {
 html body .chat-new-card .chat-new-list {
   height: 360px;
 }
+
+html body .chat-new-card .chat-new-list {
+  height: 310px;
+}
