@@ -52,7 +52,7 @@ export const BG_PHOTO_KEY = 'thrft-bg-photo-v1'
 /** Three hues that tint the living background atmosphere app-wide. */
 export const BG_EFFECT_KEY = 'thrft-bg-effect-colors-v1'
 /** Default Clear so the app opens in liquid-glass (not frosted plates). */
-export const DEFAULT_BAR_TRANSPARENCY = 100
+export const DEFAULT_BAR_TRANSPARENCY = 20
 export const DEFAULT_APP_COLOR = 'none'
 export const DEFAULT_BG_COLOR = 'none'
 export const DEFAULT_BG_IMAGE = 'atmosphere'
@@ -422,7 +422,7 @@ function rgba(rgb, a) {
  * Linear with the thumb so pulling toward Clear actually clears the glass.
  */
 export function applyGlassTokens() {
-  const percent = clampPct(currentGlassPct)
+  const percent = DEFAULT_BAR_TRANSPARENCY
   const clear = percent / 100
   const opaque = 1 - clear
   const color = resolveColor(currentColorId)
@@ -603,7 +603,7 @@ export function applyBgAtmosphereTokens() {
 }
 
 export function applyBarTransparency(pct) {
-  currentGlassPct = clampPct(pct)
+  currentGlassPct = DEFAULT_BAR_TRANSPARENCY
   try {
     localStorage.setItem(GLASS_TRANSPARENCY_KEY, String(currentGlassPct))
   } catch {
@@ -617,7 +617,7 @@ export function readBarTransparency() {
   try {
     const raw = localStorage.getItem(GLASS_TRANSPARENCY_KEY)
     if (raw == null) return DEFAULT_BAR_TRANSPARENCY
-    return clampPct(raw)
+    return DEFAULT_BAR_TRANSPARENCY
   } catch {
     return DEFAULT_BAR_TRANSPARENCY
   }

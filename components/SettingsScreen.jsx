@@ -1729,6 +1729,7 @@ export default function SettingsScreen({
                     min={0}
                     max={100}
                     value={barTransparency}
+                    disabled
                     onChange={(e) => {
                       const next = Number(e.target.value)
                       setBarTransparency(next)
