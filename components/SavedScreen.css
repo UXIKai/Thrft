@@ -1077,3 +1077,7 @@ html body .saved-fab .saved-fab-item.saved-fab-item:nth-child(2) {
 html body .saved-fab .saved-fab-item.saved-fab-item:nth-child(1) { --fab-x: -58px; --fab-y: 0px; }
 html body .saved-fab .saved-fab-item.saved-fab-item:nth-child(2) { --fab-x: -41px; --fab-y: 41px; }
 html body .saved-fab .saved-fab-item.saved-fab-item:nth-child(3) { --fab-x: 0px; --fab-y: 58px; }
+
+.saved-fab-btn.is-danger:not(:disabled) { color: #ff453a; }
+.saved-fab-btn:disabled { opacity: 0.4; }
+.saved-fab-btn .saved-filter-menu-ico { width: 20px; height: 20px; }

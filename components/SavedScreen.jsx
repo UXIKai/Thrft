@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { fetchSaved, recordInterest } from '../api.js'
+import { fetchSaved, recordInterest, saveSavedItems } from '../api.js'
 import { recordProductInterest, recordSearchHistory } from '../forYou.js'
 import { brandLogoUrl } from '../brandLogos.js'
 import { LISTING_BRANDS } from '../listingCatalog.js'
@@ -434,6 +434,21 @@ export default function SavedScreen({
     onForYouRefresh?.()
   }
 
+  function deleteSelected() {
+    if (!selectedKeys.length) return
+    const brandIds = selectedKeys.filter((k) => k.startsWith('brand-')).map((k) => k.slice(6))
+    const itemIds = new Set(selectedKeys.filter((k) => k.startsWith('item-')).map((k) => k.slice(5)))
+    if (itemIds.size) {
+      const nextItems = items.filter((it) => !itemIds.has(String(it.id)))
+      setItems(nextItems)
+      saveSavedItems(nextItems)
+    }
+    if (brandIds.length) persistFavored(favoriteBrands.filter((id) => !brandIds.includes(String(id))))
+    setSelectedKeys([])
+    setSelectMode(false)
+    setFabOpen(false)
+  }
+
   function measurePlusOrigin() {
     const el = plusRef.current
     if (!el) return { dx: 0, dy: 140 }
@@ -520,35 +535,53 @@ export default function SavedScreen({
         </button>
         <div className="saved-fab-items" aria-hidden={!fabOpen}>
         <div className="saved-fab-item" style={{ '--i': 0 }}>
-          <button
-            type="button"
-            className="saved-fab-btn"
-            aria-label="Search liked"
-            aria-expanded={searchOpen}
-            tabIndex={fabOpen ? 0 : -1}
-            onClick={() => {
-              setFabOpen(false)
-              setSearchOpen(true)
-              window.setTimeout(() => document.getElementById('saved-search-input')?.focus({ preventScroll: true }), 0)
-            }}
-          >
-            <SearchIcon />
-          </button>
+          {selectMode ? (
+            <button
+              type="button"
+              className="saved-fab-btn is-danger"
+              aria-label="Delete selected"
+              disabled={!selectedKeys.length}
+              tabIndex={fabOpen ? 0 : -1}
+              onClick={deleteSelected}
+            >
+              <FilterTrashIcon />
+            </button>
+          ) : (
+            <button
+              type="button"
+              className="saved-fab-btn"
+              aria-label="Search liked"
+              aria-expanded={searchOpen}
+              tabIndex={fabOpen ? 0 : -1}
+              onClick={() => {
+                setFabOpen(false)
+                setSearchOpen(true)
+                window.setTimeout(() => document.getElementById('saved-search-input')?.focus({ preventScroll: true }), 0)
+              }}
+            >
+              <SearchIcon />
+            </button>
+          )}
         </div>
         <div className="saved-fab-item" style={{ '--i': 1 }}>
           <button
             type="button"
             className={`saved-fab-btn${selectMode ? ' is-on' : ''}`}
-            aria-label="Select"
+            aria-label={selectMode ? 'Cancel select' : 'Select'}
             aria-pressed={selectMode}
             tabIndex={fabOpen ? 0 : -1}
             onClick={() => {
               setSelectMode((on) => !on)
               setSelectedKeys([])
-              setFabOpen(false)
+              setSearchOpen(false)
+              setQuery('')
             }}
           >
-            <CheckCircleIcon />
+            {selectMode ? (
+              <svg viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M6 6l12 12M18 6L6 18" /></svg>
+            ) : (
+              <CheckCircleIcon />
+            )}
           </button>
         </div>
         <div className="saved-fab-item" style={{ '--i': 2 }}>
