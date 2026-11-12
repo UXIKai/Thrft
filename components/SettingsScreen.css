@@ -2745,3 +2745,18 @@ html body .settings-wheel-card .settings-wheel-done svg {
   color: #fff !important;
   stroke: #fff !important;
 }
+
+/* Every color circle (including the chosen one) gets a solid outline; Profile matches the other buttons */
+html body .settings-swatch .settings-swatch-dot,
+html body .settings-swatch .settings-swatch-dot.is-light,
+html body .settings-swatch.is-selected .settings-swatch-dot {
+  border: 2px solid light-dark(#000, #fff);
+}
+
+html body .settings-swatch.is-selected .settings-swatch-dot {
+  box-shadow: 0 0 0 2px light-dark(rgba(0, 0, 0, 0.28), rgba(255, 255, 255, 0.28));
+}
+
+html:not([data-moonlight='on']) body .settings-section.is-profile-controls .settings-row {
+  border: 1px solid light-dark(rgba(0, 0, 0, 0.45), rgba(255, 255, 255, 0.45));
+}
