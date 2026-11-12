@@ -5101,3 +5101,18 @@ html body .chat-new-field {
     bottom: 0;
   }
 }
+
+/* Match ChatGPT: black behind the card's curved edge, card rounded only on the edge facing the panel */
+@media (max-width: 719px), (max-height: 499px) {
+  html body .chat-screen .chat-mobile-nav-scrim {
+    background: #000;
+  }
+  html body .chat-mobile-nav-scrim::before {
+    border-radius: 44px 0 0 44px;
+    border-width: 0 0 0 1px;
+  }
+  html body .chat-mobile-nav-scrim.is-online::before {
+    border-radius: 0 44px 44px 0;
+    border-width: 0 1px 0 0;
+  }
+}
