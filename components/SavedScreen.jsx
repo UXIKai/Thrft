@@ -346,6 +346,7 @@ export default function SavedScreen({
     Array.isArray(favoredBrands) ? [...favoredBrands] : [],
   )
   const [fabOpen, setFabOpen] = useState(false)
+  const [brandsOpen, setBrandsOpen] = useState(false)
   const brandRowRef = useRef(null)
   const [brandPill, setBrandPill] = useState(null)
   const [pillActive, setPillActive] = useState(false)
@@ -610,6 +611,15 @@ export default function SavedScreen({
   return (
     <section className="saved-screen" aria-label="Liked">
       <header className="saved-page-header">
+        <button
+          type="button"
+          className={`saved-brands-toggle${brandsOpen ? ' is-on' : ''}`}
+          aria-label={brandsOpen ? 'Hide brands' : 'Show brands'}
+          aria-expanded={brandsOpen}
+          onClick={(e) => { e.currentTarget.blur(); setBrandsOpen((o) => !o) }}
+        >
+          <ShirtIcon />
+        </button>
         <h1 className="saved-list-title" aria-label="Liked"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden fill="currentColor"><path d="M12 21s-7.5-4.6-9.6-9.2C.8 8.3 2.6 4.8 6.1 4.8c2 0 3.4 1.1 3.9 2.2.5-1.1 1.9-2.2 3.9-2.2 3.5 0 5.300 3.500 3.700 7-2.100 4.600-9.600 9.200-9.600 9.200z"/></svg></h1>
 <div className={`saved-fab${fabOpen ? ' is-open' : ''}${selectMode ? ' is-selecting' : ''}`}>
         <button
@@ -722,7 +732,7 @@ export default function SavedScreen({
       </header>
       <div
         ref={brandRowRef}
-        className={`saved-fav-brands${fabOpen ? ' is-fab-open' : ''}${selectMode ? ' is-expanded' : ''}`}
+        className={`saved-fav-brands${fabOpen ? ' is-fab-open' : ''}${selectMode ? ' is-expanded' : ''}${brandsOpen || selectMode ? '' : ' is-collapsed'}`}
         aria-label="Favorite brands"
         onPointerOver={(e) => {
           if (e.pointerType !== 'mouse' || dragRef.current) return
