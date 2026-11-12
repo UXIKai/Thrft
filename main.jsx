@@ -154,13 +154,26 @@ createRoot(document.getElementById('root')).render(
   </StrictMode>,
 )
 
-// Keep the browser chrome tint in step with the theme (it was always near-black)
+// Safari paints its status/toolbar areas from theme-color: match it to the top of the background wash
 {
   const root = document.documentElement
+  const rgbVar = (name, fallback) => {
+    const parts = root.style.getPropertyValue(name).split(',').map((n) => Number(n.trim()))
+    return parts.length === 3 && parts.every(Number.isFinite) ? parts : fallback
+  }
   const syncThemeColor = () => {
     const meta = document.querySelector('meta[name="theme-color"]')
-    if (meta) meta.setAttribute('content', root.dataset.theme === 'light' ? '#fafafa' : '#050505')
+    if (!meta || root.dataset.bgPhoto) return
+    const light = root.dataset.theme === 'light'
+    const base = rgbVar('--atmosphere-base-rgb', light ? [250, 250, 250] : [5, 5, 5])
+    const glow = rgbVar('--atmosphere-effect-a-rgb', [190, 190, 190])
+    const mixed = base.map((c, i) => Math.round(c + (glow[i] - c) * 0.2))
+    const color = `rgb(${mixed.join(', ')})`
+    meta.setAttribute('content', color)
   }
   syncThemeColor()
-  new MutationObserver(syncThemeColor).observe(root, { attributes: true, attributeFilter: ['data-theme'] })
+  new MutationObserver(syncThemeColor).observe(root, {
+    attributes: true,
+    attributeFilter: ['data-theme', 'style', 'data-bg-photo'],
+  })
 }
