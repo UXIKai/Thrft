@@ -270,9 +270,9 @@ html body .home-search-modal > .home-search-reset {
 }
 
 html body .home-search-backdrop {
-  background: rgba(var(--app-color-rgb, 36, 36, 36), 0.8);
-  backdrop-filter: blur(var(--glass-blur, 16px)) saturate(var(--glass-sat, 1.4));
-  -webkit-backdrop-filter: blur(var(--glass-blur, 16px)) saturate(var(--glass-sat, 1.4));
+  background: light-dark(rgba(70, 70, 70, 0.55), rgba(0, 0, 0, 0.6));
+  backdrop-filter: blur(32px) saturate(1.2) brightness(0.8);
+  -webkit-backdrop-filter: blur(32px) saturate(1.2) brightness(0.8);
 }
 
 html body .home-search-modal {
