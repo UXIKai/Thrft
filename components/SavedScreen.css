@@ -1242,3 +1242,18 @@ html body .saved-fav-brands.is-expanded .saved-brand-pill { display: none; }
 html body .saved-fav-brands.is-collapsed { display: none !important; }
 
 .saved-brands-toggle .saved-top-ico { width: 22px; height: 22px; }
+
+html body .saved-page-header .saved-brands-toggle,
+html body .saved-page-header .saved-brands-toggle:hover,
+html body .saved-page-header .saved-brands-toggle:active,
+html body .saved-page-header .saved-brands-toggle:focus {
+  background: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  border-radius: 0 !important;
+  color: #fff !important;
+  opacity: 1;
+}
+html body .saved-brands-toggle .saved-top-ico { fill: #fff; color: #fff; }
