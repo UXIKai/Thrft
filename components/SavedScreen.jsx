@@ -5,7 +5,7 @@ import { recordProductInterest, recordSearchHistory } from '../forYou.js'
 import { LISTING_BRANDS } from '../listingCatalog.js'
 import { SIZE_BRANDS } from '../sizeOptions.js'
 import BrandGlobe from './BrandGlobe.jsx'
-import { ClosetIcon } from './SegmentIcons.jsx'
+import { ClosetIcon, StoreIcon } from './SegmentIcons.jsx'
 import StageSlot from './StageSlot.jsx'
 import './GlassOverlay.css'
 import './SavedScreen.css'
@@ -234,34 +234,6 @@ function PersonCircleIcon() {
         fill="currentColor"
         d="M7.6 17.2c.9-2 2.5-3 4.4-3s3.5 1 4.4 3a6.8 6.8 0 0 1-8.8 0z"
       />
-    </svg>
-  )
-}
-
-/** Registered trademark ® — circle with R. */
-function TrademarkIcon() {
-  return (
-    <svg className="saved-top-ico" viewBox="0 0 24 24" aria-hidden>
-      <circle
-        cx="12"
-        cy="12"
-        r="9.15"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.65"
-      />
-      <text
-        x="12"
-        y="12.35"
-        textAnchor="middle"
-        dominantBaseline="middle"
-        fill="currentColor"
-        fontFamily="Georgia, 'Times New Roman', serif"
-        fontSize="11.5"
-        fontWeight="700"
-      >
-        R
-      </text>
     </svg>
   )
 }
@@ -515,7 +487,7 @@ export default function SavedScreen({
             aria-label="Brands"
             onClick={() => { setBrowseMode('brands'); setRoom('brands') }}
           >
-            <TrademarkIcon />
+            <StoreIcon className="saved-top-ico" />
             <span>Brands</span>
           </button>
           <button
@@ -544,7 +516,7 @@ export default function SavedScreen({
           <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 5l-7 7 7 7" /></svg>
         </button>
         <h1 className="saved-list-title" aria-label="Liked">
-          {room === 'brands' ? <TrademarkIcon /> : <ClosetIcon className="saved-top-ico" />}
+          {room === 'brands' ? <StoreIcon className="saved-top-ico" /> : <ClosetIcon className="saved-top-ico" />}
         </h1>
         <button
           type="button"
