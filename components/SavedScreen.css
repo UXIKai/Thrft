@@ -1003,3 +1003,8 @@ html body .saved-fab.is-open .saved-fab-item.saved-fab-item {
   transform: translate(var(--fab-x), var(--fab-y));
   transition-delay: calc(var(--i) * 70ms);
 }
+
+html body .saved-fab .saved-fab-item.saved-fab-item:nth-child(3) {
+  --fab-x: -50px;
+  --fab-y: 88px;
+}

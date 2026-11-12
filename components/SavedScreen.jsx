@@ -554,6 +554,21 @@ export default function SavedScreen({
             <CheckCircleIcon />
           </button>
         </div>
+        <div className="saved-fab-item" style={{ '--i': 2 }}>
+          <button
+            type="button"
+            className="saved-fab-btn"
+            aria-label="Add brands and products"
+            tabIndex={fabOpen ? 0 : -1}
+            onClick={() => {
+              setFabOpen(false)
+              flushSync(() => setSearchOpen(true))
+              openGlobe()
+            }}
+          >
+            <svg viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M12 5v14M5 12h14" /></svg>
+          </button>
+        </div>
         </div>
       </div>
       </header>
