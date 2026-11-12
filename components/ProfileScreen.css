@@ -3100,3 +3100,9 @@
   color: inherit;
   cursor: pointer;
 }
+
+/* Brand and Type sit close together, one on each side of the closet icon */
+.closet-browse.is-page .closet-browse-wheels {
+  width: min(100%, 340px);
+  margin: 0 auto 4px;
+}
