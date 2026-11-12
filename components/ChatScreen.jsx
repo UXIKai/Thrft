@@ -2642,7 +2642,7 @@ export default function ChatScreen({
                         autoComplete="off"
                         autoCorrect="off"
                         spellCheck={false}
-                        placeholder={createTab === 'group' ? 'Search people to add' : 'Search friends and new people'}
+                        placeholder={createTab === 'group' ? 'Group' : 'Friends'}
                         aria-label={createTab === 'group' ? 'Search members' : 'Search users'}
                         value={createQuery}
                         onChange={(e) => setCreateQuery(e.target.value)}
@@ -2661,7 +2661,6 @@ export default function ChatScreen({
                           </li>
                         ))}
                       {accountSearchError && <li role="alert" className="chat-new-note">{accountSearchError}</li>}
-                      {!accountQuery && <li role="status" className="chat-new-note">Search for an account</li>}
                       {accountQuery && !accountSearchError && (
                         accountSearch.loading || accountSearch.query !== accountQuery
                           ? <li role="status" className="chat-new-note">Searching accounts...</li>
