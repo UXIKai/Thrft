@@ -970,3 +970,36 @@ html body .saved-fab .saved-fab-toggle {
 .saved-grid.is-products .saved-item-name {
   font-size: 0.6rem;
 }
+
+/* Fab: the actions swing out from the plus, to the left then down, into a triangle */
+html body .saved-fab .saved-fab-items {
+  top: 18px;
+  right: auto;
+  left: 20px;
+  width: 0;
+  height: 0;
+  display: block;
+}
+
+html body .saved-fab .saved-fab-item.saved-fab-item {
+  --fab-x: -50px;
+  --fab-y: 0px;
+  position: absolute;
+  left: -19px;
+  top: -19px;
+  transform-origin: calc(19px - var(--fab-x)) calc(19px - var(--fab-y));
+  transform: translate(var(--fab-x), var(--fab-y)) rotate(90deg) scale(0.3);
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.2s ease;
+  transition-delay: calc((1 - var(--i)) * 40ms);
+}
+
+html body .saved-fab .saved-fab-item.saved-fab-item:nth-child(2) {
+  --fab-x: -25px;
+  --fab-y: 44px;
+}
+
+html body .saved-fab.is-open .saved-fab-item.saved-fab-item {
+  opacity: 1;
+  transform: translate(var(--fab-x), var(--fab-y));
+  transition-delay: calc(var(--i) * 70ms);
+}
