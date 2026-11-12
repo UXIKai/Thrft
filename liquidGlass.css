@@ -1575,7 +1575,7 @@ html[data-theme='light'][data-moonlight='on'][data-app-color='none'] body :is(.p
 
 /* Moon modes: the navigation bar gets a solid backdrop (white in light, black in dark) */
 html[data-moonlight='on'] body .tab-bar {
-  background: rgba(0, 0, 0, 0.5) !important;
+  background: rgba(0, 0, 0, 0.4) !important;
   background-image: none !important;
   backdrop-filter: blur(24px) saturate(140%) !important;
   -webkit-backdrop-filter: blur(24px) saturate(140%) !important;
@@ -1583,7 +1583,7 @@ html[data-moonlight='on'] body .tab-bar {
   color: #fff;
 }
 html[data-moonlight='on'][data-theme='light'] body .tab-bar {
-  background: rgba(255, 255, 255, 0.5) !important;
+  background: rgba(255, 255, 255, 0.4) !important;
   border-color: #000 !important;
   color: #000;
 }
@@ -1601,7 +1601,7 @@ html[data-moonlight='off'][data-bg-image='atmosphere'] body .tab-bar .tab-item *
 
 /* Bright page (dark ink): nav bar is a black plate with white icons */
 html[data-scheme='light']:not([data-moonlight='on']) body .tab-bar {
-  background: rgba(0, 0, 0, 0.5) !important;
+  background: rgba(0, 0, 0, 0.4) !important;
   border: 1px solid rgba(255, 255, 255, 0.35) !important;
   backdrop-filter: blur(24px) saturate(140%) !important;
   -webkit-backdrop-filter: blur(24px) saturate(140%) !important;
@@ -1617,9 +1617,9 @@ html[data-scheme='light']:not([data-moonlight='on']) body .tab-bar .tab-item * {
   color: #fff !important;
 }
 
-/* Navigation bar is a 50% tint with heavy blur in every mode; the slider button on it is clear */
+/* Navigation bar is a 40% tint with heavy blur in every mode; the slider button on it is clear */
 html:not([data-moonlight='on']) body .tab-bar {
-  background: rgba(0, 0, 0, 0.5) !important;
+  background: rgba(0, 0, 0, 0.4) !important;
   background-image: none !important;
   backdrop-filter: blur(24px) saturate(140%) !important;
   -webkit-backdrop-filter: blur(24px) saturate(140%) !important;
