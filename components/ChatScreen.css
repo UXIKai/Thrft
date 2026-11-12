@@ -4514,7 +4514,8 @@ html body .chat-new-card {
   .chat-screen.is-mobile-nav-open .chat-sidebar-back {
     position: fixed;
     top: calc(max(8px, env(safe-area-inset-top, 0px)) + 24px);
-    left: calc(min(80vw, 340px) + 12px);
+    left: auto;
+    right: 16px;
     z-index: 61;
   }
 }
