@@ -1,9 +1,10 @@
 export function MarketIcon({ className }) {
   return (
-    <svg className={className} viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M5.5 4h13l2.2 4.6c0 1.1-.9 2-2 2s-2-.9-2-2c0 1.1-.9 2-2 2s-2-.9-2-2c0 1.1-.9 2-2 2s-2-.9-2-2c0 1.1-.9 2-2 2s-2-.9-2-2L5.5 4Z" />
-      <path d="M5.4 10.4V20M18.6 10.4V20M3.5 20h17" />
-      <path d="M8 20v-5.2h3.2V20M14 13h3v3h-3z" />
+    <svg className={className} viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M6.6 3.4h10.8c.8 0 1.4.4 1.8 1.1l1.5 3c.2.4.3.8.3 1.2v.7H3V8.7c0-.4.1-.8.3-1.2l1.5-3c.4-.7 1-1.1 1.8-1.1Z" />
+      <path d="M3 9.6c.6 0 1.2-.5 1.6-1.2.4.7 1 1.2 1.7 1.2s1.3-.5 1.7-1.2c.4.7 1 1.2 1.7 1.2s1.3-.5 1.7-1.2c.4.7 1 1.2 1.7 1.2s1.3-.5 1.7-1.2c.4.7 1 1.2 1.7 1.2s1.2-.5 1.6-1.2" />
+      <path d="M4.4 10.8V19a1.3 1.3 0 0 0 1.3 1.3h12.6a1.3 1.3 0 0 0 1.3-1.3v-8.2" />
+      <path d="M9.4 20.3v-5.4a.8.8 0 0 1 .8-.8h3.6a.8.8 0 0 1 .8.8v5.4" />
     </svg>
   )
 }
