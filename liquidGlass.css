@@ -1515,3 +1515,60 @@ html[data-moonlight='on'][data-app-color='none'] body :is(.pf-user-avatar, .prof
   color: #fff !important;
   border-color: #fff !important;
 }
+
+
+/* Moonlight light tone: white page and containers with black words (dark tone is above) */
+html[data-theme='light'][data-bg-color='none'][data-moonlight='on'] {
+  --atmosphere-effect-a: #fff !important;
+  --atmosphere-effect-b: #fff !important;
+  --atmosphere-effect-c: #fff !important;
+  --atmosphere-effect-a-rgb: 255, 255, 255 !important;
+  --atmosphere-effect-b-rgb: 255, 255, 255 !important;
+  --atmosphere-effect-c-rgb: 255, 255, 255 !important;
+  --void: #fff !important;
+  --atmosphere-base: #fff !important;
+}
+html[data-theme='light'][data-app-color='none'][data-moonlight='on'] body .settings-section:not(.is-profile-controls) .settings-card,
+html[data-theme='light'][data-app-color='none'][data-moonlight='on'] body .settings-section.is-profile-controls .settings-row,
+html[data-theme='light'][data-app-color='none'][data-moonlight='on'] body .settings-block,
+html[data-theme='light'][data-app-color='none'][data-moonlight='on'] body .settings-theme-toggle,
+html[data-theme='light'][data-app-color='none'][data-moonlight='on'] body .settings-account-active,
+html[data-theme='light'][data-app-color='none'][data-moonlight='on'] body .settings-icon-tile,
+html[data-theme='light'][data-app-color='none'][data-moonlight='on'] body .listing-box,
+html[data-theme='light'][data-app-color='none'][data-moonlight='on'] body .listing-globe-trigger {
+  background: #fff !important;
+  border-color: #000 !important;
+  box-shadow: inset 0 0 0 1.5px #000 !important;
+  color: #000;
+}
+html[data-theme='light'][data-app-color='none'][data-moonlight='on'] body .settings-section:not(.is-profile-controls) .settings-card *,
+html[data-theme='light'][data-app-color='none'][data-moonlight='on'] body .settings-section.is-profile-controls .settings-row *,
+html[data-theme='light'][data-app-color='none'][data-moonlight='on'] body .settings-block *,
+html[data-theme='light'][data-app-color='none'][data-moonlight='on'] body .settings-theme-toggle *,
+html[data-theme='light'][data-app-color='none'][data-moonlight='on'] body .settings-account-active *,
+html[data-theme='light'][data-app-color='none'][data-moonlight='on'] body .settings-icon-tile *,
+html[data-theme='light'][data-app-color='none'][data-moonlight='on'] body .listing-box *,
+html[data-theme='light'][data-app-color='none'][data-moonlight='on'] body .listing-globe-trigger * {
+  color: #000;
+  --st-mute: #000;
+}
+html[data-theme='light'][data-app-color='none'][data-moonlight='on'] body :is(.listing-box, .listing-globe-trigger) :is(input, textarea) {
+  color: #000;
+  caret-color: #000;
+}
+html[data-theme='light'][data-moonlight='on'][data-app-color='none'] body .settings-effect-switch {
+  --effect-switch-outline: #000;
+}
+html[data-theme='light'][data-app-color='none'][data-moonlight='on'] body .settings-account-active .settings-account-avatar {
+  background: #fff !important;
+  color: #000 !important;
+  box-shadow: inset 0 0 0 1.5px #000;
+}
+html[data-theme='light'][data-moonlight='on'][data-app-color='none'] body .product-detail-photo {
+  border-color: #000 !important;
+}
+html[data-theme='light'][data-moonlight='on'][data-app-color='none'] body :is(.pf-user-avatar, .profile-photo-view-avatar):not(.has-photo) {
+  background: #fff !important;
+  color: #000 !important;
+  border-color: #000 !important;
+}

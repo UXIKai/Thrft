@@ -1443,11 +1443,9 @@ export default function SettingsScreen({
   function toggleDisplayMode() {
     // Flip from the live theme, not React state, which other background pickers can leave stale.
     if (readMoonlight()) {
-      exitMoonlight()
-      setTheme(readTheme())
-      setBrightness(applyBrightness(0))
+      setTheme(applyDisplayMode(readTheme() === 'light' ? 'dark' : 'light'))
     } else {
-      setTheme(applyDisplayMode('dark'))
+      setTheme(applyDisplayMode('light'))
       setBrightness(applyBrightness(50))
     }
     setMoonlightOn(readMoonlight())
