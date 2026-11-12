@@ -4801,3 +4801,15 @@ html body .chat-friends-tab .chat-friends-tab-count {
     margin-left: 8px;
   }
 }
+
+html body .chat-search-modal .chat-search-modal-head button.chat-search-modal-close,
+html body .chat-search-modal .chat-search-modal-head button.chat-search-modal-close:hover,
+html body .chat-search-modal .chat-search-modal-head button.chat-search-modal-close:active,
+html body .chat-search-modal .chat-search-modal-head button.chat-search-modal-close:focus-visible {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
