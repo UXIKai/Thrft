@@ -612,6 +612,7 @@ export default function ChatScreen({
   const [likedQuery, setLikedQuery] = useState('')
   const [likedSelected, setLikedSelected] = useState([]) // item keys, max 10
   const [pinsMenuOpen, setPinsMenuOpen] = useState(false)
+  const [imagesOnly, setImagesOnly] = useState(false)
   const [pinsMode, setPinsMode] = useState(null) // null | 'select' | 'pins'
   const [pinSelectedIds, setPinSelectedIds] = useState([])
   const [listFilterOpen, setListFilterOpen] = useState(false)
@@ -2568,8 +2569,26 @@ export default function ChatScreen({
       </section>
 
       <section className="chat-section chat-list-section" aria-label="Chats">
+        <nav className="chat-list-quick" aria-label="Quick actions">
+          <button type="button" className="chat-list-quick-btn is-bare" onClick={openCreateGroup}>
+            <PencilIcon />
+            <span>New chat</span>
+          </button>
+          <button
+            type="button"
+            className={`chat-list-quick-btn is-bare${imagesOnly ? ' is-on' : ''}`}
+            aria-pressed={imagesOnly}
+            onClick={() => setImagesOnly((on) => !on)}
+          >
+            <ImageAttachIcon />
+            <span>Images</span>
+          </button>
+        </nav>
         <ul className="chat-list">
-          {filtered.all.map((chat) => (
+          {(imagesOnly
+            ? filtered.all.filter((c) => (c.messages || []).some((m) => m.kind === 'image'))
+            : filtered.all
+          ).map((chat) => (
             <li
               key={chat.id}
               className={`chat-row-wrap${menuId === chat.id ? ' is-menu-open' : ''}`}

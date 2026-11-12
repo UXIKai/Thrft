@@ -3289,3 +3289,38 @@ html body .chat-menu {
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
   border-radius: 18px;
 }
+
+/* New chat / Images rows above the chats */
+.chat-list-quick {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 10px;
+}
+
+.chat-list-quick-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 12px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-size: 0.95rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.chat-list-quick-btn svg {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+}
+
+.chat-list-quick-btn:hover,
+.chat-list-quick-btn.is-on {
+  background: light-dark(rgba(0, 0, 0, 0.08), rgba(255, 255, 255, 0.12));
+}
