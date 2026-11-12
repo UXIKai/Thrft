@@ -3018,8 +3018,8 @@ export default function ChatScreen({
                   </button>
                 ))}
                 </div>
-                <button type="button" className="chat-friends-add" onClick={openCreateGroup}>
-                  Add Friend
+                <button type="button" className="chat-friends-add" aria-label="Add friend" onClick={openCreateGroup}>
+                  <PlusIcon />
                 </button>
               </nav>
               <div className="chat-friends-body">

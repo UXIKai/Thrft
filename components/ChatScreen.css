@@ -4028,16 +4028,22 @@ html body .chat-friends-tabs .chat-friends-pill {
 html body .chat-friends-tabs .chat-friends-add {
   flex: 0 0 auto;
   margin-left: 8px;
+  width: 36px;
   height: 36px;
-  padding: 0 16px;
-  border: none;
+  padding: 0 !important;
+  display: grid;
+  place-items: center;
+  border: none !important;
   border-radius: 999px;
-  background: #4752c4;
-  color: #fff;
-  font: inherit;
-  font-weight: 700;
-  white-space: nowrap;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: inherit;
   cursor: pointer;
+}
+
+html body .chat-friends-tabs .chat-friends-add svg {
+  width: 22px;
+  height: 22px;
 }
 
 html body .chat-friends-tabs .chat-friends-add:hover,
