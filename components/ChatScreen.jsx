@@ -1278,6 +1278,17 @@ export default function ChatScreen({
     closeMenus()
   }
 
+  function backToChats() {
+    setActiveChatId(null)
+    setDraftMessage('')
+    setAttachOpen(false)
+    setLikedPickerOpen(false)
+    setContactSheetOpen(false)
+    setMembersSheetOpen(false)
+    setEditingNick(false)
+    setPeerProfile(null)
+  }
+
   function closeMenus() {
     setMenuId(null)
     setMenuPos(null)
@@ -1728,7 +1739,18 @@ export default function ChatScreen({
             document.body,
           )}
         <header className="chat-thread-top">
-          <span className="chat-top-btn" aria-hidden />
+          {isDesktop ? (
+            <span className="chat-top-btn" aria-hidden />
+          ) : (
+            <button
+              type="button"
+              className="chat-top-btn"
+              aria-label="Back to chats"
+              onClick={backToChats}
+            >
+              <BackIcon />
+            </button>
+          )}
           <span className="chat-thread-heading" aria-hidden />
           <span className="chat-top-btn" aria-hidden />
         </header>
@@ -1833,23 +1855,6 @@ export default function ChatScreen({
         >
           {/* Full-width bar; + and send live inside. Attach tray still floats above. */}
           <div className="chat-compose-box" ref={attachWrapRef}>
-            <button
-            type="button"
-            className="chat-compose-back"
-            aria-label="Back to chats"
-            onClick={() => {
-              setActiveChatId(null)
-              setDraftMessage('')
-              setAttachOpen(false)
-              setLikedPickerOpen(false)
-              setContactSheetOpen(false)
-              setMembersSheetOpen(false)
-              setEditingNick(false)
-              setPeerProfile(null)
-            }}
-          >
-            <BackIcon />
-          </button>
             <div className="chat-compose-attach">
               {attachOpen ? (
                 <div
@@ -2488,6 +2493,16 @@ export default function ChatScreen({
         aria-label="Chat controls"
       >
         <div className="chat-sidebar-header">
+          {isDesktop && activeChat && (
+            <button
+              type="button"
+              className="chat-sidebar-control is-bare chat-sidebar-back"
+              aria-label="Back to chats"
+              onClick={backToChats}
+            >
+              <BackIcon />
+            </button>
+          )}
           <h1 className="chat-sidebar-title">Chats</h1>
           <button
             type="button"
