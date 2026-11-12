@@ -4307,3 +4307,33 @@ html body .chat-search-modal-row:hover {
   padding: 8px 6px;
   opacity: 0.7;
 }
+
+.chat-friends-tabs > .chat-friends-active-head {
+  flex: 0 0 clamp(200px, 26%, 300px);
+  margin: 0 0 0 auto;
+  min-height: 36px;
+  border-left: 1px solid light-dark(rgba(0, 0, 0, 0.18), rgba(255, 255, 255, 0.18));
+}
+
+.chat-friends-tabs > .chat-friends-active-head.is-collapsed {
+  flex-basis: 52px;
+}
+
+.chat-friends-active[hidden] {
+  display: none;
+}
+
+.chat-friends-tabs > .chat-friends-active-head {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: clamp(200px, 26%, 300px);
+  flex: none;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.chat-friends-tabs > .chat-friends-active-head.is-collapsed {
+  width: 52px;
+}
