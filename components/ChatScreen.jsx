@@ -1279,7 +1279,7 @@ export default function ChatScreen({
   }
 
   function backToChats() {
-    if (isDesktop) onBack?.()
+    if (isDesktop || !activeChat) onBack?.()
     setActiveChatId(null)
     setDraftMessage('')
     setAttachOpen(false)
@@ -2494,16 +2494,14 @@ export default function ChatScreen({
         aria-label="Chat controls"
       >
         <div className="chat-sidebar-header">
-          {isDesktop && activeChat && (
-            <button
-              type="button"
-              className="chat-sidebar-control is-bare chat-sidebar-back"
-              aria-label="Back to chats"
-              onClick={backToChats}
-            >
-              <BackIcon />
-            </button>
-          )}
+          <button
+            type="button"
+            className="chat-sidebar-control is-bare chat-sidebar-back"
+            aria-label="Back to Home"
+            onClick={backToChats}
+          >
+            <BackIcon />
+          </button>
           <h1 className="chat-sidebar-title">Chats</h1>
           <button
             type="button"
