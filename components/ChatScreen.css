@@ -4617,8 +4617,33 @@ html body .chat-new-card {
   }
 
   html body .chat-desktop-thread .chat-friends-active:not([hidden]) {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 60;
     display: block;
+    box-sizing: border-box;
+    width: min(80vw, 340px);
+    padding: calc(max(8px, env(safe-area-inset-top, 0px)) + 14px) 16px 24px;
+    overflow-y: auto;
     border: none !important;
+    background: light-dark(rgba(245, 235, 238, 0.97), rgba(10, 10, 12, 0.97));
+  }
+
+  .chat-friends-active-aside-title {
+    margin: 0 0 16px;
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 36px;
+  }
+
+  .chat-friends-active .chat-friends-active-empty {
+    text-align: left;
+  }
+
+  html body .chat-desktop-thread .chat-friends-active-head {
+    z-index: 61;
   }
 
   html body .chat-desktop-thread .chat-friends-tabs[aria-label='Friends'] {
@@ -4639,11 +4664,6 @@ html body .chat-new-card {
     height: 32px;
   }
 
-  .chat-desktop-thread .chat-friends-active {
-    position: static;
-    width: 100%;
-    padding: 4px 0;
-  }
 
   .chat-desktop-thread .chat-friends-body {
     display: block;
@@ -4719,5 +4739,15 @@ html body .chat-new-card {
 @media (max-width: 719px), (max-height: 499px) {
   .chat-desktop-thread .chat-friends-panel .chat-desktop-empty {
     display: none;
+  }
+}
+
+.chat-friends-active-aside-title {
+  display: none;
+}
+
+@media (max-width: 719px), (max-height: 499px) {
+  .chat-friends-active-aside-title {
+    display: block;
   }
 }
