@@ -4385,3 +4385,11 @@ html body .chat-friends-active-head.is-collapsed button.chat-friends-active-togg
   left: 50%;
   transform: translate(-50%, -50%);
 }
+
+html body .chat-friends-active {
+  border-left: 1px solid light-dark(rgba(0, 0, 0, 0.18), rgba(255, 255, 255, 0.18)) !important;
+}
+
+html body .chat-friends-tabs > .chat-friends-active-head {
+  border-left: 1px solid light-dark(rgba(0, 0, 0, 0.18), rgba(255, 255, 255, 0.18)) !important;
+}
