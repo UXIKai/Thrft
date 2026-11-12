@@ -2951,7 +2951,18 @@ export default function ChatScreen({
                 </span>
                 <div
                   className="chat-friends-tab-group"
-                  style={{ '--tab-index': ['online', 'all', 'pending', 'suggestions'].indexOf(friendsTab) }}
+                  style={{ '--tab-index': ['online', 'all', 'pending', 'suggestions'].indexOf(friendsTab), touchAction: 'pan-y' }}
+                  onPointerDown={(e) => { e.currentTarget.dataset.drag = '1'; e.currentTarget.setPointerCapture?.(e.pointerId) }}
+                  onPointerMove={(e) => {
+                    const el = e.currentTarget
+                    if (el.dataset.drag !== '1') return
+                    const r = el.getBoundingClientRect()
+                    const i = Math.max(0, Math.min(3, Math.floor(((e.clientX - r.left) / r.width) * 4)))
+                    const id = ['online', 'all', 'pending', 'suggestions'][i]
+                    if (id !== friendsTab) setFriendsTab(id)
+                  }}
+                  onPointerUp={(e) => { e.currentTarget.dataset.drag = '0' }}
+                  onPointerCancel={(e) => { e.currentTarget.dataset.drag = '0' }}
                 >
                   <span className="chat-friends-pill" aria-hidden />
                 {[['online', 'Online'], ['all', 'All'], ['pending', 'Pending'], ['suggestions', 'Suggestions']].map(([id, label]) => (
