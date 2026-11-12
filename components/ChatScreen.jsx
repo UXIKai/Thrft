@@ -613,7 +613,7 @@ export default function ChatScreen({
   const [friendsQuery, setFriendsQuery] = useState('')
   const [pinnedCollapsed, setPinnedCollapsed] = useState(false)
   const [requestsView, setRequestsView] = useState(false)
-  const [activeNowOpen, setActiveNowOpen] = useState(isDesktop)
+  const [activeNowOpen, setActiveNowOpen] = useState(false)
   const [requestsTab, setRequestsTab] = useState('requests')
   const [composer, setComposer] = useState(null) // null | { mode: 'create'|'edit', chatId? }
   const [draftName, setDraftName] = useState('')
