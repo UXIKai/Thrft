@@ -714,7 +714,7 @@ export default function SavedScreen({
                 <feImage href={MAP_X} x="0" y="0" width={brandPill.width + 12} height={brandPill.height + 12} preserveAspectRatio="none" result="mx" />
                 <feImage href={MAP_Y} x="0" y="0" width={brandPill.width + 12} height={brandPill.height + 12} preserveAspectRatio="none" result="my" />
                 <feComposite in="mx" in2="my" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" result="map" />
-                <feDisplacementMap in="SourceGraphic" in2="map" scale="14" xChannelSelector="R" yChannelSelector="G" />
+                <feDisplacementMap in="SourceGraphic" in2="map" scale="6" xChannelSelector="R" yChannelSelector="G" />
               </filter>
             </defs>
           </svg>
