@@ -612,6 +612,13 @@ export default function ChatScreen({
   const [memberSearch, setMemberSearch] = useState('')
   const [groupNameStep, setGroupNameStep] = useState(false)
   const [createPick, setCreatePick] = useState(null)
+  const newChatOpen = composer?.mode === 'create'
+  useEffect(() => {
+    const stage = document.querySelector('.stage')
+    if (!stage) return undefined
+    stage.classList.toggle('is-chat-new-open', newChatOpen)
+    return () => stage.classList.remove('is-chat-new-open')
+  }, [newChatOpen])
   useEffect(() => { if (composer?.mode !== 'create') setCreatePick(null) }, [composer?.mode])
   const [createTab, setCreateTab] = useState('people') // people | group
   const [createQuery, setCreateQuery] = useState('')
