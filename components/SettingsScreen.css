@@ -2822,3 +2822,12 @@ html body .settings-screen .settings-icon-tile,
 html body .settings-screen .settings-signout {
   background-clip: padding-box;
 }
+
+/* Color and slider containers use the same fill as the buttons */
+html body .settings-screen .settings-column.is-customization .settings-card {
+  background: var(--glass-clear-tint) !important;
+  border: 1px solid var(--glass-border) !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
