@@ -3321,8 +3321,7 @@ html body .chat-menu {
   flex: 0 0 auto;
 }
 
-.chat-list-quick-btn:hover,
-.chat-list-quick-btn.is-on {
+.chat-list-quick-btn:hover {
   background: light-dark(rgba(0, 0, 0, 0.08), rgba(255, 255, 255, 0.12));
 }
 
@@ -3824,4 +3823,15 @@ html body .chat-friends-tabs .chat-friends-pill {
   .chat-screen.is-sidebar-collapsed .chat-images-title {
     padding-left: 52px;
   }
+}
+
+.chat-list-quick-btn:focus,
+.chat-list-quick-btn:focus-visible,
+.chat-list-quick-btn:active {
+  outline: none;
+  background: transparent;
+}
+
+.chat-list-quick-btn:hover {
+  background: light-dark(rgba(0, 0, 0, 0.08), rgba(255, 255, 255, 0.12));
 }
