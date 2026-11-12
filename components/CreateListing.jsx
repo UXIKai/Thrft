@@ -253,6 +253,11 @@ export default function CreateListing({ onPosted } = {}) {
   ]
   const currentStep = step
   const walkthroughRef = useRef(null)
+  const navPeekTimer = useRef(0)
+  useEffect(() => () => {
+    window.clearTimeout(navPeekTimer.current)
+    document.querySelector('.stage')?.classList.remove('is-create-nav-peek')
+  }, [])
   const destinationRef = useRef(null)
   const stepIndex = steps.indexOf(step)
   const lastStep = stepIndex === steps.length - 1
@@ -559,6 +564,14 @@ export default function CreateListing({ onPosted } = {}) {
       aria-label="Create listing"
       ref={walkthroughRef}
       tabIndex={-1}
+      onPointerUp={(e) => {
+        if (step === 'destination' || e.clientY < window.innerHeight - 90 || e.target.closest?.('button, input, textarea, select, a')) return
+        const stage = document.querySelector('.stage')
+        if (!stage) return
+        stage.classList.add('is-create-nav-peek')
+        window.clearTimeout(navPeekTimer.current)
+        navPeekTimer.current = window.setTimeout(() => stage.classList.remove('is-create-nav-peek'), 5000)
+      }}
     >
       {currentStep !== 'destination' && <header className="listing-walkthrough-header">
         <p>{segmentLabel(segment)} · {stepIndex + 1} of {steps.length}</p>

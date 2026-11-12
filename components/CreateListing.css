@@ -1125,3 +1125,22 @@ html body .create-listing .listing-photo-choice .listing-photo-choice-btn:active
   outline: none !important;
   -webkit-tap-highlight-color: transparent;
 }
+
+/* Mobile: the walkthrough is pinned, centered, and can't be dragged up or down */
+@media (max-width: 719px), (max-height: 499px) {
+  .create-listing.is-walkthrough {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    max-width: none;
+    height: 100dvh;
+    min-height: 0;
+    margin: 0;
+    overflow: hidden;
+    overscroll-behavior: none;
+    touch-action: none;
+    justify-content: center;
+    box-sizing: border-box;
+    padding: 0 20px;
+  }
+}

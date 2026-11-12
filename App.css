@@ -2004,3 +2004,13 @@ html body .stage.is-product-open .tab-bar {
     visibility: hidden;
   }
 }
+
+/* Tap the bottom of the Create page: nav shows for 5 seconds */
+@media (max-width: 719px), (max-height: 499px) {
+  .stage.is-create-walkthrough.is-create-nav-peek .tab-bar {
+    opacity: 1;
+    pointer-events: auto;
+    visibility: visible;
+    z-index: 60;
+  }
+}
