@@ -5080,3 +5080,14 @@ html body .chat-new-field {
     margin: 0;
   }
 }
+
+/* Page card keeps its rounded shape on every corner, like ChatGPT */
+@media (max-width: 719px), (max-height: 499px) {
+  html body .chat-mobile-nav-scrim::before {
+    border-radius: 44px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  html body .chat-mobile-nav-scrim.is-online::before {
+    border-radius: 44px;
+  }
+}
