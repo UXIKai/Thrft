@@ -1096,3 +1096,13 @@ html body .listing-photo-choice-btn {
     transition: none;
   }
 }
+
+/* Store / Market: two buttons centered in the walkthrough */
+.is-walkthrough .listing-segment {
+  display: flex;
+  justify-content: center;
+}
+
+.is-walkthrough .listing-segment .listing-seg-btn {
+  flex: 0 0 140px;
+}
