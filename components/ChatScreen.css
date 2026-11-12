@@ -4628,11 +4628,14 @@ html body .chat-new-card {
     padding: calc(max(8px, env(safe-area-inset-top, 0px)) + 14px) 16px 24px;
     overflow-y: auto;
     border: none !important;
+    border-left: 1px solid light-dark(rgba(0, 0, 0, 0.18), rgba(255, 255, 255, 0.18)) !important;
     background: light-dark(rgba(245, 235, 238, 0.97), rgba(10, 10, 12, 0.97));
   }
 
   .chat-friends-active-aside-title {
-    margin: 0 0 16px;
+    margin: 0 -16px 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid light-dark(rgba(0, 0, 0, 0.18), rgba(255, 255, 255, 0.18));
     font-size: 1.5rem;
     font-weight: 600;
     line-height: 36px;
