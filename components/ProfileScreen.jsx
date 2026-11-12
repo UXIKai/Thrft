@@ -547,7 +547,6 @@ function PriceTagIcon() {
  */
 const SPACE_MODES = [
   { id: 'store', label: 'Store', Icon: StoreIcon },
-  { id: 'closet', label: 'Closet', Icon: ClosetIcon },
   { id: 'market', label: 'Market', Icon: MarketIcon },
 ]
 
