@@ -2730,3 +2730,18 @@
   border-radius: 0;
   background: transparent;
 }
+
+/* Color wheel card stays black with a white check in every mode */
+html body .settings-wheel-card {
+  background: #000 !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  color: #fff !important;
+}
+
+html body .settings-wheel-card .settings-wheel-done,
+html body .settings-wheel-card .settings-wheel-done svg {
+  color: #fff !important;
+  stroke: #fff !important;
+}
