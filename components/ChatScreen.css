@@ -3752,3 +3752,11 @@ html body .chat-friends-pill {
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
 }
+
+/* Capsule is 44px tall (36px slots + 4px inset) so the pill sits inside it */
+@media (min-width: 720px) {
+  html body .chat-friends-tabs .chat-friends-tab-group {
+    height: 44px;
+    align-items: stretch;
+  }
+}
