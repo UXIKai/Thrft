@@ -4387,11 +4387,11 @@ html body .chat-friends-active-head.is-collapsed button.chat-friends-active-togg
 }
 
 html body .chat-friends-active {
-  border-left: 1px solid light-dark(rgba(0, 0, 0, 0.18), rgba(255, 255, 255, 0.18)) !important;
+  border-left: 1px solid var(--glass-border) !important;
 }
 
 html body .chat-friends-tabs > .chat-friends-active-head {
-  border-left: 1px solid light-dark(rgba(0, 0, 0, 0.18), rgba(255, 255, 255, 0.18)) !important;
+  border-left: 1px solid var(--glass-border) !important;
 }
 
 html body .chat-friends-tabs > .chat-friends-active-head,
@@ -4432,7 +4432,7 @@ html body .chat-search-modal .chat-search-modal-head button.chat-search-modal-cl
 
 html body .chat-friends-tabs > .chat-friends-active-head,
 html body .chat-friends-tabs > .chat-friends-active-head.is-collapsed {
-  border-left: 1px solid light-dark(rgba(0, 0, 0, 0.18), rgba(255, 255, 255, 0.18)) !important;
+  border-left: 1px solid var(--glass-border) !important;
 }
 
 html body .chat-friends-tabs > .chat-friends-active-head button.chat-friends-active-toggle,
@@ -4490,7 +4490,9 @@ html body .chat-new-card {
     box-sizing: border-box;
     padding: calc(max(8px, env(safe-area-inset-top, 0px)) + 16px + 48px) 16px calc(24px + env(safe-area-inset-bottom, 0px));
     overflow-y: auto;
-    background: light-dark(rgba(245, 235, 238, 0.97), rgba(10, 10, 12, 0.97));
+    background: var(--glass-clear-tint, light-dark(rgba(245, 235, 238, 0.6), rgba(10, 10, 12, 0.6)));
+    backdrop-filter: blur(22px) saturate(var(--glass-sat, 1.55));
+    -webkit-backdrop-filter: blur(22px) saturate(var(--glass-sat, 1.55));
     transform: translateX(-102%);
     visibility: hidden;
     transition: transform 0.25s ease, visibility 0.25s;
@@ -4628,8 +4630,10 @@ html body .chat-new-card {
     padding: calc(max(8px, env(safe-area-inset-top, 0px)) + 16px) 16px 24px;
     overflow-y: auto;
     border: none !important;
-    border-left: 1px solid light-dark(rgba(0, 0, 0, 0.18), rgba(255, 255, 255, 0.18)) !important;
-    background: light-dark(rgba(245, 235, 238, 0.97), rgba(10, 10, 12, 0.97));
+    border-left: 1px solid var(--glass-border) !important;
+    background: var(--glass-clear-tint, light-dark(rgba(245, 235, 238, 0.6), rgba(10, 10, 12, 0.6)));
+    backdrop-filter: blur(22px) saturate(var(--glass-sat, 1.55));
+    -webkit-backdrop-filter: blur(22px) saturate(var(--glass-sat, 1.55));
   }
 
   .chat-friends-active-aside-title {
