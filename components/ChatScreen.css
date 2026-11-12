@@ -4469,3 +4469,7 @@ html body .chat-new-card .chat-new-list {
 html body .chat-new-card .chat-new-list {
   height: 310px;
 }
+
+html body .chat-friends-tabs > .chat-friends-active-head.is-collapsed {
+  border-left: none !important;
+}
