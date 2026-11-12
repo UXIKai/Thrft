@@ -1960,16 +1960,20 @@ html body .stage.is-chat-panel-dragging .tab-bar {
   transition: none;
 }
 
-/* The wash had no light in its top ~25%, so the base showed as a dark band; add a soft top glow */
+/* Background redo: one even wash across the whole screen — no blend-mode blooms, no dark cloud,
+   light spread from the very top to the bottom so no band forms anywhere. */
+.stage:not(.is-bg-none) .atmosphere-bloom,
 .stage:not(.is-bg-none) .atmosphere::after {
-  content: '';
-  position: absolute;
-  inset: 0 0 auto 0;
-  height: 45%;
-  pointer-events: none;
-  background: radial-gradient(
-    120% 100% at 50% 0%,
-    rgba(var(--atmosphere-effect-c-rgb, 160, 160, 160), 0.42),
-    transparent 75%
-  );
+  display: none;
+}
+
+.stage .atmosphere::before {
+  inset: -20%;
+  background:
+    radial-gradient(circle at 25% 8%, rgba(var(--atmosphere-effect-a-rgb, 190, 190, 190), 0.34), transparent 45%),
+    radial-gradient(circle at 85% 28%, rgba(var(--atmosphere-effect-b-rgb, 150, 150, 150), 0.32), transparent 45%),
+    radial-gradient(circle at 20% 58%, rgba(var(--atmosphere-effect-c-rgb, 170, 170, 170), 0.3), transparent 48%),
+    radial-gradient(circle at 80% 85%, rgba(var(--atmosphere-effect-a-rgb, 190, 190, 190), 0.3), transparent 48%),
+    var(--atmosphere-base, var(--void, light-dark(rgb(250, 250, 250), #050505)));
+  animation: none;
 }
