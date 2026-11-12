@@ -17,6 +17,18 @@ function PlusIcon() {
   )
 }
 
+function ChestIcon({ open }) {
+  return (
+    <svg className="saved-chest-ico" viewBox="0 0 24 24" width="26" height="26" aria-hidden fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 12.5h16V19a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z" />
+      <path d="M12 12.5v3.5M10.700 16h2.600" />
+      <g className={`saved-chest-lid${open ? ' is-open' : ''}`}>
+        <path d="M4 12.5V10a5 5 0 0 1 5-5h6a5 5 0 0 1 5 5v2.500z" />
+      </g>
+    </svg>
+  )
+}
+
 function SearchIcon() {
   return (
     <svg className="saved-dock-ico" viewBox="0 0 24 24" aria-hidden>
@@ -618,7 +630,7 @@ export default function SavedScreen({
           aria-expanded={brandsOpen}
           onClick={(e) => { e.currentTarget.blur(); setBrandsOpen((o) => !o) }}
         >
-          <ShirtIcon />
+          <ChestIcon open={brandsOpen} />
         </button>
         <h1 className="saved-list-title" aria-label="Liked"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden fill="currentColor"><path d="M12 21s-7.5-4.6-9.6-9.2C.8 8.3 2.6 4.8 6.1 4.8c2 0 3.4 1.1 3.9 2.2.5-1.1 1.9-2.2 3.9-2.2 3.5 0 5.300 3.500 3.700 7-2.100 4.600-9.600 9.200-9.600 9.200z"/></svg></h1>
 <div className={`saved-fab${fabOpen ? ' is-open' : ''}${selectMode ? ' is-selecting' : ''}`}>
