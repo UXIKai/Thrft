@@ -3018,6 +3018,9 @@ export default function ChatScreen({
                   </button>
                 ))}
                 </div>
+                <button type="button" className="chat-friends-add" onClick={openCreateGroup}>
+                  Add Friend
+                </button>
               </nav>
               <div className="chat-friends-body">
               <div className="chat-friends-panel">

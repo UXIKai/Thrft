@@ -4024,3 +4024,24 @@ html body .chat-friends-tabs .chat-friends-pill {
     display: none;
   }
 }
+
+html body .chat-friends-tabs .chat-friends-add {
+  flex: 0 0 auto;
+  margin-left: 8px;
+  height: 36px;
+  padding: 0 16px;
+  border: none;
+  border-radius: 999px;
+  background: #4752c4;
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+html body .chat-friends-tabs .chat-friends-add:hover,
+html body .chat-friends-tabs .chat-friends-add:focus-visible {
+  filter: brightness(1.15);
+  outline: none;
+}
