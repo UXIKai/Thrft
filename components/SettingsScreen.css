@@ -2774,3 +2774,12 @@ html:not([data-moonlight='on']) .settings-screen {
 html[data-scheme='light']:not([data-moonlight='on']) .settings-screen {
   background: color-mix(in srgb, var(--bg-color-swatch, #fff) 80%, transparent);
 }
+
+.settings-help-page.is-assistant.is-started .settings-assistant-thread {
+  position: relative;
+  z-index: 1;
+}
+
+.settings-help-page.is-assistant.is-started .settings-assistant-dock {
+  z-index: 1;
+}

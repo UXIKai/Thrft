@@ -2795,11 +2795,17 @@ export default function SettingsScreen({
 
       {helpPage === 'help' && (
         <div
-          className="glass-overlay settings-help-page is-assistant"
+          className="glass-overlay settings-help-page is-assistant is-started"
           role="dialog"
           aria-modal="true"
           aria-label="Q&A"
         >
+          <div className="settings-started-atmosphere" aria-hidden>
+            <span className="settings-started-bloom settings-started-bloom-a" />
+            <span className="settings-started-bloom settings-started-bloom-b" />
+            <span className="settings-started-bloom settings-started-bloom-c" />
+            <span className="settings-started-bloom settings-started-bloom-d" />
+          </div>
           <header className="glass-overlay-top settings-assistant-top">
             <button
               type="button"
