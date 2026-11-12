@@ -499,13 +499,6 @@ export default function SavedScreen({
     openGlobe()
   }
 
-  function setMode(next) {
-    if (next === browseMode) return
-    if (globeOpen) closeGlobe()
-    setBrowseMode(next)
-    setQuery('')
-  }
-
   const showBrands = browseMode === 'brands'
   const showItems = browseMode === 'items'
 
@@ -564,35 +557,6 @@ export default function SavedScreen({
           <SearchIcon />
         </button>
       </header>
-      <div
-        className="saved-mode-switch"
-        role="tablist"
-        aria-label="Favorites view"
-      >
-        <button
-          type="button"
-          role="tab"
-          aria-selected={showBrands}
-          aria-label="Brands"
-          title="Brands"
-          className={`saved-mode-btn${showBrands ? ' is-active' : ''}`}
-          onClick={() => setMode('brands')}
-        >
-          <TrademarkIcon />
-        </button>
-        <button
-          type="button"
-          role="tab"
-          aria-selected={showItems}
-          aria-label="Clothing items"
-          title="Clothing items"
-          className={`saved-mode-btn${showItems ? ' is-active' : ''}`}
-          onClick={() => setMode('items')}
-        >
-          <ShirtIcon />
-        </button>
-      </div>
-
       <div className="saved-list-toolbar">
         <div className={`saved-edit-row${editMenuOpen ? ' is-open' : ''}`} ref={editMenuRef}>
           <button
