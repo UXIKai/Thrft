@@ -4194,3 +4194,11 @@ html body .chat-new-card {
   -webkit-backdrop-filter: blur(24px) saturate(1.2);
   box-shadow: 0 12px 36px rgba(0, 0, 0, 0.28);
 }
+
+html body .chat-new-card {
+  width: min(100%, 440px);
+}
+
+html body .chat-new-card .chat-new-list {
+  height: 240px;
+}
