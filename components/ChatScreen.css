@@ -4429,3 +4429,18 @@ html body .chat-search-modal .chat-search-modal-head button.chat-search-modal-cl
   border: 1px solid light-dark(rgba(0, 0, 0, 0.45), rgba(255, 255, 255, 0.6)) !important;
   border-radius: 999px !important;
 }
+
+html body .chat-friends-tabs > .chat-friends-active-head,
+html body .chat-friends-tabs > .chat-friends-active-head.is-collapsed {
+  border-left: 1px solid light-dark(rgba(0, 0, 0, 0.18), rgba(255, 255, 255, 0.18)) !important;
+}
+
+html body .chat-friends-tabs > .chat-friends-active-head button.chat-friends-active-toggle,
+html body .chat-friends-tabs > .chat-friends-active-head.is-collapsed button.chat-friends-active-toggle {
+  left: -40px;
+  transform: translateY(-50%);
+}
+
+html body .chat-friends-tabs > .chat-friends-active-head.is-collapsed {
+  width: 0;
+}
