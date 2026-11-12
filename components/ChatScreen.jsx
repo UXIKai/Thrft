@@ -600,6 +600,8 @@ export default function ChatScreen({
   const [friendsTab, setFriendsTab] = useState('all')
   const [friendsQuery, setFriendsQuery] = useState('')
   const [pinnedCollapsed, setPinnedCollapsed] = useState(false)
+  const [requestsView, setRequestsView] = useState(false)
+  const [requestsTab, setRequestsTab] = useState('requests')
   const [composer, setComposer] = useState(null) // null | { mode: 'create'|'edit', chatId? }
   const [draftName, setDraftName] = useState('')
   const [draftMembers, setDraftMembers] = useState([])
@@ -686,6 +688,7 @@ export default function ChatScreen({
     if (!attachOpen) setFriendListOpen(false)
   }, [attachOpen])
   const activeChat = chats.find((c) => c.id === activeChatId) || null
+  useEffect(() => { if (activeChatId) setRequestsView(false) }, [activeChatId])
   const allChatImages = chats.flatMap((c) =>
     (c.messages || [])
       .filter((m) => m.kind === 'image' && m.imageUrl)
@@ -2845,6 +2848,23 @@ export default function ChatScreen({
             <GalleryIcon />
             <span>Images</span>
           </button>
+          <button
+            type="button"
+            className={`chat-list-quick-btn is-bare${!imagesOnly && !requestsView && !activeChat && !composer ? ' is-on' : ''}`}
+            onClick={() => { if (composer) closeComposer(); setImagesOnly(false); setRequestsView(false); setActiveChatId(null) }}
+          >
+            <svg className="chat-ico" viewBox="0 0 24 24" aria-hidden width="20" height="20" fill="currentColor"><circle cx="12" cy="8" r="3.5" /><path d="M5.500 20c0-3.600 2.900-6 6.500-6s6.500 2.400 6.500 6z" /></svg>
+            <span>Friends</span>
+          </button>
+          <button
+            type="button"
+            className={`chat-list-quick-btn is-bare${requestsView ? ' is-on' : ''}`}
+            aria-pressed={requestsView}
+            onClick={() => { if (composer) closeComposer(); setImagesOnly(false); setActiveChatId(null); setRequestsView(true) }}
+          >
+            <svg className="chat-ico" viewBox="0 0 24 24" aria-hidden width="20" height="20"><rect x="3.500" y="5.500" width="17" height="13" rx="2.500" fill="none" stroke="currentColor" strokeWidth="1.600" /><path d="M4 7.500l8 6 8-6" fill="none" stroke="currentColor" strokeWidth="1.600" strokeLinecap="round" strokeLinejoin="round" /></svg>
+            <span>Message requests</span>
+          </button>
         </nav>
         <ul className="chat-list">
           {filtered.all.map((chat, index) => (
@@ -2992,6 +3012,31 @@ export default function ChatScreen({
               ) : (
                 <p className="chat-desktop-empty">No images yet</p>
               )}
+            </div>
+          ) : requestsView && !activeChat ? (
+            <div className="chat-friends-empty">
+              <nav className="chat-friends-tabs" aria-label="Message requests">
+                <span className="chat-friends-label">Message Requests</span>
+                <div className="chat-friends-tab-group is-two" style={{ '--tab-index': requestsTab === 'spam' ? 1 : 0 }}>
+                  <span className="chat-friends-pill" aria-hidden />
+                  {[['requests', 'Requests'], ['spam', 'Spam']].map(([id, label]) => (
+                    <button
+                      key={id}
+                      type="button"
+                      className={`chat-friends-tab${requestsTab === id ? ' is-active' : ''}`}
+                      aria-pressed={requestsTab === id}
+                      onClick={() => setRequestsTab(id)}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              </nav>
+              <div className="chat-friends-body">
+                <div className="chat-friends-panel">
+                  <p className="chat-desktop-empty">{requestsTab === 'spam' ? 'No spam messages' : 'No message requests'}</p>
+                </div>
+              </div>
             </div>
           ) : activeChat ? (
             renderThread()
