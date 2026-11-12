@@ -1533,6 +1533,25 @@ export default function ChatScreen({
     }
   }
 
+  function openRowMenu(chat) {
+    if (chat.kind !== 'dm') {
+      openMenu(chat.id)
+      return
+    }
+    if (menuId === chat.id) {
+      closeMenus()
+      return
+    }
+    setMenuPos({
+      top: window.innerHeight / 2,
+      right: 0,
+      centerX: window.innerWidth / 2,
+      centered: true,
+      context: true,
+    })
+    setMenuId(chat.id)
+  }
+
   function openMenu(chatId) {
     if (menuId === chatId) {
       closeMenus()
@@ -2546,112 +2565,6 @@ export default function ChatScreen({
             </button>
           )}
         </div>
-        <div className="chat-list-toolbar" ref={pinsMenuRef}>
-          <div className={`chat-pins-edit${pinsMenuOpen ? ' is-open' : ''}`}>
-            <button
-              type="button"
-              className={`chat-pins-pencil${pinsMode || pinsMenuOpen ? ' is-active' : ''}`}
-              aria-label={pinsMode === 'select' ? 'Done selecting chats' : pinsMode === 'pins' ? 'Done editing pins' : 'Edit'}
-              aria-expanded={pinsMode ? undefined : pinsMenuOpen}
-              aria-haspopup={pinsMode ? undefined : 'menu'}
-              onClick={() => {
-                if (pinsMode) {
-                  setPinsEditMode(pinsMode)
-                } else {
-                  setPinsMenuOpen((open) => !open)
-                }
-              }}
-            >
-              {pinsMode ? <FilterCheckIcon /> : <PencilIcon />}
-            </button>
-            {pinsMenuOpen ? (
-              <div className="chat-pins-menu" role="menu" aria-label="Pinned chat actions">
-                <button
-                  type="button"
-                  role="menuitem"
-                  className={`chat-pins-menu-btn${pinsMode === 'select' ? ' is-on' : ''}`}
-                  aria-label="Select"
-                  aria-pressed={pinsMode === 'select'}
-                  onClick={() => setPinsEditMode('select')}
-                >
-                  <CheckCircleIcon />
-                  <span className="chat-pins-menu-label">Select</span>
-                </button>
-                <button
-                  type="button"
-                  role="menuitem"
-                  className={`chat-pins-menu-btn${pinsMode === 'pins' ? ' is-on' : ''}`}
-                  aria-label="Edit pins"
-                  aria-pressed={pinsMode === 'pins'}
-                  onClick={() => setPinsEditMode('pins')}
-                >
-                  <PinIcon className="chat-pins-menu-ico" />
-                  <span className="chat-pins-menu-label">Edit pins</span>
-                </button>
-              </div>
-            ) : null}
-          </div>
-          <div className="chat-filter-wrap" ref={listFilterRef}>
-            <button
-              type="button"
-              className={`chat-filter-btn${listFilterOpen ? ' is-on' : ''}`}
-              aria-label="Filter messages"
-              aria-expanded={listFilterOpen}
-              aria-haspopup="menu"
-              onClick={() => setListFilterOpen((open) => !open)}
-            >
-              <FilterIcon className="chat-filter-ico" />
-            </button>
-            {pinsMode === 'select' && pinSelectedIds.length > 0 && (
-              <button
-                type="button"
-                className="chat-delete-selected is-bare"
-                aria-label={`Delete ${pinSelectedIds.length} selected chats`}
-                onClick={deleteSelectedChats}
-              >
-                <TrashIcon />
-              </button>
-            )}
-            {listFilterOpen ? (
-              <div
-                className="chat-filter-menu"
-                role="menu"
-                aria-label="Message filters"
-              >
-                {CHAT_FILTER_OPTIONS.map(({ id, label, Icon }) => (
-                  <button
-                    key={id}
-                    type="button"
-                    role="menuitemradio"
-                    aria-checked={listFilter === id}
-                    className={`chat-filter-menu-item${
-                      listFilter === id ? ' is-on' : ''
-                    }`}
-                    onClick={() => {
-                      setListFilter(id)
-                      setListFilterOpen(false)
-                    }}
-                  >
-                    <span className="chat-filter-menu-check-slot" aria-hidden>
-                      {listFilter === id ? <FilterCheckIcon /> : null}
-                    </span>
-                    <Icon />
-                    <span className="chat-filter-menu-label">{label}</span>
-                  </button>
-                ))}
-                <div className="chat-filter-menu-sep" role="separator" />
-                <button
-                  type="button"
-                  role="menuitem"
-                  className="chat-filter-menu-item is-manage"
-                  onClick={() => setListFilterOpen(false)}
-                >
-                  <span className="chat-filter-menu-label">Manage Filtering</span>
-                </button>
-              </div>
-            ) : null}
-          </div>
-        </div>
       </section>
 
       <section className="chat-section chat-list-section" aria-label="Chats">
@@ -2720,6 +2633,30 @@ export default function ChatScreen({
                   <span className="chat-row-preview">{chat.preview}</span>
                 </span>
               </button>
+              {!pinsMode && (
+                <span className="chat-row-actions">
+                  <button
+                    type="button"
+                    className="chat-row-action is-bare"
+                    aria-label={chat.pinned ? `Unpin ${chat.title}` : `Pin ${chat.title}`}
+                    onClick={() => togglePin(chat.id)}
+                  >
+                    <PinIcon className="chat-row-action-ico" />
+                  </button>
+                  <button
+                    type="button"
+                    className="chat-row-action is-bare"
+                    aria-label={`More for ${chat.title}`}
+                    ref={(el) => {
+                      if (el) dotsRefs.current.set(chat.id, el)
+                      else dotsRefs.current.delete(chat.id)
+                    }}
+                    onClick={() => openRowMenu(chat)}
+                  >
+                    <DotsIcon />
+                  </button>
+                </span>
+              )}
             </li>
           ))}
           {filtered.all.length === 0 && (

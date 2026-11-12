@@ -3211,3 +3211,59 @@ html body button.chat-contact-nick-save {
   left: 0;
   top: 0;
 }
+
+/* Pin + 3 dots on each chat row; they replace the time on hover */
+.chat-row-actions {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.chat-row-wrap:hover .chat-row-actions,
+.chat-row-wrap:focus-within .chat-row-actions,
+.chat-row-wrap.is-menu-open .chat-row-actions {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.chat-row-wrap:hover .chat-row-time,
+.chat-row-wrap:focus-within .chat-row-time,
+.chat-row-wrap.is-menu-open .chat-row-time {
+  visibility: hidden;
+}
+
+@media (hover: none) {
+  .chat-row-actions {
+    opacity: 1;
+    pointer-events: auto;
+    top: auto;
+    bottom: 4px;
+    transform: none;
+  }
+  .chat-row-wrap:hover .chat-row-time {
+    visibility: visible;
+  }
+}
+
+.chat-row-action {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.chat-row-action svg {
+  width: 18px;
+  height: 18px;
+}
