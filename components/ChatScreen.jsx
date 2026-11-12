@@ -598,6 +598,7 @@ export default function ChatScreen({
   }, [searchOpen])
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [friendsTab, setFriendsTab] = useState('all')
+  const [friendsQuery, setFriendsQuery] = useState('')
   const [composer, setComposer] = useState(null) // null | { mode: 'create'|'edit', chatId? }
   const [draftName, setDraftName] = useState('')
   const [draftMembers, setDraftMembers] = useState([])
@@ -755,6 +756,27 @@ export default function ChatScreen({
   }, [likedItems, likedQuery])
 
   const filteredUsers = allMemberNames
+
+  const friendsView = useMemo(() => {
+    const q = friendsQuery.trim().toLowerCase()
+    const match = (name) => !q || name.toLowerCase().includes(q)
+    const friendKeys = new Set(friends.map((f) => f.toLowerCase()))
+    const names = {
+      online: [],
+      all: friends,
+      pending: [],
+      suggestions: allMemberNames.filter((n) => !friendKeys.has(String(n).toLowerCase())),
+    }[friendsTab] || []
+    const titles = { online: 'Online', all: 'All friends', pending: 'Pending', suggestions: 'Friend Suggestions' }
+    const empty = {
+      online: 'No friends online right now.',
+      all: 'No friends yet.',
+      pending: 'No pending requests.',
+      suggestions: 'No suggestions right now.',
+    }
+    const list = names.filter(match)
+    return { list, title: titles[friendsTab], empty: empty[friendsTab] }
+  }, [friends, friendsTab, friendsQuery, allMemberNames])
 
   useEffect(() => {
     writeStoredChats(chats)
@@ -2997,7 +3019,47 @@ export default function ChatScreen({
                 ))}
                 </div>
               </nav>
-              <p className="chat-desktop-empty">Select a chat to view the conversation</p>
+              <div className="chat-friends-panel">
+                <input
+                  type="search"
+                  className="chat-friends-search"
+                  placeholder="Search"
+                  aria-label="Search friends"
+                  value={friendsQuery}
+                  onChange={(e) => setFriendsQuery(e.target.value)}
+                />
+                <p className="chat-friends-heading">{friendsView.title} — {friendsView.list.length}</p>
+                {friendsView.list.length === 0 ? (
+                  <p className="chat-desktop-empty">{friendsView.empty}</p>
+                ) : (
+                  <ul className="chat-friends-list">
+                    {friendsView.list.map((name) => {
+                      const initials = name.split(/\s+/).slice(0, 2).map((w) => w[0]?.toUpperCase() || '').join('')
+                      const friend = isFriend(name)
+                      return (
+                        <li key={name} className="chat-friends-row">
+                          <span className="chat-users-avatar" aria-hidden>{initials || '?'}</span>
+                          <span className="chat-users-name">{name}</span>
+                          <div className="chat-users-actions">
+                            <button type="button" className="chat-users-action" aria-label={`Message ${name}`} onClick={() => startChatWithUser(name)}>
+                              <SendIcon />
+                            </button>
+                            <button
+                              type="button"
+                              className={`chat-users-action${friend ? ' is-on' : ''}`}
+                              aria-label={friend ? `Remove ${name} from friends` : `Add ${name} as friend`}
+                              aria-pressed={friend}
+                              onClick={() => toggleFriend(name)}
+                            >
+                              {friend ? <CheckCircleIcon className="chat-ico" /> : <PlusIcon />}
+                            </button>
+                          </div>
+                        </li>
+                      )
+                    })}
+                  </ul>
+                )}
+              </div>
             </div>
           )}
         </section>
