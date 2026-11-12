@@ -3064,7 +3064,6 @@ export default function ChatScreen({
               <aside className="chat-friends-active" aria-label="Active Now">
                 <h3 className="chat-friends-active-title">Active Now</h3>
                 <p className="chat-friends-active-empty">It's quiet for now…</p>
-                <p className="chat-friends-active-hint">When a friend starts an activity, it shows up here.</p>
               </aside>
               </div>
             </div>

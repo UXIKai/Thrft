@@ -4018,11 +4018,6 @@ html body .chat-friends-tabs .chat-friends-pill {
   font-size: 0.9rem;
 }
 
-.chat-friends-active-hint {
-  margin: 0;
-  font-size: 0.8rem;
-  opacity: 0.65;
-}
 
 @media (max-width: 719px) {
   .chat-friends-active {
