@@ -1978,7 +1978,7 @@ html body .stage.is-chat-panel-dragging .tab-bar {
   animation: none;
 }
 
-/* Desktop chat: nav fades away until the mouse comes near the bottom edge */
+/* Desktop: nav fades away until the mouse comes near the bottom edge */
 html body .stage.is-nav-autohide .tab-bar {
   opacity: 0;
   pointer-events: none;

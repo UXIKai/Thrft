@@ -185,11 +185,11 @@ export default function App() {
   const hideTabBar = tab === 'chat' || tab === 'saved'
   const showNav = !(tab === 'chat' && chatThreadOpen)
 
-  // Desktop chat: the nav bar stays hidden until the mouse nears the bottom edge
+  // Desktop: the nav bar stays hidden until the mouse nears the bottom edge
   useEffect(() => {
     const stage = stageRef.current
     const desktop = window.matchMedia('(min-width: 720px) and (min-height: 500px)')
-    if (!stage || tab !== 'chat' || !desktop.matches) return undefined
+    if (!stage || !desktop.matches) return undefined
     stage.classList.add('is-nav-autohide')
     const onMove = (e) => {
       stage.classList.toggle('is-nav-near', window.innerHeight - e.clientY < 140)
@@ -202,7 +202,7 @@ export default function App() {
       document.removeEventListener('mouseleave', onLeave)
       stage.classList.remove('is-nav-autohide', 'is-nav-near')
     }
-  }, [tab])
+  }, [])
 
   useEffect(() => {
     if (!signedIn) return undefined
