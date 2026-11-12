@@ -4584,9 +4584,60 @@ html body .chat-new-card {
     font-size: 0.8rem;
   }
 
-  .chat-desktop-thread .chat-friends-active,
-  .chat-desktop-thread .chat-friends-active-head {
+  .chat-desktop-thread .chat-friends-active-title {
     display: none;
+  }
+
+  html body .chat-desktop-thread .chat-friends-active-head {
+    position: fixed;
+    top: calc(max(8px, env(safe-area-inset-top, 0px)) + 6px);
+    right: 16px;
+    z-index: 5;
+    width: 36px;
+    height: 36px;
+    margin: 0;
+    padding: 0;
+  }
+
+  .chat-screen.is-mobile-nav-open .chat-friends-active-head {
+    display: none;
+  }
+
+  html body .chat-desktop-thread .chat-friends-active-head,
+  html body .chat-desktop-thread .chat-friends-active-head::before,
+  html body .chat-desktop-thread .chat-friends-active-head::after {
+    border: none !important;
+    background: none !important;
+  }
+
+  html body .chat-desktop-thread .chat-friends-active-head button.chat-friends-active-toggle {
+    left: 0;
+    width: 36px;
+    height: 36px;
+  }
+
+  html body .chat-desktop-thread .chat-friends-active:not([hidden]) {
+    display: block;
+    border: none !important;
+  }
+
+  html body .chat-desktop-thread .chat-friends-label {
+    position: fixed;
+    top: calc(max(8px, env(safe-area-inset-top, 0px)) + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    height: 36px;
+    margin: 0;
+  }
+
+  .chat-desktop-thread .chat-friends-active {
+    position: static;
+    width: 100%;
+    padding: 4px 0;
   }
 
   .chat-desktop-thread .chat-friends-body {
