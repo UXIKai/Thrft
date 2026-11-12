@@ -5,6 +5,7 @@ import { recordProductInterest, recordSearchHistory } from '../forYou.js'
 import { LISTING_BRANDS } from '../listingCatalog.js'
 import { SIZE_BRANDS } from '../sizeOptions.js'
 import BrandGlobe from './BrandGlobe.jsx'
+import { ClosetIcon } from './SegmentIcons.jsx'
 import StageSlot from './StageSlot.jsx'
 import './GlassOverlay.css'
 import './SavedScreen.css'
@@ -349,6 +350,7 @@ export default function SavedScreen({
     Array.isArray(favoredBrands) ? [...favoredBrands] : [],
   )
   const [browseMode, setBrowseMode] = useState('brands') // brands | items
+  const [room, setRoom] = useState(null) // null = chooser | brands | items
   const [globePhase, setGlobePhase] = useState('closed') // closed | enter | open | exit
   const [globeOrigin, setGlobeOrigin] = useState({ dx: 0, dy: 120 })
   const [filterOpen, setFilterOpen] = useState(false)
@@ -507,9 +509,47 @@ export default function SavedScreen({
   const showBrands = browseMode === 'brands'
   const showItems = browseMode === 'items'
 
+  if (!room) {
+    return (
+      <section className="saved-screen" aria-label="Liked">
+        <header className="saved-page-header">
+          <h1 className="saved-list-title">Liked</h1>
+        </header>
+        <div className="saved-room-choice" role="group" aria-label="Choose a room">
+          <button
+            type="button"
+            className="saved-room-btn"
+            aria-label="Favorite brands"
+            onClick={() => { setBrowseMode('brands'); setRoom('brands') }}
+          >
+            <TrademarkIcon />
+            <span>Favorite brands</span>
+          </button>
+          <button
+            type="button"
+            className="saved-room-btn"
+            aria-label="Closet"
+            onClick={() => { setBrowseMode('items'); setRoom('items') }}
+          >
+            <ClosetIcon className="saved-room-ico" />
+            <span>Closet</span>
+          </button>
+        </div>
+      </section>
+    )
+  }
+
   return (
     <section className="saved-screen" aria-label="Liked">
       <header className="saved-page-header">
+        <button
+          type="button"
+          className="saved-dock-search is-bare saved-room-back"
+          aria-label="Back to rooms"
+          onClick={() => { if (globeOpen) closeGlobe(); setQuery(''); setSearchOpen(false); setRoom(null) }}
+        >
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 5l-7 7 7 7" /></svg>
+        </button>
         <h1 className="saved-list-title">Liked</h1>
         <button
           type="button"
