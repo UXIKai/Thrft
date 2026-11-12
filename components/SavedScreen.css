@@ -834,3 +834,28 @@ html body .saved-fab .saved-fab-toggle {
   -webkit-backdrop-filter: none !important;
   border-radius: 0;
 }
+
+.saved-fab {
+  right: 12px;
+}
+
+.saved-fab-items {
+  right: -20px;
+  width: 80px;
+  grid-template-columns: 38px 38px;
+}
+
+.saved-fab-item.saved-fab-item,
+.saved-fab-item.saved-filter-wrap,
+.saved-fab-item.saved-edit-row {
+  width: 38px;
+  height: 38px;
+  min-height: 38px;
+}
+
+.saved-fab-btn,
+.saved-fab-item .saved-filter-btn,
+.saved-fab-item .saved-pencil-btn {
+  width: 38px;
+  height: 38px;
+}
