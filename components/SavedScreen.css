@@ -1081,3 +1081,7 @@ html body .saved-fab .saved-fab-item.saved-fab-item:nth-child(3) { --fab-x: 0px;
 .saved-fab-btn.is-danger:not(:disabled) { color: #ff453a; }
 .saved-fab-btn:disabled { opacity: 0.4; }
 .saved-fab-btn .saved-filter-menu-ico { width: 20px; height: 20px; }
+
+/* Select mode: only the trash button remains */
+.saved-fab.is-selecting .saved-fab-item:not(:first-child) { display: none; }
+.saved-fab-btn:focus, .saved-fab-btn:focus-visible, .saved-fab-toggle:focus, .saved-fab-toggle:focus-visible { outline: none; }

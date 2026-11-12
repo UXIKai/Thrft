@@ -434,6 +434,18 @@ export default function SavedScreen({
     onForYouRefresh?.()
   }
 
+  useEffect(() => {
+    if (!selectMode) return undefined
+    const leave = (event) => {
+      if (event.target.closest?.('.saved-item, .saved-fab')) return
+      setSelectMode(false)
+      setSelectedKeys([])
+      setFabOpen(false)
+    }
+    document.addEventListener('pointerdown', leave)
+    return () => document.removeEventListener('pointerdown', leave)
+  }, [selectMode])
+
   function deleteSelected() {
     if (!selectedKeys.length) return
     const brandIds = selectedKeys.filter((k) => k.startsWith('brand-')).map((k) => k.slice(6))
@@ -519,15 +531,22 @@ export default function SavedScreen({
     <section className="saved-screen" aria-label="Liked">
       <header className="saved-page-header">
         <h1 className="saved-list-title" aria-label="Liked"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden fill="currentColor"><path d="M12 21s-7.5-4.6-9.6-9.2C.8 8.3 2.6 4.8 6.1 4.8c2 0 3.4 1.1 3.9 2.2.5-1.1 1.9-2.2 3.9-2.2 3.5 0 5.300 3.500 3.700 7-2.100 4.600-9.600 9.200-9.600 9.200z"/></svg></h1>
-<div className={`saved-fab${fabOpen ? ' is-open' : ''}`}>
+<div className={`saved-fab${fabOpen ? ' is-open' : ''}${selectMode ? ' is-selecting' : ''}`}>
         <button
           type="button"
           className="saved-fab-toggle"
           aria-label={fabOpen ? 'Close actions' : 'Open actions'}
           aria-expanded={fabOpen}
-          onClick={() => {
+          onClick={(e) => {
             setEditMenuOpen(false)
             setFilterOpen(false)
+            e.currentTarget.blur()
+            if (selectMode) {
+              setSelectMode(false)
+              setSelectedKeys([])
+              setFabOpen(false)
+              return
+            }
             setFabOpen((open) => !open)
           }}
         >
@@ -542,7 +561,7 @@ export default function SavedScreen({
               aria-label="Delete selected"
               disabled={!selectedKeys.length}
               tabIndex={fabOpen ? 0 : -1}
-              onClick={deleteSelected}
+              onClick={(e) => { e.currentTarget.blur(); deleteSelected() }}
             >
               <FilterTrashIcon />
             </button>
@@ -553,7 +572,8 @@ export default function SavedScreen({
               aria-label="Search liked"
               aria-expanded={searchOpen}
               tabIndex={fabOpen ? 0 : -1}
-              onClick={() => {
+              onClick={(e) => {
+                e.currentTarget.blur()
                 setFabOpen(false)
                 setSearchOpen(true)
                 window.setTimeout(() => document.getElementById('saved-search-input')?.focus({ preventScroll: true }), 0)
@@ -570,8 +590,9 @@ export default function SavedScreen({
             aria-label={selectMode ? 'Cancel select' : 'Select'}
             aria-pressed={selectMode}
             tabIndex={fabOpen ? 0 : -1}
-            onClick={() => {
-              setSelectMode((on) => !on)
+            onClick={(e) => {
+              e.currentTarget.blur()
+              setSelectMode(true)
               setSelectedKeys([])
               setSearchOpen(false)
               setQuery('')
@@ -591,7 +612,8 @@ export default function SavedScreen({
             className="saved-fab-btn"
             aria-label="Add brands and products"
             tabIndex={fabOpen ? 0 : -1}
-            onClick={() => {
+            onClick={(e) => {
+              e.currentTarget.blur()
               setFabOpen(false)
               openGlobe()
             }}
