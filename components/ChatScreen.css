@@ -3803,7 +3803,7 @@ html body .chat-friends-pill {
 
 html body .chat-friends-tabs .chat-friends-pill {
   left: 0;
-  width: 25%;
+  width: 33.3334%;
 }
 
 /* Fixed-size card so switching tabs never shifts the icons or content */
