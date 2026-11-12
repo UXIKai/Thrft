@@ -155,8 +155,8 @@ function syncColorScheme() {
       scheme = relativeLuminance(color.rgb) > 0.179 ? 'light' : 'dark'
     }
   }
-  if (!moonlightOn && currentBg === 'none') {
-    // Effect off: the chosen background or container color is the page itself.
+  if (!moonlightOn) {
+    // A bright chosen background or container color needs dark ink, effect on or off.
     for (const color of [resolveBgColor(currentBgColorId), resolveColor(currentColorId)]) {
       if (color.id !== 'none' && relativeLuminance(color.rgb) > 0.4) scheme = 'light'
     }
