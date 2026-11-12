@@ -4348,3 +4348,40 @@ html body .chat-friends-active-head.is-collapsed button.chat-friends-active-togg
   position: static;
   transform: none;
 }
+
+html body .chat-friends-tabs > .chat-friends-active-head {
+  border: none !important;
+  background: none !important;
+  box-shadow: none !important;
+  margin: 0 !important;
+  min-height: 0;
+}
+
+html body .chat-friends-active {
+  border-left: none !important;
+}
+
+html body .chat-friends-active-head button.chat-friends-active-toggle,
+html body .chat-friends-active-head button.chat-friends-active-toggle:hover,
+html body .chat-friends-active-head button.chat-friends-active-toggle:active,
+html body .chat-friends-active-head button.chat-friends-active-toggle:focus-visible,
+html body .chat-friends-active-head.is-collapsed button.chat-friends-active-toggle {
+  position: absolute;
+  top: 50%;
+  left: 8px;
+  right: auto;
+  transform: translateY(-50%);
+  border: none !important;
+  outline: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  min-height: 0 !important;
+}
+
+html body .chat-friends-active-head.is-collapsed button.chat-friends-active-toggle {
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
