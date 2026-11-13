@@ -2029,3 +2029,14 @@ html body .market-product-grid .product-box {
   -webkit-backdrop-filter: blur(3px) !important;
   backdrop-filter: blur(3px) !important;
 }
+
+/* Lift the very top of the wash so there's no dark blob behind the status bar */
+.stage .atmosphere::before {
+  background:
+    radial-gradient(ellipse 80% 9% at 50% 13%, rgba(var(--atmosphere-effect-a-rgb, 190, 190, 190), 0.34), transparent 100%),
+    radial-gradient(circle at 25% 8%, rgba(var(--atmosphere-effect-a-rgb, 190, 190, 190), 0.34), transparent 45%),
+    radial-gradient(circle at 85% 28%, rgba(var(--atmosphere-effect-b-rgb, 150, 150, 150), 0.32), transparent 45%),
+    radial-gradient(circle at 20% 58%, rgba(var(--atmosphere-effect-c-rgb, 170, 170, 170), 0.3), transparent 48%),
+    radial-gradient(circle at 80% 85%, rgba(var(--atmosphere-effect-a-rgb, 190, 190, 190), 0.3), transparent 48%),
+    var(--atmosphere-base, var(--void, light-dark(rgb(250, 250, 250), #050505)));
+}
