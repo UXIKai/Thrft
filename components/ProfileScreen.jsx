@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import {
   connectProvider,
@@ -604,7 +604,25 @@ export default function ProfileScreen({
     setClosetSelected(null)
   }
   const [spaceTab, setSpaceTab] = useState('store') // 'store' | 'market' | 'closet'
-  const [sliderId, setSliderId] = useState('closet')
+  const wheelRef = useRef(null)
+  const updateWheel = useCallback(() => {
+    const wheel = wheelRef.current
+    if (!wheel) return
+    const mid = wheel.scrollLeft + wheel.clientWidth / 2
+    wheel.querySelectorAll('.profile-wheel-item').forEach((el) => {
+      const d = Math.min(1, Math.abs(el.offsetLeft + el.offsetWidth / 2 - mid) / 90)
+      el.style.transform = `scale(${1 - d * 0.45}) rotateY(${((el.offsetLeft + el.offsetWidth / 2 - mid) / 90) * 38}deg)`
+      el.style.opacity = String(1 - d * 0.65)
+    })
+  }, [])
+  useEffect(() => {
+    const wheel = wheelRef.current
+    const first = wheel?.querySelector('.profile-wheel-item')
+    if (wheel && first) wheel.scrollLeft = first.offsetLeft + first.offsetWidth / 2 - wheel.clientWidth / 2
+    updateWheel()
+    window.addEventListener('resize', updateWheel)
+    return () => window.removeEventListener('resize', updateWheel)
+  }, [updateWheel])
   const [panelListingTab, setPanelListingTab] = useState('active')
   const [storeProducts, setStoreProducts] = useState([])
   const [marketListings, setMarketListings] = useState([])
@@ -1257,41 +1275,33 @@ export default function ProfileScreen({
 
       <section className="profile-block profile-spaces-inline" aria-label="Store, Closet and Market">
         <div
-          className="profile-space-slider"
+          className="profile-space-wheel"
           role="tablist"
           aria-label="Closet, Store and Market"
-          onPointerDown={(e) => { e.currentTarget.dataset.x = String(e.clientX) }}
-          onPointerUp={(e) => {
-            const x0 = Number(e.currentTarget.dataset.x)
-            e.currentTarget.dataset.x = ''
-            if (!Number.isFinite(x0) || !x0) return
-            const dx = e.clientX - x0
-            if (Math.abs(dx) < 30) return
-            const i = SPACE_MODES.findIndex((m) => m.id === sliderId)
-            const next = SPACE_MODES[Math.max(0, Math.min(SPACE_MODES.length - 1, i + (dx < 0 ? 1 : -1)))]
-            setSliderId(next.id)
-          }}
+          ref={wheelRef}
+          onScroll={updateWheel}
         >
-          <div
-            className="profile-space-track"
-            style={{ transform: `translateX(${-100 * SPACE_MODES.findIndex((m) => m.id === sliderId)}%)` }}
-          >
-            {SPACE_MODES.map(({ id, label, Icon }) => (
-              <div key={id} className="profile-space-slide">
-                <button
-                  type="button"
-                  role="tab"
-                  aria-selected={spaceTab === id}
-                  aria-label={label}
-                  className={`profile-panel-mode ${spaceTab === id ? 'is-active' : ''}`}
-                  onMouseDown={holdScroll}
-                  onClick={() => switchSpace(id)}
-                >
-                  <Icon className="profile-mode-ico" />
-                </button>
-              </div>
-            ))}
-          </div>
+          {SPACE_MODES.map(({ id, label, Icon }) => (
+            <button
+              key={id}
+              type="button"
+              role="tab"
+              aria-selected={spaceTab === id}
+              aria-label={label}
+              data-space-id={id}
+              className={`profile-panel-mode profile-wheel-item ${spaceTab === id ? 'is-active' : ''}`}
+              onMouseDown={holdScroll}
+              onClick={(e) => {
+                const el = e.currentTarget
+                const wheel = wheelRef.current
+                const centered = wheel && Math.abs(el.offsetLeft + el.offsetWidth / 2 - (wheel.scrollLeft + wheel.clientWidth / 2)) < 12
+                if (centered) switchSpace(id)
+                else el.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' })
+              }}
+            >
+              <Icon className="profile-mode-ico" />
+            </button>
+          ))}
         </div>
 
         <div className="profile-spaces-inline-body">

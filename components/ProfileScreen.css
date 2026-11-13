@@ -3124,3 +3124,28 @@
   display: flex;
   justify-content: center;
 }
+
+/* Sideways scroll wheel (like the iOS clock picker) */
+.profile-space-wheel {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 6px calc(50% - 36px);
+  box-sizing: border-box;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  perspective: 300px;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 25%, #000 75%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 25%, #000 75%, transparent);
+}
+.profile-space-wheel::-webkit-scrollbar { display: none; }
+.profile-space-wheel .profile-wheel-item {
+  flex: 0 0 72px;
+  width: 72px;
+  scroll-snap-align: center;
+  scroll-snap-stop: always;
+  will-change: transform, opacity;
+}
