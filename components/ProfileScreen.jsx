@@ -1274,6 +1274,7 @@ export default function ProfileScreen({
       </section>
 
       <section className="profile-block profile-spaces-inline" aria-label="Store, Closet and Market">
+        <div className="profile-space-wheel-wrap">
         <div
           className="profile-space-wheel"
           role="tablist"
@@ -1302,6 +1303,7 @@ export default function ProfileScreen({
               <Icon className="profile-mode-ico" />
             </button>
           ))}
+        </div>
         </div>
 
         <div className="profile-spaces-inline-body">

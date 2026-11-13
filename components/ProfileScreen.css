@@ -3210,3 +3210,20 @@ html body .profile-space-wheel .profile-wheel-item {
 html body .profile-space-wheel .profile-wheel-item.is-active {
   background: light-dark(rgba(0, 0, 0, 0.12), rgba(255, 255, 255, 0.2)) !important;
 }
+
+/* Fixed Instagram-style pill behind whichever icon is centered */
+.profile-space-wheel-wrap { position: relative; width: 100%; }
+.profile-space-wheel-wrap::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 6px;
+  width: 88px;
+  height: 44px;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background: light-dark(rgba(0, 0, 0, 0.12), rgba(255, 255, 255, 0.2));
+  pointer-events: none;
+}
+.profile-space-wheel-wrap .profile-space-wheel { position: relative; }
+html body .profile-space-wheel .profile-wheel-item.is-active { background: none !important; }
