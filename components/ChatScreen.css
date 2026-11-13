@@ -5353,3 +5353,8 @@ html body .chat-thread-scroll > .chat-thread-body {
   html body .chat-screen.is-desktop:not(.is-sidebar-collapsed) .chat-list-quick { margin-top: -10px; margin-bottom: 4px; }
   html body .chat-screen.is-desktop .chat-list-quick-btn { padding: 7px 4px; }
 }
+
+@media (min-width: 720px) and (min-height: 500px) {
+  html body .chat-screen.is-desktop:not(.is-sidebar-collapsed) .chat-list-quick { margin-top: -2px; }
+  html body .chat-screen.is-desktop .chat-list-quick-btn { padding: 7px 8px; }
+}
