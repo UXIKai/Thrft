@@ -26,6 +26,15 @@ export function ShirtIcon({ className }) {
   )
 }
 
+export function StallIcon({ className }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" aria-hidden="true">
+      <path fill="currentColor" fillRule="evenodd" d="M6.6 3.4H17.4c.8 0 1.4.4 1.8 1.1l1.5 3c.2.4.3.8.3 1.2a2.25 2.25 0 0 1-4.5 0 2.25 2.25 0 0 1-4.5 0 2.25 2.25 0 0 1-4.5 0 2.25 2.25 0 0 1-4.5 0c0-.4.1-.8.3-1.2l1.5-3c.4-.7 1-1.1 1.8-1.1ZM7.5 4.9a.6.6 0 0 1 .6.6v1.4a.6.6 0 0 1-1.2 0V5.5a.6.6 0 0 1 .6-.6Zm4.5 0a.6.6 0 0 1 .6.6v1.4a.6.6 0 0 1-1.2 0V5.5a.6.6 0 0 1 .6-.6Zm4.5 0a.6.6 0 0 1 .6.6v1.4a.6.6 0 0 1-1.2 0V5.5a.6.6 0 0 1 .6-.6Z" />
+      <path fill="currentColor" d="M5.4 12H18.6a.8.8 0 0 1 .8.8V19.3a1.3 1.3 0 0 1-1.3 1.3H14.6V16.2a1 1 0 0 0-1-1H10.4a1 1 0 0 0-1 1V20.6H5.9a1.3 1.3 0 0 1-1.3-1.3V12.8a.8.8 0 0 1 .8-.8Z" />
+    </svg>
+  )
+}
+
 export function ClosetIcon({ className }) {
   return (
     <svg className={className} viewBox="0 0 24 24" aria-hidden="true">
