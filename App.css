@@ -2015,3 +2015,9 @@ html body .stage.is-product-open .tab-bar {
     z-index: 60;
   }
 }
+
+/* Keep tile bottoms (rim/shadow) from being clipped by the marquee wrapper */
+.brand-row-track-wrap {
+  padding: 4px 0 12px;
+  margin: -4px 0 -12px;
+}
