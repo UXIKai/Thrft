@@ -7,7 +7,7 @@
   justify-content: center;
   overflow-y: auto;
   padding: calc(64px + env(safe-area-inset-top, 0px)) 24px calc(88px + env(safe-area-inset-bottom, 0px));
-  background: var(--atmosphere-base, light-dark(#fafafa, #050505));
+  background: transparent;
   color: light-dark(#111, #fff);
 }
 .closet-number-content {
@@ -292,4 +292,10 @@ html body .closet-number-content .closet-brand-wheel .brand-logo-label {
 html body .closet-number-content .closet-brand-wheel .brand-logo-label > span {
   justify-self: stretch;
   text-align: center;
+}
+
+/* The page is transparent so the app background wash shows; hide the profile behind it */
+.stage.is-closet-lookup-open > .app-column,
+.stage.is-closet-lookup-open > .tab-bar {
+  visibility: hidden;
 }

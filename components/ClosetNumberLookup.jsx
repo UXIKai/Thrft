@@ -7,6 +7,12 @@ import BrandLogo from './BrandLogo.jsx'
 import './ClosetNumberLookup.css'
 
 export default function ClosetNumberLookup({ brands, initialBrand, onClose, onAdded }) {
+  useEffect(() => {
+    const stage = document.querySelector('.stage')
+    stage?.classList.add('is-closet-lookup-open')
+    return () => stage?.classList.remove('is-closet-lookup-open')
+  }, [])
+
   const [brand, setBrand] = useState(initialBrand || brands[0] || '')
   const [page, setPage] = useState('brand')
   const [expanded, setExpanded] = useState(false)
