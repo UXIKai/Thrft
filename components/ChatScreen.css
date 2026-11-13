@@ -5309,10 +5309,10 @@ html body .chat-thread-scroll > .chat-thread-body {
     display: block;
     position: absolute;
     left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
+    top: 0;
+    transform: translateX(-50%);
     width: calc(100% - 120px);
-    height: 34px;
+    height: 36px;
     margin: 0;
     z-index: 2;
   }
