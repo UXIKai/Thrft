@@ -2448,6 +2448,7 @@ export default function ProfileScreen({
             onEditProfile={() => openProfileEditor('Profile')}
             onEditLinks={() => openProfileEditor('Links')}
             onEditMoney={() => openProfileEditor('Money')}
+            onOpenOrders={() => setShipOpen(true)}
           />,
           stageEl,
         )}

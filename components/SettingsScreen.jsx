@@ -777,6 +777,7 @@ export default function SettingsScreen({
   onEditProfile,
   onEditLinks,
   onEditMoney,
+  onOpenOrders,
 }) {
   const [theme, setTheme] = useState(() => readTheme())
   const [moonlightOn, setMoonlightOn] = useState(() => readMoonlight())
@@ -1945,8 +1946,15 @@ export default function SettingsScreen({
           <Row icon={<AtIcon />} title="Links" onClick={onEditLinks} />
         </Section>
 
-        <Section label="Money">
+        <Section label="Money" className="is-side-by-side">
           <Row icon={<svg className="settings-row-ico" viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" d="M4 10h16M5.5 10v7.5M9.5 10v7.5M14.5 10v7.5M18.5 10v7.5M3.5 18.5h17M12 4.2 20 9H4l8-4.8z" /></svg>} title="Money" onClick={onEditMoney} />
+          <div className="settings-divider" aria-hidden />
+          <Row
+            icon={<svg className="settings-row-ico" viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" d="M3 6.5h10.5V16H3zM13.5 9.5h4l3 3V16h-7M7 18.2a1.7 1.7 0 1 0 0-3.4 1.7 1.7 0 0 0 0 3.4zM17 18.2a1.7 1.7 0 1 0 0-3.4 1.7 1.7 0 0 0 0 3.4z" /></svg>}
+            title="Orders"
+            iconOnly
+            onClick={onOpenOrders}
+          />
         </Section>
 
         <Section label="Help & Support" className="is-side-by-side">
