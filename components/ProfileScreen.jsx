@@ -1403,6 +1403,12 @@ export default function ProfileScreen({
 
       <section className="profile-block profile-spaces-inline" aria-label="Store, Closet and Market">
         <div className="profile-space-wheel-wrap">
+          <span className={`wheel-arrow is-up${spaceTab === SPACE_MODES[0].id ? ' is-end' : ''}`} aria-hidden="true">
+            <svg viewBox="0 0 12 10" aria-hidden="true"><path d="M6 1.2 10.6 8.4H1.4Z" fill="currentColor" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /></svg>
+          </span>
+          <span className={`wheel-arrow is-down${spaceTab === SPACE_MODES[SPACE_MODES.length - 1].id ? ' is-end' : ''}`} aria-hidden="true">
+            <svg viewBox="0 0 12 10" aria-hidden="true"><path d="M6 1.2 10.6 8.4H1.4Z" fill="currentColor" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /></svg>
+          </span>
           <div
             className="profile-space-wheel"
             role="tablist"

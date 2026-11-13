@@ -151,6 +151,12 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false })
       onClickCapture={onClickCapture}
       onKeyDown={onKeyDown}
     >
+      <span className={`wheel-arrow is-up${index === 0 ? ' is-end' : ''}`} aria-hidden="true">
+        <svg viewBox="0 0 12 10" aria-hidden="true"><path d="M6 1.2 10.6 8.4H1.4Z" fill="currentColor" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /></svg>
+      </span>
+      <span className={`wheel-arrow is-down${index === LAST ? ' is-end' : ''}`} aria-hidden="true">
+        <svg viewBox="0 0 12 10" aria-hidden="true"><path d="M6 1.2 10.6 8.4H1.4Z" fill="currentColor" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /></svg>
+      </span>
       <div className="home-segment-track" role="presentation">
         {SEGMENTS.map(({ id, label, Icon }, i) => (
           <button
