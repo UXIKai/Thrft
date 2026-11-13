@@ -23,27 +23,6 @@ import SettingsScreen from './SettingsScreen.jsx'
 import './GlassOverlay.css'
 import './ProfileScreen.css'
 
-function GearIcon() {
-  return (
-    <svg className="profile-gear-icon" viewBox="0 0 24 24" aria-hidden>
-      <path
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinejoin="round"
-        d="M12 8.2a3.8 3.8 0 1 1 0 7.6 3.8 3.8 0 0 1 0-7.6z"
-      />
-      <path
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinejoin="round"
-        d="M19.4 13.2v-2.4l-1.5-.3a5.8 5.8 0 0 0-.5-1.3l.9-1.3-1.7-1.7-1.3.9a5.8 5.8 0 0 0-1.3-.5L13.2 4.6h-2.4l-.3 1.5a5.8 5.8 0 0 0-1.3.5l-1.3-.9-1.7 1.7.9 1.3a5.8 5.8 0 0 0-.5 1.3l-1.5.3v2.4l1.5.3c.12.46.29.9.5 1.3l-.9 1.3 1.7 1.7 1.3-.9c.4.21.84.38 1.3.5l.3 1.5h2.4l.3-1.5c.46-.12.9-.29 1.3-.5l1.3.9 1.7-1.7-.9-1.3c.21-.4.38-.84.5-1.3l1.5-.3z"
-      />
-    </svg>
-  )
-}
-
 function CameraBadge() {
   return (
     <svg className="profile-cam-icon" viewBox="0 0 24 24" aria-hidden>
@@ -654,6 +633,14 @@ export default function ProfileScreen({
   const [closetPosting, setClosetPosting] = useState(false)
   const [closetPostError, setClosetPostError] = useState('')
   const [settingsOpen, setSettingsOpen] = useState(false)
+  const [settingsClosing, setSettingsClosing] = useState(false)
+  const closeSettings = () => {
+    setSettingsClosing(true)
+    setTimeout(() => {
+      setSettingsOpen(false)
+      setSettingsClosing(false)
+    }, 280)
+  }
   const [shipOpen, setShipOpen] = useState(false)
   const [musicSheet, setMusicSheet] = useState(null) // 'spotify' | 'apple'
   const [musicDraft, setMusicDraft] = useState('')
@@ -1276,6 +1263,15 @@ export default function ProfileScreen({
 
   return (
     <div className="profile-screen" role="region" aria-label="Profile">
+      <button
+        type="button"
+        className="profile-menu-btn is-bare"
+        aria-label="Settings"
+        onMouseDown={holdScroll}
+        onClick={() => setSettingsOpen(true)}
+      >
+        <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
+      </button>
       <section className="profile-identity" aria-label="Account">
         <div className="pf-user-avatar-wrap">
           <button
@@ -1329,15 +1325,6 @@ export default function ProfileScreen({
               </span>
             )}
           </p>
-          <button
-            type="button"
-            className="profile-name-edit"
-            aria-label="Settings"
-            onMouseDown={holdScroll}
-            onClick={() => setSettingsOpen(true)}
-          >
-            <GearIcon />
-          </button>
         </div>
         {!(account?.username || userProfile?.username) && (
           <button
@@ -2395,8 +2382,9 @@ export default function ProfileScreen({
       {stageEl &&
         settingsOpen &&
         createPortal(
+          <div className={`settings-slide${settingsClosing ? ' is-closing' : ''}`}>
           <SettingsScreen
-            onBack={() => setSettingsOpen(false)}
+            onBack={closeSettings}
             userProfile={userProfile}
             onSaveProfile={onSaveProfile}
             onSignOut={onSignOut}
@@ -2404,7 +2392,8 @@ export default function ProfileScreen({
             onEditLinks={() => openProfileEditor('Links')}
             onEditMoney={() => openProfileEditor('Money')}
             onOpenOrders={() => setShipOpen(true)}
-          />,
+          />
+          </div>,
           stageEl,
         )}
 

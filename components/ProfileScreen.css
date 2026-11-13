@@ -3173,3 +3173,43 @@ html body .profile-space-wheel .profile-wheel-item.is-active {
   background: light-dark(rgba(0, 0, 0, 0.12), rgba(255, 255, 255, 0.2));
   pointer-events: none;
 }
+
+/* Hamburger in the corner; Settings slides in from the right */
+.profile-menu-btn {
+  position: absolute;
+  top: 6px;
+  right: calc(var(--pf-pad-x) - 8px);
+  z-index: 7;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  color: var(--pf-ink);
+  cursor: pointer;
+}
+
+.settings-slide {
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  background: var(--atmosphere-base, light-dark(#fafafa, #050505));
+  animation: settings-slide-in 0.28s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.settings-slide.is-closing {
+  animation: settings-slide-out 0.28s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.settings-slide > .settings-screen {
+  inset: 0;
+}
+
+@keyframes settings-slide-in {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes settings-slide-out {
+  from { transform: translateX(0); }
+  to { transform: translateX(100%); }
+}
