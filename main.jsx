@@ -154,23 +154,21 @@ createRoot(document.getElementById('root')).render(
   </StrictMode>,
 )
 
-// Safari paints its status/toolbar areas from theme-color: match it to the top of the background wash
+// Safari paints its status/toolbar areas from theme-color: match it to the top of the page as it is drawn
 {
   const root = document.documentElement
-  const rgbVar = (name, fallback) => {
-    const parts = root.style.getPropertyValue(name).split(',').map((n) => Number(n.trim()))
-    return parts.length === 3 && parts.every(Number.isFinite) ? parts : fallback
-  }
+  // Resolve the page colour through the cascade: moonlight overrides the inline tokens with !important
+  const probe = document.createElement('i')
+  probe.hidden = true
+  document.body.appendChild(probe)
   const syncThemeColor = () => {
     const meta = document.querySelector('meta[name="theme-color"]')
     if (!meta || root.dataset.bgPhoto) return
-    const light = root.dataset.theme === 'light'
-    const base = rgbVar('--atmosphere-base-rgb', light ? [250, 250, 250] : [5, 5, 5])
-    // The wash is mostly its effect colours, not the near-white/black base: average them so the strip matches the page
-    const fx = ['a', 'b', 'c'].map((k) => rgbVar(`--atmosphere-effect-${k}-rgb`, null)).filter(Boolean)
-    const mixed = light && fx.length
-      ? [0, 1, 2].map((i) => Math.round((fx.reduce((sum, c) => sum + c[i], 0) / fx.length) * 0.9))
-      : base.map((c) => Math.round(c * 0.8))
+    probe.style.color = 'var(--atmosphere-base, #050505)'
+    const base = getComputedStyle(probe).color.match(/[\d.]+/g)?.slice(0, 3).map(Number) || [5, 5, 5]
+    // The stage dims its wash 20%, and the brightness overlay (body::after) dims everything above it
+    const dim = Number(root.style.getPropertyValue('--app-dim-opacity')) || 0
+    const mixed = base.map((c) => Math.round(c * 0.8 * (1 - dim)))
     const color = `rgb(${mixed.join(', ')})`
     meta.setAttribute('content', color)
     root.style.setProperty('--safari-top', color)

@@ -19,7 +19,8 @@ const BG_MATCH_KEY = 'thrft-bg-match-color-v1'
 export const THEME_KEY = 'thrft-theme-v1'
 export const USER_THEME_KEY = 'thrft-user-theme-v1'
 export const MOONLIGHT_KEY = 'thrft-moonlight-v1'
-export const BRIGHTNESS_KEY = 'thrft-brightness-v1'
+// v2: light mode used to save 50 here, which left a black dim over every page, light or dark
+export const BRIGHTNESS_KEY = 'thrft-brightness-v2'
 export const DEFAULT_BRIGHTNESS = 100
 
 export function readBrightness() {

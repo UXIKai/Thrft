@@ -1447,7 +1447,6 @@ export default function SettingsScreen({
       setTheme(applyDisplayMode(readTheme() === 'light' ? 'dark' : 'light'))
     } else {
       setTheme(applyDisplayMode('light'))
-      setBrightness(applyBrightness(50))
     }
     setMoonlightOn(readMoonlight())
     setAppColor(readAppColor())
