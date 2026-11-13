@@ -2041,13 +2041,14 @@ html body .market-product-grid .product-box {
     var(--atmosphere-base, var(--void, light-dark(rgb(250, 250, 250), #050505)));
 }
 
-/* Instagram-style selection: solid soft-gray pill, about one tab wide, kept inside the bar */
+/* Instagram-style selection: solid soft-gray pill centered on its icon; tabs are inset so edge pills fit inside the bar */
+html body .tab-bar .tab-items { padding-inline: 2.3%; box-sizing: border-box; }
 html body .stage .tab-bar .tab-pill,
 html body .stage .tab-bar.is-dragging .tab-pill {
   top: 11%;
   bottom: 11%;
   width: 21.6%;
-  left: clamp(1%, calc(var(--tab-i, 0) * 20% - 0.8%), 77.4%);
+  left: calc(var(--tab-i, 0) * 19.08% + 1.04%);
   border: 0 !important;
   border-radius: 999px;
   background: light-dark(rgba(0, 0, 0, 0.12), rgba(255, 255, 255, 0.28)) !important;
@@ -2057,7 +2058,9 @@ html body .tab-bar .tab-lens-inner {
   top: -14.1%;
   bottom: -14.1%;
   width: 462.96%;
-  left: calc(clamp(1%, calc(var(--tab-i, 0) * 20% - 0.8%), 77.4%) * -4.63);
+  box-sizing: border-box;
+  padding-inline: 10.65%;
+  left: calc((var(--tab-i, 0) * 19.08% + 1.04%) * -4.63);
 }
 
 /* Desktop bar is much wider for its height: keep the pill's 1.55:1 shape, centered on its tab */
@@ -2069,7 +2072,9 @@ html body .tab-bar .tab-lens-inner {
     width: 13.4%;
     left: calc(var(--tab-i, 0) * 20% + 3.3%);
   }
+  html body .tab-bar .tab-items { padding-inline: 0; }
   html body .tab-bar .tab-lens-inner {
+    padding-inline: 0;
     top: -12.5%;
     bottom: -12.5%;
     width: 746.27%;
