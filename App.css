@@ -2041,6 +2041,6 @@ html body .market-product-grid .product-box {
     var(--atmosphere-base, var(--void, light-dark(rgb(250, 250, 250), #050505)));
 }
 
-/* Instagram-style selection: a wider-than-tall pill, not a circle */
-html body .tab-bar .tab-pill { top: 12px; bottom: 12px; left: calc(var(--tab-i, 0) * 20% + 2px); width: calc(20% - 4px); }
-html body .tab-bar .tab-lens-inner { top: -12px; bottom: -12px; }
+/* Instagram-style selection: tall, slightly wider than its tab */
+html body .tab-bar .tab-pill { top: 6px; bottom: 6px; left: calc(var(--tab-i, 0) * 20% - 1%); width: 22%; }
+html body .tab-bar .tab-lens-inner { top: -6px; bottom: -6px; width: 454.5%; left: calc(var(--tab-i, 0) * -90.909% + 4.545%); }
