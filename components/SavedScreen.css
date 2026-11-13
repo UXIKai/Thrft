@@ -1261,9 +1261,9 @@ html body .saved-brands-toggle .saved-top-ico { fill: #fff; color: #fff; }
 .saved-chest-lid {
   transform-box: view-box;
   transform-origin: 12px 13.5px;
-  transition: transform 0.35s cubic-bezier(0.3, 1.4, 0.5, 1);
+  transition: transform 0.35s cubic-bezier(0.3, 1, 0.5, 1);
 }
-.saved-chest-lid.is-open { transform: translateY(-4px) scaleY(0.6); }
+.saved-chest-lid.is-open { transform: translateY(-2px) scaleY(0.85); }
 
 /* Chest opens the container even with no brands yet */
 html body .saved-brands-empty {
