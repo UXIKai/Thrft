@@ -2076,3 +2076,20 @@ html body .stage.is-nav-autohide.is-nav-near.is-home-search-open .tab-bar {
   pointer-events: none;
   visibility: hidden;
 }
+
+/* Desktop nav: dark glass with a faint rim like Instagram, no bright white highlight */
+@media (min-width: 720px) {
+  html body .stage > .tab-bar,
+  html:not([data-moonlight='on']) body .stage > .tab-bar {
+    background: rgba(18, 19, 22, 0.72) !important;
+    background-image: none !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      0 4px 14px rgba(0, 0, 0, 0.25) !important;
+    backdrop-filter: blur(20px) saturate(140%) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(140%) !important;
+  }
+  html body .stage > .tab-bar::before,
+  html body .stage > .tab-bar::after { content: none !important; display: none !important; }
+}
