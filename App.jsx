@@ -543,7 +543,6 @@ export default function App() {
       >
         {tab === 'home' && (
           <>
-            <div className={`home-hero${homeIdle ? ' is-idle' : ''}`}>
             <header className="wordmark-wrap">
               <HomeFilterLinks
                 brands={HOME_BRAND_ITEMS}
@@ -589,7 +588,6 @@ export default function App() {
                 setHomeOpen(true)
               }}
             />
-            </div>
             {homeOpen && homeSegment === 'leaderboard' && <section
               className="leaderboard-panel"
               aria-label="Account ranks by profit"
