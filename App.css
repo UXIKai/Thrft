@@ -1888,7 +1888,7 @@ html body .tab-bar.is-pressed .tab-pill::before {
 
 @media (min-width: 720px) {
   .tab-bar {
-    --tab-extra-width: 20px;
+    --tab-extra-width: 18px;
     --tab-height-reduction: 30px;
   }
 }
