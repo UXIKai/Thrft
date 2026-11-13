@@ -166,8 +166,8 @@ createRoot(document.getElementById('root')).render(
     if (!meta || root.dataset.bgPhoto) return
     const light = root.dataset.theme === 'light'
     const base = rgbVar('--atmosphere-base-rgb', light ? [250, 250, 250] : [5, 5, 5])
-    const glow = rgbVar('--atmosphere-effect-a-rgb', [190, 190, 190])
-    const mixed = base.map((c, i) => Math.round(c + (glow[i] - c) * 0.12))
+    // Same 20% dim the .atmosphere gets, so the strip behind the status bar matches the page below
+    const mixed = base.map((c) => Math.round(c * 0.8))
     const color = `rgb(${mixed.join(', ')})`
     meta.setAttribute('content', color)
     root.style.setProperty('--safari-top', color)
