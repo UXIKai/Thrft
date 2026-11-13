@@ -2244,3 +2244,22 @@ html body .stage > .tab-bar.is-create-open {
   transition: margin-left 0.28s cubic-bezier(0.5, 0, 0.75, 0);
 }
 .tab-bar.is-create-closing:not(.is-create-open) .tab-items { margin-left: 0; }
+
+/* Bar visibly shrinks into the plus first; the circle only fades once it has arrived */
+html body .stage > .tab-bar.is-create-open,
+html body .stage > .tab-bar.is-create-closing {
+  transition:
+    width 0.28s cubic-bezier(0.5, 0, 0.75, 0),
+    background-color 0.12s ease 0.28s,
+    border-color 0.12s ease 0.28s,
+    box-shadow 0.12s ease 0.28s,
+    opacity 0.2s ease !important;
+}
+html body .stage > .tab-bar.is-create-closing:not(.is-create-open) {
+  transition: width 0.28s cubic-bezier(0.5, 0, 0.75, 0), background-color 0.1s ease, border-color 0.1s ease, box-shadow 0.1s ease, opacity 0.2s ease !important;
+}
+html body .stage > .tab-bar.is-create-open {
+  backdrop-filter: blur(0.5px) !important;
+  -webkit-backdrop-filter: blur(0.5px) !important;
+}
+.tab-bar .tab-item { transition: transform 0.26s cubic-bezier(0.5, 0, 0.75, 0), opacity 0.14s ease 0.14s; }
