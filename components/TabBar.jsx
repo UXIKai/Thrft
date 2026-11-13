@@ -192,6 +192,12 @@ export default function TabBar({ active = 'home', onChange, onCreate }) {
     return () => clearTimeout(t)
   }, [createOpen])
 
+  useEffect(() => {
+    if (!stageEl) return undefined
+    stageEl.classList.toggle('is-create-page-open', createOpen)
+    return () => stageEl.classList.remove('is-create-page-open')
+  }, [createOpen, stageEl])
+
   const toggleCreate = () => {
     const nav = navRef.current
     if (nav && !createOpen) {

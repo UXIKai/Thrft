@@ -2325,3 +2325,46 @@ html body .stage > .tab-bar.is-create-open {
 .create-page.is-open .create-menu-btn.is-closet { top: 14px !important; bottom: auto; transform: translateX(-50%) !important; }
 .create-page.is-open .create-menu-btn.is-store { top: auto !important; bottom: 14px; left: 14px; transform: none !important; }
 .create-page.is-open .create-menu-btn.is-market { top: auto !important; bottom: 14px; left: auto; right: 14px; transform: none !important; }
+
+/* Create page: app content fades away leaving only the chosen background; buttons float above the × */
+.stage .app-column { transition: opacity 0.25s ease; }
+.stage.is-create-page-open .app-column {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease 0.28s;
+}
+.create-page {
+  inset: 0;
+  left: 0;
+  bottom: auto;
+  width: auto;
+  height: auto;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  transform: none;
+  transition: opacity 0.1s ease, visibility 0s linear 0.1s;
+}
+.create-page.is-open { transform: none; transition: opacity 0s, visibility 0s; }
+.create-page .create-menu-btn {
+  position: absolute;
+  top: auto !important;
+  right: auto !important;
+  left: calc(50% - 42px) !important;
+  bottom: var(--menu-bottom, 90px) !important;
+  transform: scale(0.15) !important;
+  opacity: 0;
+  transition: left 0.2s ease, bottom 0.2s ease, transform 0.2s ease, opacity 0.12s ease;
+}
+.create-page.is-open .create-menu-btn {
+  opacity: 1;
+  transform: none !important;
+  transition: left 0.4s cubic-bezier(0.25, 1.3, 0.5, 1) 0.34s, bottom 0.4s cubic-bezier(0.25, 1.3, 0.5, 1) 0.34s, transform 0.4s cubic-bezier(0.25, 1.3, 0.5, 1) 0.34s, opacity 0.2s ease 0.34s;
+}
+.create-page.is-open .create-menu-btn.is-closet { bottom: calc(var(--menu-bottom, 90px) + 94px) !important; }
+.create-page.is-open .create-menu-btn.is-store { left: calc(50% - 98px) !important; }
+.create-page.is-open .create-menu-btn.is-market { left: calc(50% + 14px) !important; }
