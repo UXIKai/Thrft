@@ -2834,7 +2834,7 @@ export default function ChatScreen({
 
   return (
     <div
-      className={`chat-screen${composer?.mode === 'create' ? ' is-new-chat' : ''}${isDesktop ? ' is-desktop' : ''}${isDesktop && sidebarCollapsed ? ' is-sidebar-collapsed' : ''}${!isDesktop && (mobileNavOpen || (navDragP ?? 0) > 0.01) ? ' is-mobile-nav-open' : ''}${navDragP !== null || onlineDragP !== null ? ' is-nav-dragging' : ''}`}
+      className={`chat-screen${composer?.mode === 'create' ? ' is-new-chat' : ''}${isDesktop ? ' is-desktop' : ''}${isDesktop && sidebarCollapsed ? ' is-sidebar-collapsed' : ''}${!isDesktop && (mobileNavOpen || (navDragP ?? 0) > 0.01) ? ' is-mobile-nav-open' : ''}${navDragP !== null || onlineDragP !== null ? ' is-nav-dragging' : ''}${!isDesktop && (activeNowOpen || onlineDragP !== null) ? ' is-online-open' : ''}`}
       style={!isDesktop ? { '--nav-p': navDragP ?? (mobileNavOpen ? 1 : 0), '--online-p': onlineDragP ?? (activeNowOpen ? 1 : 0) } : undefined}
       onTouchStart={(e) => {
         if (isDesktop || e.touches.length !== 1 || e.target.closest?.('input,textarea,select')) return

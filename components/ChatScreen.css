@@ -5363,3 +5363,15 @@ html body .chat-thread-scroll > .chat-thread-body {
   html body .chat-screen.is-desktop:not(.is-sidebar-collapsed) .chat-sidebar-header .chat-sidebar-control svg { width: 18px; height: 18px; }
   html body .chat-screen.is-desktop:not(.is-sidebar-collapsed) .chat-sidebar-title { font-size: 1.12rem; line-height: 32px; }
 }
+
+/* Online panel (mobile): no search and no frosted haze at the top while it slides */
+@media (max-width: 719px), (max-height: 499px) {
+  html body .chat-screen.is-online-open .chat-friends-find.is-in-header {
+    display: none;
+  }
+  html body .chat-screen.is-online-open::before {
+    background: #000;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
