@@ -2091,7 +2091,7 @@ html body .stage .tab-bar.is-dragging .tab-pill {
 }
 html body .tab-bar .tab-lens-inner { top: -7.5%; bottom: -7.5%; }
 
-/* Create button: hold the plus, drag onto Closet / Store / Market, release to pick */
+/* Create button: tap the plus, then tap Closet / Store / Market in the middle of the screen */
 .tab-bar {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -2113,6 +2113,8 @@ html body .tab-bar .tab-lens-inner { top: -7.5%; bottom: -7.5%; }
   width: 30px;
   height: 30px;
 }
+/* The lone × never wears the browser's keyboard focus circle */
+.tab-bar.is-create-open .tab-item.is-create:focus-visible { outline: none; }
 .tab-bar.is-create-open .tab-items,
 .tab-bar.is-create-closing .tab-items {
   grid-column: 1 / -1;
@@ -2152,7 +2154,7 @@ html body .stage > .tab-bar.tab-bar.tab-bar.is-create-open {
   -webkit-backdrop-filter: blur(0.5px) !important;
 }
 
-/* The app fades to just the chosen background; the options float above the × */
+/* The app fades to just the chosen background; the options sit in the middle of the screen */
 .stage .app-column { transition: opacity 0.25s ease; }
 .stage.is-create-page-open .app-column {
   opacity: 0;
@@ -2165,28 +2167,26 @@ html body .stage > .tab-bar.tab-bar.tab-bar.is-create-open {
   z-index: 3;
   background: transparent;
   color: light-dark(#111, #fff);
-  opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  transition: opacity 0.12s ease, visibility 0s linear 0.12s;
+  /* stays visible while the options retreat into the × */
+  transition: visibility 0s linear 0.3s;
 }
 .create-page.is-open {
-  opacity: 1;
   visibility: visible;
   pointer-events: auto;
-  transition: opacity 0s, visibility 0s;
+  transition: visibility 0s;
 }
-/* Triangle above the ×: Closet on top, Store to the left, Market to the right.
-   Offsets are from the lower-row base spot (centered, just above the bar). */
-.create-page .create-menu-btn,
-.create-page .create-glide {
+/* Triangle in the middle of the screen: Closet on top, Store to the left, Market to the right.
+   Circles are 76px; Store and Market centers sit 48px either side of the middle and 43px below it,
+   Closet 43px above it. Closed, every option is tucked into the × (--pop-from); --plus-dy is how far
+   below the screen's middle the × sits (set when the menu opens). */
+.create-page .create-menu-btn {
   position: absolute;
   left: calc(50% - 38px);
-  bottom: calc(var(--menu-bottom, 90px) - 4px);
+  top: calc(50% - 38px);
   width: 76px;
   height: 76px;
-}
-.create-page .create-menu-btn {
   margin: 0;
   padding: 0;
   display: flex;
@@ -2202,44 +2202,58 @@ html body .stage > .tab-bar.tab-bar.tab-bar.is-create-open {
   font-size: 0.72rem;
   font-weight: 600;
   cursor: pointer;
+  isolation: isolate;
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   user-select: none;
-  transition: transform 0.16s ease;
+  transform: var(--pop-from) scale(0.15);
+  opacity: 0;
+  transition: transform 0.26s cubic-bezier(0.5, 0, 0.75, 0), opacity 0.2s ease 0.06s;
 }
 .create-page .create-menu-ico { width: 32px; height: 32px; }
-.create-page .create-menu-btn.is-closet { bottom: calc(var(--menu-bottom, 90px) + 82px); --pop-from: translate(0, 150px); }
-.create-page .create-menu-btn.is-store { left: calc(50% - 86px); --pop-from: translate(48px, 74px); }
-.create-page .create-menu-btn.is-market { left: calc(50% + 10px); --pop-from: translate(-48px, 74px); }
-.create-page .create-menu-btn.is-hover { transform: scale(1.12); }
+.create-page .create-menu-btn.is-closet {
+  top: calc(50% - 81px);
+  --pop-from: translate(0, calc(var(--plus-dy, 300px) + 43px));
+}
+.create-page .create-menu-btn.is-store {
+  left: calc(50% - 86px);
+  top: calc(50% + 5px);
+  --pop-from: translate(48px, calc(var(--plus-dy, 300px) - 43px));
+}
+.create-page .create-menu-btn.is-market {
+  left: calc(50% + 10px);
+  top: calc(50% + 5px);
+  --pop-from: translate(-48px, calc(var(--plus-dy, 300px) - 43px));
+}
 
-/* One soft highlight that slides between the options, so only one is lit at a time */
-.create-page .create-glide {
-  border-radius: 50%;
-  background: light-dark(rgba(0, 0, 0, 0.08), rgba(255, 255, 255, 0.16));
-  opacity: 0;
-  pointer-events: none;
-  transform: translate(var(--gx, -48px), var(--gy, 0px));
-  transition: opacity 0.14s ease;
-}
-.create-page .create-glide.is-on {
-  opacity: 1;
-  transition: transform 0.2s cubic-bezier(0.3, 1.2, 0.5, 1), opacity 0.14s ease;
-  animation: create-glide-in 0.14s ease;
-}
-@keyframes create-glide-in {
-  from { opacity: 0; }
-}
-.create-page[data-glide='closet'] { --gx: 0px; --gy: -86px; }
-.create-page[data-glide='store'] { --gx: -48px; --gy: 0px; }
-.create-page[data-glide='market'] { --gx: 48px; --gy: 0px; }
-
+/* Open: the options fly out of the × once the bar has collapsed around it */
 .create-page.is-open .create-menu-btn {
-  animation: create-pop 0.38s cubic-bezier(0.25, 1.3, 0.5, 1) 0.3s backwards;
+  transform: none;
+  opacity: 1;
+  transition: none;
+  animation: create-pop 0.42s cubic-bezier(0.25, 1.3, 0.5, 1) 0.3s backwards;
 }
 @keyframes create-pop {
   from { transform: var(--pop-from) scale(0.15); opacity: 0; }
+}
+
+/* Soft circle behind an option while it's pressed (or hovered with a mouse / focused by keyboard) */
+.create-page .create-menu-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: 50%;
+  background: light-dark(rgba(0, 0, 0, 0.08), rgba(255, 255, 255, 0.16));
+  opacity: 0;
+  transition: opacity 0.14s ease;
+  pointer-events: none;
+}
+.create-page .create-menu-btn:active::before,
+.create-page .create-menu-btn:focus-visible::before { opacity: 1; }
+@media (hover: hover) {
+  .create-page .create-menu-btn:hover::before { opacity: 1; }
 }
 html body .stage .create-page .create-menu-btn {
   border: 0 !important;

@@ -71,24 +71,18 @@ const TABS = [
   },
 ]
 
-// Closet on top, Store to the left and Market to the right (positions live in App.css).
+// Closet on top, Store to the left and Market to the right, in the middle of the screen (positions live in App.css).
 const CREATE_OPTIONS = [
   { id: 'closet', label: 'Closet', Icon: ClosetIcon },
   { id: 'store', label: 'Store', Icon: StoreIcon },
   { id: 'market', label: 'Market', Icon: MarketIcon },
 ]
-// How close (px) the finger must be to an option's center to count as on it.
-// Just under half the Store-Market spacing so the gap between them stays a clear path up to Closet.
-const OPTION_REACH = 44
 
 export default function TabBar({ active = 'home', onChange, onCreate }) {
   const [createOpen, setCreateOpen] = useState(false)
   const [createClosing, setCreateClosing] = useState(false)
   const [stageEl, setStageEl] = useState(null)
   const pageRef = useRef(null)
-  // opt: option under the finger. at: the last option it was on (where the highlight rests).
-  // gen: bumps when the highlight reappears, so it shows up in place instead of sliding in from a stale spot.
-  const [hover, setHover] = useState({ opt: null, at: 'store', gen: 0 })
   const navRef = useRef(null)
   const dragRef = useRef(null)
   const activeIdx = Math.max(0, TABS.findIndex((t) => t.id === active))
@@ -212,8 +206,10 @@ export default function TabBar({ active = 'home', onChange, onCreate }) {
       nav.style.setProperty('--bar-h', `${nav.offsetHeight}px`)
       const stage = nav.closest('.stage')
       if (stage && pageRef.current) {
-        const gap = stage.getBoundingClientRect().bottom - nav.getBoundingClientRect().top + 12
-        pageRef.current.style.setProperty('--menu-bottom', `${gap}px`)
+        // How far below the screen's middle the × sits; the options fly out of it.
+        const s = stage.getBoundingClientRect()
+        const n = nav.getBoundingClientRect()
+        pageRef.current.style.setProperty('--plus-dy', `${n.top + n.height / 2 - (s.top + s.height / 2)}px`)
       }
     }
     setCreateOpen(true)
@@ -235,40 +231,9 @@ export default function TabBar({ active = 'home', onChange, onCreate }) {
     }
   }, [createOpen])
 
-  const clearHover = () => setHover((h) => (h.opt ? { ...h, opt: null } : h))
-
   const pickCreate = (segment) => {
     setCreateOpen(false)
-    clearHover()
     onCreate?.(segment)
-  }
-
-  // Uses layout offsets, not bounding rects, so the pop-in animation and hover scale don't skew the hit test.
-  const optionAt = (e) => {
-    const page = pageRef.current
-    if (!page) return null
-    const origin = page.getBoundingClientRect()
-    let best = null
-    let bestDist = OPTION_REACH
-    page.querySelectorAll('.create-menu-btn').forEach((btn) => {
-      const cx = origin.left + btn.offsetLeft + btn.offsetWidth / 2
-      const cy = origin.top + btn.offsetTop + btn.offsetHeight / 2
-      const dist = Math.hypot(e.clientX - cx, e.clientY - cy)
-      if (dist < bestDist) {
-        best = btn.dataset.create
-        bestDist = dist
-      }
-    })
-    return best
-  }
-
-  const hoverAt = (e) => {
-    const opt = optionAt(e)
-    setHover((h) => {
-      if (opt === h.opt) return h
-      if (!opt) return { ...h, opt: null }
-      return { opt, at: opt, gen: h.opt ? h.gen : h.gen + 1 }
-    })
   }
 
   const posFromEvent = (e) => {
@@ -279,56 +244,37 @@ export default function TabBar({ active = 'home', onChange, onCreate }) {
 
   const onPointerDown = (e) => {
     if (e.button !== undefined && e.button !== 0) return
-    const onPlus = TABS[Math.round(posFromEvent(e))]?.id === 'design'
-    const d = { moved: false, startX: e.clientX, startY: e.clientY, create: onPlus, held: false, timer: null }
-    dragRef.current = d
+    // While the menu is open the bar is only the ×, so any press on it just closes the menu.
+    dragRef.current = { moved: false, startX: e.clientX, closeOnly: createOpen }
     navRef.current.setPointerCapture?.(e.pointerId)
     setPressed(true)
-    if (onPlus) {
-      d.timer = setTimeout(() => {
-        if (dragRef.current !== d) return
-        d.held = true
-        navigator.vibrate?.(10)
-        openCreate()
-      }, 220)
-    }
   }
   const onPointerMove = (e) => {
     const d = dragRef.current
-    if (!d) return
-    if (d.create) {
-      if (d.held) {
-        hoverAt(e)
-        return
-      }
-      if (Math.hypot(e.clientX - d.startX, e.clientY - d.startY) < 10) return
-      clearTimeout(d.timer)
-      d.create = false
-    }
+    if (!d || d.closeOnly) return
     if (Math.abs(e.clientX - d.startX) > 6) d.moved = true
     if (d.moved) setDragPos(posFromEvent(e))
   }
   const endDrag = (e, commit) => {
     const d = dragRef.current
     if (!d) return
-    clearTimeout(d.timer)
     dragRef.current = null
     setPressed(false)
-    if (d.create) {
-      // A quick tap on the plus does nothing; it only works as hold, drag onto an option, release.
-      if (d.held) {
-        const option = commit ? optionAt(e) : null
-        clearHover()
-        if (option) pickCreate(option)
-        else setCreateOpen(false)
+    if (d.closeOnly) {
+      if (commit) {
+        setReleaseCount((count) => count + 1)
+        setCreateOpen(false)
       }
       return
     }
     const idx = Math.round(posFromEvent(e))
     setDragPos(null)
     if (!commit || !TABS[idx]) return
-    if (TABS[idx].id === 'design') return
     setReleaseCount((count) => count + 1)
+    if (TABS[idx].id === 'design') {
+      openCreate()
+      return
+    }
     setCreateOpen(false)
     if (TABS[idx].id !== active) onChange?.(TABS[idx].id)
   }
@@ -406,12 +352,10 @@ export default function TabBar({ active = 'home', onChange, onCreate }) {
     <div
       ref={pageRef}
       className={`create-page${createOpen ? ' is-open' : ''}`}
-      data-glide={hover.at}
       role="menu"
       aria-label="Create"
       aria-hidden={!createOpen}
     >
-      <span key={hover.gen} className={`create-glide${hover.opt ? ' is-on' : ''}`} aria-hidden="true" />
       {CREATE_OPTIONS.map(({ id, label, Icon }) => (
         <button
           key={id}
@@ -419,7 +363,7 @@ export default function TabBar({ active = 'home', onChange, onCreate }) {
           role="menuitem"
           tabIndex={createOpen ? 0 : -1}
           data-create={id}
-          className={`create-menu-btn is-${id}${hover.opt === id ? ' is-hover' : ''}`}
+          className={`create-menu-btn is-${id}`}
           onClick={() => pickCreate(id)}
         >
           <Icon className="create-menu-ico" />
