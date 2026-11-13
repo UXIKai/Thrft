@@ -5301,3 +5301,20 @@ html body .chat-thread-scroll > .chat-thread-body {
     gap: 0;
   }
 }
+
+/* Mobile: the people search lives in the top row, between the two icons */
+.chat-friends-find.is-in-header { display: none; }
+@media (max-width: 719px), (max-height: 499px) {
+  html body .chat-screen .chat-friends-find.is-in-header {
+    display: block;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: calc(100% - 120px);
+    height: 34px;
+    margin: 0;
+    z-index: 2;
+  }
+  html body .chat-screen .chat-friends-find.is-in-panel { display: none; }
+}

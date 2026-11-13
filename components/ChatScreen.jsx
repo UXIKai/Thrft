@@ -2920,6 +2920,18 @@ export default function ChatScreen({
             <ToggleIcon />
           </button>}
           <h1 className="chat-sidebar-title">Chats</h1>
+          {!isDesktop && !imagesOnly && !requestsView && !activeChat && !composer && (
+            <input
+              type="search"
+              className="chat-friends-find is-in-header"
+              aria-label="Search people"
+              placeholder="Search people"
+              autoComplete="off"
+              spellCheck={false}
+              value={friendsQuery}
+              onChange={(e) => setFriendsQuery(e.target.value)}
+            />
+          )}
           <button
             type="button"
             className="chat-sidebar-control is-bare"
@@ -3263,7 +3275,7 @@ export default function ChatScreen({
               <div className="chat-friends-panel">
                 <input
                   type="search"
-                  className="chat-friends-find"
+                  className="chat-friends-find is-in-panel"
                   aria-label="Search people"
                   placeholder="Search people"
                   autoComplete="off"
