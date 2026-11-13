@@ -187,6 +187,22 @@
   box-sizing: border-box;
 }
 
+/* "-" stop: no nav bar, the leaderboard sits mid-page and the wheel rests at the bottom */
+.home-scroll.is-home-idle {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+}
+.home-scroll.is-home-idle > * {
+  flex: 0 0 auto;
+}
+.home-scroll.is-home-idle > .leaderboard-panel {
+  margin: auto 0;
+}
+.home-scroll.is-home-idle > .home-segment-slider {
+  margin-bottom: 0;
+}
+
 .home-scroll.is-chat-thread {
   /* Chat / Liked own their docks; don't inset the scrollport or the bar floats */
   padding-top: 0;

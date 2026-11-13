@@ -184,7 +184,8 @@ export default function App() {
   const columnRef = useRef(null)
   const scrollRef = useRef(null)
   const hideTabBar = tab === 'chat' || tab === 'saved'
-  const showNav = !(tab === 'chat' && chatThreadOpen)
+  const homeIdle = tab === 'home' && homeSegment === 'none'
+  const showNav = !(tab === 'chat' && chatThreadOpen) && !homeIdle
 
   // A product page covers the app: its nav bar must not be reachable
   useEffect(() => {
@@ -518,7 +519,7 @@ export default function App() {
       {signedIn && (
         <>
       <div
-        className={`home-scroll${hideTabBar ? ' is-chat-thread' : ''}`}
+        className={`home-scroll${hideTabBar ? ' is-chat-thread' : ''}${homeIdle ? ' is-home-idle' : ''}`}
         ref={scrollRef}
       >
         {tab === 'home' && (
