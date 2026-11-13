@@ -518,16 +518,6 @@ html[data-bg-color='none'] .stage.is-bg-none .atmosphere {
   text-shadow: 0 1px 12px rgba(0, 0, 0, 0.45);
 }
 
-.home-footer {
-  display: flex;
-  justify-content: center;
-  padding: 36px 0 8px;
-}
-.home-footer-logo {
-  font-size: clamp(1.6rem, 6vw, 2rem);
-  opacity: 0.7;
-}
-
 .stage.is-nav-hidden > .tab-bar {
   opacity: 0;
   pointer-events: none;

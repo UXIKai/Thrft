@@ -627,11 +627,6 @@ export default function App() {
               brandSizes={userProfile?.brandSizes || {}}
               savedProductIds={userProfile?.savedProductIds || []}
             />}
-            <footer className="home-footer" aria-label="Thrft">
-              <span className="wordmark home-footer-logo">
-                Thrft<span className="dot" aria-hidden="true">●</span>
-              </span>
-            </footer>
           </>
         )}
 
