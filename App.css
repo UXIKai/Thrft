@@ -1980,7 +1980,7 @@ html body .tab-bar.is-pressed .tab-pill::before {
 }
 
 .home-segment-tab {
-  opacity: calc(1 - 0.55 * var(--d, 0));
+  opacity: calc(1 - var(--d, 0));
   transform: perspective(120px) rotateX(calc(var(--s, 0) * -32deg)) scale(calc(1.15 - 0.25 * var(--d, 0)));
 }
 

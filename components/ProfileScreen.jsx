@@ -619,7 +619,7 @@ export default function ProfileScreen({
       const ico = el.querySelector('.profile-mode-ico')
       if (!ico) return
       ico.style.transform = `perspective(120px) rotateX(${Math.max(-1.5, Math.min(1.5, t)) * -32}deg) scale(${1 - d * 0.22})`
-      ico.style.opacity = String(1 - d * 0.45)
+      ico.style.opacity = String(1 - d)
     })
   }, [])
   useLayoutEffect(() => {
