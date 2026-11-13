@@ -120,8 +120,20 @@ button,
 }
 
 /* Safari tints its top/bottom bars from the page's own backgrounds: let html's matched color show through */
-body {
-  background: var(--safari-top, #262626);
+/* The same wash as the stage, stretched over the whole viewport, so the areas Safari tints above and below the page continue it */
+html:root,
+html:root body {
+  background-color: var(--safari-top, #262626);
+  background-image:
+    radial-gradient(circle at 85% 55%, rgba(var(--atmosphere-effect-b-rgb, 150, 150, 150), 0.32), transparent 45%),
+    radial-gradient(circle at 20% 58%, rgba(var(--atmosphere-effect-c-rgb, 170, 170, 170), 0.3), transparent 48%),
+    radial-gradient(circle at 80% 85%, rgba(var(--atmosphere-effect-a-rgb, 190, 190, 190), 0.3), transparent 48%);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+html:root[data-bg-photo],
+html:root[data-bg-photo] body {
+  background-image: none;
 }
 #root {
   background: transparent;
