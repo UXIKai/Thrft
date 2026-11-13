@@ -197,7 +197,10 @@ export default function App() {
     el.addEventListener('scroll', update, { passive: true })
     return () => el.removeEventListener('scroll', update)
   }, [homeIdle])
-  const revealValue = homeIdle ? reveal : 1
+  const [wheelDrag, setWheelDrag] = useState(null)
+  // Dragging the wheel off "-" opens the page the same way scrolling does.
+  const dragReveal = wheelDrag === null ? 0 : Math.min(1, Math.max(0, wheelDrag))
+  const revealValue = homeIdle ? Math.max(reveal, dragReveal) : 1
 
   // A product page covers the app: its nav bar must not be reachable
   useEffect(() => {
@@ -512,7 +515,7 @@ export default function App() {
 
   return (
     <div
-      className={`stage${homeIdle ? ' is-home-idle' : ''}${homeIdle && reveal < 0.15 ? ' is-reveal-low' : ''}`}
+      className={`stage${homeIdle ? ' is-home-idle' : ''}${homeIdle && revealValue < 0.15 ? ' is-reveal-low' : ''}`}
       ref={stageRef}
       style={{ '--bubble-size': `${BUBBLE}px`, '--reveal': revealValue }}
     >
@@ -596,7 +599,7 @@ export default function App() {
             </section>
 
 
-            <HomeSegmentSlider value={homeSegment} onChange={setHomeSegment} />
+            <HomeSegmentSlider value={homeSegment} onChange={setHomeSegment} onDrag={setWheelDrag} />
             </div>
             <ProductRows
               key={homeIdle ? 'store' : homeSegment}

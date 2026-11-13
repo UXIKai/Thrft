@@ -26,12 +26,16 @@ const resist = (n) => (n < 0 ? n * EDGE_RESISTANCE : n > LAST ? LAST + (n - LAST
 
 // Hide (-) / Store / Market on a vertical picker wheel: the chosen icon sits in the middle, the other waits above or below.
 // Drag up or down (one icon per gesture), tap the neighbour, or use the arrow keys.
-export default function HomeSegmentSlider({ value, onChange }) {
+export default function HomeSegmentSlider({ value, onChange, onDrag }) {
   const rootRef = useRef(null)
   const dragRef = useRef(null)
   const swallowClickRef = useRef(false)
   const [dragX, setDragX] = useState(null)
   const [pressed, setPressed] = useState(false)
+
+  useEffect(() => {
+    onDrag?.(dragX)
+  }, [dragX, onDrag])
 
   const index = Math.max(0, SEGMENTS.findIndex((s) => s.id === value))
   const x = dragX ?? index
