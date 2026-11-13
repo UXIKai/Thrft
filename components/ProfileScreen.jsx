@@ -571,11 +571,12 @@ export default function ProfileScreen({
     setClosetSplit(false)
     setClosetSelected(null)
   }
-  const [spaceTab, setSpaceTab] = useState('store') // 'store' | 'market' | 'closet'
+  const [spaceTab, setSpaceTab] = useState('closet') // 'store' | 'market' | 'closet'
   const wheelRef = useRef(null)
   const wheelDragRef = useRef(null)
   const wheelSwallowClickRef = useRef(false)
   const wheelSnapTimerRef = useRef(0)
+  const spaceSyncRef = useRef(null) // latest { spaceTab, switchSpace } for the wheel's scroll handler
   const [wheelEnd, setWheelEnd] = useState('') // '' | 'top' | 'bottom': which end the wheel is resting on
   // Up/down picker wheel: each icon tilts, shrinks and fades the further it sits from the middle row.
   const updateWheel = useCallback(() => {
@@ -585,14 +586,23 @@ export default function ProfileScreen({
     const max = wheel.scrollHeight - wheel.clientHeight
     const row = wheel.querySelector('.profile-wheel-item')?.offsetHeight || 44
     setWheelEnd(wheel.scrollTop < row / 2 ? 'top' : wheel.scrollTop > max - row / 2 ? 'bottom' : '')
+    let nearest = null
+    let nearestDist = Infinity
     wheel.querySelectorAll('.profile-wheel-item').forEach((el) => {
       const t = (el.offsetTop + el.offsetHeight / 2 - mid) / el.offsetHeight
       const d = Math.min(1, Math.abs(t))
+      if (Math.abs(t) < nearestDist) {
+        nearestDist = Math.abs(t)
+        nearest = el.dataset.spaceId
+      }
       const ico = el.querySelector('.profile-mode-ico')
       if (!ico) return
       ico.style.transform = `perspective(120px) rotateX(${Math.max(-1.5, Math.min(1.5, t)) * -32}deg) scale(${1 - d * 0.22})`
       ico.style.opacity = String(1 - d)
     })
+    // The page below follows whichever icon is in the middle; no tap needed.
+    const sync = spaceSyncRef.current
+    if (nearest && sync && nearest !== sync.spaceTab) sync.switchSpace(nearest)
   }, [])
   useLayoutEffect(() => {
     const wheel = wheelRef.current
@@ -934,6 +944,7 @@ export default function ProfileScreen({
     setPanelListingTab('active')
     setSpaceTab(which)
   }
+  spaceSyncRef.current = { spaceTab, switchSpace }
 
   // Freeze home-scroll so opening overlays never jumps the page;
   // hide underlay for @/ship/Settings so stage atmosphere shows through.
