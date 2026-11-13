@@ -2182,3 +2182,42 @@ html body .stage > .tab-bar.is-create-open {
   width: var(--bar-w, 100%);
   flex: none;
 }
+
+/* Create page: full-screen overlay with the three spaces in a triangle */
+.create-page {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background: light-dark(rgba(255, 255, 255, 0.82), rgba(10, 11, 14, 0.82));
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  color: light-dark(#111, #fff);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(24px) scale(0.96);
+  transition: opacity 0.22s ease, transform 0.3s cubic-bezier(0.3, 1.2, 0.5, 1), visibility 0s linear 0.3s;
+}
+.create-page.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: none;
+  transition: opacity 0.25s ease 0.2s, transform 0.34s cubic-bezier(0.3, 1.2, 0.5, 1) 0.2s, visibility 0s;
+}
+.create-page .create-menu-btn {
+  width: 104px;
+  height: 104px;
+  border-radius: 28px;
+  font-size: 0.85rem;
+  gap: 6px;
+  top: auto;
+  right: auto;
+  bottom: auto;
+  left: 50%;
+  margin: 0;
+}
+.create-page .create-menu-ico { width: 34px; height: 34px; }
+.create-page .create-menu-btn.is-closet { top: calc(50% - 124px); transform: translateX(-50%); }
+.create-page .create-menu-btn.is-store { top: calc(50% + 4px); transform: translateX(calc(-100% - 8px)); }
+.create-page .create-menu-btn.is-market { top: calc(50% + 4px); transform: translateX(8px); }

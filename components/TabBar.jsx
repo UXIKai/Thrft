@@ -1,3 +1,4 @@
+import { createPortal } from 'react-dom'
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { ClosetIcon, MarketIcon, StoreIcon } from './SegmentIcons.jsx'
 import { stepNavigationSpring } from '../navigationSpring.js'
@@ -79,6 +80,8 @@ const CREATE_OPTIONS = [
 export default function TabBar({ active = 'home', onChange, onCreate }) {
   const [createOpen, setCreateOpen] = useState(false)
   const [createClosing, setCreateClosing] = useState(false)
+  const [stageEl, setStageEl] = useState(null)
+  const pageRef = useRef(null)
   const navRef = useRef(null)
   const dragRef = useRef(null)
   const activeIdx = Math.max(0, TABS.findIndex((t) => t.id === active))
@@ -94,6 +97,10 @@ export default function TabBar({ active = 'home', onChange, onCreate }) {
     releaseCount: 0,
   })
   const [lens, setLens] = useState({ w: 104, h: 56 })
+
+  useLayoutEffect(() => {
+    setStageEl(navRef.current?.closest('.stage') || null)
+  }, [])
 
   useLayoutEffect(() => {
     const nav = navRef.current
@@ -197,7 +204,7 @@ export default function TabBar({ active = 'home', onChange, onCreate }) {
   useEffect(() => {
     if (!createOpen) return undefined
     const close = (e) => {
-      if (navRef.current?.contains(e.target)) return
+      if (navRef.current?.contains(e.target) || pageRef.current?.contains(e.target)) return
       setCreateOpen(false)
     }
     const onKey = (e) => e.key === 'Escape' && setCreateOpen(false)
@@ -250,6 +257,7 @@ export default function TabBar({ active = 'home', onChange, onCreate }) {
   }
 
   return (
+    <>
     <nav
       ref={navRef}
       className={`tab-bar${pressed ? ' is-pressed' : ''}${dragPos !== null ? ' is-dragging' : ''}${createOpen ? ' is-create-open' : ''}${createClosing ? ' is-create-closing' : ''}`}
@@ -288,28 +296,6 @@ export default function TabBar({ active = 'home', onChange, onCreate }) {
           ))}
         </span>
       </span>
-      <div
-        className="create-menu"
-        role="menu"
-        aria-label="Create"
-        aria-hidden={!createOpen}
-        onPointerDown={(e) => e.stopPropagation()}
-        onPointerUp={(e) => e.stopPropagation()}
-      >
-        {CREATE_OPTIONS.map(({ id, label, Icon }) => (
-          <button
-            key={id}
-            type="button"
-            role="menuitem"
-            tabIndex={createOpen ? 0 : -1}
-            className={`create-menu-btn is-${id}`}
-            onClick={() => pickCreate(id)}
-          >
-            <Icon className="create-menu-ico" />
-            <span>{label}</span>
-          </button>
-        ))}
-      </div>
       <div className="tab-items">
       {TABS.map((tab, index) => {
         const selected = tab.id === active && !createOpen
@@ -338,5 +324,30 @@ export default function TabBar({ active = 'home', onChange, onCreate }) {
       })}
       </div>
     </nav>
+    {stageEl && createPortal(
+    <div
+      ref={pageRef}
+      className={`create-page${createOpen ? ' is-open' : ''}`}
+      role="menu"
+      aria-label="Create"
+      aria-hidden={!createOpen}
+    >
+      {CREATE_OPTIONS.map(({ id, label, Icon }) => (
+        <button
+          key={id}
+          type="button"
+          role="menuitem"
+          tabIndex={createOpen ? 0 : -1}
+          className={`create-menu-btn is-${id}`}
+          onClick={() => pickCreate(id)}
+        >
+          <Icon className="create-menu-ico" />
+          <span>{label}</span>
+        </button>
+      ))}
+    </div>,
+      stageEl,
+    )}
+    </>
   )
 }
