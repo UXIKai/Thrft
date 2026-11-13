@@ -2063,3 +2063,14 @@ html body .tab-bar .tab-lens-inner {
     left: calc((var(--tab-i, 0) * 20% + 3.75%) * -8);
   }
 }
+
+/* Pages that cover the nav (checkout, product, pickers) must not let hover bring it back */
+html body .stage.is-nav-autohide.is-nav-near.is-overlay-open .tab-bar,
+html body .stage.is-nav-autohide.is-nav-near.is-product-open .tab-bar,
+html body .stage.is-nav-autohide.is-nav-near.is-create-adding .tab-bar,
+html body .stage.is-nav-autohide.is-nav-near.is-home-picker-open .tab-bar,
+html body .stage.is-nav-autohide.is-nav-near.is-home-search-open .tab-bar {
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+}
