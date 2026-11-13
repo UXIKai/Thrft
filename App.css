@@ -452,6 +452,7 @@ html[data-bg-color='none'] .stage.is-bg-none .atmosphere {
 }
 
 .home-checkout-btn {
+  grid-column: 3;
   justify-self: end;
   position: relative;
   width: 40px;

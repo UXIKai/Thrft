@@ -562,9 +562,6 @@ export default function App() {
                 onOpenColors={() => openHomePicker('colors')}
                 onOpenCategory={() => openHomePicker('category')}
               />
-              <h1 className="wordmark">
-                Thrft<span className="dot" aria-hidden="true">●</span>
-              </h1>
               <button
                 type="button"
                 className="home-checkout-btn"
