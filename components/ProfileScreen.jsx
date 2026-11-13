@@ -929,13 +929,6 @@ export default function ProfileScreen({
     setMusicDraft('')
   }
 
-  useEffect(() => {
-    const stage = document.querySelector('.stage')
-    if (!stage || spaceTab !== 'closet') return undefined
-    stage.classList.add('is-saved-room-open')
-    return () => stage.classList.remove('is-saved-room-open')
-  }, [spaceTab])
-
   function switchSpace(which) {
     if (which === spaceTab) return
     setPanelListingTab('active')
@@ -1471,18 +1464,8 @@ export default function ProfileScreen({
               )
             })()
           ) : (
-            stageEl && createPortal(
-            <div className="closet-browse is-page">
+            <div className="closet-browse">
               <header className="closet-page-head">
-                <button
-                  type="button"
-                  className="closet-page-btn is-bare"
-                  aria-label="Back to profile"
-                  onClick={() => setSpaceTab('store')}
-                >
-                  <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 5l-7 7 7 7" /></svg>
-                </button>
-                <ClosetIcon className="closet-page-ico" />
                 <button
                   type="button"
                   className="closet-page-btn is-bare"
@@ -1778,9 +1761,7 @@ export default function ProfileScreen({
                 </div>,
                 stageEl,
               )}
-            </div>,
-            stageEl,
-            )
+            </div>
           )}
         </div>
       </section>

@@ -3065,31 +3065,10 @@
   font-size: 16px;
 }
 
-/* Closet opens as its own page: icon on top, wheels below, plus (scanner) top right */
-.closet-browse.is-page {
-  position: fixed;
-  inset: 0;
-  z-index: 30;
-  min-height: 0;
-  overflow-y: auto;
-  padding: calc(max(8px, env(safe-area-inset-top, 0px)) + 16px) 16px calc(24px + env(safe-area-inset-bottom, 0px));
-  background:
-    radial-gradient(120% 70% at 50% 0%, rgba(var(--atmosphere-effect-a-rgb, 120, 150, 200), 0.35), transparent 70%),
-    radial-gradient(120% 70% at 50% 100%, rgba(var(--atmosphere-effect-a-rgb, 120, 150, 200), 0.25), transparent 70%),
-    color-mix(in srgb, var(--atmosphere-base, #fafafa) 80%, rgb(var(--atmosphere-effect-a-rgb, 120, 150, 200)));
-}
-
+/* Closet shows inline below the wheel; the add (scanner) button sits at the right */
 .closet-page-head {
-  display: grid;
-  grid-template-columns: 44px 1fr 44px;
-  align-items: center;
-  justify-items: center;
-  flex: 0 0 auto;
-}
-
-.closet-page-ico {
-  width: 28px;
-  height: 28px;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .closet-page-btn {
@@ -3101,8 +3080,7 @@
   cursor: pointer;
 }
 
-/* Brand and Type sit close together, one on each side of the closet icon */
-.closet-browse.is-page .closet-browse-wheels {
+.closet-browse .closet-browse-wheels {
   width: min(100%, 340px);
   margin: 0 auto 4px;
 }
