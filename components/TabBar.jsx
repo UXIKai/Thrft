@@ -71,7 +71,7 @@ const TABS = [
   },
 ]
 
-// Closet on top, Store to the left and Market to the right, in the middle of the screen (positions live in App.css).
+// Closet, Store and Market side by side in the middle of the screen (positions live in App.css).
 const CREATE_OPTIONS = [
   { id: 'closet', label: 'Closet', Icon: ClosetIcon },
   { id: 'store', label: 'Store', Icon: StoreIcon },

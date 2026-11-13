@@ -2162,6 +2162,7 @@ html body .stage > .tab-bar.tab-bar.tab-bar.is-create-open {
   transition: opacity 0.25s ease 0.28s;
 }
 .create-page {
+  --pitch: 96px;
   position: absolute;
   inset: 0;
   z-index: 3;
@@ -2177,10 +2178,10 @@ html body .stage > .tab-bar.tab-bar.tab-bar.is-create-open {
   pointer-events: auto;
   transition: visibility 0s;
 }
-/* Triangle in the middle of the screen: Closet on top, Store to the left, Market to the right.
-   Circles are 76px; Store and Market centers sit 48px either side of the middle and 43px below it,
-   Closet 43px above it. Closed, every option is tucked into the × (--pop-from); --plus-dy is how far
-   below the screen's middle the × sits (set when the menu opens). */
+/* One row in the middle of the screen: Closet, Store, Market side by side.
+   Circles are 76px and their centers are --pitch apart, so the row is centered with Store in the middle.
+   Closed, every option is tucked into the × (--pop-from); --plus-dy is how far below the screen's
+   middle the × sits (set when the menu opens). */
 .create-page .create-menu-btn {
   position: absolute;
   left: calc(50% - 38px);
@@ -2213,18 +2214,15 @@ html body .stage > .tab-bar.tab-bar.tab-bar.is-create-open {
 }
 .create-page .create-menu-ico { width: 32px; height: 32px; }
 .create-page .create-menu-btn.is-closet {
-  top: calc(50% - 81px);
-  --pop-from: translate(0, calc(var(--plus-dy, 300px) + 43px));
+  left: calc(50% - 38px - var(--pitch));
+  --pop-from: translate(var(--pitch), var(--plus-dy, 300px));
 }
 .create-page .create-menu-btn.is-store {
-  left: calc(50% - 86px);
-  top: calc(50% + 5px);
-  --pop-from: translate(48px, calc(var(--plus-dy, 300px) - 43px));
+  --pop-from: translate(0, var(--plus-dy, 300px));
 }
 .create-page .create-menu-btn.is-market {
-  left: calc(50% + 10px);
-  top: calc(50% + 5px);
-  --pop-from: translate(-48px, calc(var(--plus-dy, 300px) - 43px));
+  left: calc(50% - 38px + var(--pitch));
+  --pop-from: translate(calc(var(--pitch) * -1), var(--plus-dy, 300px));
 }
 
 /* Open: the options fly out of the × once the bar has collapsed around it */
