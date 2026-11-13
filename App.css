@@ -2136,8 +2136,14 @@ html body .stage > .tab-bar.is-create-closing {
 html body .stage > .tab-bar.is-create-closing:not(.is-create-open) {
   transition: width 0.28s cubic-bezier(0.5, 0, 0.75, 0), background-color 0.1s ease, border-color 0.1s ease, box-shadow 0.1s ease, opacity 0.2s ease !important;
 }
-html body .stage > .tab-bar.is-create-open {
-  width: var(--bar-h, 56px) !important;
+html body .stage > .tab-bar.is-create-open { width: var(--bar-h, 56px) !important; }
+
+/* Hairline rim in every mode; stacked classes beat the moon / bright-page border rules in liquidGlass.css */
+html body .stage > .tab-bar.tab-bar.tab-bar {
+  border: 1px solid light-dark(rgba(0, 0, 0, 0.07), rgba(255, 255, 255, 0.08)) !important;
+  box-shadow: 0 4px 14px light-dark(rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.25)) !important;
+}
+html body .stage > .tab-bar.tab-bar.tab-bar.is-create-open {
   background: transparent !important;
   background-image: none !important;
   border-color: transparent !important;
@@ -2199,19 +2205,94 @@ html body .stage > .tab-bar.is-create-open {
 }
 .create-page .create-menu-ico { width: 32px; height: 32px; }
 .create-page .create-menu-btn.is-closet { bottom: calc(var(--menu-bottom, 90px) + 82px); --pop-from: translate(0, 150px); }
-.create-page .create-menu-btn.is-store { left: calc(50% - 86px); --pop-from: translate(48px, 74px); }
-.create-page .create-menu-btn.is-market { left: calc(50% + 10px); --pop-from: translate(-48px, 74px); }
+
+/* Store / Market share one slot: a slider that shows a single option at a time */
+.create-page .create-slider {
+  position: absolute;
+  left: calc(50% - 50px);
+  bottom: calc(var(--menu-bottom, 90px) - 4px);
+  width: 100px;
+  height: 76px;
+  overflow: hidden;
+  overflow: clip;
+  --pop-from: translate(0, 74px);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 14%, #000 86%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0, #000 14%, #000 86%, transparent 100%);
+}
+.create-page .create-slider::before {
+  content: '';
+  position: absolute;
+  left: 12px;
+  top: 0;
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background: light-dark(rgba(0, 0, 0, 0.08), rgba(255, 255, 255, 0.16));
+  opacity: 0;
+  transition: opacity 0.16s ease;
+}
+.create-page .create-slider.is-hover::before { opacity: 1; }
+.create-page .create-slider-track {
+  position: relative;
+  display: flex;
+  gap: 24px;
+  width: max-content;
+  transform: translateX(calc(12px - var(--t, 0) * 100px));
+  transition: transform 0.12s ease-out;
+}
+.create-page .create-slide-btn {
+  flex: none;
+  width: 76px;
+  height: 76px;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  border-radius: 50%;
+  color: inherit;
+  font: inherit;
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.create-page .create-slider-dots {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 6px;
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  pointer-events: none;
+}
+.create-page .create-slider-dots i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.create-page .create-slider-dots i:first-child { opacity: calc(1 - var(--t, 0) * 0.65); }
+.create-page .create-slider-dots i:last-child { opacity: calc(0.35 + var(--t, 0) * 0.65); }
 .create-page .create-menu-btn.is-hover {
   transform: scale(1.18);
   background: light-dark(rgba(0, 0, 0, 0.08), rgba(255, 255, 255, 0.16));
 }
-.create-page.is-open .create-menu-btn {
+.create-page.is-open .create-menu-btn,
+.create-page.is-open .create-slider {
   animation: create-pop 0.38s cubic-bezier(0.25, 1.3, 0.5, 1) 0.3s backwards;
 }
 @keyframes create-pop {
   from { transform: var(--pop-from) scale(0.15); opacity: 0; }
 }
-html body .stage .create-page .create-menu-btn {
+html body .stage .create-page .create-menu-btn,
+html body .stage .create-page .create-slide-btn {
   border: 0 !important;
   box-shadow: none !important;
   backdrop-filter: none !important;

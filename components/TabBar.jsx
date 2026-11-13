@@ -71,11 +71,13 @@ const TABS = [
   },
 ]
 
-const CREATE_OPTIONS = [
-  { id: 'closet', label: 'Closet', Icon: ClosetIcon },
+const CLOSET_OPTION = { id: 'closet', label: 'Closet', Icon: ClosetIcon }
+const SLIDE_OPTIONS = [
   { id: 'store', label: 'Store', Icon: StoreIcon },
   { id: 'market', label: 'Market', Icon: MarketIcon },
 ]
+// Finger travel (px) needed to slide from Store to Market.
+const SLIDE_DRAG_PX = 70
 
 export default function TabBar({ active = 'home', onChange, onCreate }) {
   const [createOpen, setCreateOpen] = useState(false)
@@ -83,6 +85,8 @@ export default function TabBar({ active = 'home', onChange, onCreate }) {
   const [stageEl, setStageEl] = useState(null)
   const pageRef = useRef(null)
   const [hoverOpt, setHoverOpt] = useState(null)
+  const [slideT, setSlideT] = useState(0)
+  const slideRef = useRef(0)
   const navRef = useRef(null)
   const dragRef = useRef(null)
   const activeIdx = Math.max(0, TABS.findIndex((t) => t.id === active))
@@ -217,7 +221,7 @@ export default function TabBar({ active = 'home', onChange, onCreate }) {
   useEffect(() => {
     if (!createOpen) return undefined
     const close = (e) => {
-      if (navRef.current?.contains(e.target) || e.target.closest?.('.create-menu-btn')) return
+      if (navRef.current?.contains(e.target) || e.target.closest?.('.create-menu-btn, .create-slider')) return
       setCreateOpen(false)
     }
     const onKey = (e) => e.key === 'Escape' && setCreateOpen(false)
@@ -235,8 +239,22 @@ export default function TabBar({ active = 'home', onChange, onCreate }) {
     onCreate?.(segment)
   }
 
-  const optionAt = (e) =>
-    document.elementFromPoint(e.clientX, e.clientY)?.closest?.('.create-menu-btn')?.dataset.create || null
+  const setSlide = (t) => {
+    slideRef.current = t
+    setSlideT(t)
+  }
+
+  // Closet sits above; everything at the Store/Market slider's height (any x) drives the slider.
+  const zoneAt = (e) => {
+    const page = pageRef.current
+    const closet = page?.querySelector('.is-closet')?.getBoundingClientRect()
+    const slider = page?.querySelector('.create-slider')?.getBoundingClientRect()
+    if (!closet || !slider) return null
+    if (e.clientY < (closet.bottom + slider.top) / 2) {
+      return Math.abs(e.clientX - (closet.left + closet.right) / 2) < 90 ? 'closet' : null
+    }
+    return e.clientY < slider.bottom + 24 ? 'slider' : null
+  }
 
   const posFromEvent = (e) => {
     const r = navRef.current.getBoundingClientRect()
@@ -265,7 +283,18 @@ export default function TabBar({ active = 'home', onChange, onCreate }) {
     if (!d) return
     if (d.create) {
       if (d.held) {
-        setHoverOpt(optionAt(e))
+        const zone = zoneAt(e)
+        setHoverOpt(zone)
+        if (zone === 'slider') {
+          if (d.anchorX == null) {
+            d.anchorX = e.clientX
+            d.baseT = slideRef.current
+          }
+          setSlide(Math.min(1, Math.max(0, d.baseT - (e.clientX - d.anchorX) / SLIDE_DRAG_PX)))
+        } else if (d.anchorX != null) {
+          d.anchorX = null
+          setSlide(Math.round(slideRef.current))
+        }
         return
       }
       if (Math.hypot(e.clientX - d.startX, e.clientY - d.startY) < 10) return
@@ -284,9 +313,11 @@ export default function TabBar({ active = 'home', onChange, onCreate }) {
     if (d.create) {
       // A quick tap on the plus does nothing; it only works as hold, drag onto an option, release.
       if (d.held) {
-        const option = commit ? optionAt(e) : null
+        const zone = commit ? zoneAt(e) : null
         setHoverOpt(null)
-        if (option) pickCreate(option)
+        setSlide(Math.round(slideRef.current))
+        if (zone === 'closet') pickCreate('closet')
+        else if (zone === 'slider') pickCreate(slideRef.current < 0.5 ? 'store' : 'market')
         else setCreateOpen(false)
       }
       return
@@ -377,20 +408,45 @@ export default function TabBar({ active = 'home', onChange, onCreate }) {
       aria-label="Create"
       aria-hidden={!createOpen}
     >
-      {CREATE_OPTIONS.map(({ id, label, Icon }) => (
-        <button
-          key={id}
-          type="button"
-          role="menuitem"
-          tabIndex={createOpen ? 0 : -1}
-          data-create={id}
-          className={`create-menu-btn is-${id}${hoverOpt === id ? ' is-hover' : ''}`}
-          onClick={() => pickCreate(id)}
-        >
-          <Icon className="create-menu-ico" />
-          <span>{label}</span>
-        </button>
-      ))}
+      <button
+        type="button"
+        role="menuitem"
+        tabIndex={createOpen ? 0 : -1}
+        data-create={CLOSET_OPTION.id}
+        className={`create-menu-btn is-closet${hoverOpt === 'closet' ? ' is-hover' : ''}`}
+        onClick={() => pickCreate(CLOSET_OPTION.id)}
+      >
+        <CLOSET_OPTION.Icon className="create-menu-ico" />
+        <span>{CLOSET_OPTION.label}</span>
+      </button>
+      <div
+        className={`create-slider${hoverOpt === 'slider' ? ' is-hover' : ''}`}
+        role="group"
+        aria-label="Store or Market"
+        style={{ '--t': slideT }}
+      >
+        <div className="create-slider-track">
+          {SLIDE_OPTIONS.map(({ id, label, Icon }, i) => (
+            <button
+              key={id}
+              type="button"
+              role="menuitem"
+              tabIndex={createOpen ? 0 : -1}
+              data-create={id}
+              className="create-slide-btn"
+              onClick={() => pickCreate(id)}
+              onFocus={() => setSlide(i)}
+            >
+              <Icon className="create-menu-ico" />
+              <span>{label}</span>
+            </button>
+          ))}
+        </div>
+        <div className="create-slider-dots" aria-hidden="true">
+          <i />
+          <i />
+        </div>
+      </div>
     </div>,
       stageEl,
     )}
