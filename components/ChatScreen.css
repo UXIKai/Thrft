@@ -5347,3 +5347,9 @@ html body .chat-thread-scroll > .chat-thread-body {
   html body .chat-screen.is-desktop .chat-list-quick { margin-top: 0; padding: 0; }
   html body .chat-screen.is-desktop .chat-list-quick-btn { padding: 8px 8px; }
 }
+
+@media (min-width: 720px) and (min-height: 500px) {
+  html body .chat-screen.is-desktop:not(.is-sidebar-collapsed) .chat-sidebar-header { margin-bottom: 0; }
+  html body .chat-screen.is-desktop:not(.is-sidebar-collapsed) .chat-list-quick { margin-top: -10px; margin-bottom: 4px; }
+  html body .chat-screen.is-desktop .chat-list-quick-btn { padding: 7px 4px; }
+}
