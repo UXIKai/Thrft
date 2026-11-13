@@ -20,6 +20,7 @@ import BrandGlobe from './BrandGlobe.jsx'
 import GiveBack from './GiveBack.jsx'
 import OrbitCarousel from './OrbitCarousel.jsx'
 import SettingsScreen from './SettingsScreen.jsx'
+import SwipeBackPage from './SwipeBackPage.jsx'
 import './GlassOverlay.css'
 import './ProfileScreen.css'
 
@@ -2382,7 +2383,7 @@ export default function ProfileScreen({
       {stageEl &&
         settingsOpen &&
         createPortal(
-          <div className={`settings-slide${settingsClosing ? ' is-closing' : ''}`}>
+          <SwipeBackPage className={`settings-slide${settingsClosing ? ' is-closing' : ''}`} onDismiss={() => { setSettingsOpen(false); setSettingsClosing(false) }}>
           <SettingsScreen
             onBack={closeSettings}
             userProfile={userProfile}
@@ -2393,7 +2394,7 @@ export default function ProfileScreen({
             onEditMoney={() => openProfileEditor('Money')}
             onOpenOrders={() => setShipOpen(true)}
           />
-          </div>,
+          </SwipeBackPage>,
           stageEl,
         )}
 

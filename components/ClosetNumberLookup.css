@@ -304,3 +304,5 @@ html body .closet-number-content .closet-brand-wheel .brand-logo-label > span {
 html body .closet-number-content .closet-brand-wheel .type-box.is-wheel:not(.is-active) {
   filter: blur(5px) !important;
 }
+
+.closet-number-page { touch-action: pan-y; }

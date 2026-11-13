@@ -3,6 +3,7 @@ import { lookupProductNumbers } from '../api.js'
 import { addClosetItem, removeImageBackground } from '../closet.js'
 import OrbitCarousel from './OrbitCarousel.jsx'
 import StageSlot from './StageSlot.jsx'
+import SwipeBackPage from './SwipeBackPage.jsx'
 import BrandLogo from './BrandLogo.jsx'
 import './ClosetNumberLookup.css'
 
@@ -93,7 +94,7 @@ export default function ClosetNumberLookup({ brands, initialBrand, onClose, onAd
 
   return (
     <StageSlot>
-      <section className="closet-number-page" role="dialog" aria-modal="true" aria-label="Add clothing by product number">
+      <SwipeBackPage as="section" onDismiss={onClose} className="closet-number-page" role="dialog" aria-modal="true" aria-label="Add clothing by product number">
         {!(page === 'brand' && !expanded) && <button type="button" className="closet-number-back is-bare" aria-label="Back" onClick={onClose} autoFocus>‹</button>}
         <div className="closet-number-content">
           {page === 'brand' ? <>
@@ -137,7 +138,7 @@ export default function ClosetNumberLookup({ brands, initialBrand, onClose, onAd
           </>}
           {error && <p role="alert">{error}</p>}
         </div>
-      </section>
+      </SwipeBackPage>
     </StageSlot>
   )
 }
