@@ -2046,24 +2046,9 @@ html body .tab-bar .tab-lens-inner {
   left: calc((var(--tab-i, 0) * 19.08% + 1.04%) * -4.63);
 }
 
-/* Desktop bar: narrower, pill keeps its 1.55:1 shape centered on its tab */
+/* Desktop bar hugs the pill like Instagram: same proportions as the phone bar, just smaller */
 @media (min-width: 720px) {
-  html body .stage > .tab-bar { width: min(480px, calc(100% - 6px)); }
-  html body .stage .tab-bar .tab-pill,
-  html body .stage .tab-bar.is-dragging .tab-pill {
-    top: 10%;
-    bottom: 10%;
-    width: 12.5%;
-    left: calc(var(--tab-i, 0) * 20% + 3.75%);
-  }
-  html body .tab-bar .tab-items { padding-inline: 0; }
-  html body .tab-bar .tab-lens-inner {
-    padding-inline: 0;
-    top: -12.5%;
-    bottom: -12.5%;
-    width: 800%;
-    left: calc((var(--tab-i, 0) * 20% + 3.75%) * -8);
-  }
+  html body .stage > .tab-bar { width: min(300px, calc(100% - 6px)); }
 }
 
 /* Pages that cover the nav (checkout, product, pickers) must not let hover bring it back */
