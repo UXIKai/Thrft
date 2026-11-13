@@ -124,6 +124,10 @@ button,
 html:root,
 html:root body {
   background-color: var(--safari-top, #262626);
+}
+/* Dark theme keeps its near-black page: the grey wash only continues in light mode */
+html:root[data-theme='light'],
+html:root[data-theme='light'] body {
   background-image:
     radial-gradient(circle at 85% 55%, rgba(var(--atmosphere-effect-b-rgb, 150, 150, 150), 0.32), transparent 45%),
     radial-gradient(circle at 20% 58%, rgba(var(--atmosphere-effect-c-rgb, 170, 170, 170), 0.3), transparent 48%),

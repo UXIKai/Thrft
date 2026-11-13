@@ -168,7 +168,7 @@ createRoot(document.getElementById('root')).render(
     const base = rgbVar('--atmosphere-base-rgb', light ? [250, 250, 250] : [5, 5, 5])
     // The wash is mostly its effect colours, not the near-white/black base: average them so the strip matches the page
     const fx = ['a', 'b', 'c'].map((k) => rgbVar(`--atmosphere-effect-${k}-rgb`, null)).filter(Boolean)
-    const mixed = fx.length
+    const mixed = light && fx.length
       ? [0, 1, 2].map((i) => Math.round((fx.reduce((sum, c) => sum + c[i], 0) / fx.length) * 0.9))
       : base.map((c) => Math.round(c * 0.8))
     const color = `rgb(${mixed.join(', ')})`
