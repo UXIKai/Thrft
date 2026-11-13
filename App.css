@@ -1984,16 +1984,14 @@ html body .tab-bar.is-pressed .tab-pill::before {
 }
 .home-segment-slider .wheel-arrow {
   top: 50%;
-  width: 14px;
-  height: 12px;
-  margin: -6px 0 0 -7px;
+  margin-top: -4px;
 }
 .wheel-arrow.is-left {
-  left: calc(50% - 52px);
+  left: calc(50% - 44px);
   transform: rotate(-90deg);
 }
 .wheel-arrow.is-right {
-  left: calc(50% + 52px);
+  left: calc(50% + 44px);
   transform: rotate(90deg);
 }
 
@@ -2017,6 +2015,11 @@ html body .tab-bar.is-pressed .tab-pill::before {
   opacity: calc(1 - var(--d, 0));
   transform: scale(calc(1.15 - 0.25 * var(--d, 0)));
   transition: opacity 0.32s ease, transform 0.32s cubic-bezier(0.22, 0.9, 0.3, 1);
+}
+
+.home-segment-slider.is-dragging .home-segment-track,
+.home-segment-slider.is-dragging .home-segment-tab {
+  transition: none;
 }
 
 .home-segment-tab svg {

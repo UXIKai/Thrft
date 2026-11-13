@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { MarketIcon, StoreIcon } from './SegmentIcons.jsx'
 
 const LeaderboardIcon = () => (
@@ -18,10 +18,14 @@ const SEGMENTS = [
 ]
 
 const LAST = SEGMENTS.length - 1
-const SWIPE_MIN_PX = 50
-const SWIPE_MAX_MS = 800
+const DRAG_START_PX = 8
+const SLOT_PX = 120
+const EDGE_RESISTANCE = 0.35
+const FLICK_LOOKAHEAD_MS = 150
 
 const clamp = (n) => Math.min(LAST, Math.max(0, n))
+// Dragging past either end stretches, then springs back.
+const resist = (n) => (n < 0 ? n * EDGE_RESISTANCE : n > LAST ? LAST + (n - LAST) * EDGE_RESISTANCE : n)
 
 const scrollsSideways = (el, stop) => {
   for (let n = el; n && n !== stop; n = n.parentElement) {
@@ -38,38 +42,64 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false })
   const rootRef = useRef(null)
   const index = Math.max(0, SEGMENTS.findIndex((s) => s.id === value))
 
-  const stepRef = useRef(null)
-  stepRef.current = (dir) => {
-    const next = SEGMENTS[clamp(index + dir)]
+  const [dragX, setDragX] = useState(null)
+  const x = dragX ?? index
+
+  const chooseRef = useRef(null)
+  chooseRef.current = (i) => {
+    const next = SEGMENTS[clamp(i)]
     if (fireSame || next.id !== value) onChange(next.id)
   }
+  const indexRef = useRef(index)
+  indexRef.current = index
 
+  // The page follows the finger: swipe left for the next segment, right for the previous.
   useEffect(() => {
     const page = rootRef.current?.closest('.home-scroll')
     if (!page) return undefined
-    let start = null
+    let d = null
+    const end = (e, flick) => {
+      if (!d || d.id !== e.pointerId) return
+      const s = d
+      d = null
+      if (!s.moving) return
+      const last = s.samples[s.samples.length - 1]
+      const from = s.samples.find((p) => last.t - p.t <= 100) || last
+      const idle = e.timeStamp - last.t > 80
+      const v = flick && !idle && last.t > from.t ? (last.pos - from.pos) / (last.t - from.t) : 0
+      setDragX(null)
+      chooseRef.current(Math.round(last.pos + v * FLICK_LOOKAHEAD_MS))
+    }
     const onDown = (e) => {
-      if (!e.isPrimary || (e.button !== undefined && e.button !== 0)) return
-      start = scrollsSideways(e.target, page) ? null : { id: e.pointerId, x: e.clientX, y: e.clientY, t: e.timeStamp }
+      if (!e.isPrimary || (e.button !== undefined && e.button !== 0) || scrollsSideways(e.target, page)) return
+      d = { id: e.pointerId, x: e.clientX, y: e.clientY, start: indexRef.current, moving: false, samples: [] }
     }
-    const onUp = (e) => {
-      const s = start
-      start = null
-      if (!s || s.id !== e.pointerId) return
-      const dx = e.clientX - s.x
-      const dy = e.clientY - s.y
-      if (Math.abs(dx) < SWIPE_MIN_PX || Math.abs(dx) < Math.abs(dy) * 1.5 || e.timeStamp - s.t > SWIPE_MAX_MS) return
-      // Swiping left reveals the next segment, like paging forward.
-      stepRef.current(dx < 0 ? 1 : -1)
+    const onMove = (e) => {
+      if (!d || d.id !== e.pointerId) return
+      const dx = e.clientX - d.x
+      if (!d.moving) {
+        if (Math.abs(dx) < DRAG_START_PX) return
+        if (Math.abs(dx) < Math.abs(e.clientY - d.y) * 1.5) {
+          d = null
+          return
+        }
+        d.moving = true
+        d.x += Math.sign(dx) * DRAG_START_PX
+      }
+      const raw = d.start - (e.clientX - d.x) / SLOT_PX
+      d.samples.push({ t: e.timeStamp, pos: raw })
+      if (d.samples.length > 6) d.samples.shift()
+      setDragX(resist(raw))
     }
-    const onCancel = () => {
-      start = null
-    }
+    const onUp = (e) => end(e, true)
+    const onCancel = (e) => end(e, false)
     page.addEventListener('pointerdown', onDown)
+    page.addEventListener('pointermove', onMove)
     page.addEventListener('pointerup', onUp)
     page.addEventListener('pointercancel', onCancel)
     return () => {
       page.removeEventListener('pointerdown', onDown)
+      page.removeEventListener('pointermove', onMove)
       page.removeEventListener('pointerup', onUp)
       page.removeEventListener('pointercancel', onCancel)
     }
@@ -82,16 +112,16 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false })
   return (
     <div
       ref={rootRef}
-      className="home-segment-slider"
+      className={`home-segment-slider${dragX !== null ? ' is-dragging' : ''}`}
       role="status"
       aria-label={`${SEGMENTS[index].label}. Swipe left or right to switch.`}
-      style={{ '--x': index }}
+      style={{ '--x': x }}
     >
       <span className={`wheel-arrow is-left${index === 0 ? ' is-end' : ''}`} aria-hidden="true">{arrow}</span>
       <span className={`wheel-arrow is-right${index === LAST ? ' is-end' : ''}`} aria-hidden="true">{arrow}</span>
       <div className="home-segment-track" aria-hidden="true">
         {SEGMENTS.map(({ id, Icon }, i) => (
-          <span key={id} className="home-segment-tab" style={{ '--s': Math.max(-1, Math.min(1, i - index)), '--d': Math.min(1, Math.abs(i - index)) }}>
+          <span key={id} className="home-segment-tab" style={{ '--d': Math.min(1, Math.abs(i - x)) }}>
             <Icon />
           </span>
         ))}
