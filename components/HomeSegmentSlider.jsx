@@ -1,15 +1,18 @@
 import { useEffect, useRef, useState } from 'react'
 import { MarketIcon, StoreIcon } from './SegmentIcons.jsx'
 
-const DashIcon = () => (
+const LeaderboardIcon = () => (
   <svg viewBox="0 0 24 24" aria-hidden="true">
-    <path d="M7 12h10" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    <g fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round">
+      <rect x="3" y="10" width="5.5" height="9" rx="1.4" />
+      <rect x="9.25" y="4" width="5.5" height="15" rx="1.4" />
+      <rect x="15.5" y="13" width="5.5" height="6" rx="1.4" />
+    </g>
   </svg>
 )
 
-// The first "-" stop shows nothing; scroll down to Store or Market to fill the page.
 const SEGMENTS = [
-  { id: 'none', label: 'Hide products', Icon: DashIcon },
+  { id: 'leaderboard', label: 'Leaderboard', Icon: LeaderboardIcon },
   { id: 'store', label: 'Store', Icon: StoreIcon },
   { id: 'market', label: 'Market', Icon: MarketIcon },
 ]
@@ -24,18 +27,14 @@ const clamp = (n) => Math.min(LAST, Math.max(0, n))
 // Dragging past either end stretches, then springs back.
 const resist = (n) => (n < 0 ? n * EDGE_RESISTANCE : n > LAST ? LAST + (n - LAST) * EDGE_RESISTANCE : n)
 
-// Hide (-) / Store / Market on a vertical picker wheel: the chosen icon sits in the middle, the other waits above or below.
+// Leaderboard / Store / Market on a vertical picker wheel: the chosen icon sits in the middle, the other waits above or below.
 // Drag up or down (one icon per gesture), tap the neighbour, or use the arrow keys.
-export default function HomeSegmentSlider({ value, onChange, onDrag }) {
+export default function HomeSegmentSlider({ value, onChange, fireSame = false }) {
   const rootRef = useRef(null)
   const dragRef = useRef(null)
   const swallowClickRef = useRef(false)
   const [dragX, setDragX] = useState(null)
   const [pressed, setPressed] = useState(false)
-
-  useEffect(() => {
-    onDrag?.(dragX)
-  }, [dragX, onDrag])
 
   const index = Math.max(0, SEGMENTS.findIndex((s) => s.id === value))
   const x = dragX ?? index
@@ -43,7 +42,7 @@ export default function HomeSegmentSlider({ value, onChange, onDrag }) {
 
   const choose = (i) => {
     const next = SEGMENTS[i]
-    if (next && next.id !== value) onChange(next.id)
+    if (next && (fireSame || next.id !== value)) onChange(next.id)
   }
 
   // A mouse wheel moves one icon per scroll gesture.

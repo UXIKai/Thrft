@@ -189,38 +189,24 @@
   box-sizing: border-box;
 }
 
-/* "-" stop: no nav bar; the first screen is the header, a centred leaderboard and the wheel at the bottom, with the feed waiting below until you swipe up */
+/* Before anything is picked the wheel rests mid-page, the page can't scroll and there is no nav bar */
 .home-hero {
   display: contents;
 }
-.stage.is-home-idle .product-feed,
-.stage.is-home-idle > .tab-bar {
-  opacity: var(--reveal, 1);
-}
 .home-scroll.is-home-idle {
   overflow-y: hidden;
-}
-.stage.is-home-idle .product-feed {
-  pointer-events: none;
-}
-.stage.is-home-idle.is-reveal-low > .tab-bar {
-  pointer-events: none;
 }
 .home-hero.is-idle {
   display: flex;
   flex-direction: column;
   min-height: calc(100dvh - env(safe-area-inset-top, 0px) - 16px);
-  padding-bottom: calc(34px + env(safe-area-inset-bottom, 0px));
   box-sizing: border-box;
 }
 .home-hero.is-idle > * {
   flex: 0 0 auto;
 }
-.home-hero.is-idle > .leaderboard-panel {
-  margin: auto 0;
-}
 .home-hero.is-idle > .home-segment-slider {
-  margin-bottom: 0;
+  margin: auto 0;
 }
 
 .home-scroll.is-chat-thread {

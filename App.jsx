@@ -117,7 +117,8 @@ export default function App() {
   const [createSegment, setCreateSegment] = useState('market')
   const [clothingType, setClothingType] = useState('all')
   const [homeColor, setHomeColor] = useState('')
-  const [homeSegment, setHomeSegment] = useState('none')
+  const [homeSegment, setHomeSegment] = useState('leaderboard')
+  const [homeOpen, setHomeOpen] = useState(false) // the wheel rests mid-page until something is picked
   const [homeBrand, setHomeBrand] = useState(null) // { id, label } | null
   const [homePicker, setHomePicker] = useState(null) // 'brands' | 'category' | null
   const [homePickerPhase, setHomePickerPhase] = useState('closed')
@@ -184,23 +185,8 @@ export default function App() {
   const columnRef = useRef(null)
   const scrollRef = useRef(null)
   const hideTabBar = tab === 'chat' || tab === 'saved'
-  const homeIdle = tab === 'home' && homeSegment === 'none'
-  const showNav = !(tab === 'chat' && chatThreadOpen)
-  // On the "-" stop the nav bar and feed fade in as the page is swiped up.
-  const [reveal, setReveal] = useState(0)
-  useEffect(() => {
-    const el = scrollRef.current
-    if (!homeIdle || !el) return undefined
-    const update = () => setReveal(Math.min(1, Math.max(0, el.scrollTop / (el.clientHeight * 0.45))))
-    el.scrollTo({ top: 0 })
-    update()
-    el.addEventListener('scroll', update, { passive: true })
-    return () => el.removeEventListener('scroll', update)
-  }, [homeIdle])
-  const [wheelDrag, setWheelDrag] = useState(null)
-  // Dragging the wheel off "-" opens the page the same way scrolling does.
-  const dragReveal = wheelDrag === null ? 0 : Math.min(1, Math.max(0, wheelDrag))
-  const revealValue = homeIdle ? Math.max(reveal, dragReveal) : 1
+  const homeIdle = tab === 'home' && !homeOpen
+  const showNav = !(tab === 'chat' && chatThreadOpen) && !homeIdle
 
   // A product page covers the app: its nav bar must not be reachable
   useEffect(() => {
@@ -515,9 +501,9 @@ export default function App() {
 
   return (
     <div
-      className={`stage${homeIdle ? ' is-home-idle' : ''}${homeIdle && revealValue < 0.15 ? ' is-reveal-low' : ''}`}
+      className="stage"
       ref={stageRef}
-      style={{ '--bubble-size': `${BUBBLE}px`, '--reveal': revealValue }}
+      style={{ '--bubble-size': `${BUBBLE}px` }}
     >
       <LiquidGlassDefs />
       <div className="atmosphere" aria-hidden>
@@ -539,7 +525,7 @@ export default function App() {
       >
         {tab === 'home' && (
           <>
-            <div className="home-hero is-idle">
+            <div className={`home-hero${homeIdle ? ' is-idle' : ''}`}>
             <header className="wordmark-wrap">
               <HomeFilterLinks
                 brands={HOME_BRAND_ITEMS}
@@ -575,7 +561,18 @@ export default function App() {
               </button>
             </header>
 
-            <section
+
+
+            <HomeSegmentSlider
+              value={homeSegment}
+              fireSame={!homeOpen}
+              onChange={(id) => {
+                setHomeSegment(id)
+                setHomeOpen(true)
+              }}
+            />
+            </div>
+            {homeOpen && homeSegment === 'leaderboard' && <section
               className="leaderboard-panel"
               aria-label="Account ranks by profit"
             >
@@ -596,14 +593,10 @@ export default function App() {
                   )
                 })}
               </div>
-            </section>
-
-
-            <HomeSegmentSlider value={homeSegment} onChange={setHomeSegment} onDrag={setWheelDrag} />
-            </div>
-            <ProductRows
-              key={homeIdle ? 'store' : homeSegment}
-              segment={homeIdle ? 'store' : homeSegment}
+            </section>}
+            {homeOpen && homeSegment !== 'leaderboard' && <ProductRows
+              key={homeSegment}
+              segment={homeSegment}
               onOpenProduct={handleOpenProduct}
               clothingType={clothingType}
               colorId={homeColor}
@@ -615,7 +608,7 @@ export default function App() {
               clothingSizes={userProfile?.clothingSizes || {}}
               brandSizes={userProfile?.brandSizes || {}}
               savedProductIds={userProfile?.savedProductIds || []}
-            />
+            />}
           </>
         )}
 
