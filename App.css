@@ -1984,14 +1984,16 @@ html body .tab-bar.is-pressed .tab-pill::before {
 }
 .home-segment-slider .wheel-arrow {
   top: 50%;
-  margin-top: -4px;
+  width: 14px;
+  height: 12px;
+  margin: -6px 0 0 -7px;
 }
 .wheel-arrow.is-left {
-  left: calc(50% - 44px);
+  left: calc(50% - 52px);
   transform: rotate(-90deg);
 }
 .wheel-arrow.is-right {
-  left: calc(50% + 44px);
+  left: calc(50% + 52px);
   transform: rotate(90deg);
 }
 
