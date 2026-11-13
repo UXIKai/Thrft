@@ -197,6 +197,12 @@
 .stage.is-home-idle > .tab-bar {
   opacity: var(--reveal, 1);
 }
+.home-scroll.is-home-idle {
+  overflow-y: hidden;
+}
+.stage.is-home-idle .product-feed {
+  pointer-events: none;
+}
 .stage.is-home-idle.is-reveal-low > .tab-bar {
   pointer-events: none;
 }
