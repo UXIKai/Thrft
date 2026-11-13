@@ -1904,34 +1904,72 @@ html body .tab-bar.is-pressed .tab-pill::before {
   width: calc(var(--tab-h) * 0.375);
   height: calc(var(--tab-h) * 0.375);
 }
-.app-column.is-home-wide .home-scroll > .home-segment-tabs {
+.app-column.is-home-wide .home-scroll > .home-segment-slider {
   max-width: none;
 }
 
-.home-segment-tabs {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+/* Store / Market slider: the chosen icon is always dead centre under a short mark; --x is the (dragged) position, --p the same clamped to 0–1 */
+.home-segment-slider {
+  --slot: 80px;
+  position: relative;
   width: 100%;
+  height: 57.6px;
   margin: 0 0 20px;
+  cursor: grab;
+  touch-action: pan-y;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.home-segment-slider.is-dragging {
+  cursor: grabbing;
+}
+
+.home-segment-track {
+  display: flex;
+  width: calc(var(--slot) * 2);
+  height: 100%;
+  margin-left: calc(50% - var(--slot) / 2);
+  transform: translateX(calc(var(--x, 0) * var(--slot) * -1));
+  transition: transform 0.32s cubic-bezier(0.22, 0.9, 0.3, 1);
 }
 
 .home-segment-tab {
+  flex: 0 0 var(--slot);
   display: flex;
   align-items: center;
-  flex-direction: column;
   justify-content: center;
-  gap: 3.6px;
-  min-height: 57.6px;
   min-width: 0;
-  padding: 5.4px 0;
-  border-bottom: 2px solid transparent;
-  color: light-dark(rgba(0, 0, 0, 0.5), rgba(255, 255, 255, 0.5));
-  font-weight: 700;
+  height: 100%;
+  padding: 0;
+  color: light-dark(#000, #fff);
+  transition: opacity 0.32s ease, transform 0.32s cubic-bezier(0.22, 0.9, 0.3, 1);
 }
 
-.home-segment-tab.is-active {
-  color: light-dark(#000, #fff);
-  border-bottom-color: currentColor;
+.home-segment-tab:first-child {
+  opacity: calc(1 - 0.55 * var(--p, 0));
+  transform: scale(calc(1.15 - 0.25 * var(--p, 0)));
+}
+
+.home-segment-tab:last-child {
+  opacity: calc(0.45 + 0.55 * var(--p, 0));
+  transform: scale(calc(0.9 + 0.25 * var(--p, 0)));
+}
+
+.home-segment-slider.is-dragging .home-segment-track,
+.home-segment-slider.is-dragging .home-segment-tab {
+  transition: none;
+}
+
+.home-segment-tab:focus-visible {
+  outline: none;
+}
+
+.home-segment-tab:focus-visible svg {
+  outline: 2px solid currentColor;
+  outline-offset: 7px;
+  border-radius: 50%;
 }
 
 .home-segment-tab svg {
@@ -1939,12 +1977,23 @@ html body .tab-bar.is-pressed .tab-pill::before {
   height: 24px;
 }
 
-.home-segment-tab span {
-  font-size: 0.65rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  line-height: 1;
-  text-transform: uppercase;
+.home-segment-mark {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 28px;
+  height: 2px;
+  margin-left: -14px;
+  border-radius: 1px;
+  background: light-dark(#000, #fff);
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-segment-track,
+  .home-segment-tab {
+    transition: none;
+  }
 }
 
 /* App-wide 20% dim of the background only (no black plate); independent of the glass slider. */

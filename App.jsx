@@ -9,12 +9,12 @@ import ChatScreen from './components/ChatScreen.jsx'
 import CreateListing from './components/CreateListing.jsx'
 import { COLOR_OPTIONS, colorHex } from './colorsCatalog.js'
 import HomeFilterLinks from './components/HomeFilterLinks.jsx'
+import HomeSegmentSlider from './components/HomeSegmentSlider.jsx'
 import LiquidGlassDefs from './components/LiquidGlassDefs.jsx'
 import CartScreen from './components/CartScreen.jsx'
 import ProductDetail from './components/ProductDetail.jsx'
 import { guardSignedInNavigation } from './signedInNavigation.js'
 import ProductRows from './components/ProductRows.jsx'
-import { MarketIcon, StoreIcon } from './components/SegmentIcons.jsx'
 import ProfileScreen from './components/ProfileScreen.jsx'
 import SavedScreen from './components/SavedScreen.jsx'
 import TabBar from './components/TabBar.jsx'
@@ -582,23 +582,7 @@ export default function App() {
             </section>
 
 
-            <div className="home-segment-tabs" role="tablist" aria-label="Shop Market or Store">
-              {['store', 'market'].map((segment) => (
-                <button
-                  key={segment}
-                  type="button"
-                  role="tab"
-                  id={`home-${segment}-tab`}
-                  aria-label={segment === 'market' ? 'Market' : 'Store'}
-                  aria-controls="home-product-panel"
-                  aria-selected={homeSegment === segment}
-                  className={`home-segment-tab is-bare${homeSegment === segment ? ' is-active' : ''}`}
-                  onClick={() => setHomeSegment(segment)}
-                >
-                  {segment === 'market' ? <MarketIcon /> : <StoreIcon />}
-                </button>
-              ))}
-            </div>
+            <HomeSegmentSlider value={homeSegment} onChange={setHomeSegment} />
             <ProductRows
               key={homeSegment}
               segment={homeSegment}
