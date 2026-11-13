@@ -16,8 +16,8 @@ const clamp = (n) => Math.min(LAST, Math.max(0, n))
 // Dragging past either end stretches, then springs back.
 const resist = (n) => (n < 0 ? n * EDGE_RESISTANCE : n > LAST ? LAST + (n - LAST) * EDGE_RESISTANCE : n)
 
-// Store / Market on a slider: the chosen icon sits in the middle, the other waits beside it.
-// Drag or flick sideways, tap the neighbour, or use the arrow keys.
+// Store / Market on a vertical picker wheel: the chosen icon sits in the middle, the other waits above or below.
+// Drag up or down (one icon per gesture), tap the neighbour, or use the arrow keys.
 export default function HomeSegmentSlider({ value, onChange }) {
   const rootRef = useRef(null)
   const dragRef = useRef(null)
@@ -36,15 +36,15 @@ export default function HomeSegmentSlider({ value, onChange }) {
   const onPointerDown = (e) => {
     // One pointer at a time: a second finger neither starts nor steals a drag.
     if (!e.isPrimary || (e.button !== undefined && e.button !== 0)) return
-    const slot = rootRef.current?.querySelector('.home-segment-tab')?.offsetWidth || 80
-    dragRef.current = { id: e.pointerId, startX: e.clientX, originX: e.clientX, startPos: x, slot, moving: false, samples: [] }
+    const slot = rootRef.current?.querySelector('.home-segment-tab')?.offsetHeight || 44
+    dragRef.current = { id: e.pointerId, startY: e.clientY, originY: e.clientY, startPos: x, slot, moving: false, samples: [] }
   }
 
   const onPointerMove = (e) => {
     const d = dragRef.current
     if (!d || d.id !== e.pointerId) return
     if (!d.moving) {
-      if (Math.abs(e.clientX - d.startX) <= DRAG_START_PX) return
+      if (Math.abs(e.clientY - d.startY) <= DRAG_START_PX) return
       // Only a real drag captures the pointer, so plain taps still reach the buttons.
       try {
         e.currentTarget.setPointerCapture(e.pointerId)
@@ -57,9 +57,9 @@ export default function HomeSegmentSlider({ value, onChange }) {
         return
       }
       d.moving = true
-      d.originX = d.startX + Math.sign(e.clientX - d.startX) * DRAG_START_PX
+      d.originY = d.startY + Math.sign(e.clientY - d.startY) * DRAG_START_PX
     }
-    const pos = d.startPos - (e.clientX - d.originX) / d.slot
+    const pos = d.startPos - (e.clientY - d.originY) / d.slot
     d.samples.push({ t: e.timeStamp, pos })
     if (d.samples.length > 6) d.samples.shift()
     setDragX(resist(pos))
@@ -92,8 +92,8 @@ export default function HomeSegmentSlider({ value, onChange }) {
 
   const onKeyDown = (e) => {
     let next
-    if (e.key === 'ArrowLeft') next = index - 1
-    else if (e.key === 'ArrowRight') next = index + 1
+    if (e.key === 'ArrowUp') next = index - 1
+    else if (e.key === 'ArrowDown') next = index + 1
     else if (e.key === 'Home') next = 0
     else if (e.key === 'End') next = LAST
     else return
@@ -109,6 +109,7 @@ export default function HomeSegmentSlider({ value, onChange }) {
       className={`home-segment-slider${dragX !== null ? ' is-dragging' : ''}`}
       role="tablist"
       aria-label="Shop Market or Store"
+      aria-orientation="vertical"
       style={{ '--x': x, '--p': progress }}
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
@@ -135,7 +136,6 @@ export default function HomeSegmentSlider({ value, onChange }) {
           </button>
         ))}
       </div>
-      <span className="home-segment-mark" aria-hidden="true" />
     </div>
   )
 }

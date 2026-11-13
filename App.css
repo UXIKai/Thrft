@@ -1908,18 +1908,32 @@ html body .tab-bar.is-pressed .tab-pill::before {
   max-width: none;
 }
 
-/* Store / Market slider: the chosen icon is always dead centre under a short mark; --x is the (dragged) position, --p the same clamped to 0–1 */
+/* Store / Market vertical picker wheel: the chosen icon is always dead centre; --x is the (dragged) position, --p the same clamped to 0–1 */
 .home-segment-slider {
-  --slot: 80px;
+  --slot: 44px;
   position: relative;
   width: 100%;
-  height: 57.6px;
-  margin: 0 0 20px;
+  height: calc(var(--slot) * 2 + 32px);
+  margin: 0 0 12px;
+  overflow: hidden;
   cursor: grab;
-  touch-action: pan-y;
+  touch-action: none;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   user-select: none;
+}
+
+.home-segment-slider::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 88px;
+  height: var(--slot);
+  margin: calc(var(--slot) / -2) 0 0 -44px;
+  border-radius: 999px;
+  background: light-dark(rgba(0, 0, 0, 0.12), rgba(255, 255, 255, 0.2));
+  pointer-events: none;
 }
 
 .home-segment-slider.is-dragging {
@@ -1927,11 +1941,12 @@ html body .tab-bar.is-pressed .tab-pill::before {
 }
 
 .home-segment-track {
+  position: relative;
   display: flex;
-  width: calc(var(--slot) * 2);
-  height: 100%;
-  margin-left: calc(50% - var(--slot) / 2);
-  transform: translateX(calc(var(--x, 0) * var(--slot) * -1));
+  flex-direction: column;
+  width: 88px;
+  margin: 0 auto;
+  transform: translateY(calc(38px + (var(--x, 0) * var(--slot) * -1)));
   transition: transform 0.32s cubic-bezier(0.22, 0.9, 0.3, 1);
 }
 
@@ -1941,7 +1956,8 @@ html body .tab-bar.is-pressed .tab-pill::before {
   align-items: center;
   justify-content: center;
   min-width: 0;
-  height: 100%;
+  width: 100%;
+  height: var(--slot);
   padding: 0;
   color: light-dark(#000, #fff);
   transition: opacity 0.32s ease, transform 0.32s cubic-bezier(0.22, 0.9, 0.3, 1);
@@ -1949,12 +1965,12 @@ html body .tab-bar.is-pressed .tab-pill::before {
 
 .home-segment-tab:first-child {
   opacity: calc(1 - 0.55 * var(--p, 0));
-  transform: scale(calc(1.15 - 0.25 * var(--p, 0)));
+  transform: perspective(120px) rotateX(calc(var(--p, 0) * 32deg)) scale(calc(1.15 - 0.25 * var(--p, 0)));
 }
 
 .home-segment-tab:last-child {
   opacity: calc(0.45 + 0.55 * var(--p, 0));
-  transform: scale(calc(0.9 + 0.25 * var(--p, 0)));
+  transform: perspective(120px) rotateX(calc((1 - var(--p, 0)) * -32deg)) scale(calc(0.9 + 0.25 * var(--p, 0)));
 }
 
 .home-segment-slider.is-dragging .home-segment-track,
@@ -1975,18 +1991,6 @@ html body .tab-bar.is-pressed .tab-pill::before {
 .home-segment-tab svg {
   width: 24px;
   height: 24px;
-}
-
-.home-segment-mark {
-  position: absolute;
-  left: 50%;
-  bottom: 0;
-  width: 28px;
-  height: 2px;
-  margin-left: -14px;
-  border-radius: 1px;
-  background: light-dark(#000, #fff);
-  pointer-events: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
