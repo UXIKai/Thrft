@@ -299,3 +299,8 @@ html body .closet-number-content .closet-brand-wheel .brand-logo-label > span {
 .stage.is-closet-lookup-open > .tab-bar {
   visibility: hidden;
 }
+
+/* Blur every brand except the selected one so the chosen brand stands out */
+html body .closet-number-content .closet-brand-wheel .type-box.is-wheel:not(.is-active) {
+  filter: blur(5px) !important;
+}
