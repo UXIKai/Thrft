@@ -5293,3 +5293,11 @@ html body .chat-thread-scroll > .chat-thread-body {
   outline: none;
 }
 .chat-friends-find::placeholder { color: inherit; opacity: 0.5; }
+
+/* Collapsed sidebar: the toggle lines up with the rail buttons below it */
+@media (min-width: 720px) and (min-height: 500px) {
+  html body .chat-screen.is-sidebar-collapsed .chat-sidebar-header {
+    justify-content: flex-start !important;
+    gap: 0;
+  }
+}
