@@ -5334,3 +5334,16 @@ html body .chat-thread-scroll > .chat-thread-body {
     z-index: 3;
   }
 }
+
+/* Desktop sidebar laid out like ChatGPT: title left, icons right, items right under the header */
+@media (min-width: 720px) and (min-height: 500px) {
+  html body .chat-screen.is-desktop { row-gap: 0; }
+  html body .chat-screen.is-desktop .chat-sidebar-header { margin-bottom: 8px; }
+  html body .chat-screen.is-desktop:not(.is-sidebar-collapsed) .chat-sidebar-title {
+    left: 8px;
+    transform: none;
+  }
+  html body .chat-screen.is-desktop .chat-list-toolbar { margin: 0; }
+  html body .chat-screen.is-desktop .chat-list-quick { margin-top: 0; padding: 0; }
+  html body .chat-screen.is-desktop .chat-list-quick-btn { padding: 8px 8px; }
+}
