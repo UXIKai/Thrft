@@ -214,15 +214,22 @@ export default function TabBar({ active = 'home', onChange, onCreate }) {
     }
     setCreateOpen(true)
   }
-  const toggleCreate = () => (createOpen ? setCreateOpen(false) : openCreate())
+  // Leaving the menu without choosing an option (×, tap away, Escape) lands on Home.
+  const dismissCreate = () => {
+    setCreateOpen(false)
+    if (active !== 'home') onChange?.('home')
+  }
+  const dismissRef = useRef(dismissCreate)
+  dismissRef.current = dismissCreate
+  const toggleCreate = () => (createOpen ? dismissCreate() : openCreate())
 
   useEffect(() => {
     if (!createOpen) return undefined
     const close = (e) => {
       if (navRef.current?.contains(e.target) || e.target.closest?.('.create-menu-btn')) return
-      setCreateOpen(false)
+      dismissRef.current()
     }
-    const onKey = (e) => e.key === 'Escape' && setCreateOpen(false)
+    const onKey = (e) => e.key === 'Escape' && dismissRef.current()
     document.addEventListener('pointerdown', close)
     document.addEventListener('keydown', onKey)
     return () => {
@@ -263,7 +270,7 @@ export default function TabBar({ active = 'home', onChange, onCreate }) {
     if (d.closeOnly) {
       if (commit) {
         setReleaseCount((count) => count + 1)
-        setCreateOpen(false)
+        dismissCreate()
       }
       return
     }
