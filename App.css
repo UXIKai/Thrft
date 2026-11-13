@@ -193,6 +193,13 @@
 .home-hero {
   display: contents;
 }
+.stage.is-home-idle .product-feed,
+.stage.is-home-idle > .tab-bar {
+  opacity: var(--reveal, 1);
+}
+.stage.is-home-idle.is-reveal-low > .tab-bar {
+  pointer-events: none;
+}
 .home-hero.is-idle {
   display: flex;
   flex-direction: column;

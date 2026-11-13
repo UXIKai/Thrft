@@ -185,7 +185,19 @@ export default function App() {
   const scrollRef = useRef(null)
   const hideTabBar = tab === 'chat' || tab === 'saved'
   const homeIdle = tab === 'home' && homeSegment === 'none'
-  const showNav = !(tab === 'chat' && chatThreadOpen) && !homeIdle
+  const showNav = !(tab === 'chat' && chatThreadOpen)
+  // On the "-" stop the nav bar and feed fade in as the page is swiped up.
+  const [reveal, setReveal] = useState(0)
+  useEffect(() => {
+    const el = scrollRef.current
+    if (!homeIdle || !el) return undefined
+    const update = () => setReveal(Math.min(1, Math.max(0, el.scrollTop / (el.clientHeight * 0.45))))
+    el.scrollTo({ top: 0 })
+    update()
+    el.addEventListener('scroll', update, { passive: true })
+    return () => el.removeEventListener('scroll', update)
+  }, [homeIdle])
+  const revealValue = homeIdle ? reveal : 1
 
   // A product page covers the app: its nav bar must not be reachable
   useEffect(() => {
@@ -500,9 +512,9 @@ export default function App() {
 
   return (
     <div
-      className="stage"
+      className={`stage${homeIdle ? ' is-home-idle' : ''}${homeIdle && reveal < 0.15 ? ' is-reveal-low' : ''}`}
       ref={stageRef}
-      style={{ '--bubble-size': `${BUBBLE}px` }}
+      style={{ '--bubble-size': `${BUBBLE}px`, '--reveal': revealValue }}
     >
       <LiquidGlassDefs />
       <div className="atmosphere" aria-hidden>
