@@ -250,7 +250,12 @@ html body .closet-number-content .closet-brand-wheel .type-box.is-wheel {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 40px;
+  position: relative;
+}
+
+.closet-number-actions button[aria-label="Back"] {
+  position: absolute;
+  right: calc(50% + 40px);
 }
 
 html body .closet-number-content .closet-number-actions button {

@@ -103,11 +103,11 @@ export default function ClosetNumberLookup({ brands, initialBrand, onClose, onAd
             </> : <>
               <OrbitCarousel variant="wheel" className="closet-brand-wheel" wheelSpacing={60} wheelAngle={0} wheelScale={false} items={brands.map((name) => ({ id: name, label: name }))} activeId={brand} onSelect={setBrand} onActivate={() => setExpanded(true)} ariaLabel="Brand" renderItem={(item) => <BrandLogo name={item.label} />} />
               <div className="closet-number-actions">
-                <button type="button" className="is-bare" aria-label="Back" onClick={onClose}>
-                  <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 5l-7 7 7 7" /></svg>
-                </button>
                 <button type="button" className="is-bare" aria-label="Continue" disabled={!brand} onClick={() => setPage('numbers')}>
                   <svg width="28" height="28" viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>
+                </button>
+                <button type="button" className="is-bare" aria-label="Back" onClick={onClose}>
+                  <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 5l-7 7 7 7" /></svg>
                 </button>
               </div>
             </>}
