@@ -1186,7 +1186,7 @@ html[data-bg-color='none'] .stage.is-bg-none .atmosphere {
   z-index: 4;
   left: 50%;
   right: auto;
-  width: var(--dock-bar-width);
+  width: min(calc(100% - 40px), 320px);
   transform: translateX(-50%);
   bottom: calc(max(4px, env(safe-area-inset-bottom, 0px) * 0.3) + 15px);
   display: grid;
