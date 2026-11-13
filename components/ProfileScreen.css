@@ -3198,3 +3198,15 @@ html body .profile-space-wheel .profile-wheel-item.is-active {
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
 }
+
+/* Instagram-style pill behind the selected space icon */
+html body .profile-space-wheel { padding: 6px calc(50% - 44px); }
+html body .profile-space-wheel .profile-wheel-item {
+  flex: 0 0 88px;
+  width: 88px;
+  height: 44px;
+  border-radius: 999px;
+}
+html body .profile-space-wheel .profile-wheel-item.is-active {
+  background: light-dark(rgba(0, 0, 0, 0.12), rgba(255, 255, 255, 0.2)) !important;
+}
