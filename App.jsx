@@ -118,7 +118,7 @@ export default function App() {
   const [clothingType, setClothingType] = useState('all')
   const [homeColor, setHomeColor] = useState('')
   const [homeSegment, setHomeSegment] = useState('leaderboard')
-  const [homeOpen, setHomeOpen] = useState(false) // the wheel rests mid-page until something is picked
+  const [homeOpen, setHomeOpen] = useState(true)
   const [homeBrand, setHomeBrand] = useState(null) // { id, label } | null
   const [homePicker, setHomePicker] = useState(null) // 'brands' | 'category' | null
   const [homePickerPhase, setHomePickerPhase] = useState('closed')
