@@ -2263,3 +2263,26 @@ html body .stage > .tab-bar.is-create-open {
   -webkit-backdrop-filter: blur(0.5px) !important;
 }
 .tab-bar .tab-item { transition: transform 0.26s cubic-bezier(0.5, 0, 0.75, 0), opacity 0.14s ease 0.14s; }
+
+/* Create popup: background just blurs; the three buttons pop out of the plus */
+.create-page {
+  background: light-dark(rgba(255, 255, 255, 0.35), rgba(0, 0, 0, 0.3));
+  backdrop-filter: blur(34px) saturate(1.1);
+  -webkit-backdrop-filter: blur(34px) saturate(1.1);
+  transform: none;
+}
+.create-page.is-open { transform: none; }
+.create-page .create-menu-btn {
+  top: calc(100% - 84px) !important;
+  transform: translateX(-50%) scale(0.15) !important;
+  opacity: 0;
+  transition: top 0.22s ease, transform 0.22s ease, opacity 0.15s ease;
+  background: light-dark(rgba(255, 255, 255, 0.7), rgba(40, 41, 46, 0.75));
+}
+.create-page.is-open .create-menu-btn {
+  opacity: 1;
+  transition: top 0.4s cubic-bezier(0.25, 1.3, 0.5, 1) 0.34s, transform 0.4s cubic-bezier(0.25, 1.3, 0.5, 1) 0.34s, opacity 0.2s ease 0.34s;
+}
+.create-page.is-open .create-menu-btn.is-closet { top: calc(50% - 124px) !important; transform: translateX(-50%) !important; }
+.create-page.is-open .create-menu-btn.is-store { top: calc(50% + 4px) !important; transform: translateX(calc(-100% - 8px)) !important; }
+.create-page.is-open .create-menu-btn.is-market { top: calc(50% + 4px) !important; transform: translateX(8px) !important; }
