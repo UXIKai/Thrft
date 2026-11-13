@@ -1863,15 +1863,3 @@ html body button.saved-room-btn:not(#_) {
   backdrop-filter: blur(40px) saturate(1.4) !important;
   -webkit-backdrop-filter: blur(40px) saturate(1.4) !important;
 }
-
-/* Chat page: same frosted layer behind the whole screen */
-.chat-screen::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background: light-dark(rgba(235, 235, 235, 0.22), rgba(120, 120, 120, 0.2));
-  backdrop-filter: blur(40px) saturate(1.4);
-  -webkit-backdrop-filter: blur(40px) saturate(1.4);
-}

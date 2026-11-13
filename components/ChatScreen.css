@@ -14,16 +14,6 @@
   font-family: var(--font-sans);
 }
 
-/* Frosts the page effect behind the chat (~60%) so it stays visible but never competes with content. */
-.chat-screen::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background: light-dark(rgba(255, 255, 255, 0.45), rgba(0, 0, 0, 0.6));
-}
-
 .chat-screen > .chat-pins-section {
   flex: 0 0 auto;
 }
@@ -5368,10 +5358,5 @@ html body .chat-thread-scroll > .chat-thread-body {
 @media (max-width: 719px), (max-height: 499px) {
   html body .chat-screen.is-online-open .chat-friends-find.is-in-header {
     display: none;
-  }
-  html body .chat-screen.is-online-open::before {
-    background: #000;
-    -webkit-backdrop-filter: none;
-    backdrop-filter: none;
   }
 }
