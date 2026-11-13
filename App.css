@@ -2096,7 +2096,7 @@ html body .stage.is-chat-panel-dragging .tab-bar {
 .stage .atmosphere::before {
   inset: -20%;
   background:
-    radial-gradient(circle at 85% 28%, rgba(var(--atmosphere-effect-b-rgb, 150, 150, 150), 0.32), transparent 45%),
+    radial-gradient(circle at 85% 55%, rgba(var(--atmosphere-effect-b-rgb, 150, 150, 150), 0.32), transparent 45%),
     radial-gradient(circle at 20% 58%, rgba(var(--atmosphere-effect-c-rgb, 170, 170, 170), 0.3), transparent 48%),
     radial-gradient(circle at 80% 85%, rgba(var(--atmosphere-effect-a-rgb, 190, 190, 190), 0.3), transparent 48%),
     var(--atmosphere-base, var(--void, light-dark(rgb(250, 250, 250), #050505)));
@@ -2140,7 +2140,7 @@ html body .market-product-grid .product-box {
 /* Same wash as the base layer minus its dark base blob, so no dark patch (or light band) sits behind the status bar */
 .stage .atmosphere::before {
   background:
-    radial-gradient(circle at 85% 28%, rgba(var(--atmosphere-effect-b-rgb, 150, 150, 150), 0.32), transparent 45%),
+    radial-gradient(circle at 85% 55%, rgba(var(--atmosphere-effect-b-rgb, 150, 150, 150), 0.32), transparent 45%),
     radial-gradient(circle at 20% 58%, rgba(var(--atmosphere-effect-c-rgb, 170, 170, 170), 0.3), transparent 48%),
     radial-gradient(circle at 80% 85%, rgba(var(--atmosphere-effect-a-rgb, 190, 190, 190), 0.3), transparent 48%),
     var(--atmosphere-base, var(--void, light-dark(rgb(250, 250, 250), #050505)));
