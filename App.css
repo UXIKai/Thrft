@@ -451,6 +451,12 @@ html[data-bg-color='none'] .stage.is-bg-none .atmosphere {
   height: 1px;
 }
 
+.wordmark-wrap > .home-segment-slider {
+  grid-column: 2;
+  width: calc(var(--slot) * 3);
+  margin: 0;
+}
+
 .home-checkout-btn {
   grid-column: 3;
   justify-self: end;

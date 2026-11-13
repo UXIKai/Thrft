@@ -562,6 +562,14 @@ export default function App() {
                 onOpenColors={() => openHomePicker('colors')}
                 onOpenCategory={() => openHomePicker('category')}
               />
+              <HomeSegmentSlider
+                value={homeSegment}
+                fireSame={!homeOpen}
+                onChange={(id) => {
+                  setHomeSegment(id)
+                  setHomeOpen(true)
+                }}
+              />
               <button
                 type="button"
                 className="home-checkout-btn"
@@ -577,14 +585,6 @@ export default function App() {
 
 
 
-            <HomeSegmentSlider
-              value={homeSegment}
-              fireSame={!homeOpen}
-              onChange={(id) => {
-                setHomeSegment(id)
-                setHomeOpen(true)
-              }}
-            />
             {homeOpen && homeSegment === 'leaderboard' && <section
               className="leaderboard-panel"
               aria-label="Account ranks by profit"
