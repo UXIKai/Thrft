@@ -5318,3 +5318,19 @@ html body .chat-thread-scroll > .chat-thread-body {
   }
   html body .chat-screen .chat-friends-find.is-in-panel { display: none; }
 }
+
+/* Desktop: the people search sits in the top row; the friends tabs only show after clicking Friends */
+@media (min-width: 720px) and (min-height: 500px) {
+  html body .chat-desktop-thread { position: relative; }
+  html body .chat-desktop-thread .chat-friends-tabs.is-desktop-hidden { display: none; }
+  html body .chat-desktop-thread .chat-friends-find.is-in-panel {
+    position: absolute;
+    top: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(360px, 44%);
+    height: 38px;
+    margin: 0;
+    z-index: 3;
+  }
+}

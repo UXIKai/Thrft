@@ -611,6 +611,7 @@ export default function ChatScreen({
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [friendsTab, setFriendsTab] = useState('all')
   const [friendsTabsOpen, setFriendsTabsOpen] = useState(false)
+  const [friendsClicked, setFriendsClicked] = useState(false)
   useEffect(() => {
     if (!friendsTabsOpen) return undefined
     const dismiss = (event) => {
@@ -684,6 +685,9 @@ export default function ChatScreen({
   const [likedSelected, setLikedSelected] = useState([]) // item keys, max 10
   const [pinsMenuOpen, setPinsMenuOpen] = useState(false)
   const [imagesOnly, setImagesOnly] = useState(false)
+  useEffect(() => {
+    if (activeChatId || composer || imagesOnly || requestsView) setFriendsClicked(false)
+  }, [activeChatId, composer, imagesOnly, requestsView])
   useEffect(() => {
     if (activeChatId) setImagesOnly(false)
   }, [activeChatId])
@@ -3021,7 +3025,7 @@ export default function ChatScreen({
           <button
             type="button"
             className={`chat-list-quick-btn is-bare${!imagesOnly && !requestsView && !activeChat && !composer ? ' is-on' : ''}`}
-            onClick={() => { if (composer) closeComposer(); setImagesOnly(false); setRequestsView(false); setActiveChatId(null) }}
+            onClick={() => { if (composer) closeComposer(); setImagesOnly(false); setRequestsView(false); setActiveChatId(null); setFriendsClicked(true) }}
           >
             <svg className="chat-ico" viewBox="0 0 24 24" aria-hidden width="20" height="20" fill="currentColor"><circle cx="12" cy="8" r="3.5" /><path d="M5.500 20c0-3.600 2.900-6 6.500-6s6.500 2.400 6.500 6z" /></svg>
             <span>Friends</span>
@@ -3210,7 +3214,7 @@ export default function ChatScreen({
             renderThread()
           ) : (
             <div className="chat-friends-empty">
-              <nav className={`chat-friends-tabs is-collapsible${friendsTabsOpen ? ' is-tabs-open' : ''}`} aria-label="Friends">
+              <nav className={`chat-friends-tabs is-collapsible${friendsTabsOpen ? ' is-tabs-open' : ''}${isDesktop && !friendsClicked ? ' is-desktop-hidden' : ''}`} aria-label="Friends">
                 <button
                   type="button"
                   className="chat-friends-label"
