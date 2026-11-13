@@ -1277,4 +1277,7 @@ html body .saved-brands-empty {
 
 /* Select mode with no brands looks the same as the opened chest */
 html body .saved-fav-brands.is-expanded .saved-brands-empty { grid-column: 1 / -1; }
-html body .saved-fav-brands.is-fab-open:has(.saved-brands-empty) { margin-top: 16px; }
+html body .saved-fav-brands.is-fab-open.is-expanded:has(.saved-brands-empty) { margin-top: 16px; }
+
+/* Chest, heart and plus sit higher so the fan stays clear of the liked brands */
+html body .saved-page-header { top: -20px; }
