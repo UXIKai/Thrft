@@ -1274,3 +1274,7 @@ html body .saved-brands-empty {
   font-size: 0.85rem;
   color: rgba(255, 255, 255, 0.6);
 }
+
+/* Select mode with no brands looks the same as the opened chest */
+html body .saved-fav-brands.is-expanded .saved-brands-empty { grid-column: 1 / -1; }
+html body .saved-fav-brands.is-fab-open:has(.saved-brands-empty) { margin-top: 16px; }
