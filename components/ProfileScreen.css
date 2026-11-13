@@ -3125,73 +3125,53 @@
   justify-content: center;
 }
 
-/* Sideways scroll wheel (like the iOS clock picker) */
+/* Up/down scroll wheel (like the iOS picker): one icon rests in the middle row */
+.profile-space-wheel-wrap {
+  --wheel-row: 44px;
+  position: relative;
+  width: 88px;
+  height: calc(var(--wheel-row) * 3);
+  margin: 0 auto;
+}
 .profile-space-wheel {
+  position: relative;
   display: flex;
-  align-items: center;
+  flex-direction: column;
   width: 100%;
-  padding: 6px calc(50% - 36px);
-  box-sizing: border-box;
-  overflow-x: auto;
-  overflow-y: hidden;
-  scroll-snap-type: x mandatory;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  scroll-snap-type: y mandatory;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
-  perspective: 300px;
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 25%, #000 75%, transparent);
-  mask-image: linear-gradient(90deg, transparent, #000 25%, #000 75%, transparent);
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-mask-image: linear-gradient(180deg, transparent, #000 12%, #000 88%, transparent);
+  mask-image: linear-gradient(180deg, transparent, #000 12%, #000 88%, transparent);
 }
 .profile-space-wheel::-webkit-scrollbar { display: none; }
-.profile-space-wheel .profile-wheel-item {
-  flex: 0 0 72px;
-  width: 72px;
-  scroll-snap-align: center;
-  scroll-snap-stop: always;
-  will-change: transform, opacity;
+/* Spacers let the first and last icon scroll into the middle row */
+.profile-space-wheel::before,
+.profile-space-wheel::after {
+  content: '';
+  flex: 0 0 var(--wheel-row);
 }
+.profile-space-wheel .profile-mode-ico { will-change: transform, opacity; }
 
-/* Glass button on the space wheel icons (shown on hover/press and the active one) */
-html body .profile-space-wheel .profile-wheel-item {
-  border-radius: 50%;
-  border: 0.5px solid transparent;
-  transition: background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
-}
-html body .profile-space-wheel .profile-wheel-item:hover,
-html body .profile-space-wheel .profile-wheel-item:active,
-html body .profile-space-wheel .profile-wheel-item.is-active {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0.02) 50%, rgba(0, 0, 0, 0.12) 100%) !important;
-  border-color: rgba(255, 255, 255, 0.32) !important;
-  backdrop-filter: blur(1px) !important;
-  -webkit-backdrop-filter: blur(1px) !important;
-  box-shadow:
-    inset 0 0 0 0.5px rgba(0, 0, 0, 0.3),
-    inset 0 1px 2px rgba(0, 0, 0, 0.22),
-    0 1px 0 rgba(255, 255, 255, 0.18) !important;
-}
-@supports (backdrop-filter: url('#lg-btn')) {
-  html body .profile-space-wheel .profile-wheel-item:hover,
-  html body .profile-space-wheel .profile-wheel-item:active,
-  html body .profile-space-wheel .profile-wheel-item.is-active {
-    backdrop-filter: blur(1px) url('#lg-btn') !important;
-    -webkit-backdrop-filter: blur(1px) url('#lg-btn') !important;
-  }
-}
-
-html body .profile-space-wheel .profile-wheel-item {
-  flex: 0 0 56px;
-  width: 56px;
-  height: 32px;
-  min-height: 0;
-  padding: 0;
-  border-radius: 999px;
-}
-html body .profile-space-wheel { padding: 6px calc(50% - 28px); }
-
-/* No pill on the space wheel */
+/* Icons stay transparent (the pill behind the middle row is the only chrome); each row is a full-width tap target */
 html body .profile-space-wheel .profile-wheel-item,
 html body .profile-space-wheel .profile-wheel-item:hover,
 html body .profile-space-wheel .profile-wheel-item:active,
 html body .profile-space-wheel .profile-wheel-item.is-active {
+  flex: 0 0 var(--wheel-row);
+  width: 100%;
+  height: var(--wheel-row);
+  min-height: 0;
+  padding: 0;
+  border-radius: 999px;
+  scroll-snap-align: center;
+  scroll-snap-stop: always;
   background: none !important;
   border-color: transparent !important;
   box-shadow: none !important;
@@ -3199,31 +3179,15 @@ html body .profile-space-wheel .profile-wheel-item.is-active {
   -webkit-backdrop-filter: none !important;
 }
 
-/* Instagram-style pill behind the selected space icon */
-html body .profile-space-wheel { padding: 6px calc(50% - 44px); }
-html body .profile-space-wheel .profile-wheel-item {
-  flex: 0 0 88px;
-  width: 88px;
-  height: 44px;
-  border-radius: 999px;
-}
-html body .profile-space-wheel .profile-wheel-item.is-active {
-  background: light-dark(rgba(0, 0, 0, 0.12), rgba(255, 255, 255, 0.2)) !important;
-}
-
-/* Fixed Instagram-style pill behind whichever icon is centered */
-.profile-space-wheel-wrap { position: relative; width: 100%; }
+/* Fixed Instagram-style pill behind whichever icon is in the middle row */
 .profile-space-wheel-wrap::before {
   content: '';
   position: absolute;
-  left: 50%;
-  top: 6px;
-  width: 88px;
-  height: 44px;
-  transform: translateX(-50%);
+  left: 0;
+  right: 0;
+  top: var(--wheel-row);
+  height: var(--wheel-row);
   border-radius: 999px;
   background: light-dark(rgba(0, 0, 0, 0.12), rgba(255, 255, 255, 0.2));
   pointer-events: none;
 }
-.profile-space-wheel-wrap .profile-space-wheel { position: relative; }
-html body .profile-space-wheel .profile-wheel-item.is-active { background: none !important; }
