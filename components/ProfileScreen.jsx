@@ -603,7 +603,8 @@ export default function ProfileScreen({
     setClosetSplit(false)
     setClosetSelected(null)
   }
-  const [spaceTab, setSpaceTab] = useState('closet') // 'store' | 'market' | 'closet'
+  const [spaceTab, setSpaceTab] = useState('store') // 'store' | 'market' | 'closet'
+  const [sliderId, setSliderId] = useState('closet')
   const [panelListingTab, setPanelListingTab] = useState('active')
   const [storeProducts, setStoreProducts] = useState([])
   const [marketListings, setMarketListings] = useState([])
@@ -1266,14 +1267,14 @@ export default function ProfileScreen({
             if (!Number.isFinite(x0) || !x0) return
             const dx = e.clientX - x0
             if (Math.abs(dx) < 30) return
-            const i = SPACE_MODES.findIndex((m) => m.id === spaceTab)
+            const i = SPACE_MODES.findIndex((m) => m.id === sliderId)
             const next = SPACE_MODES[Math.max(0, Math.min(SPACE_MODES.length - 1, i + (dx < 0 ? 1 : -1)))]
-            switchSpace(next.id)
+            setSliderId(next.id)
           }}
         >
           <div
             className="profile-space-track"
-            style={{ transform: `translateX(${-100 * SPACE_MODES.findIndex((m) => m.id === spaceTab)}%)` }}
+            style={{ transform: `translateX(${-100 * SPACE_MODES.findIndex((m) => m.id === sliderId)}%)` }}
           >
             {SPACE_MODES.map(({ id, label, Icon }) => (
               <div key={id} className="profile-space-slide">
