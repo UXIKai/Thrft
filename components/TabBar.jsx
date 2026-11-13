@@ -71,22 +71,24 @@ const TABS = [
   },
 ]
 
-const CLOSET_OPTION = { id: 'closet', label: 'Closet', Icon: ClosetIcon }
-const SLIDE_OPTIONS = [
+// Closet on top, Store to the left and Market to the right (positions live in App.css).
+const CREATE_OPTIONS = [
+  { id: 'closet', label: 'Closet', Icon: ClosetIcon },
   { id: 'store', label: 'Store', Icon: StoreIcon },
   { id: 'market', label: 'Market', Icon: MarketIcon },
 ]
-// Finger travel (px) needed to slide from Store to Market.
-const SLIDE_DRAG_PX = 70
+// How close (px) the finger must be to an option's center to count as on it.
+// Just under half the Store-Market spacing so the gap between them stays a clear path up to Closet.
+const OPTION_REACH = 44
 
 export default function TabBar({ active = 'home', onChange, onCreate }) {
   const [createOpen, setCreateOpen] = useState(false)
   const [createClosing, setCreateClosing] = useState(false)
   const [stageEl, setStageEl] = useState(null)
   const pageRef = useRef(null)
-  const [hoverOpt, setHoverOpt] = useState(null)
-  const [slideT, setSlideT] = useState(0)
-  const slideRef = useRef(0)
+  // opt: option under the finger. at: the last option it was on (where the highlight rests).
+  // gen: bumps when the highlight reappears, so it shows up in place instead of sliding in from a stale spot.
+  const [hover, setHover] = useState({ opt: null, at: 'store', gen: 0 })
   const navRef = useRef(null)
   const dragRef = useRef(null)
   const activeIdx = Math.max(0, TABS.findIndex((t) => t.id === active))
@@ -221,7 +223,7 @@ export default function TabBar({ active = 'home', onChange, onCreate }) {
   useEffect(() => {
     if (!createOpen) return undefined
     const close = (e) => {
-      if (navRef.current?.contains(e.target) || e.target.closest?.('.create-menu-btn, .create-slider')) return
+      if (navRef.current?.contains(e.target) || e.target.closest?.('.create-menu-btn')) return
       setCreateOpen(false)
     }
     const onKey = (e) => e.key === 'Escape' && setCreateOpen(false)
@@ -233,27 +235,40 @@ export default function TabBar({ active = 'home', onChange, onCreate }) {
     }
   }, [createOpen])
 
+  const clearHover = () => setHover((h) => (h.opt ? { ...h, opt: null } : h))
+
   const pickCreate = (segment) => {
     setCreateOpen(false)
-    setHoverOpt(null)
+    clearHover()
     onCreate?.(segment)
   }
 
-  const setSlide = (t) => {
-    slideRef.current = t
-    setSlideT(t)
+  // Uses layout offsets, not bounding rects, so the pop-in animation and hover scale don't skew the hit test.
+  const optionAt = (e) => {
+    const page = pageRef.current
+    if (!page) return null
+    const origin = page.getBoundingClientRect()
+    let best = null
+    let bestDist = OPTION_REACH
+    page.querySelectorAll('.create-menu-btn').forEach((btn) => {
+      const cx = origin.left + btn.offsetLeft + btn.offsetWidth / 2
+      const cy = origin.top + btn.offsetTop + btn.offsetHeight / 2
+      const dist = Math.hypot(e.clientX - cx, e.clientY - cy)
+      if (dist < bestDist) {
+        best = btn.dataset.create
+        bestDist = dist
+      }
+    })
+    return best
   }
 
-  // Closet sits above; everything at the Store/Market slider's height (any x) drives the slider.
-  const zoneAt = (e) => {
-    const page = pageRef.current
-    const closet = page?.querySelector('.is-closet')?.getBoundingClientRect()
-    const slider = page?.querySelector('.create-slider')?.getBoundingClientRect()
-    if (!closet || !slider) return null
-    if (e.clientY < (closet.bottom + slider.top) / 2) {
-      return Math.abs(e.clientX - (closet.left + closet.right) / 2) < 90 ? 'closet' : null
-    }
-    return e.clientY < slider.bottom + 24 ? 'slider' : null
+  const hoverAt = (e) => {
+    const opt = optionAt(e)
+    setHover((h) => {
+      if (opt === h.opt) return h
+      if (!opt) return { ...h, opt: null }
+      return { opt, at: opt, gen: h.opt ? h.gen : h.gen + 1 }
+    })
   }
 
   const posFromEvent = (e) => {
@@ -283,18 +298,7 @@ export default function TabBar({ active = 'home', onChange, onCreate }) {
     if (!d) return
     if (d.create) {
       if (d.held) {
-        const zone = zoneAt(e)
-        setHoverOpt(zone)
-        if (zone === 'slider') {
-          if (d.anchorX == null) {
-            d.anchorX = e.clientX
-            d.baseT = slideRef.current
-          }
-          setSlide(Math.min(1, Math.max(0, d.baseT - (e.clientX - d.anchorX) / SLIDE_DRAG_PX)))
-        } else if (d.anchorX != null) {
-          d.anchorX = null
-          setSlide(Math.round(slideRef.current))
-        }
+        hoverAt(e)
         return
       }
       if (Math.hypot(e.clientX - d.startX, e.clientY - d.startY) < 10) return
@@ -313,11 +317,9 @@ export default function TabBar({ active = 'home', onChange, onCreate }) {
     if (d.create) {
       // A quick tap on the plus does nothing; it only works as hold, drag onto an option, release.
       if (d.held) {
-        const zone = commit ? zoneAt(e) : null
-        setHoverOpt(null)
-        setSlide(Math.round(slideRef.current))
-        if (zone === 'closet') pickCreate('closet')
-        else if (zone === 'slider') pickCreate(slideRef.current < 0.5 ? 'store' : 'market')
+        const option = commit ? optionAt(e) : null
+        clearHover()
+        if (option) pickCreate(option)
         else setCreateOpen(false)
       }
       return
@@ -404,49 +406,26 @@ export default function TabBar({ active = 'home', onChange, onCreate }) {
     <div
       ref={pageRef}
       className={`create-page${createOpen ? ' is-open' : ''}`}
+      data-glide={hover.at}
       role="menu"
       aria-label="Create"
       aria-hidden={!createOpen}
     >
-      <button
-        type="button"
-        role="menuitem"
-        tabIndex={createOpen ? 0 : -1}
-        data-create={CLOSET_OPTION.id}
-        className={`create-menu-btn is-closet${hoverOpt === 'closet' ? ' is-hover' : ''}`}
-        onClick={() => pickCreate(CLOSET_OPTION.id)}
-      >
-        <CLOSET_OPTION.Icon className="create-menu-ico" />
-        <span>{CLOSET_OPTION.label}</span>
-      </button>
-      <div
-        className={`create-slider${hoverOpt === 'slider' ? ' is-hover' : ''}`}
-        role="group"
-        aria-label="Store or Market"
-        style={{ '--t': slideT }}
-      >
-        <div className="create-slider-track">
-          {SLIDE_OPTIONS.map(({ id, label, Icon }, i) => (
-            <button
-              key={id}
-              type="button"
-              role="menuitem"
-              tabIndex={createOpen ? 0 : -1}
-              data-create={id}
-              className="create-slide-btn"
-              onClick={() => pickCreate(id)}
-              onFocus={() => setSlide(i)}
-            >
-              <Icon className="create-menu-ico" />
-              <span>{label}</span>
-            </button>
-          ))}
-        </div>
-        <div className="create-slider-dots" aria-hidden="true">
-          <i />
-          <i />
-        </div>
-      </div>
+      <span key={hover.gen} className={`create-glide${hover.opt ? ' is-on' : ''}`} aria-hidden="true" />
+      {CREATE_OPTIONS.map(({ id, label, Icon }) => (
+        <button
+          key={id}
+          type="button"
+          role="menuitem"
+          tabIndex={createOpen ? 0 : -1}
+          data-create={id}
+          className={`create-menu-btn is-${id}${hover.opt === id ? ' is-hover' : ''}`}
+          onClick={() => pickCreate(id)}
+        >
+          <Icon className="create-menu-ico" />
+          <span>{label}</span>
+        </button>
+      ))}
     </div>,
       stageEl,
     )}

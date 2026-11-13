@@ -2176,12 +2176,17 @@ html body .stage > .tab-bar.tab-bar.tab-bar.is-create-open {
   pointer-events: auto;
   transition: opacity 0s, visibility 0s;
 }
-.create-page .create-menu-btn {
+/* Triangle above the ×: Closet on top, Store to the left, Market to the right.
+   Offsets are from the lower-row base spot (centered, just above the bar). */
+.create-page .create-menu-btn,
+.create-page .create-glide {
   position: absolute;
   left: calc(50% - 38px);
   bottom: calc(var(--menu-bottom, 90px) - 4px);
   width: 76px;
   height: 76px;
+}
+.create-page .create-menu-btn {
   margin: 0;
   padding: 0;
   display: flex;
@@ -2201,105 +2206,46 @@ html body .stage > .tab-bar.tab-bar.tab-bar.is-create-open {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   user-select: none;
-  transition: transform 0.16s ease, background-color 0.16s ease;
+  transition: transform 0.16s ease;
 }
 .create-page .create-menu-ico { width: 32px; height: 32px; }
 .create-page .create-menu-btn.is-closet { bottom: calc(var(--menu-bottom, 90px) + 82px); --pop-from: translate(0, 150px); }
+.create-page .create-menu-btn.is-store { left: calc(50% - 86px); --pop-from: translate(48px, 74px); }
+.create-page .create-menu-btn.is-market { left: calc(50% + 10px); --pop-from: translate(-48px, 74px); }
+.create-page .create-menu-btn.is-hover { transform: scale(1.12); }
 
-/* Store / Market share one slot: a slider that shows a single option at a time */
-.create-page .create-slider {
-  position: absolute;
-  left: calc(50% - 50px);
-  bottom: calc(var(--menu-bottom, 90px) - 4px);
-  width: 100px;
-  height: 76px;
-  overflow: hidden;
-  overflow: clip;
-  --pop-from: translate(0, 74px);
-  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 14%, #000 86%, transparent 100%);
-  mask-image: linear-gradient(90deg, transparent 0, #000 14%, #000 86%, transparent 100%);
-}
-.create-page .create-slider::before {
-  content: '';
-  position: absolute;
-  left: 12px;
-  top: 0;
-  width: 76px;
-  height: 76px;
+/* One soft highlight that slides between the options, so only one is lit at a time */
+.create-page .create-glide {
   border-radius: 50%;
   background: light-dark(rgba(0, 0, 0, 0.08), rgba(255, 255, 255, 0.16));
   opacity: 0;
-  transition: opacity 0.16s ease;
-}
-.create-page .create-slider.is-hover::before { opacity: 1; }
-.create-page .create-slider-track {
-  position: relative;
-  display: flex;
-  gap: 24px;
-  width: max-content;
-  transform: translateX(calc(12px - var(--t, 0) * 100px));
-  transition: transform 0.12s ease-out;
-}
-.create-page .create-slide-btn {
-  flex: none;
-  width: 76px;
-  height: 76px;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  border-radius: 50%;
-  color: inherit;
-  font: inherit;
-  font-size: 0.72rem;
-  font-weight: 600;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  user-select: none;
-}
-.create-page .create-slider-dots {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 6px;
-  display: flex;
-  justify-content: center;
-  gap: 5px;
   pointer-events: none;
+  transform: translate(var(--gx, -48px), var(--gy, 0px));
+  transition: opacity 0.14s ease;
 }
-.create-page .create-slider-dots i {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: currentColor;
+.create-page .create-glide.is-on {
+  opacity: 1;
+  transition: transform 0.2s cubic-bezier(0.3, 1.2, 0.5, 1), opacity 0.14s ease;
+  animation: create-glide-in 0.14s ease;
 }
-.create-page .create-slider-dots i:first-child { opacity: calc(1 - var(--t, 0) * 0.65); }
-.create-page .create-slider-dots i:last-child { opacity: calc(0.35 + var(--t, 0) * 0.65); }
-.create-page .create-menu-btn.is-hover {
-  transform: scale(1.18);
-  background: light-dark(rgba(0, 0, 0, 0.08), rgba(255, 255, 255, 0.16));
+@keyframes create-glide-in {
+  from { opacity: 0; }
 }
-.create-page.is-open .create-menu-btn,
-.create-page.is-open .create-slider {
+.create-page[data-glide='closet'] { --gx: 0px; --gy: -86px; }
+.create-page[data-glide='store'] { --gx: -48px; --gy: 0px; }
+.create-page[data-glide='market'] { --gx: 48px; --gy: 0px; }
+
+.create-page.is-open .create-menu-btn {
   animation: create-pop 0.38s cubic-bezier(0.25, 1.3, 0.5, 1) 0.3s backwards;
 }
 @keyframes create-pop {
   from { transform: var(--pop-from) scale(0.15); opacity: 0; }
 }
-html body .stage .create-page .create-menu-btn,
-html body .stage .create-page .create-slide-btn {
+html body .stage .create-page .create-menu-btn {
   border: 0 !important;
   box-shadow: none !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
   background-color: transparent !important;
   background-image: none !important;
-}
-html body .stage .create-page .create-menu-btn.is-hover {
-  background-color: light-dark(rgba(0, 0, 0, 0.08), rgba(255, 255, 255, 0.16)) !important;
 }
