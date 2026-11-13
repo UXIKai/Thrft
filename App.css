@@ -2021,3 +2021,11 @@ html body .stage.is-product-open .tab-bar {
   padding: 4px 0 12px;
   margin: -4px 0 -12px;
 }
+
+/* Refraction sampled outside the screen edge made wavy bumps on tiles cut off at the sides */
+html body .product-box,
+html body .brand-row .product-box,
+html body .market-product-grid .product-box {
+  -webkit-backdrop-filter: blur(3px) !important;
+  backdrop-filter: blur(3px) !important;
+}
