@@ -3149,3 +3149,30 @@
   scroll-snap-stop: always;
   will-change: transform, opacity;
 }
+
+/* Glass button on the space wheel icons (shown on hover/press and the active one) */
+html body .profile-space-wheel .profile-wheel-item {
+  border-radius: 50%;
+  border: 0.5px solid transparent;
+  transition: background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+}
+html body .profile-space-wheel .profile-wheel-item:hover,
+html body .profile-space-wheel .profile-wheel-item:active,
+html body .profile-space-wheel .profile-wheel-item.is-active {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0.02) 50%, rgba(0, 0, 0, 0.12) 100%) !important;
+  border-color: rgba(255, 255, 255, 0.32) !important;
+  backdrop-filter: blur(1px) !important;
+  -webkit-backdrop-filter: blur(1px) !important;
+  box-shadow:
+    inset 0 0 0 0.5px rgba(0, 0, 0, 0.3),
+    inset 0 1px 2px rgba(0, 0, 0, 0.22),
+    0 1px 0 rgba(255, 255, 255, 0.18) !important;
+}
+@supports (backdrop-filter: url('#lg-btn')) {
+  html body .profile-space-wheel .profile-wheel-item:hover,
+  html body .profile-space-wheel .profile-wheel-item:active,
+  html body .profile-space-wheel .profile-wheel-item.is-active {
+    backdrop-filter: blur(1px) url('#lg-btn') !important;
+    -webkit-backdrop-filter: blur(1px) url('#lg-btn') !important;
+  }
+}
