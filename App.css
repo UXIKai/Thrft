@@ -90,7 +90,8 @@
   width: 100%;
 }
 
-.app-column.is-home-wide .home-scroll > *:not(.product-feed) {
+.app-column.is-home-wide .home-scroll > *:not(.product-feed):not(.home-hero),
+.app-column.is-home-wide .home-scroll > .home-hero > * {
   width: 100%;
   max-width: 560px;
   margin-left: auto;
@@ -98,7 +99,8 @@
 }
 
 /* Header spans the full window so search / cart sit in the page corners */
-.app-column.is-home-wide .home-scroll > .wordmark-wrap {
+.app-column.is-home-wide .home-scroll > .wordmark-wrap,
+.app-column.is-home-wide .home-scroll > .home-hero > .wordmark-wrap {
   max-width: none;
   padding-left: max(12px, 2vw);
   padding-right: max(12px, 2vw);
@@ -187,19 +189,24 @@
   box-sizing: border-box;
 }
 
-/* "-" stop: no nav bar, the leaderboard sits mid-page and the wheel rests at the bottom */
-.home-scroll.is-home-idle {
+/* "-" stop: no nav bar; the first screen is the header, a centred leaderboard and the wheel at the bottom, with the feed waiting below until you swipe up */
+.home-hero {
+  display: contents;
+}
+.home-hero.is-idle {
   display: flex;
   flex-direction: column;
-  padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  min-height: calc(100dvh - env(safe-area-inset-top, 0px) - 16px);
+  padding-bottom: 16px;
+  box-sizing: border-box;
 }
-.home-scroll.is-home-idle > * {
+.home-hero.is-idle > * {
   flex: 0 0 auto;
 }
-.home-scroll.is-home-idle > .leaderboard-panel {
+.home-hero.is-idle > .leaderboard-panel {
   margin: auto 0;
 }
-.home-scroll.is-home-idle > .home-segment-slider {
+.home-hero.is-idle > .home-segment-slider {
   margin-bottom: 0;
 }
 
@@ -1920,7 +1927,8 @@ html body .tab-bar.is-pressed .tab-pill::before {
   width: calc(var(--tab-h) * 0.375);
   height: calc(var(--tab-h) * 0.375);
 }
-.app-column.is-home-wide .home-scroll > .home-segment-slider {
+.app-column.is-home-wide .home-scroll > .home-segment-slider,
+.app-column.is-home-wide .home-scroll > .home-hero > .home-segment-slider {
   max-width: none;
 }
 

@@ -519,11 +519,12 @@ export default function App() {
       {signedIn && (
         <>
       <div
-        className={`home-scroll${hideTabBar ? ' is-chat-thread' : ''}${homeIdle ? ' is-home-idle' : ''}`}
+        className={`home-scroll${hideTabBar ? ' is-chat-thread' : ''}`}
         ref={scrollRef}
       >
         {tab === 'home' && (
           <>
+            <div className={`home-hero${homeIdle ? ' is-idle' : ''}`}>
             <header className="wordmark-wrap">
               <HomeFilterLinks
                 brands={HOME_BRAND_ITEMS}
@@ -584,9 +585,10 @@ export default function App() {
 
 
             <HomeSegmentSlider value={homeSegment} onChange={setHomeSegment} />
-            {homeSegment !== 'none' && <ProductRows
-              key={homeSegment}
-              segment={homeSegment}
+            </div>
+            <ProductRows
+              key={homeIdle ? 'store' : homeSegment}
+              segment={homeIdle ? 'store' : homeSegment}
               onOpenProduct={handleOpenProduct}
               clothingType={clothingType}
               colorId={homeColor}
@@ -598,7 +600,7 @@ export default function App() {
               clothingSizes={userProfile?.clothingSizes || {}}
               brandSizes={userProfile?.brandSizes || {}}
               savedProductIds={userProfile?.savedProductIds || []}
-            />}
+            />
           </>
         )}
 
