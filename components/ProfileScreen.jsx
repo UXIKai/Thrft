@@ -1178,10 +1178,19 @@ export default function ProfileScreen({
     e.preventDefault()
   }
 
-  // Touch scrolls the space wheel natively; a mouse has to drag it by hand.
+  // The wheel is dragged by hand so one gesture moves exactly one icon.
   function wheelPointerDown(e) {
-    if (e.pointerType !== 'mouse' || !e.isPrimary || e.button !== 0) return
+    if (!e.isPrimary || e.button !== 0) return
+    window.clearTimeout(wheelSnapTimerRef.current)
+    const items = [...e.currentTarget.querySelectorAll('.profile-wheel-item')]
+    const mid = e.currentTarget.scrollTop + e.currentTarget.clientHeight / 2
+    let startIndex = 0
+    items.forEach((el, i) => {
+      if (Math.abs(el.offsetTop + el.offsetHeight / 2 - mid) < Math.abs(items[startIndex].offsetTop + items[startIndex].offsetHeight / 2 - mid)) startIndex = i
+    })
     wheelDragRef.current = {
+      startIndex,
+      id: e.pointerId,
       id: e.pointerId,
       startY: e.clientY,
       originY: e.clientY,
@@ -1239,15 +1248,15 @@ export default function ProfileScreen({
     const resting = e.timeStamp - last.t > 80
     const velocity = !resting && last.t > from.t ? (last.top - from.top) / (last.t - from.t) : 0
     const aim = wheel.scrollTop + velocity * 150 + wheel.clientHeight / 2
-    let target = wheel.scrollTop
-    let nearest = Infinity
-    wheel.querySelectorAll('.profile-wheel-item').forEach((el) => {
-      const mid = el.offsetTop + el.offsetHeight / 2
-      if (Math.abs(mid - aim) < nearest) {
-        nearest = Math.abs(mid - aim)
-        target = mid - wheel.clientHeight / 2
-      }
+    const items = [...wheel.querySelectorAll('.profile-wheel-item')]
+    let index = 0
+    items.forEach((el, i) => {
+      const cur = items[index]
+      if (Math.abs(el.offsetTop + el.offsetHeight / 2 - aim) < Math.abs(cur.offsetTop + cur.offsetHeight / 2 - aim)) index = i
     })
+    index = Math.max(drag.startIndex - 1, Math.min(drag.startIndex + 1, index))
+    const picked = items[index]
+    const target = picked.offsetTop + picked.offsetHeight / 2 - wheel.clientHeight / 2
     wheel.scrollTo({ top: target, behavior: 'smooth' })
     window.clearTimeout(wheelSnapTimerRef.current)
     wheelSnapTimerRef.current = window.setTimeout(() => {
