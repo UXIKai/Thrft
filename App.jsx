@@ -539,7 +539,7 @@ export default function App() {
       >
         {tab === 'home' && (
           <>
-            <div className={`home-hero${homeIdle ? ' is-idle' : ''}`}>
+            <div className="home-hero is-idle">
             <header className="wordmark-wrap">
               <HomeFilterLinks
                 brands={HOME_BRAND_ITEMS}
