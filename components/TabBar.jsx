@@ -78,6 +78,7 @@ const CREATE_OPTIONS = [
 
 export default function TabBar({ active = 'home', onChange, onCreate }) {
   const [createOpen, setCreateOpen] = useState(false)
+  const [createClosing, setCreateClosing] = useState(false)
   const navRef = useRef(null)
   const dragRef = useRef(null)
   const activeIdx = Math.max(0, TABS.findIndex((t) => t.id === active))
@@ -178,6 +179,22 @@ export default function TabBar({ active = 'home', onChange, onCreate }) {
   }, [])
 
   useEffect(() => {
+    if (createOpen) return undefined
+    setCreateClosing(true)
+    const t = setTimeout(() => setCreateClosing(false), 400)
+    return () => clearTimeout(t)
+  }, [createOpen])
+
+  const toggleCreate = () => {
+    const nav = navRef.current
+    if (nav && !createOpen) {
+      nav.style.setProperty('--bar-w', `${nav.offsetWidth}px`)
+      nav.style.setProperty('--bar-h', `${nav.offsetHeight}px`)
+    }
+    setCreateOpen((open) => !open)
+  }
+
+  useEffect(() => {
     if (!createOpen) return undefined
     const close = (e) => {
       if (navRef.current?.contains(e.target)) return
@@ -225,7 +242,7 @@ export default function TabBar({ active = 'home', onChange, onCreate }) {
     if (commit) setReleaseCount((count) => count + 1)
     if (!commit || !TABS[idx]) return
     if (TABS[idx].id === 'design') {
-      setCreateOpen((open) => !open)
+      toggleCreate()
       return
     }
     setCreateOpen(false)
@@ -235,7 +252,7 @@ export default function TabBar({ active = 'home', onChange, onCreate }) {
   return (
     <nav
       ref={navRef}
-      className={`tab-bar${pressed ? ' is-pressed' : ''}${dragPos !== null ? ' is-dragging' : ''}${createOpen ? ' is-create-open' : ''}`}
+      className={`tab-bar${pressed ? ' is-pressed' : ''}${dragPos !== null ? ' is-dragging' : ''}${createOpen ? ' is-create-open' : ''}${createClosing ? ' is-create-closing' : ''}`}
       aria-label="Main"
       style={{ touchAction: 'none' }}
       onPointerDown={onPointerDown}
@@ -308,7 +325,7 @@ export default function TabBar({ active = 'home', onChange, onCreate }) {
               if (e.detail !== 0) return
               setReleaseCount((count) => count + 1)
               if (tab.id === 'design') {
-                setCreateOpen((open) => !open)
+                toggleCreate()
                 return
               }
               setCreateOpen(false)

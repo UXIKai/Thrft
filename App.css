@@ -2166,3 +2166,19 @@ html body .tab-bar .tab-lens-inner { top: -7.5%; bottom: -7.5%; }
 .tab-bar.is-create-open .tab-pill { opacity: 0; }
 .tab-bar.is-create-open .tab-item.is-create .tab-icon { transform: rotate(45deg) !important; }
 .tab-bar .tab-item.is-create .tab-icon { transition: transform 0.3s ease; }
+
+/* The bar itself collapses into a circle around the plus */
+html body .stage > .tab-bar.is-create-open,
+html body .stage > .tab-bar.is-create-closing {
+  transition: width 0.28s cubic-bezier(0.5, 0, 0.75, 0), opacity 0.2s ease !important;
+}
+html body .stage > .tab-bar.is-create-open {
+  width: var(--bar-h, 56px) !important;
+}
+.tab-bar.is-create-open .tab-items,
+.tab-bar.is-create-closing .tab-items {
+  grid-column: 1 / -1;
+  justify-self: center;
+  width: var(--bar-w, 100%);
+  flex: none;
+}
