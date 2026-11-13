@@ -547,8 +547,8 @@ function PriceTagIcon() {
  * Mock data / UI-only actions.
  */
 const SPACE_MODES = [
-  { id: 'closet', label: 'Closet', Icon: ClosetIcon },
   { id: 'store', label: 'Store', Icon: StoreIcon },
+  { id: 'closet', label: 'Closet', Icon: ClosetIcon },
   { id: 'market', label: 'Market', Icon: MarketIcon },
 ]
 
@@ -617,7 +617,7 @@ export default function ProfileScreen({
   }, [])
   useEffect(() => {
     const wheel = wheelRef.current
-    const first = wheel?.querySelector('.profile-wheel-item')
+    const first = wheel?.querySelector('[data-space-id="closet"]')
     if (wheel && first) wheel.scrollLeft = first.offsetLeft + first.offsetWidth / 2 - wheel.clientWidth / 2
     updateWheel()
     window.addEventListener('resize', updateWheel)
