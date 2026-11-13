@@ -167,7 +167,7 @@ createRoot(document.getElementById('root')).render(
     const light = root.dataset.theme === 'light'
     const base = rgbVar('--atmosphere-base-rgb', light ? [250, 250, 250] : [5, 5, 5])
     const glow = rgbVar('--atmosphere-effect-a-rgb', [190, 190, 190])
-    const mixed = base.map((c, i) => Math.round(c + (glow[i] - c) * 0.34))
+    const mixed = base.map((c, i) => Math.round(c + (glow[i] - c) * 0.12))
     const color = `rgb(${mixed.join(', ')})`
     meta.setAttribute('content', color)
     root.style.setProperty('--safari-top', color)
