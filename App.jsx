@@ -188,6 +188,24 @@ export default function App() {
   const homeIdle = tab === 'home' && !homeOpen
   const showNav = !(tab === 'chat' && chatThreadOpen) && !homeIdle
 
+  // Scrolled all the way down on Home: the nav bar steps out of the way.
+  const [atBottom, setAtBottom] = useState(false)
+  useEffect(() => {
+    const el = scrollRef.current
+    if (tab !== 'home' || !el) {
+      setAtBottom(false)
+      return undefined
+    }
+    const update = () => setAtBottom(el.scrollHeight > el.clientHeight + 8 && el.scrollTop + el.clientHeight >= el.scrollHeight - 8)
+    update()
+    el.addEventListener('scroll', update, { passive: true })
+    window.addEventListener('resize', update)
+    return () => {
+      el.removeEventListener('scroll', update)
+      window.removeEventListener('resize', update)
+    }
+  }, [tab, homeSegment, homeOpen])
+
   // A product page covers the app: its nav bar must not be reachable
   useEffect(() => {
     const stage = stageRef.current
@@ -501,7 +519,7 @@ export default function App() {
 
   return (
     <div
-      className="stage"
+      className={`stage${atBottom ? ' is-nav-hidden' : ''}`}
       ref={stageRef}
       style={{ '--bubble-size': `${BUBBLE}px` }}
     >
@@ -609,6 +627,11 @@ export default function App() {
               brandSizes={userProfile?.brandSizes || {}}
               savedProductIds={userProfile?.savedProductIds || []}
             />}
+            <footer className="home-footer" aria-label="Thrft">
+              <span className="wordmark home-footer-logo">
+                Thrft<span className="dot" aria-hidden="true">●</span>
+              </span>
+            </footer>
           </>
         )}
 
