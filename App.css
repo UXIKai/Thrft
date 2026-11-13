@@ -2059,3 +2059,20 @@ html body .tab-bar .tab-lens-inner {
   width: 462.96%;
   left: calc(clamp(1%, calc(var(--tab-i, 0) * 20% - 0.8%), 77.4%) * -4.63);
 }
+
+/* Desktop bar is much wider for its height: keep the pill's 1.55:1 shape, centered on its tab */
+@media (min-width: 720px) {
+  html body .stage .tab-bar .tab-pill,
+  html body .stage .tab-bar.is-dragging .tab-pill {
+    top: 10%;
+    bottom: 10%;
+    width: 13.4%;
+    left: calc(var(--tab-i, 0) * 20% + 3.3%);
+  }
+  html body .tab-bar .tab-lens-inner {
+    top: -12.5%;
+    bottom: -12.5%;
+    width: 746.27%;
+    left: calc((var(--tab-i, 0) * 20% + 3.3%) * -7.463);
+  }
+}
