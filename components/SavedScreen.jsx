@@ -779,6 +779,9 @@ export default function SavedScreen({
             style={brandPill ? { transform: `translate(${brandPill.left - 6}px, ${brandPill.top - 6}px)`, width: brandPill.width + 12, height: brandPill.height + 12 } : { opacity: 0 }}
           />
         )}
+        {favoriteBrandCards.length === 0 && (
+          <span className="saved-brands-empty">No liked brands yet</span>
+        )}
         {favoriteBrandCards.map((brand) => (
               <button
                 key={`brand-${brand.id}`}
