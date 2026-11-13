@@ -1934,6 +1934,25 @@ html body .tab-bar.is-pressed .tab-pill::before {
   border-radius: 999px;
   background: light-dark(rgba(0, 0, 0, 0.12), rgba(255, 255, 255, 0.2));
   pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.18s ease;
+}
+
+.home-segment-slider.is-pressed::before {
+  opacity: 1;
+}
+
+/* Only the visible icon takes a touch; the empty space around it never moves the wheel. */
+.home-segment-slider {
+  pointer-events: none;
+}
+
+.home-segment-tab.is-active {
+  pointer-events: auto;
+}
+
+.home-segment-tab:not(.is-active) {
+  pointer-events: none;
 }
 
 .home-segment-slider.is-dragging {

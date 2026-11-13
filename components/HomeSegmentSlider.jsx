@@ -23,6 +23,7 @@ export default function HomeSegmentSlider({ value, onChange }) {
   const dragRef = useRef(null)
   const swallowClickRef = useRef(false)
   const [dragX, setDragX] = useState(null)
+  const [pressed, setPressed] = useState(false)
 
   const index = Math.max(0, SEGMENTS.findIndex((s) => s.id === value))
   const x = dragX ?? index
@@ -56,6 +57,7 @@ export default function HomeSegmentSlider({ value, onChange }) {
     // One pointer at a time: a second finger neither starts nor steals a drag.
     if (!e.isPrimary || (e.button !== undefined && e.button !== 0)) return
     const slot = rootRef.current?.querySelector('.home-segment-tab')?.offsetHeight || 44
+    setPressed(true)
     dragRef.current = { id: e.pointerId, startY: e.clientY, originY: e.clientY, startPos: x, slot, moving: false, samples: [] }
   }
 
@@ -88,6 +90,7 @@ export default function HomeSegmentSlider({ value, onChange }) {
     const d = dragRef.current
     if (!d || d.id !== e.pointerId) return
     dragRef.current = null
+    setPressed(false)
     if (!d.moving) return
     swallowClickRef.current = true
     setTimeout(() => {
@@ -125,7 +128,7 @@ export default function HomeSegmentSlider({ value, onChange }) {
   return (
     <div
       ref={rootRef}
-      className={`home-segment-slider${dragX !== null ? ' is-dragging' : ''}`}
+      className={`home-segment-slider${dragX !== null ? ' is-dragging' : ''}${pressed ? ' is-pressed' : ''}`}
       role="tablist"
       aria-label="Shop Market or Store"
       aria-orientation="vertical"
