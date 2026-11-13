@@ -5358,3 +5358,10 @@ html body .chat-thread-scroll > .chat-thread-body {
   html body .chat-screen.is-desktop:not(.is-sidebar-collapsed) .chat-list-quick { margin-top: -2px; }
   html body .chat-screen.is-desktop .chat-list-quick-btn { padding: 7px 8px; }
 }
+
+@media (min-width: 720px) and (min-height: 500px) {
+  html body .chat-screen.is-desktop:not(.is-sidebar-collapsed) .chat-sidebar-header { min-height: 32px; }
+  html body .chat-screen.is-desktop:not(.is-sidebar-collapsed) .chat-sidebar-header .chat-sidebar-control { width: 32px; height: 32px; }
+  html body .chat-screen.is-desktop:not(.is-sidebar-collapsed) .chat-sidebar-header .chat-sidebar-control svg { width: 18px; height: 18px; }
+  html body .chat-screen.is-desktop:not(.is-sidebar-collapsed) .chat-sidebar-title { font-size: 1.12rem; line-height: 32px; }
+}
