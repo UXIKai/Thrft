@@ -189,8 +189,8 @@ function DateWheel({ label, items, value, onChange }) {
   )
 }
 
-export default function CreateListing({ onPosted } = {}) {
-  const [segment, setSegment] = useState('market')
+export default function CreateListing({ onPosted, initialSegment = 'market' } = {}) {
+  const [segment, setSegment] = useState(initialSegment)
   const [step, setStep] = useState('photo')
   const [title, setTitle] = useState('')
   const [brand, setBrand] = useState("Levi's")

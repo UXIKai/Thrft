@@ -114,6 +114,7 @@ export default function App() {
     sortByProfit(INITIAL_PROFILES).map((p) => p.id),
   )
   const [tab, setTab] = useState('home')
+  const [createSegment, setCreateSegment] = useState('market')
   const [clothingType, setClothingType] = useState('all')
   const [homeColor, setHomeColor] = useState('')
   const [homeSegment, setHomeSegment] = useState('store')
@@ -618,6 +619,8 @@ export default function App() {
 
         {tab === 'design' && (
           <CreateListing
+            key={createSegment}
+            initialSegment={createSegment}
             onPosted={() => {
               setFeedRefresh((n) => n + 1)
               setForYouRefresh((n) => n + 1)
@@ -816,7 +819,13 @@ export default function App() {
       )}
       </div>
 
-      {signedIn && showNav && <TabBar active={tab} onChange={(nextTab) => {
+      {signedIn && showNav && <TabBar active={tab} onCreate={(segment) => {
+        setCreateSegment(segment)
+        setHomeBrand(null)
+        closeHomePicker()
+        clearSearchBackground()
+        setTab('design')
+      }} onChange={(nextTab) => {
         if (nextTab !== tab) {
           setHomeBrand(null)
           setClothingType('all')

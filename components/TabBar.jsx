@@ -1,4 +1,5 @@
-import { useLayoutEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { ClosetIcon, MarketIcon, StoreIcon } from './SegmentIcons.jsx'
 import { stepNavigationSpring } from '../navigationSpring.js'
 
 export const MAP_X = "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22256%22%20height%3D%22128%22%20viewBox%3D%220%200%20256%20128%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20x2%3D%221%22%20y1%3D%220%22%20y2%3D%220%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22rgb%28255%2C0%2C0%29%22/%3E%3Cstop%20offset%3D%220.3%22%20stop-color%3D%22rgb%28128%2C0%2C0%29%22/%3E%3Cstop%20offset%3D%220.7%22%20stop-color%3D%22rgb%28128%2C0%2C0%29%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22rgb%280%2C0%2C0%29%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width%3D%22256%22%20height%3D%22128%22%20fill%3D%22url%28%23g%29%22/%3E%3C/svg%3E"
@@ -69,7 +70,14 @@ const TABS = [
   },
 ]
 
-export default function TabBar({ active = 'home', onChange }) {
+const CREATE_OPTIONS = [
+  { id: 'closet', label: 'Closet', Icon: ClosetIcon },
+  { id: 'store', label: 'Store', Icon: StoreIcon },
+  { id: 'market', label: 'Market', Icon: MarketIcon },
+]
+
+export default function TabBar({ active = 'home', onChange, onCreate }) {
+  const [createOpen, setCreateOpen] = useState(false)
   const navRef = useRef(null)
   const dragRef = useRef(null)
   const activeIdx = Math.max(0, TABS.findIndex((t) => t.id === active))
@@ -169,6 +177,26 @@ export default function TabBar({ active = 'home', onChange }) {
     return () => ro.disconnect()
   }, [])
 
+  useEffect(() => {
+    if (!createOpen) return undefined
+    const close = (e) => {
+      if (navRef.current?.contains(e.target)) return
+      setCreateOpen(false)
+    }
+    const onKey = (e) => e.key === 'Escape' && setCreateOpen(false)
+    document.addEventListener('pointerdown', close)
+    document.addEventListener('keydown', onKey)
+    return () => {
+      document.removeEventListener('pointerdown', close)
+      document.removeEventListener('keydown', onKey)
+    }
+  }, [createOpen])
+
+  const pickCreate = (segment) => {
+    setCreateOpen(false)
+    onCreate?.(segment)
+  }
+
   const posFromEvent = (e) => {
     const r = navRef.current.getBoundingClientRect()
     const raw = ((e.clientX - r.left) / r.width) * TABS.length - 0.5
@@ -195,13 +223,19 @@ export default function TabBar({ active = 'home', onChange }) {
     setDragPos(null)
     setPressed(false)
     if (commit) setReleaseCount((count) => count + 1)
-    if (commit && TABS[idx] && TABS[idx].id !== active) onChange?.(TABS[idx].id)
+    if (!commit || !TABS[idx]) return
+    if (TABS[idx].id === 'design') {
+      setCreateOpen((open) => !open)
+      return
+    }
+    setCreateOpen(false)
+    if (TABS[idx].id !== active) onChange?.(TABS[idx].id)
   }
 
   return (
     <nav
       ref={navRef}
-      className={`tab-bar${pressed ? ' is-pressed' : ''}${dragPos !== null ? ' is-dragging' : ''}`}
+      className={`tab-bar${pressed ? ' is-pressed' : ''}${dragPos !== null ? ' is-dragging' : ''}${createOpen ? ' is-create-open' : ''}`}
       aria-label="Main"
       style={{ touchAction: 'none' }}
       onPointerDown={onPointerDown}
@@ -237,19 +271,47 @@ export default function TabBar({ active = 'home', onChange }) {
           ))}
         </span>
       </span>
+      <div
+        className="create-menu"
+        role="menu"
+        aria-label="Create"
+        aria-hidden={!createOpen}
+        onPointerDown={(e) => e.stopPropagation()}
+        onPointerUp={(e) => e.stopPropagation()}
+      >
+        {CREATE_OPTIONS.map(({ id, label, Icon }) => (
+          <button
+            key={id}
+            type="button"
+            role="menuitem"
+            tabIndex={createOpen ? 0 : -1}
+            className={`create-menu-btn is-${id}`}
+            onClick={() => pickCreate(id)}
+          >
+            <Icon className="create-menu-ico" />
+            <span>{label}</span>
+          </button>
+        ))}
+      </div>
       <div className="tab-items">
-      {TABS.map((tab) => {
-        const selected = tab.id === active
+      {TABS.map((tab, index) => {
+        const selected = tab.id === active && !createOpen
         return (
           <button
             key={tab.id}
             type="button"
-            className={`tab-item ${selected ? 'is-active' : ''}`}
+            className={`tab-item ${selected ? 'is-active' : ''}${tab.id === 'design' ? ' is-create' : ''}`}
+            style={{ '--tab-n': index - 2 }}
             aria-current={selected ? 'page' : undefined}
             aria-label={tab.label}
             onClick={(e) => {
               if (e.detail !== 0) return
               setReleaseCount((count) => count + 1)
+              if (tab.id === 'design') {
+                setCreateOpen((open) => !open)
+                return
+              }
+              setCreateOpen(false)
               onChange?.(tab.id)
             }}
           >
