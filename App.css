@@ -2370,3 +2370,7 @@ html body .stage > .tab-bar.is-create-open {
 .create-page.is-open .create-menu-btn.is-market { left: calc(50% + 14px) !important; }
 
 .create-page { top: 0; bottom: 0; left: 0; right: 0; width: auto; height: auto; }
+
+.create-page.is-open .create-menu-btn.is-closet,
+.create-page.is-open .create-menu-btn.is-store,
+.create-page.is-open .create-menu-btn.is-market { top: auto !important; right: auto !important; }
