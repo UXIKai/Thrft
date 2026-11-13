@@ -2066,7 +2066,7 @@ html body .stage.is-nav-autohide.is-nav-near.is-home-search-open .tab-bar {
 @media (min-width: 720px) {
   html body .stage > .tab-bar,
   html:not([data-moonlight='on']) body .stage > .tab-bar {
-    background: light-dark(rgba(255, 255, 255, 0.82), rgba(18, 19, 22, 0.72)) !important;
+    background: light-dark(rgba(255, 255, 255, 0.8), rgba(18, 19, 22, 0.8)) !important;
     background-image: none !important;
     border: 1px solid light-dark(rgba(0, 0, 0, 0.06), rgba(255, 255, 255, 0.07)) !important;
     box-shadow: 0 4px 14px light-dark(rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.25)) !important;
@@ -2079,7 +2079,7 @@ html body .stage.is-nav-autohide.is-nav-near.is-home-search-open .tab-bar {
 
 /* Light mode like Instagram: white glass bar, faint rim, light-gray pill that nearly fills the bar */
 html body .stage > .tab-bar {
-  background: light-dark(rgba(255, 255, 255, 0.82), rgba(18, 19, 22, 0.72)) !important;
+  background: light-dark(rgba(255, 255, 255, 0.8), rgba(18, 19, 22, 0.8)) !important;
   border: 1px solid light-dark(rgba(0, 0, 0, 0.06), rgba(255, 255, 255, 0.07)) !important;
   box-shadow: 0 4px 14px light-dark(rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.25)) !important;
 }
