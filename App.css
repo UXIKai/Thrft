@@ -2049,8 +2049,8 @@ html body .stage .tab-bar.is-dragging .tab-pill {
   width: 21.6%;
   left: clamp(1%, calc(var(--tab-i, 0) * 20% - 0.8%), 77.4%);
   border: 0 !important;
-  border-radius: 44% / 50%;
-  background: light-dark(rgba(0, 0, 0, 0.12), rgba(255, 255, 255, 0.2)) !important;
+  border-radius: 999px;
+  background: light-dark(rgba(0, 0, 0, 0.12), rgba(255, 255, 255, 0.28)) !important;
   box-shadow: none !important;
 }
 html body .tab-bar .tab-lens-inner {
