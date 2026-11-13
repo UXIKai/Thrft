@@ -1997,25 +1997,6 @@ html body .stage.is-product-open .tab-bar {
   visibility: hidden;
 }
 
-/* Create walkthrough: nav hidden on mobile, hover-revealed on desktop via auto-hide */
-@media (max-width: 719px), (max-height: 499px) {
-  .stage.is-create-walkthrough .tab-bar {
-    opacity: 0;
-    pointer-events: none;
-    visibility: hidden;
-  }
-}
-
-/* Tap the bottom of the Create page: nav shows for 5 seconds */
-@media (max-width: 719px), (max-height: 499px) {
-  .stage.is-create-walkthrough.is-create-nav-peek .tab-bar {
-    opacity: 1;
-    pointer-events: auto;
-    visibility: visible;
-    z-index: 60;
-  }
-}
-
 /* Keep tile bottoms (rim/shadow) from being clipped by the marquee wrapper */
 .brand-row-track-wrap {
   padding: 4px 0 12px;
