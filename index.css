@@ -118,3 +118,9 @@ button,
 [role='button'] {
   color: var(--ink);
 }
+
+/* Safari tints its top/bottom bars from the page's own backgrounds: let html's matched color show through */
+body,
+#root {
+  background: transparent;
+}
