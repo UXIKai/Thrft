@@ -2221,3 +2221,18 @@ html body .stage > .tab-bar.is-create-open {
 .create-page .create-menu-btn.is-closet { top: calc(50% - 124px); transform: translateX(-50%); }
 .create-page .create-menu-btn.is-store { top: calc(50% + 4px); transform: translateX(calc(-100% - 8px)); }
 .create-page .create-menu-btn.is-market { top: calc(50% + 4px); transform: translateX(8px); }
+
+/* Collapsed state: center the × and drop the circle itself */
+.tab-bar.is-create-open .tab-items {
+  justify-self: start;
+  margin-left: calc((var(--bar-h, 56px) - var(--bar-w, 100%)) / 2);
+}
+html body .stage > .tab-bar.is-create-open {
+  background: transparent !important;
+  background-image: none !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+.tab-bar.is-create-open .tab-item.is-create .tab-icon { width: 30px; height: 30px; }
