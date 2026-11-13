@@ -3186,3 +3186,15 @@ html body .profile-space-wheel .profile-wheel-item {
   border-radius: 999px;
 }
 html body .profile-space-wheel { padding: 6px calc(50% - 28px); }
+
+/* No pill on the space wheel */
+html body .profile-space-wheel .profile-wheel-item,
+html body .profile-space-wheel .profile-wheel-item:hover,
+html body .profile-space-wheel .profile-wheel-item:active,
+html body .profile-space-wheel .profile-wheel-item.is-active {
+  background: none !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
