@@ -237,3 +237,43 @@ html body .closet-number-content .closet-number-brands button {
   backdrop-filter: none;
   box-shadow: none !important;
 }
+
+/* Brand wheel: flat, fixed-width rows so every logo and name line up; icon-only back + check */
+html body .closet-number-content .closet-brand-wheel .type-box.is-wheel {
+  width: 240px;
+  max-width: 100%;
+  padding: 8px 0;
+  transform-origin: left center;
+}
+
+.closet-number-content .closet-number-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+}
+
+html body .closet-number-content .closet-number-actions button {
+  width: 48px;
+  min-height: 48px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  color: inherit;
+  cursor: pointer;
+}
+
+html body .closet-number-content .closet-number-actions button:disabled {
+  opacity: 0.35;
+}
+
+html body .closet-number-content .closet-number-actions button,
+html body .closet-number-content .closet-number-actions button:focus,
+html body .closet-number-content .closet-number-actions button:focus-visible {
+  border: 0 !important;
+  outline: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}

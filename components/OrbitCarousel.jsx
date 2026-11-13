@@ -67,6 +67,8 @@ export default function OrbitCarousel({
   smooth = false,
   renderItem,
   wheelSpacing = WHEEL_STEP,
+  wheelAngle: wheelAngleProp,
+  wheelScale = true,
 }) {
   const isStrip = variant === 'strip'
   const isWheel = variant === 'wheel'
@@ -79,7 +81,7 @@ export default function OrbitCarousel({
   const dragRef = useRef({ active: false, start: 0, lastStep: 0 })
   const offsets = isCompactWheel ? COMPACT_WHEEL_OFFSETS : VISIBLE_OFFSETS
   const wheelStep = isCompactWheel ? WHEEL_STEP_COMPACT : wheelSpacing
-  const wheelAngle = isCompactWheel ? WHEEL_ANGLE_COMPACT : WHEEL_ANGLE
+  const wheelAngle = wheelAngleProp ?? (isCompactWheel ? WHEEL_ANGLE_COMPACT : WHEEL_ANGLE)
 
   const orbitItems = useMemo(() => {
     if (total < 1) return []
@@ -226,7 +228,7 @@ export default function OrbitCarousel({
                 // Keep neighbors mounted for scroll physics, but only show center.
                 opacity = selected ? 1 : 0
               } else {
-                scale = selected ? 1 : Math.max(0.72, 1 - abs * 0.12)
+                scale = selected || !wheelScale ? 1 : Math.max(0.72, 1 - abs * 0.12)
                 opacity = selected ? 1 : Math.max(0.18, 1 - abs * 0.28)
               }
               transform = `translate(-50%, -50%) translateY(${
