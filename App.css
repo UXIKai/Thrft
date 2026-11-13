@@ -1983,8 +1983,8 @@ html body .stage.is-chat-panel-dragging .tab-bar {
 html body .stage.is-nav-autohide .tab-bar {
   opacity: 0;
   pointer-events: none;
-  /* waits 3s after the mouse leaves, then fades out */
-  transition: opacity 0.7s ease 3s;
+  /* waits 4s after the mouse leaves, then fades out */
+  transition: opacity 0.7s ease 4s;
 }
 
 html body .stage.is-nav-autohide.is-nav-near .tab-bar {
