@@ -1938,11 +1938,11 @@ html body .tab-bar.is-pressed .tab-pill::before {
 
 /* Store / Market / Leaderboard indicator: the chosen icon is dead centre; --x is the chosen index. Switching is by swiping the page. */
 .home-segment-slider {
-  --slot: 56px;
+  --slot: 40px;
   position: relative;
   width: 100%;
-  height: calc(var(--slot) * 2 + 32px);
-  margin: 0 0 12px;
+  height: var(--slot);
+  margin: 0 0 8px;
   overflow: hidden;
   pointer-events: none;
   -webkit-user-select: none;
@@ -1987,11 +1987,11 @@ html body .tab-bar.is-pressed .tab-pill::before {
   margin-top: -4px;
 }
 .wheel-arrow.is-left {
-  left: calc(50% - 44px);
+  left: calc(50% - 34px);
   transform: rotate(-90deg);
 }
 .wheel-arrow.is-right {
-  left: calc(50% + 44px);
+  left: calc(50% + 34px);
   transform: rotate(90deg);
 }
 
@@ -2023,8 +2023,8 @@ html body .tab-bar.is-pressed .tab-pill::before {
 }
 
 .home-segment-tab svg {
-  width: 28px;
-  height: 28px;
+  width: 22px;
+  height: 22px;
 }
 
 @media (prefers-reduced-motion: reduce) {
