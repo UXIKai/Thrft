@@ -2078,3 +2078,17 @@ html body .stage.is-nav-autohide.is-nav-near.is-home-search-open .tab-bar {
   html body .stage > .tab-bar::before,
   html body .stage > .tab-bar::after { content: none !important; display: none !important; }
 }
+
+/* Light mode like Instagram: white glass bar, faint rim, light-gray pill that nearly fills the bar */
+html body .stage > .tab-bar {
+  background: light-dark(rgba(255, 255, 255, 0.82), rgba(18, 19, 22, 0.72)) !important;
+  border: 1px solid light-dark(rgba(0, 0, 0, 0.06), rgba(255, 255, 255, 0.12)) !important;
+  box-shadow: 0 4px 14px light-dark(rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.25)) !important;
+}
+html body .stage .tab-bar .tab-pill,
+html body .stage .tab-bar.is-dragging .tab-pill {
+  top: 7%;
+  bottom: 7%;
+  background: light-dark(rgba(0, 0, 0, 0.09), rgba(255, 255, 255, 0.28)) !important;
+}
+html body .tab-bar .tab-lens-inner { top: -7.5%; bottom: -7.5%; }
