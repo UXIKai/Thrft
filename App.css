@@ -2041,6 +2041,17 @@ html body .market-product-grid .product-box {
     var(--atmosphere-base, var(--void, light-dark(rgb(250, 250, 250), #050505)));
 }
 
-/* Instagram-style selection: wide, softly squared pill */
-html body .tab-bar .tab-pill { top: 9px; bottom: 9px; left: calc(var(--tab-i, 0) * 20% - 0.5%); width: 21%; border-radius: 44% / 50%; }
-html body .tab-bar .tab-lens-inner { top: -9px; bottom: -9px; width: 476.19%; left: calc(var(--tab-i, 0) * -95.238% + 2.381%); }
+/* Instagram-style selection: inset evenly from the bar, about 1.55x wider than tall */
+html body .tab-bar .tab-pill {
+  top: 8%;
+  bottom: 8%;
+  width: 25.8%;
+  left: clamp(1.5%, calc(var(--tab-i, 0) * 20% - 2.9%), 72.7%);
+  border-radius: 44% / 50%;
+}
+html body .tab-bar .tab-lens-inner {
+  top: -9.524%;
+  bottom: -9.524%;
+  width: 387.6%;
+  left: calc(clamp(1.5%, calc(var(--tab-i, 0) * 20% - 2.9%), 72.7%) * -3.876);
+}
