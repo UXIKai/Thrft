@@ -1936,38 +1936,17 @@ html body .tab-bar.is-pressed .tab-pill::before {
   max-width: none;
 }
 
-/* Store / Market vertical picker wheel: the chosen icon is always dead centre; --x is the (dragged) position, --p the same clamped to 0–1 */
+/* Store / Market / Leaderboard indicator: the chosen icon is dead centre; --x is the chosen index. Switching is by swiping the page. */
 .home-segment-slider {
-  --slot: 44px;
+  --slot: 56px;
   position: relative;
   width: 100%;
   height: calc(var(--slot) * 2 + 32px);
   margin: 0 0 12px;
   overflow: hidden;
-  cursor: grab;
-  touch-action: none;
-  -webkit-touch-callout: none;
+  pointer-events: none;
   -webkit-user-select: none;
   user-select: none;
-}
-
-.home-segment-slider::before {
-  content: '';
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 88px;
-  height: var(--slot);
-  margin: calc(var(--slot) / -2) 0 0 -44px;
-  border-radius: 999px;
-  background: light-dark(rgba(0, 0, 0, 0.12), rgba(255, 255, 255, 0.2));
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.18s ease;
-}
-
-.home-segment-slider.is-pressed::before {
-  opacity: 1;
 }
 
 /* Tiny rounded arrows above and below a picker wheel; dimmed at the end of the list */
@@ -2003,28 +1982,26 @@ html body .tab-bar.is-pressed .tab-pill::before {
 .wheel-arrow.is-end {
   opacity: 0.2;
 }
-
-/* Only the icons take a touch; the empty space around them never moves the wheel. */
-.home-segment-slider {
-  pointer-events: none;
+.home-segment-slider .wheel-arrow {
+  top: 50%;
+  margin-top: -4px;
 }
-
-
-.home-segment-tab {
-  pointer-events: auto;
+.wheel-arrow.is-left {
+  left: calc(50% - 44px);
+  transform: rotate(-90deg);
 }
-
-.home-segment-slider.is-dragging {
-  cursor: grabbing;
+.wheel-arrow.is-right {
+  left: calc(50% + 44px);
+  transform: rotate(90deg);
 }
 
 .home-segment-track {
-  position: relative;
   display: flex;
-  flex-direction: column;
-  width: 88px;
+  width: calc(var(--slot) * 3);
+  height: 100%;
   margin: 0 auto;
-  transform: translateY(calc(38px + (var(--x, 0) * var(--slot) * -1)));
+  align-items: center;
+  transform: translateX(calc((1 - var(--x, 0)) * var(--slot)));
   transition: transform 0.32s cubic-bezier(0.22, 0.9, 0.3, 1);
 }
 
@@ -2033,37 +2010,16 @@ html body .tab-bar.is-pressed .tab-pill::before {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 0;
-  width: 100%;
   height: var(--slot);
-  padding: 0;
   color: light-dark(#000, #fff);
+  opacity: calc(1 - var(--d, 0));
+  transform: scale(calc(1.15 - 0.25 * var(--d, 0)));
   transition: opacity 0.32s ease, transform 0.32s cubic-bezier(0.22, 0.9, 0.3, 1);
 }
 
-.home-segment-tab {
-  opacity: calc(1 - var(--d, 0));
-  transform: perspective(120px) rotateX(calc(var(--s, 0) * -32deg)) scale(calc(1.15 - 0.25 * var(--d, 0)));
-}
-
-.home-segment-slider.is-dragging .home-segment-track,
-.home-segment-slider.is-dragging .home-segment-tab {
-  transition: none;
-}
-
-.home-segment-tab:focus-visible {
-  outline: none;
-}
-
-.home-segment-tab:focus-visible svg {
-  outline: 2px solid currentColor;
-  outline-offset: 7px;
-  border-radius: 50%;
-}
-
 .home-segment-tab svg {
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
 }
 
 @media (prefers-reduced-motion: reduce) {

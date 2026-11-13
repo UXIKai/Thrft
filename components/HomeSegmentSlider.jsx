@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { MarketIcon, StoreIcon } from './SegmentIcons.jsx'
 
 const LeaderboardIcon = () => (
@@ -18,162 +18,82 @@ const SEGMENTS = [
 ]
 
 const LAST = SEGMENTS.length - 1
-const DRAG_START_PX = 6
-const EDGE_RESISTANCE = 0.35
-const FLICK_LOOKAHEAD_MS = 150
-const FLICK_IDLE_MS = 80
+const SWIPE_MIN_PX = 50
+const SWIPE_MAX_MS = 800
 
 const clamp = (n) => Math.min(LAST, Math.max(0, n))
-// Dragging past either end stretches, then springs back.
-const resist = (n) => (n < 0 ? n * EDGE_RESISTANCE : n > LAST ? LAST + (n - LAST) * EDGE_RESISTANCE : n)
 
-// Store / Market / Leaderboard on a vertical picker wheel: the chosen icon sits in the middle, the other waits above or below.
-// Drag up or down (one icon per gesture), tap the neighbour, or use the arrow keys.
+const scrollsSideways = (el, stop) => {
+  for (let n = el; n && n !== stop; n = n.parentElement) {
+    if (n.scrollWidth <= n.clientWidth) continue
+    const ox = getComputedStyle(n).overflowX
+    if (ox === 'auto' || ox === 'scroll') return true
+  }
+  return false
+}
+
+// Store / Market / Leaderboard: the chosen icon shows in the middle with arrows either side.
+// Swipe left or right anywhere on the page to move between them (rows that scroll sideways keep their own swipe).
 export default function HomeSegmentSlider({ value, onChange, fireSame = false }) {
   const rootRef = useRef(null)
-  const dragRef = useRef(null)
-  const swallowClickRef = useRef(false)
-  const [dragX, setDragX] = useState(null)
-  const [pressed, setPressed] = useState(false)
-
   const index = Math.max(0, SEGMENTS.findIndex((s) => s.id === value))
-  const x = dragX ?? index
-  const progress = clamp(x)
 
-  const choose = (i) => {
-    const next = SEGMENTS[i]
-    if (next && (fireSame || next.id !== value)) onChange(next.id)
+  const stepRef = useRef(null)
+  stepRef.current = (dir) => {
+    const next = SEGMENTS[clamp(index + dir)]
+    if (fireSame || next.id !== value) onChange(next.id)
   }
 
-  // A mouse wheel moves one icon per scroll gesture.
-  const stepRef = useRef(null)
-  stepRef.current = (dir) => choose(clamp(index + dir))
   useEffect(() => {
-    const root = rootRef.current
-    if (!root) return undefined
-    let lastEvent = 0
-    const onWheel = (e) => {
-      e.preventDefault()
-      const now = performance.now()
-      const sameGesture = now - lastEvent < 150
-      lastEvent = now
-      if (sameGesture || Math.abs(e.deltaY) < 2) return
-      stepRef.current(Math.sign(e.deltaY))
+    const page = rootRef.current?.closest('.home-scroll')
+    if (!page) return undefined
+    let start = null
+    const onDown = (e) => {
+      if (!e.isPrimary || (e.button !== undefined && e.button !== 0)) return
+      start = scrollsSideways(e.target, page) ? null : { id: e.pointerId, x: e.clientX, y: e.clientY, t: e.timeStamp }
     }
-    root.addEventListener('wheel', onWheel, { passive: false })
-    return () => root.removeEventListener('wheel', onWheel)
+    const onUp = (e) => {
+      const s = start
+      start = null
+      if (!s || s.id !== e.pointerId) return
+      const dx = e.clientX - s.x
+      const dy = e.clientY - s.y
+      if (Math.abs(dx) < SWIPE_MIN_PX || Math.abs(dx) < Math.abs(dy) * 1.5 || e.timeStamp - s.t > SWIPE_MAX_MS) return
+      // Swiping left reveals the next segment, like paging forward.
+      stepRef.current(dx < 0 ? 1 : -1)
+    }
+    const onCancel = () => {
+      start = null
+    }
+    page.addEventListener('pointerdown', onDown)
+    page.addEventListener('pointerup', onUp)
+    page.addEventListener('pointercancel', onCancel)
+    return () => {
+      page.removeEventListener('pointerdown', onDown)
+      page.removeEventListener('pointerup', onUp)
+      page.removeEventListener('pointercancel', onCancel)
+    }
   }, [])
 
-  const onPointerDown = (e) => {
-    // One pointer at a time: a second finger neither starts nor steals a drag.
-    if (!e.isPrimary || (e.button !== undefined && e.button !== 0)) return
-    const slot = rootRef.current?.querySelector('.home-segment-tab')?.offsetHeight || 44
-    setPressed(true)
-    dragRef.current = { id: e.pointerId, startY: e.clientY, originY: e.clientY, startPos: x, slot, moving: false, samples: [] }
-  }
-
-  const onPointerMove = (e) => {
-    const d = dragRef.current
-    if (!d || d.id !== e.pointerId) return
-    if (!d.moving) {
-      if (Math.abs(e.clientY - d.startY) <= DRAG_START_PX) return
-      // Only a real drag captures the pointer, so plain taps still reach the buttons.
-      try {
-        e.currentTarget.setPointerCapture(e.pointerId)
-      } catch {
-        // No active pointer left to capture.
-      }
-      if (!e.currentTarget.hasPointerCapture(e.pointerId)) {
-        // The press ended elsewhere (release outside the slider), so there is nothing to drag.
-        dragRef.current = null
-        return
-      }
-      d.moving = true
-      d.originY = d.startY + Math.sign(e.clientY - d.startY) * DRAG_START_PX
-    }
-    const pos = d.startPos - (e.clientY - d.originY) / d.slot
-    d.samples.push({ t: e.timeStamp, pos })
-    if (d.samples.length > 6) d.samples.shift()
-    setDragX(resist(pos))
-  }
-
-  const finishDrag = (e, flick) => {
-    const d = dragRef.current
-    if (!d || d.id !== e.pointerId) return
-    dragRef.current = null
-    setPressed(false)
-    if (!d.moving) return
-    swallowClickRef.current = true
-    setTimeout(() => {
-      swallowClickRef.current = false
-    }, 0)
-    const last = d.samples[d.samples.length - 1]
-    const resting = e.timeStamp - last.t > FLICK_IDLE_MS
-    const from = d.samples.find((s) => last.t - s.t <= 100) || last
-    const velocity = !resting && last.t > from.t ? (last.pos - from.pos) / (last.t - from.t) : 0
-    const landing = last.pos + (flick ? velocity * FLICK_LOOKAHEAD_MS : 0)
-    setDragX(null)
-    choose(clamp(Math.round(landing)))
-  }
-
-  const onClickCapture = (e) => {
-    if (!swallowClickRef.current) return
-    swallowClickRef.current = false
-    e.stopPropagation()
-    e.preventDefault()
-  }
-
-  const onKeyDown = (e) => {
-    let next
-    if (e.key === 'ArrowUp') next = index - 1
-    else if (e.key === 'ArrowDown') next = index + 1
-    else if (e.key === 'Home') next = 0
-    else if (e.key === 'End') next = LAST
-    else return
-    next = clamp(next)
-    e.preventDefault()
-    choose(next)
-    rootRef.current?.querySelector(`#home-${SEGMENTS[next].id}-tab`)?.focus()
-  }
+  const arrow = (
+    <svg viewBox="0 0 12 10" aria-hidden="true"><path d="M6 1.2 10.6 8.4H1.4Z" fill="currentColor" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /></svg>
+  )
 
   return (
     <div
       ref={rootRef}
-      className={`home-segment-slider${dragX !== null ? ' is-dragging' : ''}${pressed ? ' is-pressed' : ''}`}
-      role="tablist"
-      aria-label="Shop Market or Store"
-      aria-orientation="vertical"
-      style={{ '--x': x, '--p': progress }}
-      onPointerDown={onPointerDown}
-      onPointerMove={onPointerMove}
-      onPointerUp={(e) => finishDrag(e, true)}
-      onPointerCancel={(e) => finishDrag(e, false)}
-      onClickCapture={onClickCapture}
-      onKeyDown={onKeyDown}
+      className="home-segment-slider"
+      role="status"
+      aria-label={`${SEGMENTS[index].label}. Swipe left or right to switch.`}
+      style={{ '--x': index }}
     >
-      <span className={`wheel-arrow is-up${index === 0 ? ' is-end' : ''}`} aria-hidden="true">
-        <svg viewBox="0 0 12 10" aria-hidden="true"><path d="M6 1.2 10.6 8.4H1.4Z" fill="currentColor" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /></svg>
-      </span>
-      <span className={`wheel-arrow is-down${index === LAST ? ' is-end' : ''}`} aria-hidden="true">
-        <svg viewBox="0 0 12 10" aria-hidden="true"><path d="M6 1.2 10.6 8.4H1.4Z" fill="currentColor" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /></svg>
-      </span>
-      <div className="home-segment-track" role="presentation">
-        {SEGMENTS.map(({ id, label, Icon }, i) => (
-          <button
-            key={id}
-            type="button"
-            role="tab"
-            id={`home-${id}-tab`}
-            aria-label={label}
-            aria-controls="home-product-panel"
-            aria-selected={value === id}
-            tabIndex={value === id ? 0 : -1}
-            style={{ '--s': Math.max(-1, Math.min(1, i - x)), '--d': Math.min(1, Math.abs(i - x)) }}
-            className={`home-segment-tab is-bare${value === id ? ' is-active' : ''}`}
-            onClick={() => choose(i)}
-          >
+      <span className={`wheel-arrow is-left${index === 0 ? ' is-end' : ''}`} aria-hidden="true">{arrow}</span>
+      <span className={`wheel-arrow is-right${index === LAST ? ' is-end' : ''}`} aria-hidden="true">{arrow}</span>
+      <div className="home-segment-track" aria-hidden="true">
+        {SEGMENTS.map(({ id, Icon }, i) => (
+          <span key={id} className="home-segment-tab" style={{ '--s': Math.max(-1, Math.min(1, i - index)), '--d': Math.min(1, Math.abs(i - index)) }}>
             <Icon />
-          </button>
+          </span>
         ))}
       </div>
     </div>
