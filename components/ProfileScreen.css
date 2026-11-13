@@ -3106,3 +3106,21 @@
   width: min(100%, 340px);
   margin: 0 auto 4px;
 }
+
+/* One icon at a time; slide left/right between Closet, Store and Market */
+.profile-space-slider {
+  width: 100%;
+  overflow: hidden;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.profile-space-track {
+  display: flex;
+  transition: transform 0.3s ease;
+}
+.profile-space-slide {
+  flex: 0 0 100%;
+  display: flex;
+  justify-content: center;
+}

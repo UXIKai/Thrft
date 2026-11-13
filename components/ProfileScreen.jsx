@@ -547,8 +547,8 @@ function PriceTagIcon() {
  * Mock data / UI-only actions.
  */
 const SPACE_MODES = [
-  { id: 'store', label: 'Store', Icon: StoreIcon },
   { id: 'closet', label: 'Closet', Icon: ClosetIcon },
+  { id: 'store', label: 'Store', Icon: StoreIcon },
   { id: 'market', label: 'Market', Icon: MarketIcon },
 ]
 
@@ -603,7 +603,7 @@ export default function ProfileScreen({
     setClosetSplit(false)
     setClosetSelected(null)
   }
-  const [spaceTab, setSpaceTab] = useState('store') // 'store' | 'market' | 'closet'
+  const [spaceTab, setSpaceTab] = useState('closet') // 'store' | 'market' | 'closet'
   const [panelListingTab, setPanelListingTab] = useState('active')
   const [storeProducts, setStoreProducts] = useState([])
   const [marketListings, setMarketListings] = useState([])
@@ -1256,24 +1256,41 @@ export default function ProfileScreen({
 
       <section className="profile-block profile-spaces-inline" aria-label="Store, Closet and Market">
         <div
-          className="profile-panel-modes is-inline"
+          className="profile-space-slider"
           role="tablist"
-          aria-label="Store, Closet and Market"
+          aria-label="Closet, Store and Market"
+          onPointerDown={(e) => { e.currentTarget.dataset.x = String(e.clientX) }}
+          onPointerUp={(e) => {
+            const x0 = Number(e.currentTarget.dataset.x)
+            e.currentTarget.dataset.x = ''
+            if (!Number.isFinite(x0) || !x0) return
+            const dx = e.clientX - x0
+            if (Math.abs(dx) < 30) return
+            const i = SPACE_MODES.findIndex((m) => m.id === spaceTab)
+            const next = SPACE_MODES[Math.max(0, Math.min(SPACE_MODES.length - 1, i + (dx < 0 ? 1 : -1)))]
+            switchSpace(next.id)
+          }}
         >
-          {SPACE_MODES.map(({ id, label, Icon }) => (
-            <button
-              key={id}
-              type="button"
-              role="tab"
-              aria-selected={spaceTab === id}
-              aria-label={label}
-              className={`profile-panel-mode ${spaceTab === id ? 'is-active' : ''}`}
-              onMouseDown={holdScroll}
-              onClick={() => switchSpace(id)}
-            >
-              <Icon className="profile-mode-ico" />
-            </button>
-          ))}
+          <div
+            className="profile-space-track"
+            style={{ transform: `translateX(${-100 * SPACE_MODES.findIndex((m) => m.id === spaceTab)}%)` }}
+          >
+            {SPACE_MODES.map(({ id, label, Icon }) => (
+              <div key={id} className="profile-space-slide">
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={spaceTab === id}
+                  aria-label={label}
+                  className={`profile-panel-mode ${spaceTab === id ? 'is-active' : ''}`}
+                  onMouseDown={holdScroll}
+                  onClick={() => switchSpace(id)}
+                >
+                  <Icon className="profile-mode-ico" />
+                </button>
+              </div>
+            ))}
+          </div>
         </div>
 
         <div className="profile-spaces-inline-body">
