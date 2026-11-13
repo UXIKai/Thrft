@@ -18,6 +18,14 @@ export function StoreIcon({ className }) {
   )
 }
 
+export function ShirtIcon({ className }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" aria-hidden="true">
+      <path fill="currentColor" d="M8.6 3.4C9.2 7 14.8 7 15.4 3.4L21.33 6.8Q22.2 7.3 21.7 8.17L20.35 10.52Q19.9 11.3 19.12 10.85L17.6 9.98V19.2Q17.6 20.6 16.2 20.6H7.8Q6.4 20.6 6.4 19.2V9.98L4.88 10.85Q4.1 11.3 3.65 10.52L2.3 8.17Q1.8 7.3 2.67 6.8Z" />
+    </svg>
+  )
+}
+
 export function ClosetIcon({ className }) {
   return (
     <svg className={className} viewBox="0 0 24 24" aria-hidden="true">
