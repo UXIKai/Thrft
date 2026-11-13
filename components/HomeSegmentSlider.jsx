@@ -19,7 +19,7 @@ const SEGMENTS = [
 
 const LAST = SEGMENTS.length - 1
 const DRAG_START_PX = 8
-const SLOT_PX = 120
+const SLOT_PX = 220
 const EDGE_RESISTANCE = 0.35
 const FLICK_LOOKAHEAD_MS = 150
 
@@ -68,7 +68,9 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false })
       const idle = e.timeStamp - last.t > 80
       const v = flick && !idle && last.t > from.t ? (last.pos - from.pos) / (last.t - from.t) : 0
       setDragX(null)
-      chooseRef.current(Math.round(last.pos + v * FLICK_LOOKAHEAD_MS))
+      // One segment per gesture, however far or fast the swipe.
+      const landing = Math.round(last.pos + v * FLICK_LOOKAHEAD_MS)
+      chooseRef.current(Math.min(s.start + 1, Math.max(s.start - 1, landing)))
     }
     const onDown = (e) => {
       if (!e.isPrimary || (e.button !== undefined && e.button !== 0) || scrollsSideways(e.target, page)) return
@@ -89,7 +91,7 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false })
       const raw = d.start - (e.clientX - d.x) / SLOT_PX
       d.samples.push({ t: e.timeStamp, pos: raw })
       if (d.samples.length > 6) d.samples.shift()
-      setDragX(resist(raw))
+      setDragX(resist(Math.min(d.start + 1, Math.max(d.start - 1, raw))))
     }
     const onUp = (e) => end(e, true)
     const onCancel = (e) => end(e, false)
