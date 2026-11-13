@@ -117,7 +117,7 @@ export default function App() {
   const [createSegment, setCreateSegment] = useState('market')
   const [clothingType, setClothingType] = useState('all')
   const [homeColor, setHomeColor] = useState('')
-  const [homeSegment, setHomeSegment] = useState('store')
+  const [homeSegment, setHomeSegment] = useState('none')
   const [homeBrand, setHomeBrand] = useState(null) // { id, label } | null
   const [homePicker, setHomePicker] = useState(null) // 'brands' | 'category' | null
   const [homePickerPhase, setHomePickerPhase] = useState('closed')
@@ -583,7 +583,7 @@ export default function App() {
 
 
             <HomeSegmentSlider value={homeSegment} onChange={setHomeSegment} />
-            <ProductRows
+            {homeSegment !== 'none' && <ProductRows
               key={homeSegment}
               segment={homeSegment}
               onOpenProduct={handleOpenProduct}
@@ -597,7 +597,7 @@ export default function App() {
               clothingSizes={userProfile?.clothingSizes || {}}
               brandSizes={userProfile?.brandSizes || {}}
               savedProductIds={userProfile?.savedProductIds || []}
-            />
+            />}
           </>
         )}
 

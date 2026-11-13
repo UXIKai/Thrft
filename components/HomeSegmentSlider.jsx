@@ -1,7 +1,15 @@
 import { useEffect, useRef, useState } from 'react'
 import { MarketIcon, StoreIcon } from './SegmentIcons.jsx'
 
+const DashIcon = () => (
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M7 12h10" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+  </svg>
+)
+
+// The first "-" stop shows nothing; scroll down to Store or Market to fill the page.
 const SEGMENTS = [
+  { id: 'none', label: 'Hide products', Icon: DashIcon },
   { id: 'store', label: 'Store', Icon: StoreIcon },
   { id: 'market', label: 'Market', Icon: MarketIcon },
 ]
@@ -16,7 +24,7 @@ const clamp = (n) => Math.min(LAST, Math.max(0, n))
 // Dragging past either end stretches, then springs back.
 const resist = (n) => (n < 0 ? n * EDGE_RESISTANCE : n > LAST ? LAST + (n - LAST) * EDGE_RESISTANCE : n)
 
-// Store / Market on a vertical picker wheel: the chosen icon sits in the middle, the other waits above or below.
+// Hide (-) / Store / Market on a vertical picker wheel: the chosen icon sits in the middle, the other waits above or below.
 // Drag up or down (one icon per gesture), tap the neighbour, or use the arrow keys.
 export default function HomeSegmentSlider({ value, onChange }) {
   const rootRef = useRef(null)
@@ -151,6 +159,7 @@ export default function HomeSegmentSlider({ value, onChange }) {
             aria-controls="home-product-panel"
             aria-selected={value === id}
             tabIndex={value === id ? 0 : -1}
+            style={{ '--s': Math.max(-1, Math.min(1, i - x)), '--d': Math.min(1, Math.abs(i - x)) }}
             className={`home-segment-tab is-bare${value === id ? ' is-active' : ''}`}
             onClick={() => choose(i)}
           >

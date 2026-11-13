@@ -1942,17 +1942,14 @@ html body .tab-bar.is-pressed .tab-pill::before {
   opacity: 1;
 }
 
-/* Only the visible icon takes a touch; the empty space around it never moves the wheel. */
+/* Only the icons take a touch; the empty space around them never moves the wheel. */
 .home-segment-slider {
   pointer-events: none;
 }
 
-.home-segment-tab.is-active {
-  pointer-events: auto;
-}
 
-.home-segment-tab:not(.is-active) {
-  pointer-events: none;
+.home-segment-tab {
+  pointer-events: auto;
 }
 
 .home-segment-slider.is-dragging {
@@ -1982,14 +1979,9 @@ html body .tab-bar.is-pressed .tab-pill::before {
   transition: opacity 0.32s ease, transform 0.32s cubic-bezier(0.22, 0.9, 0.3, 1);
 }
 
-.home-segment-tab:first-child {
-  opacity: calc(1 - var(--p, 0));
-  transform: perspective(120px) rotateX(calc(var(--p, 0) * 32deg)) scale(calc(1.15 - 0.25 * var(--p, 0)));
-}
-
-.home-segment-tab:last-child {
-  opacity: var(--p, 0);
-  transform: perspective(120px) rotateX(calc((1 - var(--p, 0)) * -32deg)) scale(calc(0.9 + 0.25 * var(--p, 0)));
+.home-segment-tab {
+  opacity: calc(1 - 0.55 * var(--d, 0));
+  transform: perspective(120px) rotateX(calc(var(--s, 0) * -32deg)) scale(calc(1.15 - 0.25 * var(--d, 0)));
 }
 
 .home-segment-slider.is-dragging .home-segment-track,
