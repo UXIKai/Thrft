@@ -2016,9 +2016,23 @@ html body .stage.is-chat-panel-dragging .tab-bar {
 
 /* Background redo: one even wash across the whole screen — no blend-mode blooms, no dark cloud,
    light spread from the very top to the bottom so no band forms anywhere. */
-.stage:not(.is-bg-none) .atmosphere-bloom,
-.stage:not(.is-bg-none) .atmosphere::after {
+.stage:not(.is-bg-none) .atmosphere-bloom {
   display: none;
+}
+
+/* The wash is darker/lighter than the base everywhere except right at the screen top, which left a
+   band behind the status bar. This layer carries the same tint all the way up and fades out below it. */
+.stage:not(.is-bg-none) .atmosphere::after {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 60%;
+  background: linear-gradient(
+    180deg,
+    rgba(var(--atmosphere-effect-b-rgb, 150, 150, 150), 0.34) 0%,
+    rgba(var(--atmosphere-effect-b-rgb, 150, 150, 150), 0.3) 25%,
+    transparent 100%
+  );
 }
 
 .stage .atmosphere::before {
@@ -2069,7 +2083,6 @@ html body .market-product-grid .product-box {
 /* Same wash as the base layer minus its dark base blob, so no dark patch (or light band) sits behind the status bar */
 .stage .atmosphere::before {
   background:
-    radial-gradient(ellipse 110% 34% at 50% 26%, rgba(var(--atmosphere-effect-c-rgb, 170, 170, 170), 0.24), transparent 100%),
     radial-gradient(circle at 85% 28%, rgba(var(--atmosphere-effect-b-rgb, 150, 150, 150), 0.32), transparent 45%),
     radial-gradient(circle at 20% 58%, rgba(var(--atmosphere-effect-c-rgb, 170, 170, 170), 0.3), transparent 48%),
     radial-gradient(circle at 80% 85%, rgba(var(--atmosphere-effect-a-rgb, 190, 190, 190), 0.3), transparent 48%),
