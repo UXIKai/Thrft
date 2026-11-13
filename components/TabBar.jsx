@@ -82,6 +82,7 @@ export default function TabBar({ active = 'home', onChange, onCreate }) {
   const [createClosing, setCreateClosing] = useState(false)
   const [stageEl, setStageEl] = useState(null)
   const pageRef = useRef(null)
+  const [hoverOpt, setHoverOpt] = useState(null)
   const navRef = useRef(null)
   const dragRef = useRef(null)
   const activeIdx = Math.max(0, TABS.findIndex((t) => t.id === active))
@@ -198,9 +199,9 @@ export default function TabBar({ active = 'home', onChange, onCreate }) {
     return () => stageEl.classList.remove('is-create-page-open')
   }, [createOpen, stageEl])
 
-  const toggleCreate = () => {
+  const openCreate = () => {
     const nav = navRef.current
-    if (nav && !createOpen) {
+    if (nav) {
       nav.style.setProperty('--bar-w', `${nav.offsetWidth}px`)
       nav.style.setProperty('--bar-h', `${nav.offsetHeight}px`)
       const stage = nav.closest('.stage')
@@ -209,13 +210,14 @@ export default function TabBar({ active = 'home', onChange, onCreate }) {
         pageRef.current.style.setProperty('--menu-bottom', `${gap}px`)
       }
     }
-    setCreateOpen((open) => !open)
+    setCreateOpen(true)
   }
+  const toggleCreate = () => (createOpen ? setCreateOpen(false) : openCreate())
 
   useEffect(() => {
     if (!createOpen) return undefined
     const close = (e) => {
-      if (navRef.current?.contains(e.target) || pageRef.current?.contains(e.target)) return
+      if (navRef.current?.contains(e.target) || e.target.closest?.('.create-menu-btn')) return
       setCreateOpen(false)
     }
     const onKey = (e) => e.key === 'Escape' && setCreateOpen(false)
@@ -229,8 +231,12 @@ export default function TabBar({ active = 'home', onChange, onCreate }) {
 
   const pickCreate = (segment) => {
     setCreateOpen(false)
+    setHoverOpt(null)
     onCreate?.(segment)
   }
+
+  const optionAt = (e) =>
+    document.elementFromPoint(e.clientX, e.clientY)?.closest?.('.create-menu-btn')?.dataset.create || null
 
   const posFromEvent = (e) => {
     const r = navRef.current.getBoundingClientRect()
@@ -240,29 +246,56 @@ export default function TabBar({ active = 'home', onChange, onCreate }) {
 
   const onPointerDown = (e) => {
     if (e.button !== undefined && e.button !== 0) return
-    dragRef.current = { moved: false, startX: e.clientX }
+    const onPlus = TABS[Math.round(posFromEvent(e))]?.id === 'design'
+    const d = { moved: false, startX: e.clientX, startY: e.clientY, create: onPlus, held: false, timer: null }
+    dragRef.current = d
     navRef.current.setPointerCapture?.(e.pointerId)
     setPressed(true)
+    if (onPlus) {
+      d.timer = setTimeout(() => {
+        if (dragRef.current !== d) return
+        d.held = true
+        navigator.vibrate?.(10)
+        openCreate()
+      }, 220)
+    }
   }
   const onPointerMove = (e) => {
     const d = dragRef.current
     if (!d) return
+    if (d.create) {
+      if (d.held) {
+        setHoverOpt(optionAt(e))
+        return
+      }
+      if (Math.hypot(e.clientX - d.startX, e.clientY - d.startY) < 10) return
+      clearTimeout(d.timer)
+      d.create = false
+    }
     if (Math.abs(e.clientX - d.startX) > 6) d.moved = true
     if (d.moved) setDragPos(posFromEvent(e))
   }
   const endDrag = (e, commit) => {
     const d = dragRef.current
     if (!d) return
+    clearTimeout(d.timer)
     dragRef.current = null
-    const idx = Math.round(posFromEvent(e))
-    setDragPos(null)
     setPressed(false)
-    if (commit) setReleaseCount((count) => count + 1)
-    if (!commit || !TABS[idx]) return
-    if (TABS[idx].id === 'design') {
-      toggleCreate()
+    if (d.create) {
+      // A quick tap on the plus does nothing; it only works as hold, drag onto an option, release.
+      if (d.held) {
+        const option = commit ? optionAt(e) : null
+        setHoverOpt(null)
+        if (option) pickCreate(option)
+        else setCreateOpen(false)
+      }
       return
     }
+    const idx = Math.round(posFromEvent(e))
+    setDragPos(null)
+    if (!commit || !TABS[idx]) return
+    if (TABS[idx].id === 'design') return
+    setReleaseCount((count) => count + 1)
     setCreateOpen(false)
     if (TABS[idx].id !== active) onChange?.(TABS[idx].id)
   }
@@ -274,6 +307,7 @@ export default function TabBar({ active = 'home', onChange, onCreate }) {
       className={`tab-bar${pressed ? ' is-pressed' : ''}${dragPos !== null ? ' is-dragging' : ''}${createOpen ? ' is-create-open' : ''}${createClosing ? ' is-create-closing' : ''}`}
       aria-label="Main"
       style={{ touchAction: 'none' }}
+      onContextMenu={(e) => e.preventDefault()}
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onPointerUp={(e) => endDrag(e, true)}
@@ -349,7 +383,8 @@ export default function TabBar({ active = 'home', onChange, onCreate }) {
           type="button"
           role="menuitem"
           tabIndex={createOpen ? 0 : -1}
-          className={`create-menu-btn is-${id}`}
+          data-create={id}
+          className={`create-menu-btn is-${id}${hoverOpt === id ? ' is-hover' : ''}`}
           onClick={() => pickCreate(id)}
         >
           <Icon className="create-menu-ico" />

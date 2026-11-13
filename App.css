@@ -2091,161 +2091,39 @@ html body .stage .tab-bar.is-dragging .tab-pill {
 }
 html body .tab-bar .tab-lens-inner { top: -7.5%; bottom: -7.5%; }
 
-/* Create menu: other tabs suck into the plus, then a triangle panel opens above it */
-.tab-bar .create-menu {
-  position: absolute;
-  left: 50%;
-  bottom: calc(100% + 14px);
-  width: 188px;
-  height: 150px;
-  margin-left: -94px;
-  border-radius: 26px;
-  background: light-dark(rgba(255, 255, 255, 0.94), rgba(24, 25, 29, 0.94));
-  border: 1px solid light-dark(rgba(0, 0, 0, 0.06), rgba(255, 255, 255, 0.08));
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
-  color: light-dark(#111, #fff);
-  transform-origin: 50% 100%;
-  transform: translateY(14px) scale(0.2);
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transition: transform 0.28s cubic-bezier(0.3, 1.3, 0.5, 1), opacity 0.18s ease, visibility 0s linear 0.28s;
-  z-index: 5;
+/* Create button: hold the plus, drag onto Closet / Store / Market, release to pick */
+.tab-bar {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
-.tab-bar .create-menu::after {
-  content: '';
-  position: absolute;
-  left: 50%;
-  bottom: -7px;
-  width: 16px;
-  height: 16px;
-  margin-left: -8px;
-  background: inherit;
-  border-right: 1px solid light-dark(rgba(0, 0, 0, 0.06), rgba(255, 255, 255, 0.08));
-  border-bottom: 1px solid light-dark(rgba(0, 0, 0, 0.06), rgba(255, 255, 255, 0.08));
-  transform: rotate(45deg);
-}
-.tab-bar.is-create-open .create-menu {
-  transform: none;
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
-  transition: transform 0.34s cubic-bezier(0.3, 1.3, 0.5, 1) 0.2s, opacity 0.2s ease 0.2s, visibility 0s;
-}
-.create-menu-btn {
-  position: absolute;
-  width: 68px;
-  height: 62px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 3px;
-  border: 0;
-  border-radius: 18px;
-  background: light-dark(rgba(0, 0, 0, 0.05), rgba(255, 255, 255, 0.08));
-  color: inherit;
-  font: inherit;
-  font-size: 0.7rem;
-  font-weight: 600;
-  cursor: pointer;
-}
-.create-menu-btn:hover { background: light-dark(rgba(0, 0, 0, 0.1), rgba(255, 255, 255, 0.16)); }
-.create-menu-ico { width: 24px; height: 24px; }
-.create-menu-btn.is-closet { top: 12px; left: 50%; margin-left: -34px; }
-.create-menu-btn.is-store { bottom: 12px; left: 14px; }
-.create-menu-btn.is-market { bottom: 12px; right: 14px; }
-
-.tab-bar .tab-item { transition: transform 0.26s cubic-bezier(0.5, 0, 0.75, 0), opacity 0.2s ease; }
+.tab-bar .tab-item { transition: transform 0.26s cubic-bezier(0.5, 0, 0.75, 0), opacity 0.14s ease 0.14s; }
 .tab-bar .tab-pill { transition: opacity 0.2s ease; }
+.tab-bar .tab-item.is-create .tab-icon { transition: transform 0.3s ease; }
+
+/* The other tabs are sucked into the plus and the bar shrinks around it */
 .tab-bar.is-create-open .tab-item:not(.is-create) {
   transform: translateX(calc(var(--tab-n) * -100%)) scale(0.2) !important;
   opacity: 0;
   pointer-events: none;
 }
 .tab-bar.is-create-open .tab-pill { opacity: 0; }
-.tab-bar.is-create-open .tab-item.is-create .tab-icon { transform: rotate(45deg) !important; }
-.tab-bar .tab-item.is-create .tab-icon { transition: transform 0.3s ease; }
-
-/* The bar itself collapses into a circle around the plus */
-html body .stage > .tab-bar.is-create-open,
-html body .stage > .tab-bar.is-create-closing {
-  transition: width 0.28s cubic-bezier(0.5, 0, 0.75, 0), opacity 0.2s ease !important;
-}
-html body .stage > .tab-bar.is-create-open {
-  width: var(--bar-h, 56px) !important;
+.tab-bar.is-create-open .tab-item.is-create .tab-icon {
+  transform: rotate(45deg) !important;
+  width: 30px;
+  height: 30px;
 }
 .tab-bar.is-create-open .tab-items,
 .tab-bar.is-create-closing .tab-items {
   grid-column: 1 / -1;
-  justify-self: center;
+  justify-self: start;
   width: var(--bar-w, 100%);
   flex: none;
-}
-
-/* Create page: full-screen overlay with the three spaces in a triangle */
-.create-page {
-  position: absolute;
-  inset: 0;
-  z-index: 3;
-  background: light-dark(rgba(255, 255, 255, 0.82), rgba(10, 11, 14, 0.82));
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  color: light-dark(#111, #fff);
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transform: translateY(24px) scale(0.96);
-  transition: opacity 0.22s ease, transform 0.3s cubic-bezier(0.3, 1.2, 0.5, 1), visibility 0s linear 0.3s;
-}
-.create-page.is-open {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
-  transform: none;
-  transition: opacity 0.25s ease 0.34s, transform 0.34s cubic-bezier(0.3, 1.2, 0.5, 1) 0.34s, visibility 0s linear 0.34s;
-}
-.create-page .create-menu-btn {
-  width: 104px;
-  height: 104px;
-  border-radius: 28px;
-  font-size: 0.85rem;
-  gap: 6px;
-  top: auto;
-  right: auto;
-  bottom: auto;
-  left: 50%;
-  margin: 0;
-}
-.create-page .create-menu-ico { width: 34px; height: 34px; }
-.create-page .create-menu-btn.is-closet { top: calc(50% - 124px); transform: translateX(-50%); }
-.create-page .create-menu-btn.is-store { top: calc(50% + 4px); transform: translateX(calc(-100% - 8px)); }
-.create-page .create-menu-btn.is-market { top: calc(50% + 4px); transform: translateX(8px); }
-
-/* Collapsed state: center the × and drop the circle itself */
-.tab-bar.is-create-open .tab-items {
-  justify-self: start;
-  margin-left: calc((var(--bar-h, 56px) - var(--bar-w, 100%)) / 2);
-}
-html body .stage > .tab-bar.is-create-open {
-  background: transparent !important;
-  background-image: none !important;
-  border-color: transparent !important;
-  box-shadow: none !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-}
-.tab-bar.is-create-open .tab-item.is-create .tab-icon { width: 30px; height: 30px; }
-
-/* Keep the plus locked to the bar's center while the bar shrinks and grows */
-.tab-bar.is-create-open .tab-items,
-.tab-bar.is-create-closing .tab-items {
-  justify-self: start;
   transition: margin-left 0.28s cubic-bezier(0.5, 0, 0.75, 0);
 }
-.tab-bar.is-create-closing:not(.is-create-open) .tab-items { margin-left: 0; }
-
-/* Bar visibly shrinks into the plus first; the circle only fades once it has arrived */
+.tab-bar.is-create-open .tab-items {
+  margin-left: calc((var(--bar-h, 56px) - var(--bar-w, 100%)) / 2);
+}
 html body .stage > .tab-bar.is-create-open,
 html body .stage > .tab-bar.is-create-closing {
   transition:
@@ -2259,74 +2137,16 @@ html body .stage > .tab-bar.is-create-closing:not(.is-create-open) {
   transition: width 0.28s cubic-bezier(0.5, 0, 0.75, 0), background-color 0.1s ease, border-color 0.1s ease, box-shadow 0.1s ease, opacity 0.2s ease !important;
 }
 html body .stage > .tab-bar.is-create-open {
+  width: var(--bar-h, 56px) !important;
+  background: transparent !important;
+  background-image: none !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
   backdrop-filter: blur(0.5px) !important;
   -webkit-backdrop-filter: blur(0.5px) !important;
 }
-.tab-bar .tab-item { transition: transform 0.26s cubic-bezier(0.5, 0, 0.75, 0), opacity 0.14s ease 0.14s; }
 
-/* Create popup: background just blurs; the three buttons pop out of the plus */
-.create-page {
-  background: light-dark(rgba(255, 255, 255, 0.35), rgba(0, 0, 0, 0.3));
-  backdrop-filter: blur(34px) saturate(1.1);
-  -webkit-backdrop-filter: blur(34px) saturate(1.1);
-  transform: none;
-}
-.create-page.is-open { transform: none; }
-.create-page .create-menu-btn {
-  top: calc(100% - 84px) !important;
-  transform: translateX(-50%) scale(0.15) !important;
-  opacity: 0;
-  transition: top 0.22s ease, transform 0.22s ease, opacity 0.15s ease;
-  background: light-dark(rgba(255, 255, 255, 0.7), rgba(40, 41, 46, 0.75));
-}
-.create-page.is-open .create-menu-btn {
-  opacity: 1;
-  transition: top 0.4s cubic-bezier(0.25, 1.3, 0.5, 1) 0.34s, transform 0.4s cubic-bezier(0.25, 1.3, 0.5, 1) 0.34s, opacity 0.2s ease 0.34s;
-}
-.create-page.is-open .create-menu-btn.is-closet { top: calc(50% - 124px) !important; transform: translateX(-50%) !important; }
-.create-page.is-open .create-menu-btn.is-store { top: calc(50% + 4px) !important; transform: translateX(calc(-100% - 8px)) !important; }
-.create-page.is-open .create-menu-btn.is-market { top: calc(50% + 4px) !important; transform: translateX(8px) !important; }
-
-/* Create popup: small clear-glass triangle container right above the × */
-.create-page {
-  inset: auto;
-  left: 50%;
-  bottom: var(--menu-bottom, 90px);
-  width: 236px;
-  height: 196px;
-  margin-left: -118px;
-  border-radius: 34px;
-  background: light-dark(rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.06));
-  backdrop-filter: blur(1px) saturate(1.2);
-  -webkit-backdrop-filter: blur(1px) saturate(1.2);
-  border: 1px solid light-dark(rgba(0, 0, 0, 0.08), rgba(255, 255, 255, 0.14));
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18);
-  transform-origin: 50% 100%;
-  transform: scale(0.15);
-  transition: opacity 0.18s ease, transform 0.24s ease, visibility 0s linear 0.24s;
-}
-.create-page.is-open {
-  transform: none;
-  transition: opacity 0.2s ease 0.34s, transform 0.36s cubic-bezier(0.25, 1.3, 0.5, 1) 0.34s, visibility 0s;
-}
-.create-page .create-menu-btn {
-  width: 84px;
-  height: 84px;
-  border-radius: 24px;
-  top: auto !important;
-  bottom: 14px;
-  left: 50%;
-  background: light-dark(rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.12));
-  transform: translateX(-50%) !important;
-  opacity: 1;
-  transition: none;
-}
-.create-page .create-menu-ico { width: 30px; height: 30px; }
-.create-page.is-open .create-menu-btn.is-closet { top: 14px !important; bottom: auto; transform: translateX(-50%) !important; }
-.create-page.is-open .create-menu-btn.is-store { top: auto !important; bottom: 14px; left: 14px; transform: none !important; }
-.create-page.is-open .create-menu-btn.is-market { top: auto !important; bottom: 14px; left: auto; right: 14px; transform: none !important; }
-
-/* Create page: app content fades away leaving only the chosen background; buttons float above the × */
+/* The app fades to just the chosen background; the options float above the × */
 .stage .app-column { transition: opacity 0.25s ease; }
 .stage.is-create-page-open .app-column {
   opacity: 0;
@@ -2334,43 +2154,71 @@ html body .stage > .tab-bar.is-create-open {
   transition: opacity 0.25s ease 0.28s;
 }
 .create-page {
+  position: absolute;
   inset: 0;
-  left: 0;
-  bottom: auto;
-  width: auto;
-  height: auto;
-  margin: 0;
-  border: 0;
-  border-radius: 0;
+  z-index: 3;
   background: transparent;
-  box-shadow: none;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-  transform: none;
-  transition: opacity 0.1s ease, visibility 0s linear 0.1s;
+  color: light-dark(#111, #fff);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.12s ease, visibility 0s linear 0.12s;
 }
-.create-page.is-open { transform: none; transition: opacity 0s, visibility 0s; }
+.create-page.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition: opacity 0s, visibility 0s;
+}
 .create-page .create-menu-btn {
   position: absolute;
-  top: auto !important;
-  right: auto !important;
-  left: calc(50% - 42px) !important;
-  bottom: var(--menu-bottom, 90px) !important;
-  transform: scale(0.15) !important;
-  opacity: 0;
-  transition: left 0.2s ease, bottom 0.2s ease, transform 0.2s ease, opacity 0.12s ease;
+  left: calc(50% - 38px);
+  bottom: calc(var(--menu-bottom, 90px) - 4px);
+  width: 76px;
+  height: 76px;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  transition: transform 0.16s ease, background-color 0.16s ease;
+}
+.create-page .create-menu-ico { width: 32px; height: 32px; }
+.create-page .create-menu-btn.is-closet { bottom: calc(var(--menu-bottom, 90px) + 82px); --pop-from: translate(0, 150px); }
+.create-page .create-menu-btn.is-store { left: calc(50% - 86px); --pop-from: translate(48px, 74px); }
+.create-page .create-menu-btn.is-market { left: calc(50% + 10px); --pop-from: translate(-48px, 74px); }
+.create-page .create-menu-btn.is-hover {
+  transform: scale(1.18);
+  background: light-dark(rgba(0, 0, 0, 0.08), rgba(255, 255, 255, 0.16));
 }
 .create-page.is-open .create-menu-btn {
-  opacity: 1;
-  transform: none !important;
-  transition: left 0.4s cubic-bezier(0.25, 1.3, 0.5, 1) 0.34s, bottom 0.4s cubic-bezier(0.25, 1.3, 0.5, 1) 0.34s, transform 0.4s cubic-bezier(0.25, 1.3, 0.5, 1) 0.34s, opacity 0.2s ease 0.34s;
+  animation: create-pop 0.38s cubic-bezier(0.25, 1.3, 0.5, 1) 0.3s backwards;
 }
-.create-page.is-open .create-menu-btn.is-closet { bottom: calc(var(--menu-bottom, 90px) + 94px) !important; }
-.create-page.is-open .create-menu-btn.is-store { left: calc(50% - 98px) !important; }
-.create-page.is-open .create-menu-btn.is-market { left: calc(50% + 14px) !important; }
-
-.create-page { top: 0; bottom: 0; left: 0; right: 0; width: auto; height: auto; }
-
-.create-page.is-open .create-menu-btn.is-closet,
-.create-page.is-open .create-menu-btn.is-store,
-.create-page.is-open .create-menu-btn.is-market { top: auto !important; right: auto !important; }
+@keyframes create-pop {
+  from { transform: var(--pop-from) scale(0.15); opacity: 0; }
+}
+html body .stage .create-page .create-menu-btn {
+  border: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  background-color: transparent !important;
+  background-image: none !important;
+}
+html body .stage .create-page .create-menu-btn.is-hover {
+  background-color: light-dark(rgba(0, 0, 0, 0.08), rgba(255, 255, 255, 0.16)) !important;
+}
