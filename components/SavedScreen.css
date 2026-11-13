@@ -1253,10 +1253,10 @@ html body .saved-page-header .saved-brands-toggle:focus {
   -webkit-backdrop-filter: none !important;
   backdrop-filter: none !important;
   border-radius: 0 !important;
-  color: #fff !important;
+  color: light-dark(#0a0a0a, #fff) !important;
   opacity: 1;
 }
-html body .saved-brands-toggle .saved-top-ico { fill: #fff; color: #fff; }
+html body .saved-brands-toggle .saved-top-ico { fill: light-dark(#0a0a0a, #fff); color: light-dark(#0a0a0a, #fff); }
 
 .saved-chest-lid {
   transform-box: view-box;

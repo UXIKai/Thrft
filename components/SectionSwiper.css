@@ -1,0 +1,67 @@
+/* Section picker: the open section's icon over a row of dots. The content below is swiped left or right. */
+.section-pager {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 6px 0 4px;
+  color: light-dark(#000, #fff);
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.section-pager-icon svg {
+  display: block;
+  width: 28px;
+  height: 28px;
+}
+
+.section-pager-dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Each dot is a 24px tap target around a small mark. */
+.section-pager-dot {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+}
+
+.section-pager-dot::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+  border-radius: 999px;
+  background: currentColor;
+  opacity: 0.3;
+  transition: width 0.25s ease, margin 0.25s ease, opacity 0.25s ease;
+}
+
+.section-pager-dot.is-active::before {
+  width: 16px;
+  margin-left: -8px;
+  opacity: 1;
+}
+
+.section-pager-dot:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: -4px;
+  border-radius: 999px;
+}
+
+/* Vertical drags still scroll the page; sideways ones are read by useSectionSwipe. */
+.section-swipe {
+  touch-action: pan-y;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .section-pager-dot::before {
+    transition: none;
+  }
+}

@@ -699,7 +699,7 @@
 }
 
 .chat-menu-item.is-danger {
-  color: #ff8e8e;
+  color: light-dark(#c4162a, #ff8e8e);
 }
 
 .chat-menu-ico {
@@ -2335,7 +2335,7 @@ html body .chat-friend-item {
 }
 
 .chat-member-action.is-danger {
-  color: #ff6b6b;
+  color: light-dark(#c4162a, #ff6b6b);
 }
 
 .chat-member-action-ico {
@@ -2460,7 +2460,7 @@ html body button.chat-contact-nick-save {
 }
 
 .chat-contact-action.is-danger {
-  color: #ff8e8e;
+  color: light-dark(#c4162a, #ff8e8e);
 }
 
 .chat-contact-action-ico {
@@ -2793,7 +2793,7 @@ html body button.chat-contact-nick-save {
 }
 
 .chat-dm-menu-btn.is-danger {
-  color: #ff8e8e;
+  color: light-dark(#c4162a, #ff8e8e);
 }
 
 .chat-dm-menu-btn svg,
@@ -2909,7 +2909,7 @@ html body button.chat-contact-nick-save {
 }
 
 .chat-hold-action.is-danger {
-  color: #ff5b63;
+  color: light-dark(#c4162a, #ff5b63);
 }
 
 .chat-hold-action:focus-visible {
@@ -4933,7 +4933,7 @@ html body .chat-new-field {
 
 @media (max-width: 719px), (max-height: 499px) {
   html body .chat-screen .chat-list-section {
-    background: #000;
+    background: var(--page-bg);
     padding-top: calc(max(8px, env(safe-area-inset-top, 0px)) + 16px + 40px);
     padding-left: 22px;
   }
@@ -4955,8 +4955,8 @@ html body .chat-new-field {
     width: 44px;
     height: 44px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.12);
-    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: light-dark(rgba(0, 0, 0, 0.06), rgba(255, 255, 255, 0.12));
+    border: 1px solid light-dark(rgba(0, 0, 0, 0.22), rgba(255, 255, 255, 0.16));
   }
   html body .chat-mobile-nav-scrim {
     background: light-dark(rgba(60, 60, 60, 0.55), rgba(24, 24, 26, 0.96));
@@ -5019,10 +5019,10 @@ html body .chat-new-field {
   }
 }
 
-/* Online panel on mobile: flat black panel with the page kept as a rounded card on the left */
+/* Online panel on mobile: flat panel in the page colour with the page kept as a rounded card on the left */
 @media (max-width: 719px), (max-height: 499px) {
   html body .chat-desktop-thread .chat-friends-active:not([hidden]) {
-    background: #000;
+    background: var(--page-bg);
     border-left: 0 !important;
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
@@ -5074,18 +5074,20 @@ html body .chat-new-field {
   }
 }
 
-/* Match ChatGPT: black behind the card's curved edge, card rounded only on the edge facing the panel */
+/* Same shade as the drawer and the page, so the status-bar tint has nothing to differ from; the card's curve is a hairline */
 @media (max-width: 719px), (max-height: 499px) {
   html body .chat-screen .chat-mobile-nav-scrim {
-    background: #000;
+    background: var(--page-bg);
   }
   html body .chat-mobile-nav-scrim::before {
     border-radius: 44px 0 0 44px;
     border-width: 0 0 0 1px;
+    border-color: light-dark(rgba(0, 0, 0, 0.22), rgba(255, 255, 255, 0.18));
   }
   html body .chat-mobile-nav-scrim.is-online::before {
     border-radius: 0 44px 44px 0;
     border-width: 0 1px 0 0;
+    border-color: light-dark(rgba(0, 0, 0, 0.22), rgba(255, 255, 255, 0.18));
   }
 }
 
@@ -5151,7 +5153,7 @@ html body .chat-new-field {
     mask-image: none;
   }
   html body .chat-mobile-nav-scrim::before {
-    background: light-dark(rgba(60, 60, 60, 0.9), #1c1c1e);
+    background: var(--page-bg);
     background-image: none;
     box-shadow: none;
     filter: none;

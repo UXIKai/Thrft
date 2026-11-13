@@ -1635,11 +1635,10 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  margin-top: -26px;
 }
 
 .profile-spaces-inline-body {
-  min-height: 160px;
+  min-height: 40dvh;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -3104,74 +3103,6 @@
   flex: 0 0 100%;
   display: flex;
   justify-content: center;
-}
-
-/* Up/down scroll wheel (like the iOS picker): one icon rests in the middle row */
-.profile-space-wheel-wrap {
-  --wheel-row: 44px;
-  position: relative;
-  width: 88px;
-  height: calc(var(--wheel-row) * 3);
-  margin: 0 auto;
-}
-.profile-space-wheel {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-  overflow-x: hidden;
-  overflow-y: auto;
-  overscroll-behavior-y: contain;
-  touch-action: none;
-  scroll-snap-type: y mandatory;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  user-select: none;
-  -webkit-user-select: none;
-  -webkit-mask-image: linear-gradient(180deg, transparent, #000 12%, #000 88%, transparent);
-  mask-image: linear-gradient(180deg, transparent, #000 12%, #000 88%, transparent);
-}
-.profile-space-wheel::-webkit-scrollbar { display: none; }
-/* Spacers let the first and last icon scroll into the middle row */
-.profile-space-wheel::before,
-.profile-space-wheel::after {
-  content: '';
-  flex: 0 0 var(--wheel-row);
-}
-.profile-space-wheel .profile-mode-ico { will-change: transform, opacity; }
-
-/* Icons stay transparent (the pill behind the middle row is the only chrome); each row is a full-width tap target */
-html body .profile-space-wheel .profile-wheel-item,
-html body .profile-space-wheel .profile-wheel-item:hover,
-html body .profile-space-wheel .profile-wheel-item:active,
-html body .profile-space-wheel .profile-wheel-item.is-active {
-  flex: 0 0 var(--wheel-row);
-  width: 100%;
-  height: var(--wheel-row);
-  min-height: 0;
-  padding: 0;
-  border-radius: 999px;
-  scroll-snap-align: center;
-  scroll-snap-stop: always;
-  background: none !important;
-  border-color: transparent !important;
-  box-shadow: none !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-}
-
-/* Fixed Instagram-style pill behind whichever icon is in the middle row */
-.profile-space-wheel-wrap::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: var(--wheel-row);
-  height: var(--wheel-row);
-  border-radius: 999px;
-  background: light-dark(rgba(0, 0, 0, 0.12), rgba(255, 255, 255, 0.2));
-  pointer-events: none;
 }
 
 /* Hamburger in the corner; Settings slides in from the right */

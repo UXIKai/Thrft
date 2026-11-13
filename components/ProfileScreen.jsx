@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import {
   connectProvider,
@@ -19,6 +19,7 @@ import { getSupabase, isSupabaseConfigured } from '../supabase.js'
 import BrandGlobe from './BrandGlobe.jsx'
 import GiveBack from './GiveBack.jsx'
 import OrbitCarousel from './OrbitCarousel.jsx'
+import SectionSwiper from './SectionSwiper.jsx'
 import SettingsScreen from './SettingsScreen.jsx'
 import SwipeBackPage from './SwipeBackPage.jsx'
 import './GlassOverlay.css'
@@ -552,71 +553,6 @@ export default function ProfileScreen({
     setClosetSelected(null)
   }
   const [spaceTab, setSpaceTab] = useState('closet') // 'store' | 'market' | 'closet'
-  const wheelRef = useRef(null)
-  const wheelDragRef = useRef(null)
-  const wheelSwallowClickRef = useRef(false)
-  const wheelSnapTimerRef = useRef(0)
-  const spaceSyncRef = useRef(null) // latest { spaceTab, switchSpace } for the wheel's scroll handler
-  const [wheelEnd, setWheelEnd] = useState('') // '' | 'top' | 'bottom': which end the wheel is resting on
-  // Up/down picker wheel: each icon tilts, shrinks and fades the further it sits from the middle row.
-  const updateWheel = useCallback(() => {
-    const wheel = wheelRef.current
-    if (!wheel) return
-    const mid = wheel.scrollTop + wheel.clientHeight / 2
-    const max = wheel.scrollHeight - wheel.clientHeight
-    const row = wheel.querySelector('.profile-wheel-item')?.offsetHeight || 44
-    setWheelEnd(wheel.scrollTop < row / 2 ? 'top' : wheel.scrollTop > max - row / 2 ? 'bottom' : '')
-    let nearest = null
-    let nearestDist = Infinity
-    wheel.querySelectorAll('.profile-wheel-item').forEach((el) => {
-      const t = (el.offsetTop + el.offsetHeight / 2 - mid) / el.offsetHeight
-      const d = Math.min(1, Math.abs(t))
-      if (Math.abs(t) < nearestDist) {
-        nearestDist = Math.abs(t)
-        nearest = el.dataset.spaceId
-      }
-      const ico = el.querySelector('.profile-mode-ico')
-      if (!ico) return
-      ico.style.transform = `perspective(120px) rotateX(${Math.max(-1.5, Math.min(1.5, t)) * -32}deg) scale(${1 - d * 0.22})`
-      ico.style.opacity = String(1 - d)
-    })
-    // The page below follows whichever icon is in the middle; no tap needed.
-    const sync = spaceSyncRef.current
-    if (nearest && sync && nearest !== sync.spaceTab) sync.switchSpace(nearest)
-  }, [])
-  useLayoutEffect(() => {
-    const wheel = wheelRef.current
-    const first = wheel?.querySelector('[data-space-id="closet"]')
-    if (wheel && first) wheel.scrollTop = first.offsetTop + first.offsetHeight / 2 - wheel.clientHeight / 2
-    updateWheel()
-    window.addEventListener('resize', updateWheel)
-    return () => window.removeEventListener('resize', updateWheel)
-  }, [updateWheel])
-  useEffect(() => () => window.clearTimeout(wheelSnapTimerRef.current), [])
-  // A mouse wheel moves the space wheel one icon per scroll gesture.
-  useEffect(() => {
-    const wheel = wheelRef.current
-    if (!wheel) return undefined
-    let lastEvent = 0
-    const onWheel = (e) => {
-      e.preventDefault()
-      const now = performance.now()
-      const sameGesture = now - lastEvent < 150
-      lastEvent = now
-      if (sameGesture || Math.abs(e.deltaY) < 2) return
-      const items = [...wheel.querySelectorAll('.profile-wheel-item')]
-      const mid = wheel.scrollTop + wheel.clientHeight / 2
-      const center = (el) => el.offsetTop + el.offsetHeight / 2
-      let index = 0
-      items.forEach((el, i) => {
-        if (Math.abs(center(el) - mid) < Math.abs(center(items[index]) - mid)) index = i
-      })
-      const next = items[Math.max(0, Math.min(items.length - 1, index + Math.sign(e.deltaY)))]
-      wheel.scrollTo({ top: center(next) - wheel.clientHeight / 2, behavior: 'smooth' })
-    }
-    wheel.addEventListener('wheel', onWheel, { passive: false })
-    return () => wheel.removeEventListener('wheel', onWheel)
-  }, [])
   const [panelListingTab, setPanelListingTab] = useState('active')
   const [storeProducts, setStoreProducts] = useState([])
   const [marketListings, setMarketListings] = useState([])
@@ -932,7 +868,6 @@ export default function ProfileScreen({
     setPanelListingTab('active')
     setSpaceTab(which)
   }
-  spaceSyncRef.current = { spaceTab, switchSpace }
 
   // Freeze home-scroll so opening overlays never jumps the page;
   // hide underlay for @/ship/Settings so stage atmosphere shows through.
@@ -1166,102 +1101,6 @@ export default function ProfileScreen({
     e.preventDefault()
   }
 
-  // The wheel is dragged by hand so one gesture moves exactly one icon.
-  function wheelPointerDown(e) {
-    if (!e.isPrimary || e.button !== 0) return
-    window.clearTimeout(wheelSnapTimerRef.current)
-    const items = [...e.currentTarget.querySelectorAll('.profile-wheel-item')]
-    const mid = e.currentTarget.scrollTop + e.currentTarget.clientHeight / 2
-    let startIndex = 0
-    items.forEach((el, i) => {
-      if (Math.abs(el.offsetTop + el.offsetHeight / 2 - mid) < Math.abs(items[startIndex].offsetTop + items[startIndex].offsetHeight / 2 - mid)) startIndex = i
-    })
-    wheelDragRef.current = {
-      startIndex,
-      id: e.pointerId,
-      id: e.pointerId,
-      startY: e.clientY,
-      originY: e.clientY,
-      startTop: e.currentTarget.scrollTop,
-      moving: false,
-      samples: [],
-    }
-  }
-
-  function wheelPointerMove(e) {
-    const drag = wheelDragRef.current
-    const wheel = e.currentTarget
-    if (!drag || drag.id !== e.pointerId) return
-    if (!(e.buttons & 1)) {
-      // The release never reached the wheel, so settle here instead of leaving snapping off.
-      wheelPointerEnd(e)
-      return
-    }
-    if (!drag.moving) {
-      if (Math.abs(e.clientY - drag.startY) <= 5) return
-      // Only a real drag captures the pointer, so plain taps still reach the icons.
-      try {
-        wheel.setPointerCapture(e.pointerId)
-      } catch {
-        // No active pointer left to capture.
-      }
-      if (!wheel.hasPointerCapture(e.pointerId)) {
-        wheelDragRef.current = null
-        return
-      }
-      drag.moving = true
-      drag.originY = drag.startY + Math.sign(e.clientY - drag.startY) * 5
-      // Snapping would jump the wheel row by row while it follows the cursor.
-      wheel.style.scrollSnapType = 'none'
-    }
-    const top = drag.startTop - (e.clientY - drag.originY)
-    drag.samples.push({ t: e.timeStamp, top })
-    if (drag.samples.length > 6) drag.samples.shift()
-    wheel.scrollTop = top
-  }
-
-  function wheelPointerEnd(e) {
-    const drag = wheelDragRef.current
-    const wheel = e.currentTarget
-    if (!drag || drag.id !== e.pointerId) return
-    wheelDragRef.current = null
-    if (!drag.moving) return
-    wheelSwallowClickRef.current = true
-    setTimeout(() => {
-      wheelSwallowClickRef.current = false
-    }, 0)
-    // A quick flick carries on a little way before settling on the nearest icon.
-    const last = drag.samples[drag.samples.length - 1]
-    const from = drag.samples.find((s) => last.t - s.t <= 100) || last
-    const resting = e.timeStamp - last.t > 80
-    const velocity = !resting && last.t > from.t ? (last.top - from.top) / (last.t - from.t) : 0
-    const aim = wheel.scrollTop + velocity * 150 + wheel.clientHeight / 2
-    const items = [...wheel.querySelectorAll('.profile-wheel-item')]
-    let index = 0
-    items.forEach((el, i) => {
-      const cur = items[index]
-      if (Math.abs(el.offsetTop + el.offsetHeight / 2 - aim) < Math.abs(cur.offsetTop + cur.offsetHeight / 2 - aim)) index = i
-    })
-    index = Math.max(drag.startIndex - 1, Math.min(drag.startIndex + 1, index))
-    const picked = items[index]
-    const target = picked.offsetTop + picked.offsetHeight / 2 - wheel.clientHeight / 2
-    wheel.scrollTo({ top: target, behavior: 'smooth' })
-    window.clearTimeout(wheelSnapTimerRef.current)
-    wheelSnapTimerRef.current = window.setTimeout(() => {
-      if (!wheelDragRef.current?.moving) wheel.style.removeProperty('scroll-snap-type')
-    }, 400)
-  }
-
-  // Tap the icon in the middle to open it; tap one above or below to roll it into the middle first.
-  function pickSpace(e, id) {
-    if (wheelSwallowClickRef.current) return
-    const wheel = wheelRef.current
-    const el = e.currentTarget
-    const top = el.offsetTop + el.offsetHeight / 2 - wheel.clientHeight / 2
-    if (Math.abs(top - wheel.scrollTop) < 12) switchSpace(id)
-    else wheel.scrollTo({ top, behavior: 'smooth' })
-  }
-
   return (
     <div className="profile-screen" role="region" aria-label="Profile">
       <button
@@ -1351,44 +1190,14 @@ export default function ProfileScreen({
       </section>
 
       <section className="profile-block profile-spaces-inline" aria-label="Store, Closet and Market">
-        <div className="profile-space-wheel-wrap">
-          <span className={`wheel-arrow is-up${wheelEnd === 'top' ? ' is-end' : ''}`} aria-hidden="true">
-            <svg viewBox="0 0 12 10" aria-hidden="true"><path d="M6 1.2 10.6 8.4H1.4Z" fill="currentColor" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /></svg>
-          </span>
-          <span className={`wheel-arrow is-down${wheelEnd === 'bottom' ? ' is-end' : ''}`} aria-hidden="true">
-            <svg viewBox="0 0 12 10" aria-hidden="true"><path d="M6 1.2 10.6 8.4H1.4Z" fill="currentColor" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /></svg>
-          </span>
-          <div
-            className="profile-space-wheel"
-            role="tablist"
-            aria-label="Closet, Store and Market"
-            aria-orientation="vertical"
-            ref={wheelRef}
-            onScroll={updateWheel}
-            onPointerDown={wheelPointerDown}
-            onPointerMove={wheelPointerMove}
-            onPointerUp={wheelPointerEnd}
-            onPointerCancel={wheelPointerEnd}
-          >
-            {SPACE_MODES.map(({ id, label, Icon }) => (
-              <button
-                key={id}
-                type="button"
-                role="tab"
-                aria-selected={spaceTab === id}
-                aria-label={label}
-                data-space-id={id}
-                className={`profile-panel-mode profile-wheel-item ${spaceTab === id ? 'is-active' : ''}`}
-                onMouseDown={holdScroll}
-                onClick={(e) => pickSpace(e, id)}
-              >
-                <Icon className="profile-mode-ico" />
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="profile-spaces-inline-body">
+        <SectionSwiper
+          sections={SPACE_MODES}
+          value={spaceTab}
+          onChange={switchSpace}
+          label="Closet, Store and Market"
+          idPrefix="profile-space"
+          className="profile-spaces-inline-body"
+        >
           {spaceTab !== 'closet' && (
             <div
               className="profile-listing-tabs is-panel"
@@ -1484,6 +1293,7 @@ export default function ProfileScreen({
               />}
               <div
                 className="closet-browse-wheels"
+                data-no-section-swipe
                 role="group"
                 aria-label="Browse closet by brand and type"
               >
@@ -1762,7 +1572,7 @@ export default function ProfileScreen({
               )}
             </div>
           )}
-        </div>
+        </SectionSwiper>
       </section>
 
       {stageEl &&

@@ -164,7 +164,7 @@ createRoot(document.getElementById('root')).render(
   const syncThemeColor = () => {
     const meta = document.querySelector('meta[name="theme-color"]')
     if (!meta || root.dataset.bgPhoto) return
-    probe.style.color = 'var(--atmosphere-base, #050505)'
+    probe.style.color = 'var(--page-base, #050505)'
     const base = getComputedStyle(probe).color.match(/[\d.]+/g)?.slice(0, 3).map(Number) || [5, 5, 5]
     // The stage dims its wash 20%, and the brightness overlay (body::after) dims everything above it
     const dim = Number(root.style.getPropertyValue('--app-dim-opacity')) || 0
@@ -178,6 +178,6 @@ createRoot(document.getElementById('root')).render(
   syncThemeColor()
   new MutationObserver(syncThemeColor).observe(root, {
     attributes: true,
-    attributeFilter: ['data-theme', 'style', 'data-bg-photo'],
+    attributeFilter: ['data-theme', 'style', 'data-bg-photo', 'data-bg-image', 'data-bg-color'],
   })
 }

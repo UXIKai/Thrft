@@ -1863,3 +1863,24 @@ html body button.saved-room-btn:not(#_) {
   backdrop-filter: blur(40px) saturate(1.4) !important;
   -webkit-backdrop-filter: blur(40px) saturate(1.4) !important;
 }
+
+/* Bright page (light theme or bright chosen colours): surfaces whose own edge is a white hairline get a subtle black outline.
+   --edge-ink is transparent on dark pages, so nothing changes there. Inset so it follows the radius and sits on the border. */
+html body :is(
+  .tab-bar .tab-pill,
+  .chat-friends-find,
+  .chat-friends-tab-group,
+  .chat-hold-preview,
+  .chat-hold-menu,
+  .saved-fav-brands,
+  .saved-brand-pill
+):not(:focus-visible) {
+  outline: 1px solid var(--edge-ink);
+  outline-offset: -1px;
+}
+
+/* The glass chrome replaces the avatar's solid disc, so its initials follow the page ink to stay legible */
+html body .chat-thread-avatar,
+html body .chat-thread-avatar.is-link {
+  color: var(--ink);
+}

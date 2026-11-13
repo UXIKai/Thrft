@@ -3,6 +3,21 @@
   --font-sans: "SF Pro Text", "SF Pro Display", "SF Pro", -apple-system,
     BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
   --font-logo: "Playfair Display", Playfair, Georgia, "Times New Roman", serif;
+  /* The page colour before the stage's 20% dim: the wash base, or the flat Background colour when the effect is off */
+  --page-base: var(--atmosphere-base, light-dark(rgb(250, 250, 250), #050505));
+  /* The page colour as drawn (the stage dims its wash 20%), which is also what the status-bar tint is sampled from.
+     Full-screen surfaces that reach the top edge paint this so no band shows under the status bar. */
+  --page-bg: color-mix(in srgb, var(--page-base) 80%, #000);
+  /* Subtle black edge for surfaces on a bright page (dark ink); invisible on dark pages */
+  --edge-ink: light-dark(rgba(0, 0, 0, 0.28), transparent);
+}
+
+/* Effect off: the stage paints the flat Background colour (white or black when none is chosen) instead of the wash */
+html[data-bg-image='none'] {
+  --page-base: rgb(var(--bg-color-rgb, 36, 36, 36));
+}
+html[data-bg-image='none'][data-bg-color='none'] {
+  --page-base: light-dark(rgb(255, 255, 255), #000);
 }
 
 *,
