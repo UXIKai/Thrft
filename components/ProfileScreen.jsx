@@ -608,11 +608,15 @@ export default function ProfileScreen({
   const wheelDragRef = useRef(null)
   const wheelSwallowClickRef = useRef(false)
   const wheelSnapTimerRef = useRef(0)
+  const [wheelEnd, setWheelEnd] = useState('') // '' | 'top' | 'bottom': which end the wheel is resting on
   // Up/down picker wheel: each icon tilts, shrinks and fades the further it sits from the middle row.
   const updateWheel = useCallback(() => {
     const wheel = wheelRef.current
     if (!wheel) return
     const mid = wheel.scrollTop + wheel.clientHeight / 2
+    const max = wheel.scrollHeight - wheel.clientHeight
+    const row = wheel.querySelector('.profile-wheel-item')?.offsetHeight || 44
+    setWheelEnd(wheel.scrollTop < row / 2 ? 'top' : wheel.scrollTop > max - row / 2 ? 'bottom' : '')
     wheel.querySelectorAll('.profile-wheel-item').forEach((el) => {
       const t = (el.offsetTop + el.offsetHeight / 2 - mid) / el.offsetHeight
       const d = Math.min(1, Math.abs(t))
@@ -1403,10 +1407,10 @@ export default function ProfileScreen({
 
       <section className="profile-block profile-spaces-inline" aria-label="Store, Closet and Market">
         <div className="profile-space-wheel-wrap">
-          <span className={`wheel-arrow is-up${spaceTab === SPACE_MODES[0].id ? ' is-end' : ''}`} aria-hidden="true">
+          <span className={`wheel-arrow is-up${wheelEnd === 'top' ? ' is-end' : ''}`} aria-hidden="true">
             <svg viewBox="0 0 12 10" aria-hidden="true"><path d="M6 1.2 10.6 8.4H1.4Z" fill="currentColor" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /></svg>
           </span>
-          <span className={`wheel-arrow is-down${spaceTab === SPACE_MODES[SPACE_MODES.length - 1].id ? ' is-end' : ''}`} aria-hidden="true">
+          <span className={`wheel-arrow is-down${wheelEnd === 'bottom' ? ' is-end' : ''}`} aria-hidden="true">
             <svg viewBox="0 0 12 10" aria-hidden="true"><path d="M6 1.2 10.6 8.4H1.4Z" fill="currentColor" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /></svg>
           </span>
           <div
