@@ -433,38 +433,6 @@ function LinkIcon() {
   )
 }
 
-function TruckIcon() {
-  return (
-    <svg className="profile-truck-icon" viewBox="0 0 24 24" aria-hidden>
-      <path
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.55"
-        strokeLinejoin="round"
-        strokeLinecap="round"
-        d="M3.4 6.2h10.4v8.2H3.4z"
-      />
-      <path
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.55"
-        strokeLinejoin="round"
-        strokeLinecap="round"
-        d="M13.8 9.2h3.6l2.8 2.8v2.4h-6.4V9.2z"
-      />
-      <circle cx="7.2" cy="16.6" r="1.55" fill="none" stroke="currentColor" strokeWidth="1.55" />
-      <circle cx="17.2" cy="16.6" r="1.55" fill="none" stroke="currentColor" strokeWidth="1.55" />
-      <path
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.55"
-        strokeLinecap="round"
-        d="M8.75 16.6h6.5M3.4 14.4v1.2h1.2M19 14.4h1.4v1.2"
-      />
-    </svg>
-  )
-}
-
 function EmptyBoxIcon() {
   return (
     <svg className="pf-empty-state-ico" viewBox="0 0 64 64" aria-hidden>
@@ -1388,21 +1356,6 @@ export default function ProfileScreen({
             <span className="profile-social-l">Followers</span>
           </div>
         </div>
-      </section>
-
-      <section
-        className="profile-block profile-tools-row"
-        aria-label="Shipping"
-      >
-        <button
-          type="button"
-          className="profile-suppliers-btn is-compact is-bare"
-          aria-label="Open orders"
-          onMouseDown={holdScroll}
-          onClick={() => setShipOpen(true)}
-        >
-          <TruckIcon />
-        </button>
       </section>
 
       <section className="profile-block profile-spaces-inline" aria-label="Store, Closet and Market">
