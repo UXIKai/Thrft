@@ -2286,3 +2286,42 @@ html body .stage > .tab-bar.is-create-open {
 .create-page.is-open .create-menu-btn.is-closet { top: calc(50% - 124px) !important; transform: translateX(-50%) !important; }
 .create-page.is-open .create-menu-btn.is-store { top: calc(50% + 4px) !important; transform: translateX(calc(-100% - 8px)) !important; }
 .create-page.is-open .create-menu-btn.is-market { top: calc(50% + 4px) !important; transform: translateX(8px) !important; }
+
+/* Create popup: small clear-glass triangle container right above the × */
+.create-page {
+  inset: auto;
+  left: 50%;
+  bottom: var(--menu-bottom, 90px);
+  width: 236px;
+  height: 196px;
+  margin-left: -118px;
+  border-radius: 34px;
+  background: light-dark(rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.06));
+  backdrop-filter: blur(1px) saturate(1.2);
+  -webkit-backdrop-filter: blur(1px) saturate(1.2);
+  border: 1px solid light-dark(rgba(0, 0, 0, 0.08), rgba(255, 255, 255, 0.14));
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18);
+  transform-origin: 50% 100%;
+  transform: scale(0.15);
+  transition: opacity 0.18s ease, transform 0.24s ease, visibility 0s linear 0.24s;
+}
+.create-page.is-open {
+  transform: none;
+  transition: opacity 0.2s ease 0.34s, transform 0.36s cubic-bezier(0.25, 1.3, 0.5, 1) 0.34s, visibility 0s;
+}
+.create-page .create-menu-btn {
+  width: 84px;
+  height: 84px;
+  border-radius: 24px;
+  top: auto !important;
+  bottom: 14px;
+  left: 50%;
+  background: light-dark(rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.12));
+  transform: translateX(-50%) !important;
+  opacity: 1;
+  transition: none;
+}
+.create-page .create-menu-ico { width: 30px; height: 30px; }
+.create-page.is-open .create-menu-btn.is-closet { top: 14px !important; bottom: auto; transform: translateX(-50%) !important; }
+.create-page.is-open .create-menu-btn.is-store { top: auto !important; bottom: 14px; left: 14px; transform: none !important; }
+.create-page.is-open .create-menu-btn.is-market { top: auto !important; bottom: 14px; left: auto; right: 14px; transform: none !important; }

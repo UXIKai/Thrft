@@ -197,6 +197,11 @@ export default function TabBar({ active = 'home', onChange, onCreate }) {
     if (nav && !createOpen) {
       nav.style.setProperty('--bar-w', `${nav.offsetWidth}px`)
       nav.style.setProperty('--bar-h', `${nav.offsetHeight}px`)
+      const stage = nav.closest('.stage')
+      if (stage && pageRef.current) {
+        const gap = stage.getBoundingClientRect().bottom - nav.getBoundingClientRect().top + 12
+        pageRef.current.style.setProperty('--menu-bottom', `${gap}px`)
+      }
     }
     setCreateOpen((open) => !open)
   }
