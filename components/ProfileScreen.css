@@ -3069,8 +3069,8 @@
 /* Closet shows inline below the wheel; the add (scanner) button sits at the right */
 .closet-page-head {
   position: absolute;
-  top: 12px;
-  right: 0;
+  top: 8px;
+  right: max(0px, calc((100% - 340px) / 2 - 6px));
   z-index: 1;
 }
 
