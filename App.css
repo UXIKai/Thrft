@@ -2042,5 +2042,5 @@ html body .market-product-grid .product-box {
 }
 
 /* Instagram-style selection: a wider-than-tall pill, not a circle */
-html body .tab-bar .tab-pill { top: 7px; bottom: 7px; }
-html body .tab-bar .tab-lens-inner { top: -7px; bottom: -7px; }
+html body .tab-bar .tab-pill { top: 12px; bottom: 12px; left: calc(var(--tab-i, 0) * 20% + 2px); width: calc(20% - 4px); }
+html body .tab-bar .tab-lens-inner { top: -12px; bottom: -12px; }
