@@ -170,6 +170,7 @@ createRoot(document.getElementById('root')).render(
     const mixed = base.map((c, i) => Math.round(c + (glow[i] - c) * 0.34))
     const color = `rgb(${mixed.join(', ')})`
     meta.setAttribute('content', color)
+    root.style.setProperty('--safari-top', color)
     // Safari fills the strip above the page from the html background
     if (root.style.backgroundColor !== color) root.style.backgroundColor = color
   }
