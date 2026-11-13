@@ -114,7 +114,7 @@
 .app-column.is-home-wide .tab-bar {
   left: 50%;
   right: auto;
-  width: min(calc(100% - 40px), calc(var(--tab-h, 64px) * 5.47 + var(--tab-extra-width, 0px)));
+  width: min(calc(100% - 40px), calc(var(--tab-h, 70px) * 5.47 + var(--tab-extra-width, 0px)));
   transform: translateX(-50%);
 }
 
