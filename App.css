@@ -2236,3 +2236,11 @@ html body .stage > .tab-bar.is-create-open {
   -webkit-backdrop-filter: none !important;
 }
 .tab-bar.is-create-open .tab-item.is-create .tab-icon { width: 30px; height: 30px; }
+
+/* Keep the plus locked to the bar's center while the bar shrinks and grows */
+.tab-bar.is-create-open .tab-items,
+.tab-bar.is-create-closing .tab-items {
+  justify-self: start;
+  transition: margin-left 0.28s cubic-bezier(0.5, 0, 0.75, 0);
+}
+.tab-bar.is-create-closing:not(.is-create-open) .tab-items { margin-left: 0; }
