@@ -240,7 +240,7 @@ html body .closet-number-content .closet-number-brands button {
 
 /* Brand wheel: flat, fixed-width rows so every logo and name line up; icon-only back + check */
 html body .closet-number-content .closet-brand-wheel .type-box.is-wheel {
-  width: 240px;
+  width: 280px;
   max-width: 100%;
   padding: 8px 0;
   transform-origin: left center;
@@ -281,4 +281,15 @@ html body .closet-number-content .closet-number-actions button:focus-visible {
   box-shadow: none !important;
   -webkit-backdrop-filter: none !important;
   backdrop-filter: none !important;
+}
+
+/* Brand wheel: names centred on the screen, logos stay in one column on the left */
+html body .closet-number-content .closet-brand-wheel .brand-logo-label {
+  grid-template-columns: 40px minmax(0, 1fr) 40px !important;
+  width: 100% !important;
+}
+
+html body .closet-number-content .closet-brand-wheel .brand-logo-label > span {
+  justify-self: stretch;
+  text-align: center;
 }
