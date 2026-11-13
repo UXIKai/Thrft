@@ -117,7 +117,7 @@ export default function App() {
   const [createSegment, setCreateSegment] = useState('market')
   const [clothingType, setClothingType] = useState('all')
   const [homeColor, setHomeColor] = useState('')
-  const [homeSegment, setHomeSegment] = useState('leaderboard')
+  const [homeSegment, setHomeSegment] = useState('store')
   const [homeOpen, setHomeOpen] = useState(true)
   const [homeBrand, setHomeBrand] = useState(null) // { id, label } | null
   const [homePicker, setHomePicker] = useState(null) // 'brands' | 'category' | null

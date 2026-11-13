@@ -12,9 +12,9 @@ const LeaderboardIcon = () => (
 )
 
 const SEGMENTS = [
-  { id: 'leaderboard', label: 'Leaderboard', Icon: LeaderboardIcon },
   { id: 'store', label: 'Store', Icon: StoreIcon },
   { id: 'market', label: 'Market', Icon: MarketIcon },
+  { id: 'leaderboard', label: 'Leaderboard', Icon: LeaderboardIcon },
 ]
 
 const LAST = SEGMENTS.length - 1
@@ -27,7 +27,7 @@ const clamp = (n) => Math.min(LAST, Math.max(0, n))
 // Dragging past either end stretches, then springs back.
 const resist = (n) => (n < 0 ? n * EDGE_RESISTANCE : n > LAST ? LAST + (n - LAST) * EDGE_RESISTANCE : n)
 
-// Leaderboard / Store / Market on a vertical picker wheel: the chosen icon sits in the middle, the other waits above or below.
+// Store / Market / Leaderboard on a vertical picker wheel: the chosen icon sits in the middle, the other waits above or below.
 // Drag up or down (one icon per gesture), tap the neighbour, or use the arrow keys.
 export default function HomeSegmentSlider({ value, onChange, fireSame = false }) {
   const rootRef = useRef(null)
