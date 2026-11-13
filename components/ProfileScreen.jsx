@@ -631,6 +631,30 @@ export default function ProfileScreen({
     return () => window.removeEventListener('resize', updateWheel)
   }, [updateWheel])
   useEffect(() => () => window.clearTimeout(wheelSnapTimerRef.current), [])
+  // A mouse wheel moves the space wheel one icon per scroll gesture.
+  useEffect(() => {
+    const wheel = wheelRef.current
+    if (!wheel) return undefined
+    let lastEvent = 0
+    const onWheel = (e) => {
+      e.preventDefault()
+      const now = performance.now()
+      const sameGesture = now - lastEvent < 150
+      lastEvent = now
+      if (sameGesture || Math.abs(e.deltaY) < 2) return
+      const items = [...wheel.querySelectorAll('.profile-wheel-item')]
+      const mid = wheel.scrollTop + wheel.clientHeight / 2
+      const center = (el) => el.offsetTop + el.offsetHeight / 2
+      let index = 0
+      items.forEach((el, i) => {
+        if (Math.abs(center(el) - mid) < Math.abs(center(items[index]) - mid)) index = i
+      })
+      const next = items[Math.max(0, Math.min(items.length - 1, index + Math.sign(e.deltaY)))]
+      wheel.scrollTo({ top: center(next) - wheel.clientHeight / 2, behavior: 'smooth' })
+    }
+    wheel.addEventListener('wheel', onWheel, { passive: false })
+    return () => wheel.removeEventListener('wheel', onWheel)
+  }, [])
   const [panelListingTab, setPanelListingTab] = useState('active')
   const [storeProducts, setStoreProducts] = useState([])
   const [marketListings, setMarketListings] = useState([])

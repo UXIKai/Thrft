@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { MarketIcon, StoreIcon } from './SegmentIcons.jsx'
 
 const SEGMENTS = [
@@ -32,6 +32,25 @@ export default function HomeSegmentSlider({ value, onChange }) {
     const next = SEGMENTS[i]
     if (next && next.id !== value) onChange(next.id)
   }
+
+  // A mouse wheel moves one icon per scroll gesture.
+  const stepRef = useRef(null)
+  stepRef.current = (dir) => choose(clamp(index + dir))
+  useEffect(() => {
+    const root = rootRef.current
+    if (!root) return undefined
+    let lastEvent = 0
+    const onWheel = (e) => {
+      e.preventDefault()
+      const now = performance.now()
+      const sameGesture = now - lastEvent < 150
+      lastEvent = now
+      if (sameGesture || Math.abs(e.deltaY) < 2) return
+      stepRef.current(Math.sign(e.deltaY))
+    }
+    root.addEventListener('wheel', onWheel, { passive: false })
+    return () => root.removeEventListener('wheel', onWheel)
+  }, [])
 
   const onPointerDown = (e) => {
     // One pointer at a time: a second finger neither starts nor steals a drag.
