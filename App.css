@@ -2836,3 +2836,31 @@ html body .stage.is-nav-hidden > .tab-bar.tab-bar {
 .wordmark-wrap > .home-checkout-btn {
   grid-row: 1;
 }
+
+/* Logo scrolls away with the page; the picker button rides just above the nav bar and drops into its place when the nav slides away */
+.home-scroll:not(.is-home-idle) {
+  padding-bottom: calc(150px + env(safe-area-inset-bottom, 0px));
+}
+.home-scroll:not(.is-home-idle) .wordmark-wrap {
+  position: relative;
+  display: block;
+  padding: 8px 12px 14px;
+}
+.home-scroll:not(.is-home-idle) .wordmark-wrap > .wordmark {
+  margin: 0;
+  text-align: center;
+  font-size: clamp(2.2rem, 9vw, 2.75rem);
+}
+.home-scroll:not(.is-home-idle) .wordmark-wrap > .home-segment-slider {
+  --nav-bottom: calc(max(4px, env(safe-area-inset-bottom, 0px) * 0.3) + 15px);
+  position: fixed;
+  left: 50%;
+  bottom: calc(var(--nav-bottom) + 72px);
+  translate: -50% 0;
+  z-index: 6;
+  margin: 0;
+  transition: bottom 0.25s ease;
+}
+.stage.is-nav-hidden .home-scroll:not(.is-home-idle) .wordmark-wrap > .home-segment-slider {
+  bottom: calc(var(--nav-bottom) + 12px);
+}
