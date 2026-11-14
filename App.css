@@ -2448,15 +2448,7 @@ html body .market-card.market-card {
   overflow: hidden;
   border-radius: 18px;
   border: 1px solid var(--glass-border);
-  background: light-dark(rgba(0, 0, 0, 0.06), rgba(255, 255, 255, 0.08));
-}
-
-.market-card-photo.tone-charcoal {
-  background: linear-gradient(160deg, light-dark(#cfcfcf, #2c2c2e), light-dark(#e6e6e6, #1a1a1c));
-}
-
-.market-card-photo.tone-olive {
-  background: linear-gradient(160deg, light-dark(#c9ccbc, #3a3d2e), light-dark(#e2e4d8, #1f2118));
+  background: light-dark(#fff, #000);
 }
 
 .market-card-photo img {
