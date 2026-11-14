@@ -90,23 +90,9 @@ export default function HomeFilterLinks({
     }
   }, [open, brandId, categoryId, colorId])
 
-  const searchColor = (draftColor && colorHex(draftColor)) || '#ffffff'
-  const searchRgb = searchColor.match(/[a-f0-9]{2}/gi)?.map((part) => parseInt(part, 16)) || [255, 255, 255]
-  const luminance = (0.299 * searchRgb[0] + 0.587 * searchRgb[1] + 0.114 * searchRgb[2]) / 255
   const effectOn = document.documentElement.dataset.bgImage !== 'none'
-  // The card starts white with black text; picking a color tints the card, not the page.
-  const tintCard = !!draftColor
-  const cardStyle = {
-    '--card-ink': tintCard && luminance < 0.5 ? '#ffffff' : '#000000',
-    '--search-card-background': tintCard ? searchColor : '#ffffff',
-    ...(tintCard ? {
-      '--search-tint': searchColor,
-      '--atmosphere-base-rgb': searchRgb.join(', '),
-      '--atmosphere-effect-a-rgb': searchRgb.map((part) => Math.round(part * 0.6)).join(', '),
-      '--atmosphere-effect-b-rgb': searchRgb.join(', '),
-      '--atmosphere-effect-c-rgb': searchRgb.map((part) => Math.round(part * 0.35)).join(', '),
-    } : {}),
-  }
+  // The page uses the app's own effect, buttons and text colours; the picked colour does not tint it.
+  const cardStyle = {}
 
   return (
     <div className="home-search">
@@ -124,7 +110,7 @@ export default function HomeFilterLinks({
             aria-label="Search"
             style={cardStyle}
           >
-            {tintCard && effectOn && (
+            {effectOn && (
               <div className="home-search-blur" aria-hidden>
                 <div className="atmosphere" aria-hidden>
                   <span className="atmosphere-bloom atmosphere-bloom-a" />

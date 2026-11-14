@@ -346,3 +346,24 @@ html body .home-search-backdrop .home-search-done,
 html body .home-search-backdrop .home-search-reset {
   bottom: calc(env(safe-area-inset-bottom, 0px) + 28px);
 }
+
+/* Page look: the app's own background effect and ink colours */
+html body .home-search-backdrop {
+  background: var(--page-bg);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+html body .home-search-backdrop .home-search-modal {
+  background: transparent !important;
+  --card-ink: var(--ink);
+}
+
+html body .home-search-modal .home-search-blur {
+  background: var(--page-bg) !important;
+}
+
+html body .home-search-blur > .atmosphere {
+  --atmosphere-base: initial;
+  background: var(--page-base);
+}
