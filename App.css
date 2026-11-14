@@ -3184,8 +3184,8 @@ html body .product-box:not(#_) {
   border: 1px solid var(--glass-border, light-dark(rgba(0, 0, 0, 0.28), rgba(255, 255, 255, 0.28))) !important;
   border-radius: 14px !important;
   box-shadow: var(--glass-clear-depth, var(--glass-depth, 0 8px 24px rgba(0, 0, 0, 0.28))) !important;
-  -webkit-backdrop-filter: blur(3px) !important;
-  backdrop-filter: blur(3px) !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
 }
 
 /* Liked page containers match the Store's translucent tiles */
@@ -3370,8 +3370,3 @@ html body .stage .home-radial .home-radial-btn:not(#_):not(#_):not(#_) {
   .brand-row.is-market .market-card { width: clamp(150px, 12vw, 200px); }
   .brand-row.is-market.is-idle { height: calc(clamp(150px, 12vw, 200px) * 1.33 + 56px); }
 }
-
-/* Rows mounted by scrolling or on arrival fade in together instead of popping in */
-.brand-row-track-wrap { animation: brand-row-in 0.3s ease-out both; }
-@keyframes brand-row-in { from { opacity: 0; } to { opacity: 1; } }
-@media (prefers-reduced-motion: reduce) { .brand-row-track-wrap { animation: none; } }
