@@ -1897,3 +1897,18 @@ html[data-app-color='none'][data-moonlight='on'] body .settings-icon-tile:not(#_
   border-color: light-dark(rgba(0, 0, 0, 0.16), rgba(255, 255, 255, 0.16)) !important;
   border-width: 1px !important;
 }
+
+/* Settings: a little smaller on phones, and containers take the page's effect colour instead of flat black */
+@media (max-width: 719px) {
+  html body .settings-screen .settings-scroll {
+    zoom: 0.88;
+  }
+}
+html[data-app-color='none'][data-moonlight='on'] body .settings-section:not(.is-profile-controls) .settings-card:not(#_):not(#_),
+html[data-app-color='none'][data-moonlight='on'] body .settings-section.is-profile-controls .settings-row:not(#_):not(#_),
+html[data-app-color='none'][data-moonlight='on'] body .settings-block:not(#_):not(#_),
+html[data-app-color='none'][data-moonlight='on'] body .settings-theme-toggle:not(#_):not(#_),
+html[data-app-color='none'][data-moonlight='on'] body .settings-account-active:not(#_):not(#_),
+html[data-app-color='none'][data-moonlight='on'] body .settings-icon-tile:not(#_):not(#_) {
+  background: color-mix(in srgb, var(--page-bg, #000) 70%, transparent) !important;
+}
