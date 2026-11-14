@@ -404,3 +404,14 @@ html body .stage.is-home-search-open > .tab-bar:not(#_) {
 .stage.is-home-search-open .home-search-backdrop * {
   visibility: visible;
 }
+
+/* Same look as the page background until a colour is picked */
+html body .home-search-backdrop:not(#_):not(#_) {
+  background: transparent;
+}
+html body .home-search-backdrop.is-tinted:not(#_):not(#_) {
+  background: var(--search-tint);
+}
+html body .home-search-backdrop.is-tinted .home-search-modal:not(#_) {
+  --card-ink: var(--tint-ink);
+}

@@ -92,13 +92,22 @@ export default function HomeFilterLinks({
 
   const effectOn = document.documentElement.dataset.bgImage !== 'none'
   // The page uses the app's own effect, buttons and text colours; the picked colour does not tint it.
-  const cardStyle = {}
+  const tintCard = !!draftColor
+  const searchColor = (draftColor && colorHex(draftColor)) || '#ffffff'
+  const searchRgb = searchColor.match(/[a-f0-9]{2}/gi)?.map((part) => parseInt(part, 16)) || [255, 255, 255]
+  const luminance = (0.299 * searchRgb[0] + 0.587 * searchRgb[1] + 0.114 * searchRgb[2]) / 255
+  // Starts as the page's own background; picking a colour paints the page that colour.
+  const cardStyle = tintCard ? {
+    '--tint-ink': luminance < 0.5 ? '#ffffff' : '#000000',
+    '--search-tint': searchColor,
+  } : {}
 
   return (
     <div className="home-search">
       {open && (
         <div
-          className="home-search-backdrop"
+          className={`home-search-backdrop${tintCard ? ' is-tinted' : ''}`}
+          style={cardStyle}
           onPointerDown={(e) => {
             if (e.target === e.currentTarget) cancel()
           }}
