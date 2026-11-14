@@ -172,8 +172,6 @@ createRoot(document.getElementById('root')).render(
     const color = `rgb(${mixed.join(', ')})`
     meta.setAttribute('content', color)
     root.style.setProperty('--safari-top', color)
-    // The same colour before the brightness overlay, for the solid strip behind the status bar
-    root.style.setProperty('--status-strip', `rgb(${base.map((c) => Math.round(c * 0.8)).join(', ')})`)
     // Safari fills the strip above the page from the html background
     if (root.style.backgroundColor !== color) root.style.backgroundColor = color
   }
