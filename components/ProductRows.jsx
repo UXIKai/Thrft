@@ -125,7 +125,7 @@ function CrawlRow({ row, rowIndex, onOpenProduct, onHoldRow, market = false, lik
   const seqRef = useRef(null)
   const holdRef = useRef({ timer: 0, x: 0, y: 0, fired: false })
   const [loopPx, setLoopPx] = useState(0)
-  const [visible, setVisible] = useState(rowIndex < 4)
+  const [visible, setVisible] = useState(false)
   const products = row.products || []
 
   // 40 rows x 40 tiles is heavy, so only rows near the screen are mounted.
@@ -135,12 +135,28 @@ function CrawlRow({ row, rowIndex, onOpenProduct, onHoldRow, market = false, lik
       setVisible(true)
       return undefined
     }
+    // The first rows are revealed one after another so mounting them never stalls the Home picker's opening animation.
+    let first = true
+    let timer = 0
     const io = new IntersectionObserver(
-      ([entry]) => setVisible(entry.isIntersecting),
+      ([entry]) => {
+        window.clearTimeout(timer)
+        if (entry.isIntersecting && first) {
+          first = false
+          timer = window.setTimeout(() => setVisible(true), 40 + Math.min(rowIndex, 10) * 45)
+        } else {
+          first = first && !entry.isIntersecting
+          setVisible(entry.isIntersecting)
+        }
+      },
       { rootMargin: '500px 0px' },
     )
     io.observe(el)
-    return () => io.disconnect()
+    return () => {
+      window.clearTimeout(timer)
+      io.disconnect()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useLayoutEffect(() => {

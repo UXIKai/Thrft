@@ -117,10 +117,13 @@ export function OpeningStar({ final = [1, 1, 1, 1], onDone }) {
       return undefined
     }
     let raf = 0
-    let start = 0
+    let last = 0
+    let elapsed = 0
     const tick = (now) => {
-      if (!start) start = now
-      const t = Math.min((now - start) / OPEN_MS, 1)
+      // A stalled frame must not swallow the animation, so no single step counts for more than 32ms
+      if (last) elapsed += Math.min(now - last, 32)
+      last = now
+      const t = Math.min(elapsed / OPEN_MS, 1)
       apply(t)
       if (t < 1) raf = requestAnimationFrame(tick)
       else doneRef.current?.()
