@@ -3107,3 +3107,17 @@ html body .stage .home-radial .home-radial-btn:not(#_):not(#_):not(#_) {
   transition: translate 0.34s cubic-bezier(0.22, 1, 0.36, 1), scale 0.34s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.25s ease-out, color 0.25s ease-out, background-color 0.25s ease-out, border-color 0.25s ease-out !important;
   will-change: translate, scale, opacity;
 }
+
+/* Desktop: bigger nav bar, smaller toggle above it, Settings in the window's corner */
+@media (min-width: 900px) {
+  html body .stage > .tab-bar.tab-bar:not(#_) { scale: 1.5; transform-origin: 50% 100%; }
+  html body .stage > .nav-toggle:not(#_) {
+    scale: 1;
+    bottom: calc(var(--nav-bottom) + 98px);
+  }
+  html body .stage.is-nav-hidden > .nav-toggle:not(#_) { bottom: calc(var(--nav-bottom) + 12px); }
+  html body .stage > .nav-toggle:active:not(#_) { scale: 0.88; }
+  .app-column.is-profile-wide { width: 100%; }
+  .app-column.is-profile-wide .profile-screen { --pf-pad-x: max(18px, calc((100% - 560px) / 2 + 18px)); }
+  .app-column.is-profile-wide .profile-menu-btn { right: 14px; top: 12px; }
+}
