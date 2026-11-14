@@ -205,7 +205,7 @@ export default function App() {
       last = top
     }
     let down = null
-    const CONTROLS = 'button, a, input, select, [role="dialog"], .home-search-backdrop, .home-radial, .tab-bar'
+    const CONTROLS = 'button, a, input, select, [role="dialog"], .home-search-backdrop, .home-radial, .home-segment-slider, .tab-bar'
     const onDown = (e) => { if (stage.classList.contains('is-home-search-open')) return; down = { ctl: Boolean(e.target.closest?.(CONTROLS)), x: e.clientX, y: e.clientY, t: e.timeStamp, scroll: el?.scrollTop || 0 } }
     const show = (e) => {
       // Taps on controls (filters, picker, dialogs) are not taps on the screen
@@ -590,7 +590,7 @@ export default function App() {
                 bagCount={bagCount}
                 onSearch={() => setSearchSignal((n) => n + 1)}
                 onCart={() => setCartOpen(true)}
-                onTap={() => setAtBottom(false)}
+                onTap={() => setAtBottom((hidden) => !hidden)}
                 onHold={() => setAtBottom(true)}
                 onChange={(id) => {
                   setHomeSegment(id)
