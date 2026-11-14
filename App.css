@@ -453,7 +453,7 @@ html[data-bg-color='none'] .stage.is-bg-none .atmosphere {
 
 .wordmark-wrap > .home-segment-slider {
   grid-column: 2;
-  width: calc(var(--slot) * 3);
+  width: var(--slot);
   margin: 0;
 }
 
@@ -1993,26 +1993,21 @@ html body .tab-bar.is-pressed .tab-pill::before {
 .wheel-arrow.is-end {
   opacity: 0.2;
 }
-.home-segment-slider .wheel-arrow {
-  top: 50%;
-  margin-top: -4px;
+.home-segment-slider .wheel-arrow.is-up {
+  top: 1px;
 }
-.wheel-arrow.is-left {
-  left: calc(50% - 34px);
-  transform: rotate(-90deg);
-}
-.wheel-arrow.is-right {
-  left: calc(50% + 34px);
-  transform: rotate(90deg);
+.home-segment-slider .wheel-arrow.is-down {
+  top: auto;
+  bottom: 1px;
 }
 
 .home-segment-track {
   display: flex;
-  width: calc(var(--slot) * 3);
-  height: 100%;
-  margin: 0 auto;
+  flex-direction: column;
   align-items: center;
-  transform: translateX(calc((1 - var(--x, 0)) * var(--slot)));
+  width: 100%;
+  margin: 0;
+  transform: translateY(calc((1 - var(--x, 0)) * var(--slot)));
   will-change: transform;
   transition: transform 0.32s cubic-bezier(0.22, 0.9, 0.3, 1);
 }
@@ -2022,6 +2017,7 @@ html body .tab-bar.is-pressed .tab-pill::before {
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
   height: var(--slot);
   color: light-dark(#000, #fff);
   opacity: calc(1 - var(--d, 0));
