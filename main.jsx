@@ -159,14 +159,6 @@ createRoot(document.getElementById('root')).render(
   const probe = document.createElement('i')
   probe.hidden = true
   document.body.appendChild(probe)
-  // Safari 26 tints its status bar from a full-width fixed element at the top edge (a real element, not a pseudo-element)
-  const tints = ['top', 'bottom'].map((edge) => {
-    const el = document.createElement('div')
-    el.className = `edge-tint is-${edge}`
-    el.setAttribute('aria-hidden', 'true')
-    document.body.appendChild(el)
-    return el
-  })
   let lastTint = ''
   const syncThemeColor = () => {
     const meta = document.querySelector('meta[name="theme-color"]')
@@ -180,8 +172,7 @@ createRoot(document.getElementById('root')).render(
     const mixed = base.map((c) => Math.round(c * 0.8 * (1 - dim)))
     const color = `rgb(${mixed.join(', ')})`
     meta.setAttribute('content', color)
-    tints.forEach((el) => { el.style.backgroundColor = color })
-    // Safari 26 misses background changes on its own; touching theme-color makes it re-sample the edge strips
+    // Safari 26 misses background changes on its own; touching theme-color makes it re-sample
     if (color !== lastTint) {
       lastTint = color
       meta.setAttribute('content', `${color}fe`)

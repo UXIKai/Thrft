@@ -162,29 +162,3 @@ html:root[data-bg-image='none'] body {
 #root {
   background: transparent;
 }
-
-/* Edge tint for Safari 26: solid full-width fixed strips at the top and bottom edges (above the dim overlay, so they carry the dimmed page colour). Safari colours its bars from these. */
-.edge-tint {
-  display: none;
-}
-@media (hover: none) and (pointer: coarse) {
-  .edge-tint {
-    display: block;
-    position: fixed;
-    left: 0;
-    right: 0;
-    height: 12px;
-    z-index: 2147483647;
-    background-color: var(--safari-top, #050505);
-    pointer-events: none;
-  }
-  .edge-tint.is-top {
-    top: 0;
-  }
-  .edge-tint.is-bottom {
-    bottom: 0;
-  }
-  html[data-bg-photo] .edge-tint {
-    display: none;
-  }
-}
