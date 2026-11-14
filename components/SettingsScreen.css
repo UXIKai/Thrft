@@ -2831,3 +2831,20 @@ html body .settings-screen .settings-column.is-customization .settings-card {
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
 }
+
+/* Sleek, evenly spaced controls: one thin border, no stacked shadows, same gap everywhere */
+html body .settings-screen .settings-section {
+  margin-bottom: 14px;
+}
+
+html body .settings-screen .settings-section.is-side-by-side .settings-card {
+  gap: 12px;
+}
+
+html body .settings-screen .settings-section.is-side-by-side .settings-divider {
+  display: none;
+}
+
+html body .settings-screen .settings-section.is-side-by-side .settings-card > .settings-row {
+  min-height: 56px;
+}

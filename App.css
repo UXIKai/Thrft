@@ -23,7 +23,7 @@
   /* Water-clear panes — near-empty fill + bright rim (not charcoal stain) */
   --glass-clear-tint: light-dark(rgba(0, 0, 0, 0.004), rgba(255, 255, 255, 0.004));
   --glass-clear-tint-active: light-dark(rgba(0, 0, 0, 0.018), rgba(255, 255, 255, 0.018));
-  --glass-border: light-dark(rgba(0, 0, 0, 0.9), rgba(255, 255, 255, 0.9));
+  --glass-border: light-dark(rgba(0, 0, 0, 0.3), rgba(255, 255, 255, 0.3));
   --glass-blur: 1.6px;
   --glass-clear-blur: 1.25px;
   --glass-sat: 1.78;
