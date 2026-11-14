@@ -2382,3 +2382,114 @@ html body .stage .create-page .create-menu-btn {
   background-color: transparent !important;
   background-image: none !important;
 }
+
+/* Market: two-column photo cards under a heading and filter chips, in the app's thin-outline style */
+.market-heading {
+  margin: 14px 16px 10px;
+  font-family: var(--font-sans);
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--ink, light-dark(#000, #fff));
+}
+
+.market-chips {
+  display: flex;
+  gap: 8px;
+  padding: 0 16px 14px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.market-chips::-webkit-scrollbar {
+  display: none;
+}
+
+html body .market-chips .market-chip {
+  flex: 0 0 auto;
+  height: 34px;
+  padding: 0 16px;
+  border-radius: 999px;
+  font: 600 0.82rem var(--font-sans);
+  white-space: nowrap;
+}
+
+html body .market-chips .market-chip.is-active {
+  background: light-dark(#000, #fff) !important;
+  color: light-dark(#fff, #000) !important;
+}
+
+html body .market-product-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px 12px;
+  padding: 0 16px;
+}
+
+html body .market-card.market-card {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+  padding: 0;
+  min-width: 0;
+  text-align: left;
+  border: 0 !important;
+  background: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  color: var(--ink, light-dark(#000, #fff)) !important;
+  font-family: var(--font-sans);
+}
+
+.market-card-photo {
+  position: relative;
+  display: block;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  border-radius: 18px;
+  border: 1px solid var(--glass-border);
+  background: light-dark(rgba(0, 0, 0, 0.06), rgba(255, 255, 255, 0.08));
+}
+
+.market-card-photo.tone-charcoal {
+  background: linear-gradient(160deg, light-dark(#cfcfcf, #2c2c2e), light-dark(#e6e6e6, #1a1a1c));
+}
+
+.market-card-photo.tone-olive {
+  background: linear-gradient(160deg, light-dark(#c9ccbc, #3a3d2e), light-dark(#e2e4d8, #1f2118));
+}
+
+.market-card-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.market-card-like {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #fff;
+  font: 700 0.78rem var(--font-sans);
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.55));
+}
+
+.market-card-like svg {
+  width: 26px;
+  height: 26px;
+}
+
+.market-card-name {
+  margin-top: 4px;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.market-card-price {
+  font-size: 0.95rem;
+  font-weight: 700;
+}

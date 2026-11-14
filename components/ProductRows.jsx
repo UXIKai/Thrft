@@ -10,6 +10,7 @@ import {
   filterListingsByBrand,
   filterListingsByColor,
   filterListingsByClothingType,
+  parseListingPrice,
   TYPE_TO_CATEGORIES,
 } from '../listings.js'
 import { isSupabaseConfigured } from '../supabase.js'
@@ -25,6 +26,36 @@ const MARKET_SAMPLES = BRAND_ROWS.flatMap((brand) =>
     isMock: true,
   })),
 )
+
+const MARKET_CHIPS = [
+  { id: 'all', label: 'All' },
+  { id: 'under10', label: 'Under $10' },
+  { id: 'accessories', label: 'Accessories' },
+  { id: 'shoes', label: 'Footwear' },
+  { id: 'bags', label: 'Bags' },
+  { id: 'tops', label: 'Tops' },
+  { id: 'bottoms', label: 'Bottoms' },
+  { id: 'outerwear', label: 'Outerwear' },
+]
+
+function MarketCard({ product, onOpen }) {
+  const photo = product.photoUrl || product.image_url
+  const likes = Number(product.likes ?? product.likeCount ?? 0)
+  const name = product.brandName || product.title || 'Item'
+  return (
+    <button type="button" className="market-card" onClick={() => onOpen?.(product)} aria-label={`${name} ${product.price || ''}`}>
+      <span className={`market-card-photo tone-${product.tone || '1'}`}>
+        {photo ? <img src={photo} alt="" loading="lazy" draggable="false" /> : null}
+        <span className="market-card-like" aria-hidden>
+          <svg viewBox="0 0 24 24"><path d="M12 20.5s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.5 2.7c0 5.6-7.5 10.2-7.5 10.2Z" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /></svg>
+          {likes > 0 ? <span>{likes}</span> : null}
+        </span>
+      </span>
+      <span className="market-card-name">{name}</span>
+      {product.price ? <span className="market-card-price">{product.price}</span> : null}
+    </button>
+  )
+}
 
 /** Slow seamless crawl — never stops while the row is mounted. */
 const PX_PER_SEC = 18
@@ -139,6 +170,7 @@ export default function ProductRows({
   const [savedItems, setSavedItems] = useState([])
   const [status, setStatus] = useState('loading')
   const [error, setError] = useState('')
+  const [chip, setChip] = useState('all')
 
   useEffect(() => {
     let alive = true
@@ -222,14 +254,35 @@ export default function ProductRows({
     segment,
   ])
 
+  const marketItems = useMemo(() => {
+    if (chip === 'all') return filteredCatalog
+    if (chip === 'under10') return filteredCatalog.filter((p) => parseListingPrice(p.price) < 10)
+    return filterListingsByClothingType(filteredCatalog, chip)
+  }, [filteredCatalog, chip])
+
   if (segment === 'market') {
     return (
       <section className="product-feed market-product-feed" id="home-product-panel" role="tabpanel" aria-labelledby="home-market-tab" aria-busy={status === 'loading'}>
         {error && <p role="alert">{error}</p>}
-        {!filteredCatalog.length && <p role="status">{status === 'loading' ? 'Loading products...' : 'No Market products found.'}</p>}
+        {!marketItems.length && <p role="status">{status === 'loading' ? 'Loading products...' : 'No Market products found.'}</p>}
+        <h2 className="market-heading">Suggested for you</h2>
+        <div className="market-chips" role="tablist" aria-label="Market filters">
+          {MARKET_CHIPS.map((c) => (
+            <button
+              key={c.id}
+              type="button"
+              role="tab"
+              aria-selected={chip === c.id}
+              className={`market-chip${chip === c.id ? ' is-active' : ''}`}
+              onClick={() => setChip(c.id)}
+            >
+              {c.label}
+            </button>
+          ))}
+        </div>
         <div className="market-product-grid">
-          {filteredCatalog.map((product) => (
-            <ProductCard key={product.id} product={product} onOpen={(item) => onOpenProduct?.({ ...item, detailVariant: 'market' })} />
+          {marketItems.map((product) => (
+            <MarketCard key={product.id} product={product} onOpen={(item) => onOpenProduct?.({ ...item, detailVariant: 'market' })} />
           ))}
         </div>
       </section>
