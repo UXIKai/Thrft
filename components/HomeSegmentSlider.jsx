@@ -66,7 +66,7 @@ const scrolledDown = (el, stop) => {
 }
 
 // Store and Market sit side by side (swipe left / right); the Leaderboard sits above them:
-// pull down at the very top of the page to reach it, swipe up to come back.
+// pull down at the very top of the page to reach it, swipe up to come back. Swiping up at the bottom opens checkout.
 export default function HomeSegmentSlider({ value, onChange, fireSame = false, onSearch, onCart, bagCount = 0 }) {
   const rootRef = useRef(null)
   const [menuOpen, setMenuOpen] = useState(false)
@@ -138,7 +138,7 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false, o
           }
         }, HOLD_MS)
       }
-      d = { id, x, y, up, sx, axis: null, samples: [], atTop: page.scrollTop <= 0, sideways: scrollsSideways(target, page) }
+      d = { id, x, y, up, sx, axis: null, samples: [], atTop: page.scrollTop <= 0, atBottom: page.scrollTop + page.clientHeight >= page.scrollHeight - 2, sideways: scrollsSideways(target, page) }
     }
     const move = (id, x, y, t, ev) => {
       if (!d || d.id !== id) return
@@ -148,7 +148,7 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false, o
         if (Math.max(Math.abs(dx), Math.abs(dy)) < DRAG_START_PX) return
         clearTimeout(holdRef.current)
         if (Math.abs(dx) > Math.abs(dy) * 1.5 && !d.up && !d.sideways) d.axis = 'x'
-        else if (Math.abs(dy) > Math.abs(dx) * 1.5 && (d.up ? dy < 0 : d.atTop && dy > 0)) d.axis = 'y'
+        else if (Math.abs(dy) > Math.abs(dx) * 1.5 && (d.up ? dy < 0 : dy > 0 ? d.atTop : d.atBottom)) d.axis = 'y'
         else {
           d = null
           return
@@ -179,14 +179,18 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false, o
       const idle = t - last.t > 80
       const v = flick && !idle && last.t > from.t ? (last.pos - from.pos) / (last.t - from.t) : 0
       // One step per gesture, however far or fast the swipe.
-      const landing = clamp01(Math.round(last.pos + v * FLICK_LOOKAHEAD_MS))
+      const target = last.pos + v * FLICK_LOOKAHEAD_MS
+      const landing = clamp01(Math.round(target))
       rootRef.current.classList.remove('is-dragging')
       if (s.axis === 'x') {
         paintRef.current(landing, 0)
         chooseRef.current(SHOPS[landing])
-      } else if (landing === 1 && !s.up) {
+      } else if (!s.up && target <= -0.5) {
         paintRef.current(s.sx, 0)
         actionsRef.current.onCart?.()
+      } else if (landing === 1) {
+        paintRef.current(s.sx, 1)
+        chooseRef.current('leaderboard')
       } else {
         paintRef.current(s.sx, 0)
         chooseRef.current(SHOPS[s.sx])
@@ -283,11 +287,11 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false, o
       ref={rootRef}
       className="home-segment-slider"
       role="status"
-      aria-label={`${SEGMENTS.find((s) => s.id === value)?.label}. Swipe left or right for Store and Market; pull down at the top for checkout; hold for the menu.`}
+      aria-label={`${SEGMENTS.find((s) => s.id === value)?.label}. Swipe left or right for Store and Market; pull down at the top for the Leaderboard, swipe up at the bottom for checkout; hold for the menu.`}
     >
       <span className={`wheel-arrow is-left${shopIndex === 0 ? ' is-end' : side}`} aria-hidden="true">{arrow}</span>
       <span className={`wheel-arrow is-right${shopIndex === 1 ? ' is-end' : side}`} aria-hidden="true">{arrow}</span>
-      <span className={`wheel-arrow is-up${onLeaderboard ? ' is-end' : ''}`} aria-hidden="true">{arrow}</span>
+      <span className="wheel-arrow is-up" aria-hidden="true">{arrow}</span>
       <span className={`wheel-arrow is-down${onLeaderboard ? '' : ' is-end'}`} aria-hidden="true">{arrow}</span>
       <div className="home-segment-track" aria-hidden="true">
         {SEGMENTS.map(({ id, Icon }) => (
