@@ -3100,3 +3100,5 @@ html body .stage > .nav-toggle:not(#_),
 html body .home-scroll .wordmark-wrap > .home-segment-slider:not(#_) {
   transition: bottom 0.38s cubic-bezier(0.22, 0.9, 0.3, 1), scale 0.18s cubic-bezier(0.3, 1.5, 0.5, 1) !important;
 }
+
+.home-radial-scrim { touch-action: none; }

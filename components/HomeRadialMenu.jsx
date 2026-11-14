@@ -61,7 +61,7 @@ export function moveKnob(x, y) {
   const dx = x - origin[0]
   const dy = y - origin[1]
   let id = 'search'
-  if (Math.hypot(dx, dy) > 10) {
+  if (Math.hypot(dx, dy) > 6) {
     const horizontal = Math.abs(dx) > Math.abs(dy)
     const pick = horizontal ? (dx < 0 ? 'market' : 'store') : dy < 0 ? 'cart' : 'leaderboard'
     const clear = Math.max(Math.abs(dx), Math.abs(dy)) > Math.min(Math.abs(dx), Math.abs(dy)) * 1.15

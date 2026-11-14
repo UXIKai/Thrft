@@ -267,6 +267,18 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false, o
     }
     page.addEventListener('touchstart', onBounceStart, { passive: true })
     page.addEventListener('touchmove', onBounceMove, { passive: false })
+    // While the wheel is open the finger can roam anywhere on screen, not just over the page
+    const onWindowTouchMove = (e) => {
+      if (!menuRef.current || !e.touches.length) return
+      if (e.cancelable) e.preventDefault()
+      markHot(e.touches[0].clientX, e.touches[0].clientY)
+    }
+    const onWindowTouchEnd = (e) => {
+      if (!menuRef.current || page.contains(e.target)) return
+      releaseAt(0, 0)
+    }
+    window.addEventListener('touchmove', onWindowTouchMove, { passive: false })
+    window.addEventListener('touchend', onWindowTouchEnd)
     page.addEventListener('pointerdown', onMouseDown)
     page.addEventListener('pointermove', onMouseMove)
     page.addEventListener('pointerup', onMouseUp)
@@ -279,6 +291,8 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false, o
       page.removeEventListener('touchmove', onBounceMove)
       page.removeEventListener('touchend', onTouchEnd)
       page.removeEventListener('touchcancel', onTouchCancel)
+      window.removeEventListener('touchmove', onWindowTouchMove)
+      window.removeEventListener('touchend', onWindowTouchEnd)
       page.removeEventListener('pointerdown', onMouseDown)
       page.removeEventListener('pointermove', onMouseMove)
       page.removeEventListener('pointerup', onMouseUp)
