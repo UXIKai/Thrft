@@ -36,18 +36,19 @@ const SLOTS = { leaderboard: [0, -R], store: [-R, 0], market: [R, 0], cart: [0, 
 let origin = null
 let selected = 'search'
 
-// Dragging slides the + left/right or up/down; whichever button ends up under the centre orb is selected on release
+// Dragging slides the + in any direction; whichever button ends up under the centre orb is selected on release
 export function moveKnob(x, y) {
   const wheel = document.querySelector('.home-radial')
   if (!wheel) return
   if (!origin) origin = [x, y]
   let dx = x - origin[0]
   let dy = y - origin[1]
-  // The + slides as one piece along a single axis, bringing a button under the fixed orb in the middle
-  if (Math.abs(dx) > Math.abs(dy)) dy = 0
-  else dx = 0
-  dx = Math.max(-R, Math.min(R, dx))
-  dy = Math.max(-R, Math.min(R, dy))
+  // The + follows the finger in any direction (limited to one button's distance), bringing a button under the fixed orb
+  const len = Math.hypot(dx, dy)
+  if (len > R) {
+    dx = (dx / len) * R
+    dy = (dy / len) * R
+  }
   let id = 'search'
   let best = Infinity
   for (const [k, [sx, sy]] of Object.entries(SLOTS)) {
