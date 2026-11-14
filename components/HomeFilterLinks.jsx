@@ -8,6 +8,8 @@ import './HomeFilterLinks.css'
  * Home search: magnifier button (top-left) opens a centered popup holding the
  * Brands / Category buttons, which launch the orbital picker.
  */
+let handledSignal = 0
+
 export default function HomeFilterLinks({
   brands = [],
   categories = [],
@@ -32,7 +34,11 @@ export default function HomeFilterLinks({
   const [resetRequested, setResetRequested] = useState(false)
 
   useEffect(() => {
-    if (openSignal > 0) setOpen(true)
+    // Remounting (leaving Home and coming back) must not replay an old signal
+    if (openSignal > handledSignal) {
+      handledSignal = openSignal
+      setOpen(true)
+    }
   }, [openSignal])
 
   // Orbital picks (and external changes) flow back into the wheels.
