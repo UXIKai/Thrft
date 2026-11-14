@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { createPortal } from 'react-dom'
-import { MarketIcon, StoreIcon } from './SegmentIcons.jsx'
+import { ClosetIcon, MarketIcon, StoreIcon } from './SegmentIcons.jsx'
 
 const LeaderboardIcon = () => (
   <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -32,7 +32,17 @@ const CartIcon = () => (
 )
 
 const SLOT = 97
-const DIRS = { leaderboard: [0, -1], store: [-1, 0], market: [1, 0], cart: [0, 1], search: [0, 0] }
+const HOME_DIRS = { leaderboard: [0, -1], store: [-1, 0], market: [1, 0], cart: [0, 1], search: [0, 0] }
+// Each swipe steps the selection one place that way; swiping back goes through the middle button
+const HOME_PICKS = { '0,0': 'search', '0,-1': 'cart', '0,1': 'leaderboard', '-1,0': 'market', '1,0': 'store' }
+// Profile: My store, Closet and Market in a row
+const SPACES_DIRS = { store: [-1, 0], market: [1, 0], closet: [0, 0] }
+const SPACES_PICKS = { '0,0': 'closet', '-1,0': 'market', '1,0': 'store' }
+const CONFIGS = {
+  home: { centre: 'search', dirs: HOME_DIRS, picks: HOME_PICKS },
+  spaces: { centre: 'closet', dirs: SPACES_DIRS, picks: SPACES_PICKS },
+}
+let cfg = CONFIGS.home
 let origin = null
 let selected = 'search'
 
@@ -43,20 +53,18 @@ function paint(id) {
   selected = id
   wheel.querySelectorAll('[data-radial]').forEach((el) => {
     const k = el.dataset.radial
-    const slotOf = k === 'search' ? id : k
+    const slotOf = k === cfg.centre ? id : k
     const centre = k === id
-    const [ux, uy] = centre ? [0, 0] : DIRS[slotOf]
+    const [ux, uy] = centre ? [0, 0] : cfg.dirs[slotOf]
     el.style.transform = 'none'
     el.style.translate = `calc(-50% + ${ux * SLOT}px) calc(-50% + ${uy * SLOT}px)`
     el.style.setProperty('--gs', centre ? '1' : '0.8')
     el.style.opacity = centre ? '1' : '0.8'
-    el.classList.toggle('is-hot', centre && id !== 'search')
+    el.classList.toggle('is-hot', centre && id !== cfg.centre)
   })
   wheel.dataset.sel = id
 }
 
-// Each swipe steps the selection one place that way; swiping back goes through Search in the middle
-const PICKS = { '0,0': 'search', '0,-1': 'cart', '0,1': 'leaderboard', '-1,0': 'market', '1,0': 'store' }
 let cursor = [0, 0]
 
 export function moveKnob(x, y) {
@@ -72,8 +80,9 @@ export function moveKnob(x, y) {
   const next = sameAxis
     ? [Math.max(-1, Math.min(1, cursor[0] + step[0])), Math.max(-1, Math.min(1, cursor[1] + step[1]))]
     : step
+  const id = cfg.picks[`${next[0]},${next[1]}`]
+  if (!id) return
   cursor = next
-  const id = PICKS[`${next[0]},${next[1]}`]
   if (id !== selected) paint(id)
 }
 
@@ -84,9 +93,15 @@ export function radialAt() {
 function resetKnob() {
   origin = null
   cursor = [0, 0]
-  selected = 'search'
-  requestAnimationFrame(() => paint('search'))
+  selected = cfg.centre
+  requestAnimationFrame(() => paint(cfg.centre))
 }
+
+const SPACE_ITEMS = [
+  { id: 'store', label: 'My store', Icon: StoreIcon },
+  { id: 'closet', label: 'Closet', Icon: ClosetIcon },
+  { id: 'market', label: 'Market', Icon: MarketIcon },
+]
 
 const ITEMS = [
   { id: 'leaderboard', label: 'Leaderboard', Icon: LeaderboardIcon },
@@ -97,11 +112,13 @@ const ITEMS = [
 ]
 
 /** Plus-shaped menu centred on the page: Leaderboard top, Store left, Search middle, Market right, Checkout bottom. */
-export default function HomeRadialMenu({ onPick, onClose, bagCount = 0 }) {
+export default function HomeRadialMenu({ onPick, onClose, bagCount = 0, mode = 'home' }) {
+  cfg = CONFIGS[mode] || CONFIGS.home
+  const items = mode === 'spaces' ? SPACE_ITEMS : ITEMS
   useEffect(() => {
     resetKnob()
     return resetKnob
-  }, [])
+  }, [mode])
   return createPortal(
     <div className="home-radial-scrim" onPointerDown={(e) => e.target === e.currentTarget && onClose?.()}>
       <div className="home-radial" role="menu" aria-label="Menu">
@@ -115,12 +132,12 @@ export default function HomeRadialMenu({ onPick, onClose, bagCount = 0 }) {
           </g>
         </svg>
         <span className="home-radial-lens" aria-hidden="true" />
-        {ITEMS.map(({ id, label, Icon }) => (
+        {items.map(({ id, label, Icon }) => (
           <button
             key={id}
             type="button"
             role="menuitem"
-            className={`home-radial-btn is-${id}`}
+            className={`home-radial-btn is-${id}${id === cfg.centre ? ' is-search' : ''}`}
             data-radial={id}
             aria-label={label}
             onClick={() => onPick?.(id)}

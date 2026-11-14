@@ -9,6 +9,7 @@ import ChatScreen from './components/ChatScreen.jsx'
 import CreateListing from './components/CreateListing.jsx'
 import { COLOR_OPTIONS, colorHex } from './colorsCatalog.js'
 import HomeFilterLinks from './components/HomeFilterLinks.jsx'
+import HomeRadialMenu, { moveKnob, radialAt } from './components/HomeRadialMenu.jsx'
 import HomeSegmentSlider from './components/HomeSegmentSlider.jsx'
 import LiquidGlassDefs from './components/LiquidGlassDefs.jsx'
 import CartScreen from './components/CartScreen.jsx'
@@ -18,6 +19,7 @@ import { guardSignedInNavigation } from './signedInNavigation.js'
 import ProductRows from './components/ProductRows.jsx'
 import ProfileScreen from './components/ProfileScreen.jsx'
 import SavedScreen from './components/SavedScreen.jsx'
+import { ClosetIcon, MarketIcon, StoreIcon } from './components/SegmentIcons.jsx'
 import TabBar from './components/TabBar.jsx'
 import { useBag } from './BagContext.jsx'
 import {
@@ -193,6 +195,43 @@ export default function App() {
   const [atBottom, setAtBottom] = useState(true)
   useEffect(() => {
     setAtBottom(true)
+  }, [tab])
+
+  // Profile: holding the bottom button opens My store / Closet / Market; moving picks one and letting go switches
+  const [profileSpace, setProfileSpace] = useState('closet')
+  const [spaceMenuOpen, setSpaceMenuOpen] = useState(false)
+  const spaceHoldRef = useRef(null)
+  const spaceHeldRef = useRef(false)
+  const startSpaceHold = (e) => {
+    if (tab !== 'profile' || (e.pointerType === 'mouse' && e.button !== 0)) return
+    clearTimeout(spaceHoldRef.current)
+    spaceHeldRef.current = false
+    spaceHoldRef.current = setTimeout(() => {
+      spaceHeldRef.current = true
+      setSpaceMenuOpen(true)
+    }, 420)
+  }
+  const cancelSpaceHold = () => clearTimeout(spaceHoldRef.current)
+  useEffect(() => {
+    if (!spaceMenuOpen) return undefined
+    const onMove = (e) => moveKnob(e.clientX, e.clientY)
+    const onUp = () => {
+      const hit = radialAt()
+      if (hit) setProfileSpace(hit.dataset.radial)
+      setSpaceMenuOpen(false)
+    }
+    window.addEventListener('pointermove', onMove)
+    window.addEventListener('pointerup', onUp)
+    window.addEventListener('pointercancel', onUp)
+    return () => {
+      window.removeEventListener('pointermove', onMove)
+      window.removeEventListener('pointerup', onUp)
+      window.removeEventListener('pointercancel', onUp)
+    }
+  }, [spaceMenuOpen])
+  useEffect(() => () => clearTimeout(spaceHoldRef.current), [])
+  useEffect(() => {
+    if (tab !== 'profile') setSpaceMenuOpen(false)
   }, [tab])
   useEffect(() => {
     const stage = stageRef.current
@@ -661,6 +700,8 @@ export default function App() {
               setActiveAccount({ username, isOwn: true })
             }}
             onOpenProduct={setActiveProduct}
+            space={profileSpace}
+            onSpaceChange={setProfileSpace}
             onSignOut={async () => {
               await signOut()
               setSignedIn(false)
@@ -828,10 +869,30 @@ export default function App() {
           className="nav-toggle is-bare"
           aria-label={atBottom ? 'Show navigation' : 'Hide navigation'}
           aria-expanded={!atBottom}
-          onClick={() => setAtBottom((hidden) => !hidden)}
+          style={tab === 'profile' ? { touchAction: 'none' } : undefined}
+          onPointerDown={startSpaceHold}
+          onPointerUp={cancelSpaceHold}
+          onPointerLeave={cancelSpaceHold}
+          onPointerCancel={cancelSpaceHold}
+          onContextMenu={tab === 'profile' ? (e) => e.preventDefault() : undefined}
+          onClick={() => {
+            if (spaceHeldRef.current) {
+              spaceHeldRef.current = false
+              return
+            }
+            setAtBottom((hidden) => !hidden)
+          }}
         >
-          <NavButtonGlyph />
+          <NavButtonGlyph
+            icon={tab === 'profile' ? (() => {
+              const Icon = { store: StoreIcon, closet: ClosetIcon, market: MarketIcon }[profileSpace]
+              return <Icon />
+            })() : null}
+          />
         </button>
+      )}
+      {spaceMenuOpen && tab === 'profile' && (
+        <HomeRadialMenu mode="spaces" onClose={() => setSpaceMenuOpen(false)} onPick={(id) => { setProfileSpace(id); setSpaceMenuOpen(false) }} />
       )}
       {signedIn && showNav && <TabBar active={tab} onCreate={(segment) => {
         setCreateSegment(segment)
