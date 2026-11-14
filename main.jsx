@@ -33,8 +33,11 @@ function fitScreen() {
   const standalone =
     window.navigator.standalone === true ||
     window.matchMedia?.('(display-mode: standalone)').matches
-  // The status bar is opaque (not drawn under), so the page is shorter than the screen: never size to screen.height
-  maxHeight = Math.max(maxHeight, measured)
+  // The installed app draws under the status bar and home indicator, so it spans the whole screen
+  const screenH = landscape
+    ? Math.min(window.screen.width, window.screen.height)
+    : Math.max(window.screen.width, window.screen.height)
+  maxHeight = Math.max(maxHeight, measured, standalone ? screenH : 0)
   // In a browser tab the toolbar legitimately changes the height; only the
   // installed app keeps the largest value.
   // The keyboard shrinks the viewport; keep the full-height background behind it.
