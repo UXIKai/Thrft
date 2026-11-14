@@ -2180,8 +2180,8 @@ html body .tab-bar.is-pressed .tab-pill::before {
 }
 
 .home-segment-tab svg {
-  width: 22px;
-  height: 22px;
+  width: 16px;
+  height: 16px;
 }
 
 @media (prefers-reduced-motion: reduce) {
