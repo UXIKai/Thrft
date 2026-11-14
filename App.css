@@ -2512,7 +2512,7 @@ html body .market-card .market-card-like {
 }
 
 .home-radial {
-  --r: 104px;
+  --r: 92px;
   position: absolute;
   left: 50%;
   top: 50%;
@@ -2520,12 +2520,7 @@ html body .market-card .market-card-like {
   height: calc(var(--r) * 2 + 76px);
   translate: -50% -50%;
   border-radius: 50%;
-  border: 1px solid var(--glass-border);
-  background:
-    linear-gradient(45deg, transparent calc(50% - 0.5px), var(--glass-border) calc(50% - 0.5px), var(--glass-border) calc(50% + 0.5px), transparent calc(50% + 0.5px)),
-    linear-gradient(-45deg, transparent calc(50% - 0.5px), var(--glass-border) calc(50% - 0.5px), var(--glass-border) calc(50% + 0.5px), transparent calc(50% + 0.5px)),
-    light-dark(#fff, #000);
-  box-shadow: 0 0 0 8px light-dark(#fff, #000), 0 0 0 9px var(--glass-border);
+  background: none;
   animation: home-radial-pop 0.2s cubic-bezier(0.2, 1.2, 0.4, 1);
 }
 
@@ -2533,21 +2528,18 @@ html body .home-radial .home-radial-btn {
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 76px;
-  height: 76px;
-  min-height: 76px;
+  width: 60px;
+  height: 60px;
+  min-height: 60px;
   padding: 0;
   border-radius: 50%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 3px;
   translate: -50% -50%;
-  border-color: transparent !important;
 }
 
-html body .home-radial .home-radial-btn.is-search { width: 84px; height: 84px; min-height: 84px; border-color: var(--glass-border) !important; }
 html body .home-radial .home-radial-btn:hover,
 html body .home-radial .home-radial-btn:active {
   background: light-dark(#000, #fff) !important;
