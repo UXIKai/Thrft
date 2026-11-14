@@ -14,18 +14,24 @@ import {
   TYPE_TO_CATEGORIES,
 } from '../listings.js'
 import { isSupabaseConfigured } from '../supabase.js'
-import { BRAND_ROWS } from '../brandsCatalog.js'
+import { STORE_BRAND_ROWS } from '../brandsCatalog.js'
 
-const MARKET_SAMPLES = BRAND_ROWS.flatMap((brand) =>
-  brand.products.slice(0, 9).map((product) => ({
+const MARKET_ROW_COUNT = 50
+const MARKET_PRODUCTS_PER_ROW = 20
+
+// Preview content: 50 rows x 20, cycling through every brand so each row is a mixed bag.
+const MARKET_SAMPLES = Array.from({ length: MARKET_ROW_COUNT * MARKET_PRODUCTS_PER_ROW }, (_, i) => {
+  const brand = STORE_BRAND_ROWS[(i * 7) % STORE_BRAND_ROWS.length]
+  const product = brand.products[Math.floor(i / STORE_BRAND_ROWS.length) % brand.products.length]
+  return {
     ...product,
-    id: `market-demo-${product.id}`,
+    id: `market-demo-${i}-${product.id}`,
     title: `Sample · ${product.title}`,
     category: TYPE_TO_CATEGORIES[product.clothingType]?.[0] || product.clothingType,
     description: `Sample Market product for preview. ${product.description}`,
     isMock: true,
-  })),
-)
+  }
+})
 
 const MARKET_CHIPS = [
   { id: 'all', label: 'All' },
@@ -113,7 +119,7 @@ function ProductCard({ product, onOpen }) {
 const HOLD_MS = 480
 const HOLD_SLOP_PX = 10
 
-function CrawlRow({ row, rowIndex, onOpenProduct, onHoldRow }) {
+function CrawlRow({ row, rowIndex, onOpenProduct, onHoldRow, market = false, likedIds, onToggleLike }) {
   const articleRef = useRef(null)
   const wrapRef = useRef(null)
   const seqRef = useRef(null)
@@ -163,7 +169,7 @@ function CrawlRow({ row, rowIndex, onOpenProduct, onHoldRow }) {
     holdRef.current.timer = 0
   }
   const onPointerDown = (e) => {
-    if (e.pointerType === 'mouse' && e.button !== 0) return
+    if (!onHoldRow || (e.pointerType === 'mouse' && e.button !== 0)) return
     const hold = holdRef.current
     hold.fired = false
     hold.x = e.clientX
@@ -193,13 +199,19 @@ function CrawlRow({ row, rowIndex, onOpenProduct, onHoldRow }) {
     products.length * (BOX_W + BOX_GAP) || PERSONALIZED_PRODUCTS_PER_ROW * (BOX_W + BOX_GAP)
   const loop = loopPx > 0 ? loopPx : estimated
   const durationSec = Math.max(18, loop / PX_PER_SEC)
-  const open = (item) => onOpenProduct?.({ ...item, detailVariant: 'store' })
+  const open = (item) => onOpenProduct?.({ ...item, detailVariant: market ? 'market' : 'store' })
+  const renderCard = (p, key) =>
+    market ? (
+      <MarketCard key={key} product={p} liked={likedIds?.has(String(p.id))} onToggleLike={onToggleLike} onOpen={open} />
+    ) : (
+      <ProductCard key={key} product={p} onOpen={open} />
+    )
 
   return (
     <article
       ref={articleRef}
-      className={`brand-row${visible ? '' : ' is-idle'}`}
-      aria-label={`${row.name} row. Hold to see all.`}
+      className={`brand-row${market ? ' is-market' : ''}${visible ? '' : ' is-idle'}`}
+      aria-label={onHoldRow ? `${row.name} row. Hold to see all.` : row.name}
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onPointerUp={cancelHold}
@@ -219,14 +231,10 @@ function CrawlRow({ row, rowIndex, onOpenProduct, onHoldRow }) {
             }}
           >
             <div className="brand-row-seq" ref={seqRef}>
-              {products.map((p) => (
-                <ProductCard key={`${row.id}-${p.id}`} product={p} onOpen={open} />
-              ))}
+              {products.map((p, i) => renderCard(p, `${row.id}-${p.id}-${i}`))}
             </div>
             <div className="brand-row-seq" aria-hidden>
-              {products.map((p) => (
-                <ProductCard key={`${row.id}-${p.id}-b`} product={p} onOpen={open} />
-              ))}
+              {products.map((p, i) => renderCard(p, `${row.id}-${p.id}-${i}-b`))}
             </div>
           </div>
         </div>
@@ -406,6 +414,17 @@ export default function ProductRows({
     return filterListingsByClothingType(filteredCatalog, chip)
   }, [filteredCatalog, chip])
 
+  const marketRows = useMemo(() => {
+    const out = []
+    for (let i = 0; i < marketItems.length; i += MARKET_PRODUCTS_PER_ROW) {
+      let products = marketItems.slice(i, i + MARKET_PRODUCTS_PER_ROW)
+      // A short row (few matches) repeats its items so the crawl still fills the screen.
+      while (products.length < 8) products = [...products, ...products]
+      out.push({ id: `market-row-${i / MARKET_PRODUCTS_PER_ROW}`, name: 'Market', products })
+    }
+    return out
+  }, [marketItems])
+
   if (segment === 'market') {
     return (
       <section className="product-feed market-product-feed" id="home-product-panel" role="tabpanel" aria-labelledby="home-market-tab" aria-busy={status === 'loading'}>
@@ -424,9 +443,17 @@ export default function ProductRows({
             </button>
           ))}
         </div>
-        <div className="market-product-grid">
-          {marketItems.map((product) => (
-            <MarketCard key={product.id} product={product} liked={savedIdSet.has(String(product.id))} onToggleLike={toggleLike} onOpen={(item) => onOpenProduct?.({ ...item, detailVariant: 'market' })} />
+        <div className="market-rows">
+          {marketRows.map((row, rowIndex) => (
+            <CrawlRow
+              key={row.id}
+              row={row}
+              rowIndex={rowIndex}
+              market
+              likedIds={savedIdSet}
+              onToggleLike={toggleLike}
+              onOpenProduct={onOpenProduct}
+            />
           ))}
         </div>
       </section>

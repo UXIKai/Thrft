@@ -3343,3 +3343,15 @@ html body .stage .home-radial .home-radial-btn:not(#_):not(#_):not(#_) {
   .home-segment-slider .wheel-arrow,
   .nav-toggle.is-star .wheel-arrow { animation-duration: 0.01s; }
 }
+
+/* Market: 50 crawling rows of 20, alternating direction like the Store */
+.market-rows { padding-bottom: 120px; }
+.brand-row.is-market .market-card {
+  flex: 0 0 auto;
+  width: 112px;
+}
+.brand-row.is-market.is-idle { height: 196px; }
+@media (min-width: 720px) {
+  .brand-row.is-market .market-card { width: clamp(150px, 12vw, 200px); }
+  .brand-row.is-market.is-idle { height: calc(clamp(150px, 12vw, 200px) * 1.33 + 56px); }
+}
