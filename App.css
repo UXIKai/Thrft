@@ -2769,3 +2769,9 @@ html body .stage .home-radial .home-radial-btn.is-hot:not(#_):not(#_) { scale: 1
 .wordmark-wrap > .home-checkout-btn {
   grid-row: 2;
 }
+
+/* Header and products hang lower on the page */
+.wordmark-wrap {
+  padding-top: 64px;
+  padding-bottom: 28px;
+}
