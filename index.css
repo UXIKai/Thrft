@@ -162,3 +162,12 @@ html:root[data-bg-image='none'] body {
 #root {
   background: transparent;
 }
+
+/* Installed iOS app: iOS 26 fades the strip just under the status bar. Start the app below it; the page colour continues behind (html/body background), so nothing reads as a bar. */
+@media (display-mode: standalone) and (hover: none) and (pointer: coarse) {
+  #root {
+    margin-top: 14px;
+    height: calc(var(--app-height, 100dvh) - 14px);
+    max-height: calc(var(--app-height, 100dvh) - 14px);
+  }
+}
