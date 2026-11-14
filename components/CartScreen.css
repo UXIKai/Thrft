@@ -380,6 +380,9 @@
 .cart-screen .cart-nav .wheel-arrow.is-left { left: calc(50% - 17px); transform: rotate(-90deg); }
 .cart-screen .cart-nav .wheel-arrow.is-right { left: calc(50% + 17px); transform: rotate(90deg); }
 .cart-screen .cart-nav .wheel-arrow.is-end { opacity: 0; }
+/* Nothing lies below the bag */
+.cart-screen .cart-nav .wheel-arrow.is-down,
+.cart-chevron .wheel-arrow.is-down { display: none !important; }
 
 .cart-nav-ico {
   width: 22px;

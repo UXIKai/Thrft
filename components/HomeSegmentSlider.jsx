@@ -391,7 +391,7 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false, o
       <span className={`wheel-arrow is-left${shopIndex === 0 ? ' is-end' : side}`} aria-hidden="true">{arrow}</span>
       <span className={`wheel-arrow is-right${shopIndex === 1 ? ' is-end' : side}`} aria-hidden="true">{arrow}</span>
       <span className="wheel-arrow is-up" aria-hidden="true">{arrow}</span>
-      <span className={`wheel-arrow is-down${onLeaderboard ? '' : ' is-end'}`} aria-hidden="true">{arrow}</span>
+      <span className="wheel-arrow is-down" aria-hidden="true">{arrow}</span>
       <div className="home-segment-track" aria-hidden="true">
         {SEGMENTS.map(({ id, Icon }) => (
           <span key={id} className={`home-segment-tab is-${id}`}>
