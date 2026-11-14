@@ -820,7 +820,7 @@ export default function App() {
       {signedIn && tab !== 'home' && !activeProduct && !(tab === 'chat' && chatThreadOpen) && (
         <button
           type="button"
-          className="nav-toggle is-bare"
+          className="nav-toggle is-bare is-star"
           aria-label={atBottom ? 'Show navigation' : 'Hide navigation'}
           aria-expanded={!atBottom}
           onClick={() => setAtBottom((hidden) => !hidden)}

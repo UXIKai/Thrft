@@ -3303,3 +3303,43 @@ html body .stage .home-radial .home-radial-btn:not(#_):not(#_):not(#_) {
   .app-column.is-profile-wide .profile-screen { --pf-pad-x: max(18px, calc((100% - 560px) / 2 + 18px)); }
   .app-column.is-profile-wide .profile-menu-btn { right: 14px; top: 12px; }
 }
+
+/*
+ * Ninja-star button: the four arrows are blades. With nothing in the middle (bottom nav button)
+ * they close into a star; with an icon in the middle (Home wheel) they open out as arrows.
+ */
+.home-segment-slider { --pull-v: 4.6px; --pull-h: 6.6px; }
+.nav-toggle { --pull-v: 2.4px; --pull-h: 2.4px; }
+.home-segment-slider .wheel-arrow,
+.nav-toggle .wheel-arrow {
+  --tx: 0px;
+  --ty: 0px;
+  --star-closed-t: var(--tx) var(--ty);
+}
+.home-segment-slider .wheel-arrow.is-up, .nav-toggle .wheel-arrow.is-up { --ty: var(--pull-v); }
+.home-segment-slider .wheel-arrow.is-down, .nav-toggle .wheel-arrow.is-down { --ty: calc(-1 * var(--pull-v)); }
+.home-segment-slider .wheel-arrow.is-left, .nav-toggle .wheel-arrow.is-left { --tx: var(--pull-h); }
+.home-segment-slider .wheel-arrow.is-right, .nav-toggle .wheel-arrow.is-right { --tx: calc(-1 * var(--pull-h)); }
+
+@keyframes star-open {
+  from { translate: var(--tx) var(--ty); scale: 2.4; rotate: -16deg; }
+  to { translate: 0 0; scale: 1; rotate: 0deg; }
+}
+@keyframes star-close {
+  from { translate: 0 0; scale: 1; rotate: 0deg; }
+  to { translate: var(--tx) var(--ty); scale: 2.4; rotate: -16deg; }
+}
+
+.home-segment-slider .wheel-arrow {
+  animation: star-open 0.55s cubic-bezier(0.3, 1.35, 0.5, 1) both;
+}
+.nav-toggle.is-star .wheel-arrow {
+  animation: star-close 0.55s cubic-bezier(0.3, 1.35, 0.5, 1) both;
+  color: light-dark(#000, #fff);
+}
+.nav-toggle.is-star .wheel-arrow svg path { stroke-width: 1.2; }
+
+@media (prefers-reduced-motion: reduce) {
+  .home-segment-slider .wheel-arrow,
+  .nav-toggle.is-star .wheel-arrow { animation-duration: 0.01s; }
+}
