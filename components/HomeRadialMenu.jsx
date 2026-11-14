@@ -36,46 +36,38 @@ const DIRS = { leaderboard: [0, -1], store: [-1, 0], market: [1, 0], cart: [0, 1
 let origin = null
 let selected = 'search'
 
-const EDGE = 112
-
-// Every button is placed continuously from the finger offset, so nothing snaps or sticks.
-// Buttons slide with the finger, are kept inside the sphere, and fade as they reach its rim.
-function paint(ox = 0, oy = 0) {
+// The chosen button comes forward into the middle and the old middle button takes the chosen one's place
+function paint(id) {
   const wheel = document.querySelector('.home-radial')
   if (!wheel) return
-  let best = 'search'
-  let bestD = Infinity
+  selected = id
   wheel.querySelectorAll('[data-radial]').forEach((el) => {
     const k = el.dataset.radial
-    const [ux, uy] = DIRS[k]
-    const x = ux * SLOT + ox
-    const y = uy * SLOT + oy
-    const d = Math.hypot(x, y)
-    const kd = d + (k === selected ? -6 : 0)
-    if (kd < bestD) { bestD = kd; best = k }
-    const k2 = 1
-    const fade = d <= SLOT ? 1 : Math.max(0, 1 - (d - SLOT) / (SLOT * 0.35))
+    const slotOf = k === 'search' ? id : k
+    const centre = k === id
+    const [ux, uy] = centre ? [0, 0] : DIRS[slotOf]
     el.style.transform = 'none'
-    el.style.transition = 'none'
-    el.style.translate = `calc(-50% + ${x * k2}px) calc(-50% + ${y * k2}px)`
-    el.style.setProperty('--gs', String(0.8 + 0.2 * (1 - Math.min(d, SLOT) / SLOT)))
-    el.style.setProperty('opacity', String((0.55 + 0.45 * (1 - Math.min(d, SLOT) / SLOT)) * fade), 'important')
+    el.style.translate = `calc(-50% + ${ux * SLOT}px) calc(-50% + ${uy * SLOT}px)`
+    el.style.setProperty('--gs', centre ? '1' : '0.8')
+    el.style.opacity = centre ? '1' : '0.8'
+    el.classList.toggle('is-hot', centre && id !== 'search')
   })
-  selected = best
-  wheel.querySelectorAll('[data-radial]').forEach((el) => {
-    el.classList.toggle('is-hot', el.dataset.radial === best && best !== 'search')
-  })
-  wheel.dataset.sel = best
+  wheel.dataset.sel = id
 }
 
-// The menu slides with the finger, so swiping up brings the bottom button to the middle
+// Swiping a direction brings the button on the opposite side to the middle
 export function moveKnob(x, y) {
   if (!origin) origin = [x, y]
-  let ox = x - origin[0]
-  let oy = y - origin[1]
-  const len = Math.hypot(ox, oy)
-  if (len > SLOT) { ox = ox / len * SLOT; oy = oy / len * SLOT }
-  paint(ox, oy)
+  const dx = x - origin[0]
+  const dy = y - origin[1]
+  let id = 'search'
+  if (Math.hypot(dx, dy) > 10) {
+    const horizontal = Math.abs(dx) > Math.abs(dy)
+    const pick = horizontal ? (dx < 0 ? 'market' : 'store') : dy < 0 ? 'cart' : 'leaderboard'
+    const clear = Math.max(Math.abs(dx), Math.abs(dy)) > Math.min(Math.abs(dx), Math.abs(dy)) * 1.15
+    id = clear || selected === 'search' ? pick : selected
+  }
+  if (id !== selected) paint(id)
 }
 
 export function radialAt() {
@@ -85,7 +77,7 @@ export function radialAt() {
 function resetKnob() {
   origin = null
   selected = 'search'
-  requestAnimationFrame(() => paint(0, 0))
+  requestAnimationFrame(() => paint('search'))
 }
 
 const ITEMS = [
