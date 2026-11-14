@@ -8,6 +8,7 @@ import {
   applyAppColor,
   applyBackgroundImage,
   exitMoonlight,
+  isBrightColorId,
   readMoonlight,
   readBackgroundImage,
   applyBackgroundPhoto,
@@ -1429,13 +1430,23 @@ export default function SettingsScreen({
     if (color?.swatch) rememberColor(color.swatch)
   }
 
+  // A bright colour replaces moon (white) mode entirely, so the two never overlap
+  function leaveMoonForBright(id) {
+    if (isBrightColorId(id) && exitMoonlight()) {
+      setMoonlightOn(false)
+      setTheme(readTheme())
+    }
+  }
+
   function chooseAppColor(id) {
+    leaveMoonForBright(id)
     setAppColor(applyAppColor(id))
     rememberPaletteId(id)
   }
 
   function chooseBgColor(id) {
     if (hasPhoto) clearPhoto()
+    leaveMoonForBright(id)
     setBgColor(applyBgColor(id))
     setTheme(readTheme())
     rememberPaletteId(id)

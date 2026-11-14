@@ -754,6 +754,14 @@ function saveMoonlight(on) {
   }
 }
 
+/** True for a palette colour bright enough to need dark ink. */
+export function isBrightColorId(id) {
+  for (const color of [resolveBgColor(id), resolveColor(id)]) {
+    if (color && color.id === id && color.id !== 'none' && color.rgb && relativeLuminance(color.rgb) > 0.4) return true
+  }
+  return false
+}
+
 /** Leave moonlight and return the app to its normal dark look. */
 export function exitMoonlight() {
   if (!moonlightOn) return false
