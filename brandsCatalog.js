@@ -105,8 +105,50 @@ export const BRAND_ROWS = [
   },
 ]
 
+const EXTRA_STORE_BRANDS = [
+  ['levis', "Levi's", 'Denim & Casual', 55],
+  ['carhartt', 'Carhartt', 'Workwear', 60],
+  ['supreme', 'Supreme', 'Streetwear', 90],
+  ['ralphlauren', 'Ralph Lauren', 'Classic American', 70],
+  ['tommyhilfiger', 'Tommy Hilfiger', 'Classic American', 58],
+  ['calvinklein', 'Calvin Klein', 'Contemporary Fashion', 52],
+  ['underarmour', 'Under Armour', 'Sportswear', 38],
+  ['newbalance', 'New Balance', 'Sportswear & Footwear', 64],
+  ['vans', 'Vans', 'Skate & Footwear', 45],
+  ['converse', 'Converse', 'Footwear', 44],
+  ['champion', 'Champion', 'Athletic Basics', 34],
+  ['hollister', 'Hollister', 'Casual', 32],
+  ['abercrombie', 'Abercrombie & Fitch', 'Casual', 46],
+  ['americaneagle', 'American Eagle', 'Casual', 33],
+  ['hm', 'H&M', 'Fast Fashion', 22],
+  ['zara', 'Zara', 'Fast Fashion', 35],
+  ['uniqlo', 'Uniqlo', 'Essentials', 30],
+  ['lululemon', 'Lululemon', 'Activewear', 68],
+  ['patagonia', 'Patagonia', 'Outdoor', 85],
+  ['dickies', 'Dickies', 'Workwear', 36],
+  ['fila', 'Fila', 'Sportswear', 40],
+  ['reebok', 'Reebok', 'Sportswear', 41],
+  ['hermes', 'Hermès', 'Luxury Fashion', 220],
+  ['dior', 'Dior', 'Luxury Fashion', 190],
+  ['burberry', 'Burberry', 'Luxury Fashion', 150],
+  ['versace', 'Versace', 'Luxury Fashion', 140],
+  ['balenciaga', 'Balenciaga', 'Luxury Streetwear', 170],
+  ['fendi', 'Fendi', 'Luxury Fashion', 160],
+  ['coach', 'Coach', 'Accessible Luxury', 75],
+  ['michaelkors', 'Michael Kors', 'Accessible Luxury', 68],
+].map(([id, name, category, basePrice]) => ({
+  id,
+  name,
+  category,
+  prefix: id.toUpperCase(),
+  products: makeProducts(id.toUpperCase(), name, id, basePrice),
+}))
+
+/** The 40 brands that each get their own Store row (Market samples use BRAND_ROWS only). */
+export const STORE_BRAND_ROWS = [...BRAND_ROWS, ...EXTRA_STORE_BRANDS]
+
 export function findProductById(productId) {
-  for (const brand of BRAND_ROWS) {
+  for (const brand of STORE_BRAND_ROWS) {
     const hit = brand.products.find((p) => p.id === productId)
     if (hit) return { product: hit, brand }
   }
@@ -114,5 +156,5 @@ export function findProductById(productId) {
 }
 
 export function findBrandById(brandId) {
-  return BRAND_ROWS.find((b) => b.id === brandId) || null
+  return STORE_BRAND_ROWS.find((b) => b.id === brandId) || null
 }

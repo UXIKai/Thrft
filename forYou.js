@@ -1,5 +1,5 @@
 import { HOME_TYPE_TO_GARMENTS } from './sizeOptions.js'
-import { BRAND_ROWS, findBrandById } from './brandsCatalog.js'
+import { STORE_BRAND_ROWS, findBrandById } from './brandsCatalog.js'
 
 const INTEREST_KEY = 'thrft-product-interest-v1'
 const SEARCH_KEY = 'thrft-search-history-v1'
@@ -224,32 +224,11 @@ function pickForTheme(catalog, theme, ctx, count) {
       score: scoreProduct(product, {
         ...ctx,
         themeBrandId: theme.brandId || '',
-        themeType: theme.clothingType || '',
       }),
     }))
     .sort((a, b) => b.score - a.score)
 
-  let picked = scored.map((s) => s.product)
-  if (theme.brandId) {
-    const brandHits = picked.filter((p) => p.brandId === theme.brandId)
-    if (brandHits.length) picked = [...brandHits, ...picked.filter((p) => p.brandId !== theme.brandId)]
-  }
-  if (theme.clothingType) {
-    const typeHits = picked.filter((p) =>
-      garmentMatchesHomeType(p.clothingType, theme.clothingType),
-    )
-    if (typeHits.length) {
-      picked = [
-        ...typeHits,
-        ...picked.filter((p) => !garmentMatchesHomeType(p.clothingType, theme.clothingType)),
-      ]
-    }
-  }
-  if (theme.brandId && theme.clothingType) {
-    const exact = (p) =>
-      p.brandId === theme.brandId && garmentMatchesHomeType(p.clothingType, theme.clothingType)
-    picked = [...picked.filter(exact), ...picked.filter((p) => !exact(p))]
-  }
+  const picked = scored.map((s) => s.product)
   return padProducts(picked.slice(0, count), count, catalog)
 }
 
@@ -285,172 +264,44 @@ export function buildPersonalizedRows({
   const pool =
     Array.isArray(catalog) && catalog.length
       ? catalog
-      : BRAND_ROWS.flatMap((b) => b.products)
+      : STORE_BRAND_ROWS.flatMap((b) => b.products)
 
+  // Every Store row is one brand. Brands you like, searched and view most go first.
   const themes = []
   const seen = new Set()
 
-  function pushTheme(theme) {
-    if (!theme?.id || seen.has(theme.id) || themes.length >= rowCount) return
-    seen.add(theme.id)
-    themes.push(theme)
-  }
-
-  // Likes first — saved products as a dedicated row, then favored brands.
-  if (savedIds.size) {
-    pushTheme({
-      id: 'liked-items',
-      name: 'Liked',
-      category: 'From your likes',
-      brandId: '',
-      clothingType: '',
-      preferSaved: true,
-    })
-  }
-  for (const brandId of favoredBrands) {
+  function pushBrand(brandId, name, category) {
+    if (!brandId || seen.has(brandId) || themes.length >= rowCount) return
     const meta = findBrandById(brandId)
-    pushTheme({
-      id: `like-${brandId}`,
-      name: meta?.name || brandId,
-      category: 'Liked brand',
+    seen.add(brandId)
+    themes.push({
+      id: `brand-${brandId}`,
+      name: name || meta?.name || labelForType(brandId),
+      category: category || meta?.category || 'Brand',
       brandId,
-      clothingType: '',
     })
   }
 
-  // Search history (brands + categories).
+  for (const brandId of favoredBrands) pushBrand(brandId, '', 'Liked brand')
   for (const entry of history) {
-    if (entry.brandId) {
-      const meta = findBrandById(entry.brandId)
-      pushTheme({
-        id: `search-brand-${entry.brandId}`,
-        name: entry.brandName || meta?.name || entry.brandId,
-        category: 'From your search',
-        brandId: entry.brandId,
-        clothingType: '',
-      })
-    } else if (entry.clothingType) {
-      pushTheme({
-        id: `search-type-${entry.clothingType}`,
-        name: labelForType(entry.clothingType),
-        category: 'From your search',
-        brandId: '',
-        clothingType: entry.clothingType,
-      })
-    }
+    if (entry.brandId) pushBrand(entry.brandId, entry.brandName, 'From your search')
   }
-
-  // Brands pulled from liked product payloads.
   for (const item of savedProducts || []) {
-    if (!item?.brandId) continue
-    pushTheme({
-      id: `saved-brand-${item.brandId}`,
-      name: item.brandName || findBrandById(item.brandId)?.name || item.brandId,
-      category: 'From your likes',
-      brandId: item.brandId,
-      clothingType: item.clothingType || '',
-    })
+    if (item?.brandId) pushBrand(item.brandId, item.brandName, 'From your likes')
   }
-
-  // Top affinity brands / types from interest weights.
   const brandRank = Object.entries(interest.brands).sort((a, b) => b[1] - a[1])
-  for (const [brandId] of brandRank) {
-    const meta = findBrandById(brandId)
-    pushTheme({
-      id: `affinity-${brandId}`,
-      name: meta?.name || brandId,
-      category: 'For you',
-      brandId,
-      clothingType: '',
-    })
-  }
-  const typeRank = Object.entries(interest.types).sort((a, b) => b[1] - a[1])
-  for (const [clothingType] of typeRank) {
-    pushTheme({
-      id: `affinity-type-${clothingType}`,
-      name: labelForType(clothingType),
-      category: 'For you',
-      brandId: '',
-      clothingType,
-    })
-  }
-
-  // Fill remaining slots from the default 10 brand rows.
-  for (const brand of BRAND_ROWS) {
-    pushTheme({
-      id: `brand-${brand.id}`,
-      name: brand.name,
-      category: brand.category,
-      brandId: brand.id,
-      clothingType: '',
-    })
-  }
-
-  // More rows: each clothing type, then every brand + type pairing in the catalog.
-  const typeIds = [...new Set(pool.map((p) => p.clothingType).filter(Boolean))]
-  for (const clothingType of typeIds) {
-    pushTheme({
-      id: `type-${clothingType}`,
-      name: labelForType(clothingType),
-      category: 'Category',
-      brandId: '',
-      clothingType,
-    })
-  }
-  const pairs = new Map()
-  for (const p of pool) {
-    if (!p.brandId || !p.clothingType) continue
-    pairs.set(`${p.brandId}|${p.clothingType}`, p)
-  }
-  for (const p of pairs.values()) {
-    const brandName = p.brandName || findBrandById(p.brandId)?.name || p.brandId
-    pushTheme({
-      id: `mix-${p.brandId}-${p.clothingType}`,
-      name: `${brandName} ${labelForType(p.clothingType)}`,
-      category: brandName,
-      brandId: p.brandId,
-      clothingType: p.clothingType,
-    })
-  }
-
-  while (themes.length < rowCount) {
-    const brand = BRAND_ROWS[themes.length % BRAND_ROWS.length]
-    pushTheme({
-      id: `pad-${themes.length}-${brand.id}`,
-      name: brand.name,
-      category: brand.category,
-      brandId: brand.id,
-      clothingType: '',
-    })
-  }
+  for (const [brandId] of brandRank) pushBrand(brandId, '', 'For you')
+  for (const brand of STORE_BRAND_ROWS) pushBrand(brand.id, brand.name, brand.category)
 
   return themes.slice(0, rowCount).map((theme) => {
-    let products
-    if (theme.preferSaved) {
-      const liked = (savedProducts || []).filter((p) => p && p.id)
-      const rankedLiked = liked.length
-        ? liked
-        : pool.filter((p) => savedIds.has(p.id))
-      products = padProducts(
-        buildForYouFeed({
-          catalog: rankedLiked.length ? rankedLiked : pool,
-          clothingSizes,
-          brandSizes,
-          favoredBrands,
-          savedProductIds: [...savedIds],
-          limit: productsPerRow,
-        }),
-        productsPerRow,
-        pool,
-      )
-    } else {
-      products = pickForTheme(pool, theme, ctx, productsPerRow)
-    }
+    const own = pool.filter((p) => p.brandId === theme.brandId)
+    const fallback = findBrandById(theme.brandId)?.products || []
+    const ranked = pickForTheme(own.length ? own : fallback, theme, ctx, productsPerRow)
     return {
       id: theme.id,
       name: theme.name,
       category: theme.category,
-      products,
+      products: ranked,
     }
   })
 }
