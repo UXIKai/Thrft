@@ -3370,3 +3370,8 @@ html body .stage .home-radial .home-radial-btn:not(#_):not(#_):not(#_) {
   .brand-row.is-market .market-card { width: clamp(150px, 12vw, 200px); }
   .brand-row.is-market.is-idle { height: calc(clamp(150px, 12vw, 200px) * 1.33 + 56px); }
 }
+
+/* Rows mounted by scrolling or on arrival fade in together instead of popping in */
+.brand-row-track-wrap { animation: brand-row-in 0.3s ease-out both; }
+@keyframes brand-row-in { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .brand-row-track-wrap { animation: none; } }
