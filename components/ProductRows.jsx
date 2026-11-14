@@ -245,13 +245,14 @@ function StoreRowPage({ row, onBack, onOpenProduct }) {
   return (
     <section ref={ref} className="product-feed store-row-page" id="home-product-panel" role="tabpanel" aria-label={row.name}>
       <header className="store-row-page-head">
-        <button type="button" className="store-row-page-back" onClick={onBack} aria-label="Back to Store">
+        <button type="button" className="store-row-page-back is-bare" onClick={onBack} aria-label="Back to Store">
           <svg viewBox="0 0 24 24" aria-hidden><path d="m15 5-7 7 7 7" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
         </button>
         <div className="store-row-page-title">
           <h2>{row.name}</h2>
           {row.category ? <p>{row.category}</p> : null}
         </div>
+        <span className="store-row-page-spacer" aria-hidden />
       </header>
       <div className="store-row-list">
         {Array.from({ length: 8 }, (_, i) => (row.products || []).slice(i * 5, i * 5 + 5)).map((chunk, i) => (
