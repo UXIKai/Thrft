@@ -3102,3 +3102,8 @@ html body .home-scroll .wordmark-wrap > .home-segment-slider:not(#_) {
 }
 
 .home-radial-scrim { touch-action: none; }
+
+html body .stage .home-radial .home-radial-btn:not(#_):not(#_):not(#_) {
+  transition: translate 0.34s cubic-bezier(0.22, 1, 0.36, 1), scale 0.34s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.25s ease-out, color 0.25s ease-out, background-color 0.25s ease-out, border-color 0.25s ease-out !important;
+  will-change: translate, scale, opacity;
+}
