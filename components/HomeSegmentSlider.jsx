@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { startTransition, useEffect, useLayoutEffect, useRef } from 'react'
 import { MarketIcon, StoreIcon } from './SegmentIcons.jsx'
 
 const LeaderboardIcon = () => (
@@ -42,13 +42,25 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false })
   const rootRef = useRef(null)
   const index = Math.max(0, SEGMENTS.findIndex((s) => s.id === value))
 
-  const [dragX, setDragX] = useState(null)
-  const x = dragX ?? index
+  // Position is painted straight onto the DOM so a drag never re-renders React.
+  const paint = (x) => {
+    const root = rootRef.current
+    if (!root) return
+    root.style.setProperty('--x', x)
+    root.querySelectorAll('.home-segment-tab').forEach((el, i) => el.style.setProperty('--d', Math.min(1, Math.abs(i - x))))
+  }
+  const paintRef = useRef(paint)
+  paintRef.current = paint
+  useLayoutEffect(() => {
+    paintRef.current(index)
+  }, [index])
 
   const chooseRef = useRef(null)
   chooseRef.current = (i) => {
     const next = SEGMENTS[clamp(i)]
-    if (fireSame || next.id !== value) onChange(next.id)
+    if (!fireSame && next.id === value) return
+    // Swap the (heavy) product list after the slide starts so the animation never stutters.
+    startTransition(() => onChange(next.id))
   }
   const indexRef = useRef(index)
   indexRef.current = index
@@ -58,19 +70,28 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false })
     const page = rootRef.current?.closest('.home-scroll')
     if (!page) return undefined
     let d = null
+    let frame = 0
+    let pending = 0
+    const flush = () => {
+      frame = 0
+      paintRef.current(pending)
+    }
     const end = (e, flick) => {
       if (!d || d.id !== e.pointerId) return
       const s = d
       d = null
       if (!s.moving) return
+      cancelAnimationFrame(frame)
+      frame = 0
       const last = s.samples[s.samples.length - 1]
       const from = s.samples.find((p) => last.t - p.t <= 100) || last
       const idle = e.timeStamp - last.t > 80
       const v = flick && !idle && last.t > from.t ? (last.pos - from.pos) / (last.t - from.t) : 0
-      setDragX(null)
       // One segment per gesture, however far or fast the swipe.
-      const landing = Math.round(last.pos + v * FLICK_LOOKAHEAD_MS)
-      chooseRef.current(Math.min(s.start + 1, Math.max(s.start - 1, landing)))
+      const landing = clamp(Math.min(s.start + 1, Math.max(s.start - 1, Math.round(last.pos + v * FLICK_LOOKAHEAD_MS))))
+      rootRef.current.classList.remove('is-dragging')
+      paintRef.current(landing)
+      chooseRef.current(landing)
     }
     const onDown = (e) => {
       if (!e.isPrimary || (e.button !== undefined && e.button !== 0) || scrollsSideways(e.target, page)) return
@@ -87,11 +108,13 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false })
         }
         d.moving = true
         d.x += Math.sign(dx) * DRAG_START_PX
+        rootRef.current.classList.add('is-dragging')
       }
       const raw = d.start - (e.clientX - d.x) / SLOT_PX
       d.samples.push({ t: e.timeStamp, pos: raw })
       if (d.samples.length > 6) d.samples.shift()
-      setDragX(resist(Math.min(d.start + 1, Math.max(d.start - 1, raw))))
+      pending = resist(Math.min(d.start + 1, Math.max(d.start - 1, raw)))
+      if (!frame) frame = requestAnimationFrame(flush)
     }
     const onUp = (e) => end(e, true)
     const onCancel = (e) => end(e, false)
@@ -100,6 +123,7 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false })
     page.addEventListener('pointerup', onUp)
     page.addEventListener('pointercancel', onCancel)
     return () => {
+      cancelAnimationFrame(frame)
       page.removeEventListener('pointerdown', onDown)
       page.removeEventListener('pointermove', onMove)
       page.removeEventListener('pointerup', onUp)
@@ -114,16 +138,15 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false })
   return (
     <div
       ref={rootRef}
-      className={`home-segment-slider${dragX !== null ? ' is-dragging' : ''}`}
+      className="home-segment-slider"
       role="status"
       aria-label={`${SEGMENTS[index].label}. Swipe left or right to switch.`}
-      style={{ '--x': x }}
     >
       <span className={`wheel-arrow is-left${index === 0 ? ' is-end' : ''}`} aria-hidden="true">{arrow}</span>
       <span className={`wheel-arrow is-right${index === LAST ? ' is-end' : ''}`} aria-hidden="true">{arrow}</span>
       <div className="home-segment-track" aria-hidden="true">
-        {SEGMENTS.map(({ id, Icon }, i) => (
-          <span key={id} className="home-segment-tab" style={{ '--d': Math.min(1, Math.abs(i - x)) }}>
+        {SEGMENTS.map(({ id, Icon }) => (
+          <span key={id} className="home-segment-tab">
             <Icon />
           </span>
         ))}

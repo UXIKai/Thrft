@@ -2013,6 +2013,7 @@ html body .tab-bar.is-pressed .tab-pill::before {
   margin: 0 auto;
   align-items: center;
   transform: translateX(calc((1 - var(--x, 0)) * var(--slot)));
+  will-change: transform;
   transition: transform 0.32s cubic-bezier(0.22, 0.9, 0.3, 1);
 }
 
