@@ -2,7 +2,7 @@ import { useLayoutEffect, useRef } from 'react'
 
 // The open ninja star's top blade; the other arrows are 90-degree turns of it (set in CSS).
 export const arrow = (
-  <svg viewBox="313 39 146 238" aria-hidden="true"><polygon points="389,39 459,175 410,277 313,214" fill="currentColor" stroke="currentColor" strokeWidth="12" strokeLinejoin="round" /></svg>
+  <svg viewBox="313 39 146 238" aria-hidden="true"><polygon className="glass-blade" points="389,39 459,175 410,277 313,214" /></svg>
 )
 
 // One blade (top one) per animation frame, open -> closed; the other three are 90-degree turns of it.
@@ -138,11 +138,8 @@ export function OpeningStar({ final = [1, 1, 1, 1], onDone }) {
             key={deg}
             ref={(el) => { bladeRefs.current[i] = el }}
             transform={`rotate(${deg} 400 400)`}
+            className="glass-blade"
             points={STAR_FRAMES[4]}
-            fill="currentColor"
-            stroke="currentColor"
-            strokeWidth="12"
-            strokeLinejoin="round"
           />
         ))}
       </g>

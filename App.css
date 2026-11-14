@@ -2079,7 +2079,15 @@ html body .tab-bar.is-pressed .tab-pill::before {
   pointer-events: none;
   transition: opacity 0.2s ease;
 }
+/* Clear glass like the nav bar: faint smoky body, its icon colour and shadow for the edge */
+.glass-blade {
+  fill: light-dark(rgba(0, 0, 0, 0.1), rgba(255, 255, 255, 0.1));
+  stroke: light-dark(rgba(0, 0, 0, 0.92), rgba(255, 255, 255, 0.92));
+  stroke-width: 16;
+  stroke-linejoin: round;
+}
 .wheel-arrow svg {
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.55));
   display: block;
   width: 100%;
   height: 100%;
@@ -3324,7 +3332,7 @@ html body .stage .home-radial .home-radial-btn:not(#_):not(#_):not(#_) {
   height: 37px;
   z-index: 2;
   overflow: visible;
-  color: light-dark(rgba(0, 0, 0, 0.55), rgba(255, 255, 255, 0.6));
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.55));
   pointer-events: none;
 }
 
