@@ -128,7 +128,7 @@ export default function CartScreen({
       onTouchEnd={() => { swipeRef.current = null }}
     >
       <button type="button" className="cart-chevron is-bare" aria-label="Show navigation" onClick={() => onShowNav?.()}>
-        <NavButtonGlyph />
+        <NavButtonGlyph icon={<svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M3 4h2.4l2.1 11h9.6l1.9-8H6.2" /><circle cx="9" cy="19" r="1.2" /><circle cx="16.5" cy="19" r="1.2" /></g></svg>} />
       </button>
       {menuOpen && (
         <HomeRadialMenu
