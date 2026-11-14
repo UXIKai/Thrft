@@ -2795,3 +2795,28 @@ html body .stage .home-radial .home-radial-btn.is-hot:not(#_):not(#_) { scale: 1
 .wordmark-wrap > .home-checkout-btn {
   grid-row: 1;
 }
+
+/* Scrolling the feed down slides the nav away; scrolling up brings it back */
+html body .stage.is-nav-hidden > .tab-bar.tab-bar {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  translate: var(--nav-shift, 0px) 140% !important;
+  transition: translate 0.25s ease, opacity 0.2s ease !important;
+}
+
+/* Logo back in the centre at the very top; the picker button stays pinned just above the products */
+.wordmark-wrap {
+  padding-top: 8px;
+  padding-bottom: 20px;
+}
+.wordmark-wrap > .wordmark {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  justify-self: center;
+  margin: 0 0 14px;
+  font-size: clamp(2.2rem, 9vw, 2.75rem);
+}
+.wordmark-wrap > .home-segment-slider,
+.wordmark-wrap > .home-checkout-btn {
+  grid-row: 2;
+}
