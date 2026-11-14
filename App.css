@@ -2778,3 +2778,20 @@ html body .stage .home-radial .home-radial-btn.is-hot:not(#_):not(#_) { scale: 1
 .wordmark-wrap > .wordmark {
   margin-bottom: 70px;
 }
+
+/* Logo left, picker button centred at the very top and fixed there; products start lower */
+.wordmark-wrap {
+  padding-top: 28px;
+  padding-bottom: 56px;
+}
+.wordmark-wrap > .wordmark {
+  grid-column: 1;
+  grid-row: 1;
+  justify-self: start;
+  margin: 0 0 0 4px;
+  font-size: 1.5rem;
+}
+.wordmark-wrap > .home-segment-slider,
+.wordmark-wrap > .home-checkout-btn {
+  grid-row: 1;
+}
