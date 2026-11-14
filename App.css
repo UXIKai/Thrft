@@ -2601,6 +2601,3 @@ html body .home-radial .home-radial-btn {
   html body .market-chips .market-chip { cursor: pointer; }
   html body .market-card:hover .market-card-photo { border-color: light-dark(#000, #fff); }
 }
-
-/* Market chips start on the same line as the Store product rows */
-html body .market-chips { margin-top: 64px; }
