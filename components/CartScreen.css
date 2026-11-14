@@ -364,7 +364,8 @@
   display: grid;
   place-items: center;
   color: light-dark(#000, #fff);
-  pointer-events: none;
+  -webkit-touch-callout: none;
+  user-select: none;
 }
 
 .cart-screen .cart-nav .wheel-arrow {

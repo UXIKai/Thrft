@@ -711,6 +711,16 @@ export default function App() {
           items={cartItems}
           shippingAddress={userProfile?.shippingAddress || ''}
           onClose={() => setCartOpen(false)}
+          onMenuPick={(id) => {
+            setCartOpen(false)
+            setTab('home')
+            if (id === 'search') {
+              setSearchSignal((n) => n + 1)
+              return
+            }
+            setHomeSegment(id)
+            setHomeOpen(true)
+          }}
           onChange={replaceItems}
           onOpenProduct={(product, options) => {
             productReturnRef.current = { cart: true, quantity: Boolean(options?.quantity) }

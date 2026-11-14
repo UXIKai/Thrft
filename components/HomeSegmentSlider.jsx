@@ -1,5 +1,5 @@
 import { startTransition, useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { createPortal } from 'react-dom'
+import HomeRadialMenu from './HomeRadialMenu.jsx'
 import { MarketIcon, StoreIcon } from './SegmentIcons.jsx'
 
 const LeaderboardIcon = () => (
@@ -21,24 +21,6 @@ const SEGMENTS = [
 const SHOPS = ['store', 'market']
 const HOLD_MS = 420
 
-const SearchIcon = () => (
-  <svg viewBox="0 0 24 24" aria-hidden="true">
-    <g fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
-      <circle cx="11" cy="11" r="6.5" />
-      <path d="M16 16l4.5 4.5" />
-    </g>
-  </svg>
-)
-
-const CartIcon = () => (
-  <svg viewBox="0 0 24 24" aria-hidden="true">
-    <g fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M3 4h2.4l2.1 11h9.6l1.9-8H6.2" />
-      <circle cx="9" cy="19" r="1.2" />
-      <circle cx="16.5" cy="19" r="1.2" />
-    </g>
-  </svg>
-)
 const DRAG_START_PX = 8
 const SLOT_PX = 200
 const EDGE_RESISTANCE = 0.35
@@ -274,14 +256,6 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false, o
   // Arrows at a dead end are dimmed; the Leaderboard has no left/right neighbours.
   const side = onLeaderboard ? ' is-end' : ''
 
-  const radial = [
-    { id: 'leaderboard', label: 'Leaderboard', Icon: LeaderboardIcon },
-    { id: 'store', label: 'Store', Icon: StoreIcon },
-    { id: 'search', label: 'Search', Icon: SearchIcon },
-    { id: 'market', label: 'Market', Icon: MarketIcon },
-    { id: 'cart', label: 'Checkout', Icon: CartIcon },
-  ]
-
   return (
     <div
       ref={rootRef}
@@ -300,28 +274,7 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false, o
           </span>
         ))}
       </div>
-      {menuOpen &&
-        createPortal(
-          <div className="home-radial-scrim" onPointerDown={(e) => e.target === e.currentTarget && setMenuOpen(false)}>
-            <div className="home-radial" role="menu" aria-label="Home menu">
-              {radial.map(({ id, label, Icon }) => (
-                <button
-                  key={id}
-                  type="button"
-                  role="menuitem"
-                  className={`home-radial-btn is-${id}`}
-                  data-radial={id}
-                  aria-label={label}
-                  onClick={() => pickRef.current(id)}
-                >
-                  <Icon />
-                  {id === 'cart' && bagCount > 0 ? <span className="home-radial-badge">{bagCount > 9 ? '9+' : bagCount}</span> : null}
-                </button>
-              ))}
-            </div>
-          </div>,
-          document.querySelector('.stage') || document.body,
-        )}
+      {menuOpen && <HomeRadialMenu bagCount={bagCount} onPick={(id) => pickRef.current(id)} onClose={() => setMenuOpen(false)} />}
     </div>
   )
 }

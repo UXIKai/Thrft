@@ -1,5 +1,6 @@
 import { createPortal } from 'react-dom'
 import { useEffect, useRef, useState } from 'react'
+import HomeRadialMenu from './HomeRadialMenu.jsx'
 import { createCheckoutSession } from '../api.js'
 import { useBag } from '../BagContext.jsx'
 import './GlassOverlay.css'
@@ -30,7 +31,10 @@ export default function CartScreen({
   onChange,
   onOpenProduct,
   shippingAddress = '',
+  onMenuPick,
 }) {
+  const [menuOpen, setMenuOpen] = useState(false)
+  const holdRef = useRef(0)
   const bag = useBag()
   const items = itemsProp ?? bag.items
   const [stageEl, setStageEl] = useState(null)
@@ -121,13 +125,42 @@ export default function CartScreen({
       onTouchMove={onTouchMove}
       onTouchEnd={() => { swipeRef.current = null }}
     >
-      <div className="cart-nav" aria-hidden="true">
+      <div
+        className="cart-nav"
+        onTouchStart={(e) => {
+          clearTimeout(holdRef.current)
+          holdRef.current = setTimeout(() => setMenuOpen(true), 420)
+        }}
+        onTouchMove={(e) => { if (menuOpen) e.preventDefault(); else clearTimeout(holdRef.current) }}
+        onTouchEnd={(e) => {
+          clearTimeout(holdRef.current)
+          if (!menuOpen) return
+          const t = e.changedTouches[0]
+          const hit = document.elementFromPoint(t.clientX, t.clientY)?.closest('[data-radial]')
+          if (hit) {
+            e.preventDefault()
+            setMenuOpen(false)
+            onMenuPick?.(hit.dataset.radial)
+          }
+        }}
+        onTouchCancel={() => clearTimeout(holdRef.current)}
+      >
         <span className="wheel-arrow is-up is-end"><svg viewBox="0 0 12 10"><path d="M6 1.2 10.6 8.4H1.4Z" fill="currentColor" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /></svg></span>
         <span className="wheel-arrow is-down"><svg viewBox="0 0 12 10"><path d="M6 1.2 10.6 8.4H1.4Z" fill="currentColor" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /></svg></span>
         <span className="wheel-arrow is-left is-end"><svg viewBox="0 0 12 10"><path d="M6 1.2 10.6 8.4H1.4Z" fill="currentColor" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /></svg></span>
         <span className="wheel-arrow is-right is-end"><svg viewBox="0 0 12 10"><path d="M6 1.2 10.6 8.4H1.4Z" fill="currentColor" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /></svg></span>
         <svg className="cart-nav-ico" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M3 4h2.4l2.1 11h9.6l1.9-8H6.2" /><circle cx="9" cy="19" r="1.2" /><circle cx="16.5" cy="19" r="1.2" /></g></svg>
       </div>
+      {menuOpen && (
+        <HomeRadialMenu
+          bagCount={items.length}
+          onClose={() => setMenuOpen(false)}
+          onPick={(id) => {
+            setMenuOpen(false)
+            if (id !== 'cart') onMenuPick?.(id)
+          }}
+        />
+      )}
       <div className="glass-overlay-body cart-body">
         {items.length === 0 ? (
           <p className="cart-empty">Your bag is empty</p>
