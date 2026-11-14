@@ -2718,13 +2718,15 @@ html body .home-radial .home-radial-btn.is-search:not(#_) {
   box-shadow: 0 12px 20px light-dark(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.6)), inset 0 -6px 10px light-dark(rgba(0, 0, 0, 0.12), rgba(255, 255, 255, 0.1)) !important;
 }
 
-/* The glass orb is the selector: it slides onto the chosen button while the buttons stay put */
+/* The orb stays in the middle; the + slides under it and the button it lands on is selected */
 html body .home-radial .home-radial-btn:not(#_) {
   background: none !important;
   border: 0 !important;
   box-shadow: none !important;
   scale: 1;
   z-index: 1;
+  translate: calc(-50% + var(--bx, 0px)) calc(-50% + var(--by, 0px));
+  transition: opacity 0.12s;
 }
 html body .home-radial .home-radial-btn.is-hot:not(#_) { scale: 1.1; }
 .home-radial-lens {
@@ -2734,7 +2736,7 @@ html body .home-radial .home-radial-btn.is-hot:not(#_) { scale: 1.1; }
   width: 72px;
   height: 72px;
   border-radius: 50%;
-  translate: calc(-50% + var(--lx, 0px)) calc(-50% + var(--ly, 0px));
+  translate: -50% -50%;
   pointer-events: none;
   background:
     radial-gradient(circle at 50% 18%, light-dark(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.4)) 0%, transparent 38%),

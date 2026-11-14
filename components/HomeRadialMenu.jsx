@@ -36,32 +36,35 @@ const SLOTS = { leaderboard: [0, -R], store: [-R, 0], market: [R, 0], cart: [0, 
 let origin = null
 let selected = 'search'
 
-// Moving the finger from where it first pressed slides the glass orb onto the button in that direction
+// Dragging slides the + left/right or up/down; whichever button ends up under the centre orb is selected on release
 export function moveKnob(x, y) {
   const wheel = document.querySelector('.home-radial')
   if (!wheel) return
   if (!origin) origin = [x, y]
   let dx = x - origin[0]
   let dy = y - origin[1]
-  const len = Math.hypot(dx, dy)
-  if (len > R) {
-    dx = (dx / len) * R
-    dy = (dy / len) * R
-  }
-  // The orb follows the finger around the sphere; the nearest button is the one selected
+  // The + slides as one piece along a single axis, bringing a button under the fixed orb in the middle
+  if (Math.abs(dx) > Math.abs(dy)) dy = 0
+  else dx = 0
+  dx = Math.max(-R, Math.min(R, dx))
+  dy = Math.max(-R, Math.min(R, dy))
   let id = 'search'
   let best = Infinity
   for (const [k, [sx, sy]] of Object.entries(SLOTS)) {
-    const d = Math.hypot(dx - sx, dy - sy)
+    const d = Math.hypot(sx + dx, sy + dy)
     if (d < best) {
       best = d
       id = k
     }
   }
   selected = id
-  wheel.style.setProperty('--lx', `${dx}px`)
-  wheel.style.setProperty('--ly', `${dy}px`)
-  wheel.querySelectorAll('[data-radial]').forEach((el) => el.classList.toggle('is-hot', el.dataset.radial === id))
+  wheel.style.setProperty('--bx', `${dx}px`)
+  wheel.style.setProperty('--by', `${dy}px`)
+  wheel.querySelectorAll('[data-radial]').forEach((el) => {
+    const [sx, sy] = SLOTS[el.dataset.radial]
+    el.classList.toggle('is-hot', el.dataset.radial === id)
+    el.style.opacity = Math.hypot(sx + dx, sy + dy) > R * 1.6 ? '0' : ''
+  })
   wheel.dataset.sel = id
 }
 
