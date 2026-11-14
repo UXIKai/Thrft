@@ -1119,7 +1119,7 @@ export default function ProfileScreen({
         aria-label="Account"
         style={{ touchAction: 'pan-y' }}
         onPointerDown={(e) => {
-          if (e.isPrimary && e.pointerType !== 'mouse') settingsSwipe.current = { x: e.clientX, y: e.clientY }
+          if (e.isPrimary && (e.pointerType !== 'mouse' || e.button === 0)) settingsSwipe.current = { x: e.clientX, y: e.clientY }
         }}
         onPointerUp={(e) => {
           const st = settingsSwipe.current

@@ -25,7 +25,7 @@ export default function useSwipeBack(onClose, enabled = true) {
     }
 
     const down = (e) => {
-      if (!e.isPrimary || e.pointerType === 'mouse') return
+      if (!e.isPrimary || (e.pointerType === 'mouse' && e.button !== 0)) return
       if (e.target.closest?.('input, textarea, select, [data-no-swipe-back]')) return
       start = { x: e.clientX, y: e.clientY, t: performance.now(), id: e.pointerId }
       dragging = false

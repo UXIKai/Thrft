@@ -112,7 +112,7 @@ export default function useSectionSwipe({ index, count, onChange }) {
     }
 
     const down = (e) => {
-      if (!e.isPrimary || e.pointerType === 'mouse' || busy.current) return
+      if (!e.isPrimary || (e.pointerType === 'mouse' && e.button !== 0) || busy.current) return
       if (e.target.closest?.('input, textarea, select, [data-no-section-swipe]')) return
       start = { id: e.pointerId, x: e.clientX, y: e.clientY, t: performance.now() }
       dragging = false
