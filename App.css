@@ -2820,3 +2820,19 @@ html body .stage.is-nav-hidden > .tab-bar.tab-bar {
 .wordmark-wrap > .home-checkout-btn {
   grid-row: 2;
 }
+
+/* The logo scrolls away with the page; only the picker row stays pinned above the products */
+.home-scroll > .home-wordmark {
+  width: 100%;
+  margin: 0;
+  padding: 8px 0 6px;
+  text-align: center;
+}
+.wordmark-wrap {
+  padding-top: 8px;
+  padding-bottom: 20px;
+}
+.wordmark-wrap > .home-segment-slider,
+.wordmark-wrap > .home-checkout-btn {
+  grid-row: 1;
+}
