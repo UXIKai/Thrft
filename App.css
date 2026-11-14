@@ -2917,3 +2917,16 @@ html body .stage .home-radial-scrim .home-radial:not(#_):not(#_):not(#_):not(#_)
     inset 0 0 22px 2px light-dark(rgba(0, 0, 0, 0.12), rgba(255, 255, 255, 0.08)),
     inset 0 -14px 26px light-dark(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.6)) !important;
 }
+
+/* The background effect shows through: the page content hides instead of being covered by an opaque scrim */
+html body .stage:has(.home-scroll.is-radial-open) .home-radial-scrim:not(#_):not(#_) { background: transparent !important; }
+.stage:has(.home-radial-scrim) > .tab-bar { opacity: 0 !important; pointer-events: none !important; }
+.home-scroll.is-radial-open > *:not(.wordmark-wrap) { opacity: 0 !important; }
+.home-scroll.is-radial-open .wordmark-wrap > *:not(.home-segment-slider) { opacity: 0 !important; }
+.home-scroll.is-radial-open .wordmark-wrap > .home-segment-slider { visibility: hidden; }
+html body .stage .home-radial-scrim .home-radial:not(#_):not(#_):not(#_):not(#_):not(#_) {
+  background:
+    radial-gradient(circle at 50% 0%, light-dark(rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.08)) 0%, transparent 40%),
+    radial-gradient(circle at 50% 50%, transparent 55%, light-dark(rgba(0, 0, 0, 0.1), rgba(255, 255, 255, 0.08)) 100%),
+    light-dark(rgba(255, 255, 255, 0.12), rgba(0, 0, 0, 0.22)) !important;
+}

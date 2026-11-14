@@ -45,7 +45,7 @@ export function moveKnob(x, y) {
   let dy = y - origin[1]
   // Pointing a direction brings that button to the middle: the + glides so it lands under the fixed orb
   let id = 'search'
-  if (Math.hypot(dx, dy) > 14) {
+  if (Math.hypot(dx, dy) > 10) {
     id = Math.abs(dx) > Math.abs(dy) ? (dx < 0 ? 'store' : 'market') : dy < 0 ? 'leaderboard' : 'cart'
   }
   selected = id
