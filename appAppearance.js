@@ -35,11 +35,17 @@ export function readBrightness() {
   }
 }
 
+// Dimmed far enough, even a white page reads as dark, so ink turns white.
+const DARKENS_PAGE_AT_DIM = 0.5
+let dimOpacity = 0
+
 export function applyBrightness(value) {
   const number = Number(value)
   if (!Number.isFinite(number)) throw new Error('Brightness must be a number.')
   const brightness = Math.min(100, Math.max(0, Math.round(number)))
-  document.documentElement.style.setProperty('--app-dim-opacity', String((1 - brightness / 100) * 0.65))
+  dimOpacity = (1 - brightness / 100) * 0.65
+  document.documentElement.style.setProperty('--app-dim-opacity', String(dimOpacity))
+  syncColorScheme()
   try {
     localStorage.setItem(BRIGHTNESS_KEY, String(brightness))
   } catch (error) {
@@ -162,6 +168,7 @@ function syncColorScheme() {
       if (color.id !== 'none' && relativeLuminance(color.rgb) > 0.4) scheme = 'light'
     }
   }
+  if (dimOpacity >= DARKENS_PAGE_AT_DIM) scheme = 'dark'
   root.style.colorScheme = scheme
   root.dataset.scheme = scheme
 }

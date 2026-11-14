@@ -5362,3 +5362,13 @@ html body .chat-thread-scroll > .chat-thread-body {
     display: none;
   }
 }
+
+/* Full-screen glass layers leave the status-bar strip clear so no blur band shows at the top edge */
+.chat-thread::before,
+.chat-menu-scrim,
+.chat-sheet-scrim,
+.chat-contact-scrim,
+.stage > .chat-liked-picker {
+  -webkit-mask-image: linear-gradient(to bottom, transparent env(safe-area-inset-top, 0px), #000 calc(env(safe-area-inset-top, 0px) + 1px));
+  mask-image: linear-gradient(to bottom, transparent env(safe-area-inset-top, 0px), #000 calc(env(safe-area-inset-top, 0px) + 1px));
+}
