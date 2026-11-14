@@ -5374,12 +5374,13 @@ html body .chat-thread-scroll > .chat-thread-body {
   -webkit-backdrop-filter: none !important;
 }
 
-/* Side panels (chat list and Online) are outlined all the way round */
+/* The centre page card is clearly outlined all the way round, top and bottom curves included, while a side panel is open */
 @media (max-width: 719px), (max-height: 499px) {
-  html body .chat-screen .chat-list-section,
-  html body .chat-desktop-thread .chat-friends-active:not([hidden]) {
-    border: 1px solid light-dark(rgba(0, 0, 0, 0.3), rgba(255, 255, 255, 0.3)) !important;
-    border-radius: 28px;
-    box-sizing: border-box;
+  html body .chat-mobile-nav-scrim::before,
+  html body .chat-mobile-nav-scrim.is-online::before {
+    border-style: solid;
+    border-width: 1.5px;
+    border-color: light-dark(rgba(0, 0, 0, 0.45), rgba(255, 255, 255, 0.4));
+    border-radius: 44px;
   }
 }
