@@ -1,5 +1,5 @@
 import { createPortal } from 'react-dom'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { createCheckoutSession } from '../api.js'
 import { useBag } from '../BagContext.jsx'
 import './GlassOverlay.css'
@@ -15,21 +15,6 @@ function BagIcon() {
         strokeLinecap="round"
         strokeLinejoin="round"
         d="M5 8h14l-1 12H6L5 8zM9 8V6.5a3 3 0 0 1 6 0V8"
-      />
-    </svg>
-  )
-}
-
-function BackIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden>
-      <path
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M15 5.5 8.5 12 15 18.5"
       />
     </svg>
   )
@@ -102,10 +87,40 @@ export default function CartScreen({
     }
   }
 
+  const swipeRef = useRef(null)
+  const onTouchStart = (e) => {
+    const t = e.touches[0]
+    let el = e.target
+    let scrolled = false
+    for (; el && el !== e.currentTarget; el = el.parentElement) {
+      if (el.scrollTop > 0) scrolled = true
+    }
+    swipeRef.current = e.touches.length === 1 && !scrolled ? { x: t.clientX, y: t.clientY } : null
+  }
+  const onTouchMove = (e) => {
+    const s = swipeRef.current
+    if (!s || busy) return
+    const t = e.touches[0]
+    const dx = t.clientX - s.x
+    const dy = t.clientY - s.y
+    if (dy > 90 && dy > Math.abs(dx) * 1.5) {
+      swipeRef.current = null
+      onClose?.()
+    }
+  }
+
   if (!stageEl) return null
 
   return createPortal(
-    <div className="glass-overlay cart-screen" role="dialog" aria-modal="true" aria-label="Bag">
+    <div
+      className="glass-overlay cart-screen"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Bag"
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={() => { swipeRef.current = null }}
+    >
       <div className="glass-overlay-body cart-body">
         {items.length === 0 ? (
           <p className="cart-empty">Your bag is empty</p>
@@ -181,15 +196,6 @@ export default function CartScreen({
             <div className="cart-pay-actions">
               <button
                 type="button"
-                className="cart-dock-back"
-                aria-label="Back"
-                onClick={onClose}
-                disabled={busy}
-              >
-                <BackIcon />
-              </button>
-              <button
-                type="button"
                 className="cart-pay"
                 aria-label="Pay"
                 disabled={busy}
@@ -206,17 +212,7 @@ export default function CartScreen({
           ) : null}
         </div>
       ) : (
-        <div className="cart-bottom-dock">
-          <button
-            type="button"
-            className="cart-dock-back"
-            aria-label="Back"
-            onClick={onClose}
-            disabled={busy}
-          >
-            <BackIcon />
-          </button>
-        </div>
+        null
       )}
     </div>,
     stageEl,
