@@ -189,36 +189,35 @@ export default function App() {
   const homeIdle = tab === 'home' && !homeOpen
   const showNav = !(tab === 'chat' && chatThreadOpen) && !homeIdle
 
-  // Scrolling the Home feed down hides the nav bar; it stays hidden until the screen is tapped.
-  const [atBottom, setAtBottom] = useState(false)
+  // The nav bar is hidden on every page until the screen is tapped; scrolling up hides it again.
+  const [atBottom, setAtBottom] = useState(true)
   useEffect(() => {
+    setAtBottom(true)
+  }, [tab])
+  useEffect(() => {
+    const stage = stageRef.current
     const el = scrollRef.current
-    if (tab !== 'home' || !el) {
-      setAtBottom(false)
-      return undefined
-    }
-    let last = el.scrollTop
+    if (!stage) return undefined
+    let last = el?.scrollTop || 0
     const update = () => {
       const top = el.scrollTop
       if (top > last + 6) setAtBottom(true)
       last = top
     }
-    // Only a tap brings the nav bar back
     let down = null
-    const onDown = (e) => { down = { x: e.clientX, y: e.clientY, t: e.timeStamp, scroll: el.scrollTop } }
+    const onDown = (e) => { down = { x: e.clientX, y: e.clientY, t: e.timeStamp, scroll: el?.scrollTop || 0 } }
     const show = (e) => {
       // A scroll or drag that ends in a click must not count as a tap
-      if (down && (Math.hypot(e.clientX - down.x, e.clientY - down.y) > 8 || el.scrollTop !== down.scroll || e.timeStamp - down.t > 600)) return
+      if (down && (Math.hypot(e.clientX - down.x, e.clientY - down.y) > 8 || (el?.scrollTop || 0) !== down.scroll || e.timeStamp - down.t > 600)) return
       setAtBottom(false)
     }
-    setAtBottom(false)
-    el.addEventListener('scroll', update, { passive: true })
-    el.addEventListener('pointerdown', onDown, { passive: true })
-    el.addEventListener('click', show)
+    el?.addEventListener('scroll', update, { passive: true })
+    stage.addEventListener('pointerdown', onDown, { passive: true })
+    stage.addEventListener('click', show)
     return () => {
-      el.removeEventListener('scroll', update)
-      el.removeEventListener('pointerdown', onDown)
-      el.removeEventListener('click', show)
+      el?.removeEventListener('scroll', update)
+      stage.removeEventListener('pointerdown', onDown)
+      stage.removeEventListener('click', show)
     }
   }, [tab, homeSegment, homeOpen])
 
