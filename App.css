@@ -3338,14 +3338,15 @@ html body .stage .home-radial .home-radial-btn:not(#_):not(#_):not(#_) {
   display: block;
   overflow: visible;
   pointer-events: none;
-  filter: drop-shadow(0 0 3px light-dark(rgba(0, 0, 0, 0.25), rgba(255, 255, 255, 0.35)));
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.55));
 }
-.ninja-star .ns-hi { stop-color: light-dark(#6b6b70, #ffffff); }
-.ninja-star .ns-mid { stop-color: light-dark(#2a2a2e, #9a9aa0); }
-.ninja-star .ns-lo { stop-color: light-dark(#000, #3c3c40); }
+/* Clear glass like the nav bar: its smoky tint for the body, its icon colour (92%) and shadow for the edge */
+.ninja-star .ns-hi { stop-color: light-dark(rgba(0, 0, 0, 0.14), rgba(255, 255, 255, 0.14)); }
+.ninja-star .ns-mid { stop-color: light-dark(rgba(0, 0, 0, 0.02), rgba(255, 255, 255, 0.02)); }
+.ninja-star .ns-lo { stop-color: light-dark(rgba(0, 0, 0, 0.1), rgba(255, 255, 255, 0.1)); }
 .ninja-star .ns-blade {
-  stroke: light-dark(rgba(0, 0, 0, 0.6), rgba(255, 255, 255, 0.85));
-  stroke-width: 6;
+  stroke: light-dark(rgba(0, 0, 0, 0.92), rgba(255, 255, 255, 0.92));
+  stroke-width: 16;
   stroke-linejoin: round;
 }
 
