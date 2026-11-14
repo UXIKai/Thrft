@@ -2726,7 +2726,7 @@ html body .home-radial .home-radial-btn:not(#_) {
   scale: 1;
   z-index: 1;
   translate: calc(-50% + var(--bx, 0px)) calc(-50% + var(--by, 0px));
-  transition: opacity 0.12s;
+  transition: translate 0.2s cubic-bezier(0.2, 0.9, 0.3, 1.05), opacity 0.12s;
 }
 html body .home-radial .home-radial-btn.is-hot:not(#_) { scale: 1.1; }
 .home-radial-lens {

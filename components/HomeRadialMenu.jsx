@@ -36,29 +36,21 @@ const SLOTS = { leaderboard: [0, -R], store: [-R, 0], market: [R, 0], cart: [0, 
 let origin = null
 let selected = 'search'
 
-// Dragging slides the + in any direction; whichever button ends up under the centre orb is selected on release
+// Pointing a direction glides the + so that button sits in the middle; whichever button ends up under the centre orb is selected on release
 export function moveKnob(x, y) {
   const wheel = document.querySelector('.home-radial')
   if (!wheel) return
   if (!origin) origin = [x, y]
   let dx = x - origin[0]
   let dy = y - origin[1]
-  // The + follows the finger in any direction (limited to one button's distance), bringing a button under the fixed orb
-  const len = Math.hypot(dx, dy)
-  if (len > R) {
-    dx = (dx / len) * R
-    dy = (dy / len) * R
-  }
+  // Pointing a direction brings that button to the middle: the + glides so it lands under the fixed orb
   let id = 'search'
-  let best = Infinity
-  for (const [k, [sx, sy]] of Object.entries(SLOTS)) {
-    const d = Math.hypot(sx + dx, sy + dy)
-    if (d < best) {
-      best = d
-      id = k
-    }
+  if (Math.hypot(dx, dy) > 14) {
+    id = Math.abs(dx) > Math.abs(dy) ? (dx < 0 ? 'store' : 'market') : dy < 0 ? 'leaderboard' : 'cart'
   }
   selected = id
+  dx = -SLOTS[id][0]
+  dy = -SLOTS[id][1]
   wheel.style.setProperty('--bx', `${dx}px`)
   wheel.style.setProperty('--by', `${dy}px`)
   wheel.querySelectorAll('[data-radial]').forEach((el) => {
