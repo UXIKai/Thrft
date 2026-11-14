@@ -3,12 +3,14 @@ import { uploadCreatorArtwork } from '../artworkStorage.js'
 import { fetchPrintfulProducts, fetchPrintfulProduct,
   startPrintfulMockups, fetchPrintfulMockups } from '../api.js'
 import './CreatorArtworkStudio.css'
+import { isAvailablePrintfulVariant } from '../creatorProducts.js'
 
 export default function CreatorArtworkStudio({ initialArtwork, onReady, onBusy }) {
   const [products, setProducts] = useState([])
   const [variants, setVariants] = useState([])
   const [productId, setProductId] = useState(initialArtwork?.productId || '')
-  const [variantId, setVariantId] = useState(initialArtwork?.variantId || '')
+  const [color, setColor] = useState(initialArtwork?.color || '')
+  const [selectedIds, setSelectedIds] = useState(initialArtwork?.variantIds || [])
   const [artworkUrl, setArtworkUrl] = useState(initialArtwork?.artworkUrl || '')
   const [mockups, setMockups] = useState(initialArtwork?.mockupUrls || [])
   const [dimensions, setDimensions] = useState(null)
@@ -38,11 +40,14 @@ export default function CreatorArtworkStudio({ initialArtwork, onReady, onBusy }
     if (!productId) return undefined
     const abort = new AbortController()
     fetchPrintfulProduct(productId, abort.signal)
-      .then((data) => setVariants(data.variants.filter((variant) =>
-        variant.availability_status !== 'discontinued')))
+      .then((data) => setVariants(data.variants.filter(isAvailablePrintfulVariant)))
       .catch((error) => { if (!abort.signal.aborted) setError(error.message) })
     return () => abort.abort()
   }, [productId])
+
+  const colors = [...new Set(variants.map((variant) => variant.color))]
+  const colorVariants = variants.filter((variant) => variant.color === color)
+  const selected = colorVariants.filter((variant) => selectedIds.includes(variant.id))
 
   function invalidate() {
     onReady(null)
@@ -78,7 +83,7 @@ export default function CreatorArtworkStudio({ initialArtwork, onReady, onBusy }
     controller.current = abort
     try {
       const task = await startPrintfulMockups({
-        product_id: Number(productId), variant_id: Number(variantId),
+        product_id: Number(productId), variant_ids: selected.map((variant) => variant.id),
         artwork_url: artworkUrl, placement: 'front',
         artwork_dimensions: dimensions,
       }, abort.signal)
@@ -88,8 +93,12 @@ export default function CreatorArtworkStudio({ initialArtwork, onReady, onBusy }
         if (abort.signal.aborted) return
         const result = await fetchPrintfulMockups(task.task_key, abort.signal)
         if (result.status === 'completed') {
+          if (!Array.isArray(result.variants) || !result.variants.length) {
+            throw new Error('Mockup result is missing its size variants')
+          }
           setMockups(result.mockup_urls)
-          onReady({ taskKey: task.task_key, artworkUrl, productId, variantId,
+          onReady({ taskKey: task.task_key, artworkUrl, productId, color,
+            variantIds: selected.map((variant) => variant.id), variants: result.variants,
             mockupUrls: result.mockup_urls })
           return
         }
@@ -117,24 +126,37 @@ export default function CreatorArtworkStudio({ initialArtwork, onReady, onBusy }
         <span>Printful blank</span>
         <select className="listing-input is-inset" value={productId} disabled={busy}
           onChange={(event) => {
-            invalidate(); setVariants([]); setVariantId(''); setProductId(event.target.value)
+            invalidate(); setVariants([]); setSelectedIds([]); setColor(''); setProductId(event.target.value)
           }}>
           <option value="">Choose a blank product</option>
           {products.map((product) => <option key={product.id} value={product.id}>{product.title}</option>)}
         </select>
       </label>
       <label className="listing-field">
-        <span>Size / color</span>
-        <select className="listing-input is-inset" value={variantId} disabled={busy || !variants.length}
-          onChange={(event) => { invalidate(); setVariantId(event.target.value) }}>
-          <option value="">Choose a variant</option>
-          {variants.map((variant) => <option key={variant.id} value={variant.id}>
-            {variant.size} / {variant.color}
-          </option>)}
+        <span>Color</span>
+        <select className="listing-input is-inset" value={color} disabled={busy || !variants.length}
+          onChange={(event) => { invalidate(); setSelectedIds([]); setColor(event.target.value) }}>
+          <option value="">Choose a garment color</option>
+          {colors.map((name) => <option key={name} value={name}>{name}</option>)}
         </select>
       </label>
-      <p>Artwork fits the front print area without stretching. Publish a separate product for each size/color.</p>
-      <button type="button" disabled={busy || !artworkUrl || !dimensions || !variantId} onClick={generate}>
+      {color && <fieldset className="creator-size-field">
+        <legend>Available sizes (choose one or more)</legend>
+        <div className="creator-size-options">
+          {colorVariants.map((variant) => (
+            <button key={variant.id} type="button" role="checkbox"
+              className="creator-size-option is-bare" aria-checked={selectedIds.includes(variant.id)}
+              disabled={busy} onClick={() => {
+                invalidate()
+                setSelectedIds((ids) => ids.includes(variant.id)
+                  ? ids.filter((id) => id !== variant.id) : [...ids, variant.id])
+              }}>{variant.size}</button>
+          ))}
+        </div>
+      </fieldset>}
+      <p>Artwork fits the front print area without stretching. Buyers choose from your selected sizes on one listing.</p>
+      <button type="button" className="creator-generate is-bare"
+        disabled={busy || !artworkUrl || !dimensions || !selected.length} onClick={generate}>
         {busy ? 'Preparing mockups...' : 'Generate mockups'}
       </button>
       <div className="creator-mockup-previews">

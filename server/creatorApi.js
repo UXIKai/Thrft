@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto'
 import { getAdminSupabase, requireCreator, requireArtworkUrl } from './supabaseStore.js'
-import { mapCreatorProduct } from '../creatorProducts.js'
+import { mapCreatorProduct, selectCatalogVariants, storedPrintfulVariants } from '../creatorProducts.js'
 import {
   getPrintfulConfig, checkPrintfulConnection, listCatalogProducts, getCatalogProduct,
   getPrintfileLayout, createMockupTask, getMockupTask,
@@ -134,32 +134,31 @@ export async function handleCreatorApi(req, res) {
     } else if (path === '/api/printful/mockups' && req.method === 'POST') {
       const body = await readBody(req)
       const productId = Number(body.product_id)
-      const variantId = Number(body.variant_id)
-      if (!Number.isInteger(productId) || productId < 1 || !Number.isInteger(variantId) || variantId < 1) {
-        fail('Choose a blank product and size/color variant')
-      }
+      if (!Number.isInteger(productId) || productId < 1) fail('Choose a blank garment')
+      const ids = Array.isArray(body.variant_ids) ? body.variant_ids.map(Number) : [Number(body.variant_id)]
       const artworkUrl = requireArtworkUrl(body.artwork_url, user.id)
       const catalog = await getCatalogProduct(productId)
-      const variant = catalog.variants?.find((entry) => entry.id === variantId)
-      if (!variant || variant.availability_status === 'discontinued') fail('Blank variant is not available')
+      const variants = selectCatalogVariants(catalog, ids)
       const placement = body.placement || 'front'
       const layout = await getPrintfileLayout(productId)
-      const files = mockupFiles(layout, variantId, placement, artworkUrl, body.artwork_dimensions)
-      const task = await createMockupTask(productId, { variantIds: [variantId], files })
+      const layouts = variants.map((variant) =>
+        mockupFiles(layout, variant.variant_id, placement, artworkUrl, body.artwork_dimensions))
+      const task = await createMockupTask(productId, { variantIds: ids, files: layouts[0] })
       if (!task?.task_key) throw new Error('Printful did not return a mockup task key')
       checked(await db.from('creator_mockup_tasks').insert({
         task_key: task.task_key, creator_id: user.id, product_id: productId,
-        variant_id: variantId, artwork_url: artworkUrl, placement,
-        size: variant.size || '', color: variant.color || '',
+        variant_id: variants[0].variant_id, artwork_url: artworkUrl, placement,
+        size: variants[0].size, color: variants[0].color, printful_variants: variants,
       }))
-      send(res, 202, { task_key: task.task_key, status: task.status || 'pending' })
+      send(res, 202, { task_key: task.task_key, status: task.status || 'pending', variants })
     } else if (path.startsWith('/api/printful/mockups/') && req.method === 'GET') {
       const key = decodeURIComponent(path.split('/').at(-1))
       const task = checked(await db.from('creator_mockup_tasks').select('*')
         .eq('task_key', key).eq('creator_id', user.id).maybeSingle())
       if (!task) fail('Mockup task not found', 404)
       if (task.status === 'completed') {
-        send(res, 200, { task_key: key, status: task.status, mockup_urls: task.mockup_urls })
+        send(res, 200, { task_key: key, status: task.status, mockup_urls: task.mockup_urls,
+          variants: storedPrintfulVariants(task) })
       } else {
         const result = await getMockupTask(key)
         if (result.status === 'failed') fail(result.error || 'Printful mockup generation failed', 422)
@@ -174,7 +173,8 @@ export async function handleCreatorApi(req, res) {
             status: 'completed', mockup_urls: mockups,
           }).eq('task_key', key).eq('creator_id', user.id))
         }
-        send(res, 200, { task_key: key, status: result.status, mockup_urls: mockups })
+        send(res, 200, { task_key: key, status: result.status, mockup_urls: mockups,
+          variants: storedPrintfulVariants(task) })
       }
     } else if (path === '/api/creator/me/products' && req.method === 'GET') {
       let query = db.from('brand_products').select('*').eq('creator_id', user.id)
@@ -195,8 +195,9 @@ export async function handleCreatorApi(req, res) {
         if (!task || task.status !== 'completed' || !task.mockup_urls.length) fail('Generate mockups before publishing')
         fulfillment = { printful_product_id: task.product_id, printful_variant_id: task.variant_id,
           printful_placement: task.placement, artwork_url: task.artwork_url,
-          mockup_urls: task.mockup_urls, size: task.size, color: task.color }
-      } else if (body.artwork_url || body.printful_variant_id) {
+          mockup_urls: task.mockup_urls, size: task.size, color: task.color,
+          printful_variants: storedPrintfulVariants(task) }
+      } else if (body.artwork_url || body.printful_variant_id || body.printful_variants) {
         fail('Publish using a completed mockup task')
       }
       const product = checked(await db.from('brand_products').insert({
@@ -226,7 +227,11 @@ export async function handleCreatorApi(req, res) {
     }
   } catch (error) {
     console.error('[creator-api]', error.message)
-    send(res, error.status || 500, { message: error.message || 'Creator API request failed' })
+    if (error.code === 'PGRST204' && /printful_variants/.test(error.message)) {
+      send(res, 503, { message: 'Run supabase/creator-pipeline.sql to enable multi-size products, then retry.' })
+    } else {
+      send(res, error.status || 500, { message: error.message || 'Creator API request failed' })
+    }
   }
   return true
 }

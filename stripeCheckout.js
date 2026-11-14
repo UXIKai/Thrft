@@ -5,6 +5,7 @@
 import { createHmac, timingSafeEqual } from 'node:crypto'
 import { checkoutStore } from './server/supabaseStore.js'
 import { createOrder, getOrder } from './printful.js'
+import { storedPrintfulVariants } from './creatorProducts.js'
 
 const STRIPE_SECRET = process.env.STRIPE_SECRET_KEY || ''
 const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET || ''
@@ -49,21 +50,36 @@ export async function resolveCheckoutItems(body, store = checkoutStore) {
     if (!product || product.status !== 'active') fail('A cart product is no longer available', 409)
     const unitAmount = Math.round(Number(product.price) * 100)
     if (!Number.isSafeInteger(unitAmount) || unitAmount < 50) fail('Product price is invalid', 409)
-    if (product.artwork_url && !product.printful_variant_id) fail('Product fulfillment variant is missing', 409)
-    if (product.printful_variant_id && !product.artwork_url) fail('Product fulfillment artwork is missing', 409)
-    // A published product represents one specific size/color; do not silently ship another size.
-    if (product.printful_variant_id && Array.isArray(item.selectedSizes) &&
-        item.selectedSizes.some((size) => size && size !== product.size)) {
-      fail(`Choose the published size (${product.size}) for ${product.title}`)
+    const variants = storedPrintfulVariants(product)
+    if (product.artwork_url && !variants.length) fail('Product fulfillment variant is missing', 409)
+    if (variants.length && !product.artwork_url) fail('Product fulfillment artwork is missing', 409)
+    const groups = new Map()
+    if (variants.length) {
+      const sizes = Array.isArray(item.selectedSizes) ? item.selectedSizes
+        : Array.from({ length: quantity }, () => item.size || (variants.length === 1 ? variants[0].size : ''))
+      if (sizes.length !== quantity) fail('Choose a size for every item in your cart')
+      for (const size of sizes) {
+        const variant = variants.find((entry) => entry.size === size)
+        if (!variant) fail(`Choose an available size for ${product.title}`)
+        const group = groups.get(variant.variant_id) || { variant, quantity: 0 }
+        group.quantity++
+        groups.set(variant.variant_id, group)
+      }
+    } else {
+      groups.set(null, { variant: null, quantity })
     }
-    items.push({
-      productId: product.id, title: product.title, unitAmount, quantity,
-      photoUrl: product.mockup_urls?.[0] || product.photo_url || product.image_url || '',
-      printfulVariantId: product.printful_variant_id || null,
-      artworkUrl: product.artwork_url || null,
-      placement: product.printful_placement || 'front',
-    })
+    for (const group of groups.values()) {
+      items.push({
+        productId: product.id, title: group.variant?.size ? `${product.title} (${group.variant.size})` : product.title,
+        unitAmount, quantity: group.quantity, size: group.variant?.size || '',
+        photoUrl: product.mockup_urls?.[0] || product.photo_url || product.image_url || '',
+        printfulVariantId: group.variant?.variant_id || null,
+        artworkUrl: product.artwork_url || null,
+        placement: product.printful_placement || 'front',
+      })
+    }
   }
+  if (items.length > 100) fail('Checkout supports up to 100 distinct product sizes')
   return items
 }
 

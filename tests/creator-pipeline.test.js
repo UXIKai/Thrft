@@ -21,6 +21,7 @@ after(() => { globalThis.fetch = realFetch })
 const { handleCreatorApi, mockupFiles } = await import('../server/creatorApi.js')
 const { verifyStripeEvent, resolveCheckoutItems, fulfillPaidCheckout,
   getCheckoutSession } = await import('../stripeCheckout.js')
+const { creatorPricing, mapCreatorProduct } = await import('../creatorProducts.js')
 
 function json(body, status = 200) {
   return new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } })
@@ -92,11 +93,17 @@ function fixture() {
     }
     if (url.origin === 'https://api.printful.com') {
       if (url.pathname === '/products/71') return json({ result: {
-        product: { id: 71 }, variants: [{ id: 4011, size: 'M', color: 'Black' }],
+        product: { id: 71, currency: 'USD' }, variants: [
+          { id: 4011, size: 'M', color: 'Black', price: '10.00', in_stock: true },
+          { id: 4012, size: 'L', color: 'Black', price: '12.00', in_stock: true },
+          { id: 4013, size: 'XL', color: 'White', price: '14.00', in_stock: true },
+          { id: 4014, size: 'XXL', color: 'Black', price: '15.00', in_stock: false },
+        ],
       } })
       if (url.pathname === '/mockup-generator/printfiles/71') return json({ result: {
         printfiles: [{ printfile_id: 1, width: 1800, height: 2400 }],
-        variant_printfiles: [{ variant_id: 4011, placements: { front: 1 } }],
+        variant_printfiles: [4011, 4012, 4013, 4014].map((variant_id) =>
+          ({ variant_id, placements: { front: 1 } })),
       } })
       if (url.pathname === '/mockup-generator/create-task/71') return json({ result: { task_key: 'task-1', status: 'pending' } })
       if (url.pathname === '/mockup-generator/task') return json({ result: {
@@ -219,7 +226,7 @@ test('checkout refuses invalid quantities, missing products and unavailable size
     title: 'Tee', printful_variant_id: 4011, artwork_url: artwork, size: 'M' }) }
   await assert.rejects(resolveCheckoutItems({ items: [{ id: productId, qty: 0 }] }, store), /Quantity/)
   await assert.rejects(resolveCheckoutItems({ items: [{ id: productId, qty: 1.5 }] }, store), /Quantity/)
-  await assert.rejects(resolveCheckoutItems({ items: [{ id: productId, selectedSizes: ['L'] }] }, store), /published size/)
+  await assert.rejects(resolveCheckoutItems({ items: [{ id: productId, selectedSizes: ['L'] }] }, store), /available size/)
   await assert.rejects(resolveCheckoutItems({ items: [{ id: productId }] },
     { getProduct: async () => null }), /no longer available/)
 })
@@ -320,4 +327,69 @@ test('mixed carts send only printable items to Printful; ordinary carts need no 
   await fulfillPaidCheckout(session, { store, printful })
   assert.equal(row.fulfillment_status, 'not_required')
   assert.equal(submitted, null)
+})
+
+test('one multi-size listing routes each buyer size to its trusted Printful variant', async () => {
+  const f = fixture()
+  const task = await request('/api/printful/mockups', { method: 'POST', body: {
+    product_id: 71, variant_ids: [4011, 4012], artwork_url: artwork,
+  } })
+  assert.equal(task.status, 202)
+  assert.deepEqual(f.calls.find((call) => call.url.pathname.includes('create-task')).body.variant_ids, [4011, 4012])
+  await request('/api/printful/mockups/task-1')
+  const published = await request('/api/creator/products', { method: 'POST', body: {
+    title: 'Multi-size Tee', brand: 'Creator', price: 25, mockup_task_key: 'task-1',
+  } })
+  assert.equal(published.status, 201)
+  assert.equal(f.tables.brand_products.length, 1)
+  assert.deepEqual(published.body.product.sizes, ['M', 'L'])
+  assert.equal(published.body.product.size, '')
+  assert.deepEqual(published.body.product.printfulVariants.map((variant) => variant.base_price), [10, 12])
+  const checkout = await request('/api/checkout/session', { method: 'POST', body: {
+    items: [{ id: productId, qty: 3, selectedSizes: ['M', 'L', 'M'], printfulVariantId: 999 }],
+  } })
+  assert.equal(checkout.status, 200)
+  assert.deepEqual(f.tables.creator_checkout_orders[0].items.map((item) =>
+    [item.printfulVariantId, item.quantity]), [[4011, 2], [4012, 1]])
+  assert.equal(f.tables.creator_checkout_orders[0].amount_total, 7500)
+  f.markPaid()
+  assert.equal((await request('/api/webhooks/stripe', {
+    method: 'POST', ...signedEvent(), token: null,
+  })).status, 200)
+  const draft = f.calls.find((call) => call.url.pathname === '/orders')
+  assert.deepEqual(draft.body.items.map((item) => [item.variant_id, item.quantity]), [[4011, 2], [4012, 1]])
+})
+
+test('multi-size mockups reject mixed colors and out-of-stock sizes', async () => {
+  fixture()
+  for (const ids of [[4011, 4013], [4011, 4014], [], [4011, 4011]]) {
+    const result = await request('/api/printful/mockups', { method: 'POST', body: {
+      product_id: 71, variant_ids: ids, artwork_url: artwork,
+    } })
+    assert.equal(result.status, 400)
+  }
+})
+
+test('multi-size checkout requires one supported size per quantity', async () => {
+  const product = { id: productId, title: 'Tee', status: 'active', price: 25, artwork_url: artwork,
+    printful_variants: [{ size: 'S', variant_id: 1 }, { size: 'M', variant_id: 2 }] }
+  const store = { getProduct: async () => product }
+  for (const item of [
+    { qty: 2, selectedSizes: ['S'] }, { qty: 1, selectedSizes: [''] },
+    { qty: 1, selectedSizes: ['XL'] }, { qty: 1 },
+  ]) {
+    await assert.rejects(resolveCheckoutItems({ items: [{ id: productId, ...item }] }, store), /size/)
+  }
+  assert.deepEqual(mapCreatorProduct({ ...product, printful_variant_id: 1, size: 'S' }).sizes, ['S', 'M'])
+})
+
+test('pricing shows size-dependent cost and gross-margin ranges, including losses', () => {
+  const variants = [{ base_price: 10.99, currency: 'USD' }, { base_price: 14.49, currency: 'USD' }]
+  assert.deepEqual(creatorPricing(variants, '25'), {
+    baseMin: 10.99, baseMax: 14.49, marginMin: 10.51, marginMax: 14.01,
+  })
+  assert.equal(creatorPricing(variants, '9.99').marginMin, -4.5)
+  assert.equal(creatorPricing(variants, '').marginMin, null)
+  assert.equal(creatorPricing([{ base_price: null, currency: 'USD' }], '25'), null)
+  assert.equal(creatorPricing([{ base_price: 10, currency: 'EUR' }], '25'), null)
 })

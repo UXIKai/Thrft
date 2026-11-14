@@ -21,6 +21,7 @@ import BrandGlobe from './BrandGlobe.jsx'
 import ClosetNumberLookup from './ClosetNumberLookup.jsx'
 import CreatorArtworkStudio from './CreatorArtworkStudio.jsx'
 import { uploadCreatorArtwork } from '../artworkStorage.js'
+import { creatorPricing, formatCreatorPrice } from '../creatorProducts.js'
 import { ClosetIcon, MarketIcon, StoreIcon } from './SegmentIcons.jsx'
 import './CreateListing.css'
 
@@ -249,6 +250,9 @@ export default function CreateListing({ onPosted, initialSegment = 'market' } = 
   const isMarket = segment === 'market'
   const isStore = segment === 'store'
   const isCloset = segment === 'closet'
+  const pricing = creatorPricing(creatorArtwork?.variants, price)
+  const priceRange = (min, max) => min === max ? formatCreatorPrice(min)
+    : `${formatCreatorPrice(min)} to ${formatCreatorPrice(max)}`
   const steps = [
     'photo', 'title', 'details', 'price',
     ...(isMarket ? ['condition'] : []),
@@ -577,7 +581,7 @@ export default function CreateListing({ onPosted, initialSegment = 'market' } = 
 
   return (
     <section
-      className={`create-listing is-walkthrough${addSheetOpen ? ' is-adding' : ''}${isStore && creatorMode && currentStep === 'photo' ? ' is-artwork-studio' : ''}`}
+      className={`create-listing is-walkthrough${addSheetOpen ? ' is-adding' : ''}${isStore && creatorMode ? ' is-creator-product' : ''}${isStore && creatorMode && currentStep === 'photo' ? ' is-artwork-studio' : ''}`}
       aria-label="Create listing"
       ref={walkthroughRef}
       tabIndex={-1}
@@ -840,7 +844,8 @@ export default function CreateListing({ onPosted, initialSegment = 'market' } = 
         />
       )}
 
-      {currentStep === 'price' && <label className="listing-field listing-price-field">
+      {currentStep === 'price' && <>
+      <label className="listing-field listing-price-field">
         <span className={`listing-box${price ? ' is-filled' : ''}`}>
           <span className="listing-label">Price</span>
           <input
@@ -853,7 +858,16 @@ export default function CreateListing({ onPosted, initialSegment = 'market' } = 
             onChange={(e) => setPrice(e.target.value)}
           />
         </span>
-      </label>}
+      </label>
+      {isStore && creatorMode && <div className="creator-price-summary" aria-live="polite">
+        <p>Printful base cost: <strong>{pricing
+          ? priceRange(pricing.baseMin, pricing.baseMax) : 'Unavailable from Printful'}</strong></p>
+        {pricing && pricing.marginMin !== null && (
+          <p>Estimated margin: <strong>{priceRange(pricing.marginMin, pricing.marginMax)}</strong></p>
+        )}
+        <small>Per item, before shipping, taxes, and payment fees. Base costs can vary by size.</small>
+      </div>}
+      </>}
 
       {isCloset && (
         <>

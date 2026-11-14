@@ -59,7 +59,8 @@ export default function ProductDetail({
   )
   const qty = inBag
   const added = inBag > 0
-  const isMarket = product?.detailVariant === 'market'
+  const isPrintful = Boolean(product?.printfulVariants?.length || product?.printfulVariantId)
+  const isMarket = product?.detailVariant === 'market' && !isPrintful
 
   useEffect(() => {
     setStageEl(document.querySelector('.stage'))
@@ -165,8 +166,9 @@ export default function ProductDetail({
 
   const originalSizeOptions = productSizeOptions(product)
   const numericSizes = (sizeFormat || (originalSizeOptions.some((option) => /\d/.test(option.value)) ? 'numbers' : 'letters')) === 'numbers'
-  const sizeOptions = product.printfulVariantId && product.size
-    ? [{ value: product.size, letter: product.size, en: product.size, eu: product.size }]
+  const sizeOptions = isPrintful
+    ? (product.sizes?.length ? product.sizes : [product.size]).filter(Boolean)
+      .map((size) => ({ value: size, letter: size, en: size, eu: size }))
     : productSizeOptions(product, numericSizes ? 'numbers' : 'letters')
   const canShowLetters = sizeOptions.some((option) => /[a-z]/i.test(option.letter))
   const sizePanel = sizing && !isMarket ? (

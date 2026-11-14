@@ -8,7 +8,9 @@ The API uses `SUPABASE_SERVICE_ROLE_KEY`, `PRINTFUL_API_TOKEN`, and
 
 1. Run `supabase/creator-pipeline.sql` in the Supabase SQL Editor. The public
    **Thrft** bucket and its Storage SELECT/INSERT policies do not create these
-   product, mockup-task, or checkout-order tables.
+   product, mockup-task, or checkout-order tables. Existing deployments should
+   rerun the file to add the `printful_variants` JSONB columns without deleting
+   products or orders; legacy single-size listings remain supported.
 2. Allow authenticated Storage uploads under the user's UUID folder in **Thrft**.
    Artwork paths are `<auth-user-id>/<random-id>.png` or `.jpg`. Mockups are copied
    server-side into `<auth-user-id>/mockups/` so expiring Printful images do not
@@ -32,18 +34,22 @@ The API uses `SUPABASE_SERVICE_ROLE_KEY`, `PRINTFUL_API_TOKEN`, and
 ## Creator workflow
 
 In **Create → Store → photo**, enable **Create a Printful product**. Upload the
-original artwork directly to Thrft Storage, choose a Printful blank and its
-size/color, and generate mockups. PNG/JPEG files up to 20 MB are supported.
+original artwork directly to Thrft Storage, choose a Printful blank, one color,
+and multiple available sizes, then generate mockups. PNG/JPEG files up to 20 MB are supported.
 Artwork is centered and fitted to the front print area without stretching; blanks without a front printfile return an
 explicit error. The preview shows the actual generated Printful image.
 
-Publish after adding a title, brand, and price. One published product represents
-one specific Printful size/color. Publish separate products for additional
-variants. Ordinary Store product photos still work and are now uploaded to
+Publish after adding a title, brand, and price. One listing contains all selected
+size-to-variant mappings for that color. Buyers choose a size for each quantity;
+checkout groups matching sizes and submits their corresponding Printful variant
+IDs. The retail price step shows the Printful base-cost and estimated gross-margin
+ranges across selected sizes, before shipping, taxes, and payment fees. Missing
+or non-USD catalog costs are reported as unavailable, not assumed to be zero.
+Ordinary Store product photos still work and are now uploaded to
 Storage instead of storing data URLs.
 
 Products are saved in `brand_products`, with the authenticated `creator_id`,
-`printful_product_id`, `printful_variant_id`, `artwork_url`, `mockup_urls`, size,
+`printful_product_id`, `printful_variants`, `artwork_url`, `mockup_urls`, size,
 color, and price. Publication uses an owned, completed server-side mockup task;
 the browser cannot substitute another creator or fulfillment URL. Profile's
 Store tab, brand pages, and storefront feeds load these records.
@@ -74,7 +80,7 @@ empty the cart just because a return URL says `checkout=success`.
 | --- | --- | --- |
 | GET | `/api/printful/products` | Catalog blanks (authenticated) |
 | GET | `/api/printful/products/:id` | Blank size/color variants |
-| POST | `/api/printful/mockups` | `{ product_id, variant_id, artwork_url, placement: "front" }` |
+| POST | `/api/printful/mockups` | `{ product_id, variant_ids: [id, ...], artwork_url, placement: "front" }` |
 | GET | `/api/printful/mockups/:task_key` | Poll an owned task; persists completed images |
 | POST | `/api/creator/products` | Publish with `mockup_task_key`, title, brand, price |
 | GET | `/api/creator/products` | Public active storefront products; optional `brand` filter |

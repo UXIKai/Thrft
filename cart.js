@@ -80,6 +80,8 @@ export function addToCart(product) {
         product.catalogVariantId ||
         product.catalog_variant_id ||
         null,
+      printfulVariants: product.printfulVariants || product.printful_variants || [],
+      sizes: product.sizes || [],
       placements: product.placements || null,
       size: product.size || '',
       selectedSizes: [product.size || ''],

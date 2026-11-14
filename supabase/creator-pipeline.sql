@@ -24,6 +24,9 @@ create table if not exists public.brand_products (
   created_at timestamptz not null default now(),
   check (artwork_url is null or (printful_variant_id > 0 and printful_product_id > 0))
 );
+-- Rerunnable upgrade for existing single-size products. Legacy IDs stay readable.
+alter table public.brand_products
+  add column if not exists printful_variants jsonb not null default '[]'::jsonb;
 create index if not exists brand_products_creator on public.brand_products (creator_id, created_at desc);
 create index if not exists brand_products_feed on public.brand_products (status, created_at desc);
 alter table public.brand_products enable row level security;
@@ -48,6 +51,8 @@ create table if not exists public.creator_mockup_tasks (
   mockup_urls jsonb not null default '[]'::jsonb,
   created_at timestamptz not null default now()
 );
+alter table public.creator_mockup_tasks
+  add column if not exists printful_variants jsonb not null default '[]'::jsonb;
 alter table public.creator_mockup_tasks enable row level security;
 revoke all on public.creator_mockup_tasks from anon, authenticated;
 grant all on public.creator_mockup_tasks to service_role;
