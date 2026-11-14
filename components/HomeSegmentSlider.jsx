@@ -306,7 +306,7 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false, o
     page.addEventListener('pointermove', onMouseMove)
     page.addEventListener('pointerup', onMouseUp)
 
-    // Desktop wheel: sideways scroll swaps Store / Market; scrolling past the top or bottom of the page steps through Leaderboard, Store, Market.
+    // Desktop wheel: sideways scroll (or Shift + wheel) swaps Store / Market; past the top reaches the Leaderboard, past the bottom opens checkout.
     let wheelAcc = 0
     let wheelLockUntil = 0
     let wheelLastAt = 0
@@ -338,10 +338,10 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false, o
         if (canScrollInner(e.target, page, dir)) return
         const atEdge = dir < 0 ? page.scrollTop <= 0 : page.scrollTop + page.clientHeight >= page.scrollHeight - 2
         if (!atEdge) return
-        const slot = up ? 0 : 1 + sx
-        const n = slot + dir
-        if (n === 0) next = { id: 'leaderboard', x: sx, y: 1 }
-        else if (n === 1 || n === 2) next = { id: SHOPS[n - 1], x: n - 1, y: 0 }
+        // Same as the touch gestures: up from the top reaches the Leaderboard, down from it comes back, down past the bottom opens checkout
+        if (up) next = dir > 0 ? { id: SHOPS[sx], x: sx, y: 0 } : null
+        else if (dir < 0) next = { id: 'leaderboard', x: sx, y: 1 }
+        else next = { cart: true, x: sx, y: 0 }
       }
       if (!next) return
       e.preventDefault()
@@ -351,7 +351,8 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false, o
       wheelLockUntil = now + WHEEL_COOLDOWN_MS
       wheelArmed = false
       paintRef.current(next.x, next.y)
-      chooseRef.current(next.id)
+      if (next.cart) actionsRef.current.onCart?.()
+      else chooseRef.current(next.id)
     }
     page.addEventListener('wheel', onWheel, { passive: false })
     return () => {
