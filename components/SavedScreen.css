@@ -1281,3 +1281,22 @@ html body .saved-fav-brands.is-fab-open.is-expanded:has(.saved-brands-empty) { m
 
 /* Chest, heart and plus sit higher so the fan stays clear of the liked brands */
 html body .saved-page-header { top: -20px; }
+
+/* Match the Market cards: flat, rounded, thin outline, no blur */
+html body .saved-screen .saved-item-media {
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 14px !important;
+  background: light-dark(#fff, #000) !important;
+}
+html body .saved-screen .saved-item-media .saved-item-mark,
+html body .saved-screen .saved-item-media.is-product .saved-item-mark {
+  color: light-dark(#000, #fff);
+}
+html body .saved-screen .saved-list-title,
+html body .saved-screen .saved-list-title svg {
+  filter: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  text-shadow: none !important;
+  opacity: 1;
+}
