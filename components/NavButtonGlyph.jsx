@@ -1,5 +1,6 @@
-const arrow = (
-  <svg viewBox="0 0 12 10" aria-hidden="true"><path d="M6 1.2 10.6 8.4H1.4Z" fill="currentColor" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /></svg>
+// The open ninja star's top blade; the other arrows are 90-degree turns of it (set in CSS).
+export const arrow = (
+  <svg viewBox="313 39 146 238" aria-hidden="true"><polygon points="389,39 459,175 410,277 313,214" fill="currentColor" stroke="currentColor" strokeWidth="12" strokeLinejoin="round" /></svg>
 )
 
 // One blade (top one) per animation frame, open -> closed; the other three are 90-degree turns of it.
@@ -11,7 +12,7 @@ const STAR_FRAMES = [
   '413,147 458,293 393,385 307,305',
 ]
 
-/** The empty-middle state: four blades that fly in and lock into a ninja star. */
+/** The empty-middle state: four blades that twist shut like a shutter into a ninja star. */
 function NinjaStar() {
   const still = typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
   return (
@@ -23,26 +24,43 @@ function NinjaStar() {
           <stop offset="1" className="ns-lo" />
         </linearGradient>
       </defs>
-      {[0, 90, 180, 270].map((deg) => (
-        <polygon
-          key={deg}
-          className="ns-blade"
-          transform={`rotate(${deg} 400 400)`}
-          points={STAR_FRAMES[4]}
-          fill="url(#ninja-star-chrome)"
-        >
-          {!still && (
-            <animate
-              attributeName="points"
-              values={STAR_FRAMES.join(';')}
-              keyTimes="0;0.25;0.5;0.75;1"
-              dur="0.7s"
-              begin="0s"
-              fill="freeze"
-            />
-          )}
-        </polygon>
-      ))}
+      <g>
+        {!still && (
+          // Blades twist a quarter turn as they close, like a camera shutter.
+          <animateTransform
+            attributeName="transform"
+            type="rotate"
+            from="0 400 400"
+            to="90 400 400"
+            dur="0.7s"
+            begin="0s"
+            calcMode="spline"
+            keyTimes="0;1"
+            keySplines="0.45 0 0.2 1"
+            fill="freeze"
+          />
+        )}
+        {[0, 90, 180, 270].map((deg) => (
+          <polygon
+            key={deg}
+            className="ns-blade"
+            transform={`rotate(${deg} 400 400)`}
+            points={STAR_FRAMES[still ? 4 : 0]}
+            fill="url(#ninja-star-chrome)"
+          >
+            {!still && (
+              <animate
+                attributeName="points"
+                values={STAR_FRAMES.join(';')}
+                keyTimes="0;0.25;0.5;0.75;1"
+                dur="0.7s"
+                begin="0s"
+                fill="freeze"
+              />
+            )}
+          </polygon>
+        ))}
+      </g>
     </svg>
   )
 }

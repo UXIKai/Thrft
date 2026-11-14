@@ -1,6 +1,7 @@
 import { startTransition, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import HomeRadialMenu, { moveKnob, radialAt } from './HomeRadialMenu.jsx'
 import { MarketIcon, StoreIcon } from './SegmentIcons.jsx'
+import { arrow } from './NavButtonGlyph.jsx'
 
 const LeaderboardIcon = () => (
   <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -310,9 +311,6 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false, o
     }
   }, [])
 
-  const arrow = (
-    <svg viewBox="0 0 12 10" aria-hidden="true"><path d="M6 1.2 10.6 8.4H1.4Z" fill="currentColor" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /></svg>
-  )
   // Arrows at a dead end are dimmed; the Leaderboard has no left/right neighbours.
   const side = onLeaderboard ? ' is-end' : ''
 

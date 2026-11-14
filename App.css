@@ -2072,9 +2072,9 @@ html body .tab-bar.is-pressed .tab-pill::before {
   position: absolute;
   left: 50%;
   z-index: 2;
-  width: 9px;
-  height: 8px;
-  margin-left: -4.5px;
+  width: 7px;
+  height: 11px;
+  margin-left: -3.5px;
   color: light-dark(rgba(0, 0, 0, 0.55), rgba(255, 255, 255, 0.6));
   pointer-events: none;
   transition: opacity 0.2s ease;
@@ -2083,7 +2083,11 @@ html body .tab-bar.is-pressed .tab-pill::before {
   display: block;
   width: 100%;
   height: 100%;
+  overflow: visible;
 }
+/* Blades are taller than the old triangles; shift them so their centres stay where the arrows were */
+.wheel-arrow.is-up, .wheel-arrow.is-left, .wheel-arrow.is-right { translate: 0 -1.5px; }
+.wheel-arrow.is-down { translate: 0 1.5px; }
 .wheel-arrow.is-up {
   top: 26px;
 }
@@ -3309,8 +3313,8 @@ html body .stage .home-radial .home-radial-btn:not(#_):not(#_):not(#_) {
  * with nothing in the middle (bottom nav button) four blades fly in and lock into a star.
  */
 @keyframes arrow-open {
-  from { translate: 0 0; scale: 0.3; rotate: -90deg; opacity: 0; }
-  to { translate: 0 0; scale: 1; rotate: 0deg; opacity: 1; }
+  from { scale: 0.3; rotate: -90deg; opacity: 0; }
+  to { scale: 1; rotate: 0deg; opacity: 1; }
 }
 .home-segment-slider .wheel-arrow {
   animation: arrow-open 0.5s cubic-bezier(0.3, 1.35, 0.5, 1) both;
