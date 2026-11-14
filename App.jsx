@@ -517,7 +517,7 @@ export default function App() {
 
   return (
     <div
-      className={`stage${atBottom ? ' is-nav-hidden' : ''}`}
+      className={`stage${atBottom ? ' is-nav-hidden' : ''}${document.documentElement.dataset.bgImage === 'atmosphere' ? ' is-bg-atmosphere' : ' is-bg-none'}`}
       ref={stageRef}
       style={{ '--bubble-size': `${BUBBLE}px` }}
     >
