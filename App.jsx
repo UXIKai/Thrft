@@ -590,6 +590,7 @@ export default function App() {
                 bagCount={bagCount}
                 onSearch={() => setSearchSignal((n) => n + 1)}
                 onCart={() => setCartOpen(true)}
+                onTap={() => setAtBottom(false)}
                 onChange={(id) => {
                   setHomeSegment(id)
                   setHomeOpen(true)

@@ -49,13 +49,13 @@ const scrolledDown = (el, stop) => {
 
 // Store and Market sit side by side (swipe left / right); the Leaderboard sits above them:
 // pull down at the very top of the page to reach it, swipe up to come back. Swiping up at the bottom opens checkout.
-export default function HomeSegmentSlider({ value, onChange, fireSame = false, onSearch, onCart, bagCount = 0 }) {
+export default function HomeSegmentSlider({ value, onChange, fireSame = false, onSearch, onCart, onTap, bagCount = 0 }) {
   const rootRef = useRef(null)
   const [menuOpen, setMenuOpen] = useState(false)
   const menuRef = useRef(false)
   menuRef.current = menuOpen
   const actionsRef = useRef({})
-  actionsRef.current = { onSearch, onCart }
+  actionsRef.current = { onSearch, onCart, onTap }
   const pickRef = useRef(null)
   pickRef.current = (id) => {
     setMenuOpen(false)
@@ -121,7 +121,8 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false, o
       const r = rootRef.current?.getBoundingClientRect()
       const cx = r ? r.left + r.width / 2 : 0
       const cy = r ? r.top + r.height / 2 : 0
-      if (r && Math.abs(x - cx) <= 44 && Math.abs(y - cy) <= 44) {
+      const onButton = Boolean(r) && Math.abs(x - cx) <= 44 && Math.abs(y - cy) <= 44
+      if (onButton) {
         holdRef.current = setTimeout(() => {
           if (d && !d.axis) {
             d = null
@@ -129,7 +130,7 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false, o
           }
         }, HOLD_MS)
       }
-      d = { id, x, y, up, sx, axis: null, samples: [], atTop: page.scrollTop <= 0, atBottom: page.scrollTop + page.clientHeight >= page.scrollHeight - 2, sideways: scrollsSideways(target, page) }
+      d = { id, x, y, up, sx, onButton, axis: null, samples: [], atTop: page.scrollTop <= 0, atBottom: page.scrollTop + page.clientHeight >= page.scrollHeight - 2, sideways: scrollsSideways(target, page) }
     }
     const move = (id, x, y, t, ev) => {
       if (!d || d.id !== id) return
@@ -162,7 +163,11 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false, o
       if (!d || d.id !== id) return
       const s = d
       d = null
-      if (!s.axis) return
+      if (!s.axis) {
+        // A quick tap on the button brings up the nav bar
+        if (s.onButton && flick) actionsRef.current.onTap?.()
+        return
+      }
       cancelAnimationFrame(frame)
       frame = 0
       const last = s.samples[s.samples.length - 1]
