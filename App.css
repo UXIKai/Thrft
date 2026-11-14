@@ -2947,3 +2947,14 @@ html body .stage .home-radial .home-radial-btn.is-hot:not(#_):not(#_) {
   filter: drop-shadow(0 8px 8px rgba(0, 0, 0, 0.35));
 }
 html body .stage .home-radial[data-sel] .home-radial-btn:not(.is-hot):not(#_):not(#_) { opacity: 0.8 !important; }
+
+/* Smooth page-to-page switching: the incoming page fades in */
+@keyframes page-in {
+  from { opacity: 0; }
+}
+.app-column > :not(.tab-bar):not(.home-radial-scrim) {
+  animation: page-in 0.22s ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  .app-column > :not(.tab-bar):not(.home-radial-scrim) { animation: none; }
+}

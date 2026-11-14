@@ -62,7 +62,11 @@ export function moveKnob(x, y) {
   const dy = y - origin[1]
   let id = 'search'
   if (Math.hypot(dx, dy) > 10) {
-    id = Math.abs(dx) > Math.abs(dy) ? (dx < 0 ? 'store' : 'market') : dy < 0 ? 'leaderboard' : 'cart'
+    const horizontal = Math.abs(dx) > Math.abs(dy)
+    const pick = horizontal ? (dx < 0 ? 'store' : 'market') : dy < 0 ? 'leaderboard' : 'cart'
+    // Near a diagonal, keep the current button so it doesn't flicker between two
+    const clear = Math.max(Math.abs(dx), Math.abs(dy)) > Math.min(Math.abs(dx), Math.abs(dy)) * 1.3
+    id = clear || selected === 'search' ? pick : selected
   }
   if (id !== selected) paint(id)
 }
