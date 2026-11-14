@@ -453,7 +453,7 @@ html[data-bg-color='none'] .stage.is-bg-none .atmosphere {
 
 .wordmark-wrap > .home-segment-slider {
   grid-column: 2;
-  width: var(--slot);
+  width: calc(var(--slot) * 3);
   margin: 0;
 }
 
@@ -2023,7 +2023,8 @@ html body .tab-bar.is-pressed .tab-pill::before {
 /* Store and Market sit side by side, the Leaderboard directly above whichever was last open */
 .home-segment-track {
   position: relative;
-  width: 100%;
+  width: var(--slot);
+  margin: 0 auto;
   height: var(--slot);
   transform: translate(calc(var(--x, 0) * var(--slot) * -1), calc(var(--y, 0) * var(--slot)));
   will-change: transform;
