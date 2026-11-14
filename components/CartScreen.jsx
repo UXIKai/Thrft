@@ -115,26 +115,6 @@ export default function CartScreen({
     }
   }
 
-  // Mouse wheel: scrolling up from the top of the bag leaves it, like swiping down
-  const wheelAcc = useRef(0)
-  const onWheel = (e) => {
-    if (busy || e.ctrlKey || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return
-    if (e.deltaY >= 0) {
-      wheelAcc.current = 0
-      return
-    }
-    for (let el = e.target; el && el !== e.currentTarget; el = el.parentElement) {
-      if (el.scrollTop > 0) {
-        wheelAcc.current = 0
-        return
-      }
-    }
-    wheelAcc.current += -e.deltaY
-    if (wheelAcc.current < 40) return
-    wheelAcc.current = 0
-    onClose?.()
-  }
-
   // Holding the button opens the menu; moving rotates a choice into the middle and letting go picks it
   const heldRef = useRef(false)
   const pickMenu = (id) => {
@@ -179,7 +159,6 @@ export default function CartScreen({
       role="dialog"
       aria-modal="true"
       aria-label="Bag"
-      onWheel={onWheel}
       onTouchStart={onTouchStart}
       onTouchMove={onTouchMove}
       onTouchEnd={() => { swipeRef.current = null }}
