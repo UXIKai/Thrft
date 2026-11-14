@@ -53,8 +53,8 @@ function paint(ox = 0, oy = 0) {
     const d = Math.hypot(x, y)
     const kd = d + (k === selected ? -6 : 0)
     if (kd < bestD) { bestD = kd; best = k }
-    const k2 = d > EDGE ? EDGE / d : 1
-    const fade = d <= EDGE ? 1 : Math.max(0, 1 - (d - EDGE) / 36)
+    const k2 = 1
+    const fade = d <= SLOT ? 1 : Math.max(0, 1 - (d - SLOT) / (SLOT * 0.35))
     el.style.transform = 'none'
     el.style.transition = 'none'
     el.style.translate = `calc(-50% + ${x * k2}px) calc(-50% + ${y * k2}px)`
