@@ -277,6 +277,14 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false, o
       if (!menuRef.current || page.contains(e.target)) return
       releaseAt(0, 0)
     }
+    // The open wheel covers the page, so a held mouse is followed on the window like a finger
+    const winMouse = (fn) => (e) => {
+      if (e.pointerType === 'mouse' && menuRef.current && !page.contains(e.target)) fn(e)
+    }
+    const onWindowMouseMove = winMouse((e) => markHot(e.clientX, e.clientY))
+    const onWindowMouseUp = winMouse((e) => releaseAt(e.clientX, e.clientY))
+    window.addEventListener('pointermove', onWindowMouseMove)
+    window.addEventListener('pointerup', onWindowMouseUp)
     window.addEventListener('touchmove', onWindowTouchMove, { passive: false })
     window.addEventListener('touchend', onWindowTouchEnd)
     page.addEventListener('pointerdown', onMouseDown)
@@ -291,6 +299,8 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false, o
       page.removeEventListener('touchmove', onBounceMove)
       page.removeEventListener('touchend', onTouchEnd)
       page.removeEventListener('touchcancel', onTouchCancel)
+      window.removeEventListener('pointermove', onWindowMouseMove)
+      window.removeEventListener('pointerup', onWindowMouseUp)
       window.removeEventListener('touchmove', onWindowTouchMove)
       window.removeEventListener('touchend', onWindowTouchEnd)
       page.removeEventListener('pointerdown', onMouseDown)
