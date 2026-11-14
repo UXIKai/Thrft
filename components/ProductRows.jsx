@@ -211,7 +211,7 @@ function CrawlRow({ row, rowIndex, onOpenProduct, onHoldRow }) {
   )
 }
 
-/** Full page for one Store row: its 40 products as 5 columns x 8 rows. */
+/** Full page for one Store row: 8 rows of 5 products, each a manually scrolled strip like the Store rows. */
 function StoreRowPage({ row, onBack, onOpenProduct }) {
   return (
     <section className="product-feed store-row-page" id="home-product-panel" role="tabpanel" aria-label={row.name}>
@@ -224,9 +224,13 @@ function StoreRowPage({ row, onBack, onOpenProduct }) {
           {row.category ? <p>{row.category}</p> : null}
         </div>
       </header>
-      <div className="store-row-grid">
-        {(row.products || []).slice(0, 40).map((p) => (
-          <ProductCard key={`${row.id}-${p.id}`} product={p} onOpen={(item) => onOpenProduct?.({ ...item, detailVariant: 'store' })} />
+      <div className="store-row-list">
+        {Array.from({ length: 8 }, (_, i) => (row.products || []).slice(i * 5, i * 5 + 5)).map((chunk, i) => (
+          <div key={i} className="store-row-strip">
+            {chunk.map((p) => (
+              <ProductCard key={`${row.id}-${p.id}`} product={p} onOpen={(item) => onOpenProduct?.({ ...item, detailVariant: 'store' })} />
+            ))}
+          </div>
         ))}
       </div>
     </section>

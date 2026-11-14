@@ -1187,21 +1187,33 @@ html[data-bg-color='none'] .stage.is-bg-none .atmosphere {
   color: light-dark(rgba(11, 11, 13, 0.5), rgba(244, 244, 242, 0.5));
 }
 
-/* 5 columns x 8 rows */
-.store-row-grid {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 6px;
-  padding: 0 12px 120px;
-  max-width: 560px;
-  margin: 0 auto;
+/* 8 rows x 5 products; each row scrolls sideways by hand, no auto-crawl */
+.store-row-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding-bottom: 120px;
 }
 
-.store-row-grid .product-box {
-  width: 100%;
-  min-width: 0;
-  height: auto;
-  aspect-ratio: 118 / 142;
+.store-row-strip {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  padding: 4px 0 12px;
+  margin: -4px 0 -12px;
+}
+
+.store-row-strip::-webkit-scrollbar {
+  display: none;
+}
+
+@media (min-width: 720px) {
+  .store-row-strip .product-box {
+    width: clamp(118px, 10vw, 176px);
+    height: calc(clamp(118px, 10vw, 176px) * 1.2034);
+  }
 }
 
 .product-code {
@@ -2221,7 +2233,7 @@ html body .stage.is-product-open .tab-bar {
 html body .product-box,
 html body .brand-row .product-box,
 html body .market-product-grid .product-box,
-html body .store-row-grid .product-box {
+html body .store-row-strip .product-box {
   -webkit-backdrop-filter: blur(3px) !important;
   backdrop-filter: blur(3px) !important;
 }
