@@ -204,12 +204,20 @@ export default function App() {
       last = top
     }
     // Only a tap brings the nav bar back
-    const show = () => setAtBottom(false)
+    let down = null
+    const onDown = (e) => { down = { x: e.clientX, y: e.clientY, t: e.timeStamp, scroll: el.scrollTop } }
+    const show = (e) => {
+      // A scroll or drag that ends in a click must not count as a tap
+      if (down && (Math.hypot(e.clientX - down.x, e.clientY - down.y) > 8 || el.scrollTop !== down.scroll || e.timeStamp - down.t > 600)) return
+      setAtBottom(false)
+    }
     setAtBottom(false)
     el.addEventListener('scroll', update, { passive: true })
+    el.addEventListener('pointerdown', onDown, { passive: true })
     el.addEventListener('click', show)
     return () => {
       el.removeEventListener('scroll', update)
+      el.removeEventListener('pointerdown', onDown)
       el.removeEventListener('click', show)
     }
   }, [tab, homeSegment, homeOpen])
