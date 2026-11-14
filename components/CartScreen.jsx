@@ -139,15 +139,12 @@ export default function CartScreen({
           e.preventDefault()
           const t = e.touches[0]
           moveKnob(t.clientX, t.clientY)
-          const hit = radialAt(t.clientX, t.clientY)
-          document.querySelectorAll('.home-radial-btn.is-hot').forEach((el) => el !== hit && el.classList.remove('is-hot'))
-          hit?.classList.add('is-hot')
         }}
         onTouchEnd={(e) => {
           clearTimeout(holdRef.current)
           if (!menuOpen) return
           const t = e.changedTouches[0]
-          const hit = radialAt(t.clientX, t.clientY)
+          const hit = radialAt()
           e.preventDefault()
           setMenuOpen(false)
           if (hit && hit.dataset.radial !== 'cart') onMenuPick?.(hit.dataset.radial)

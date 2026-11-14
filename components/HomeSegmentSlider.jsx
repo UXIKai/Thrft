@@ -191,12 +191,9 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false, o
     // Holding opens the wheel; letting go picks whatever is under the finger, or closes it.
         const markHot = (x, y) => {
       moveKnob(x, y)
-      const hit = radialAt(x, y)
-      document.querySelectorAll('.home-radial-btn.is-hot').forEach((el) => el !== hit && el.classList.remove('is-hot'))
-      hit?.classList.add('is-hot')
     }
     const releaseAt = (x, y) => {
-      const hit = radialAt(x, y)
+      const hit = radialAt()
       if (hit) pickRef.current(hit.dataset.radial)
       else setMenuOpen(false)
     }

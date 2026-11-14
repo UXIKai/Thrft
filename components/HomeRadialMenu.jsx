@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { MarketIcon, StoreIcon } from './SegmentIcons.jsx'
 
@@ -30,31 +31,41 @@ const CartIcon = () => (
   </svg>
 )
 
+const R = 84
+const SLOTS = { leaderboard: [0, -R], store: [-R, 0], market: [R, 0], cart: [0, R], search: [0, 0] }
+let origin = null
+let selected = 'search'
+
+// Moving the finger from where it first pressed rotates that direction's button into the middle; the old middle takes its place
 export function moveKnob(x, y) {
   const wheel = document.querySelector('.home-radial')
-  const knob = wheel?.querySelector('.is-search')
-  if (!knob) return
-  const r = wheel.getBoundingClientRect()
-  let dx = x - (r.left + r.width / 2)
-  let dy = y - (r.top + r.height / 2)
-  const len = Math.hypot(dx, dy)
-  const max = 64
-  if (len > max) {
-    dx = (dx / len) * max
-    dy = (dy / len) * max
+  if (!wheel) return
+  if (!origin) origin = [x, y]
+  const dx = x - origin[0]
+  const dy = y - origin[1]
+  let id = 'search'
+  if (Math.hypot(dx, dy) > 24) {
+    id = Math.abs(dx) > Math.abs(dy) ? (dx < 0 ? 'store' : 'market') : dy < 0 ? 'leaderboard' : 'cart'
   }
-  knob.style.setProperty('--kx', `${dx}px`)
-  knob.style.setProperty('--ky', `${dy}px`)
+  selected = id
+  const [px, py] = SLOTS[id]
+  wheel.querySelectorAll('[data-radial]').forEach((el) => {
+    const k = el.dataset.radial
+    const [kx, ky] = k === id ? [-px, -py] : k === 'search' ? [px, py] : [0, 0]
+    el.style.setProperty('--kx', `${kx}px`)
+    el.style.setProperty('--ky', `${ky}px`)
+    el.classList.toggle('is-hot', k === id)
+  })
+  wheel.dataset.sel = id
 }
 
-// The centre button follows the finger, so it is hit-tested by distance from the wheel centre instead
-export function radialAt(x, y) {
-  const wheel = document.querySelector('.home-radial')
-  if (!wheel) return null
-  const hit = document.elementFromPoint(x, y)?.closest('[data-radial]:not(.is-search)')
-  if (hit) return hit
-  const r = wheel.getBoundingClientRect()
-  return Math.hypot(x - (r.left + r.width / 2), y - (r.top + r.height / 2)) < 40 ? wheel.querySelector('.is-search') : null
+export function radialAt() {
+  return document.querySelector(`.home-radial [data-radial="${selected}"]`)
+}
+
+function resetKnob() {
+  origin = null
+  selected = 'search'
 }
 
 const ITEMS = [
@@ -67,6 +78,10 @@ const ITEMS = [
 
 /** Plus-shaped menu centred on the page: Leaderboard top, Store left, Search middle, Market right, Checkout bottom. */
 export default function HomeRadialMenu({ onPick, onClose, bagCount = 0 }) {
+  useEffect(() => {
+    resetKnob()
+    return resetKnob
+  }, [])
   return createPortal(
     <div className="home-radial-scrim" onPointerDown={(e) => e.target === e.currentTarget && onClose?.()}>
       <div className="home-radial" role="menu" aria-label="Menu">
