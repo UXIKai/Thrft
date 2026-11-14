@@ -149,6 +149,11 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false, o
         d.ox = d.axis === 'x' ? d.x + Math.sign(dx) * DRAG_START_PX : d.x
         d.oy = d.axis === 'y' ? d.y + Math.sign(dy) * DRAG_START_PX : d.y
         rootRef.current.classList.add('is-dragging')
+        // A mouse drag keeps tracking outside the page and never selects text
+        if (ev.pointerType === 'mouse') {
+          try { page.setPointerCapture(ev.pointerId) } catch { /* pointer already gone */ }
+          window.getSelection?.()?.removeAllRanges()
+        }
       }
       if (ev.cancelable) ev.preventDefault()
       // Swiping left reveals Market; pulling down reveals the Leaderboard; swiping up leaves it.
