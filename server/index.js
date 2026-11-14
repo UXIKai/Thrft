@@ -30,6 +30,7 @@ import {
   getCheckoutSession,
   retrieveLiveCheckout,
 } from '../stripeCheckout.js'
+import { getPrintfulConfig, checkPrintfulConnection } from '../printful.js'
 import {
   getIdmeConfig,
   createAuthorizeRequest,
@@ -664,6 +665,20 @@ const server = http.createServer(async (req, res) => {
 
     if (req.method === 'GET' && pathname === '/api/checkout/config') {
       send(res, 200, getStripeCheckoutConfig())
+      return
+    }
+
+    if (req.method === 'GET' && pathname === '/api/printful/status') {
+      const config = getPrintfulConfig()
+      if (!config.configured) {
+        send(res, 200, { ...config, connected: false })
+        return
+      }
+      try {
+        send(res, 200, { ...config, ...(await checkPrintfulConnection()) })
+      } catch (err) {
+        send(res, 200, { ...config, connected: false, message: String(err?.message || err) })
+      }
       return
     }
 
