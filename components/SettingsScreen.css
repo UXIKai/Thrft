@@ -2055,15 +2055,17 @@
 /* Desktop splits account options and customization into equal columns. */
 @media (min-width: 720px) {
   .settings-screen {
-    inset: 20px auto 20px 50%;
-    width: min(1440px, calc(100% - 48px));
-    transform: translateX(-50%);
-    border-radius: 28px;
-    border: 1px solid var(--glass-border, light-dark(rgba(0, 0, 0, 0.14), rgba(255, 255, 255, 0.14)));
-    background: var(--glass-tint, transparent);
-    backdrop-filter: blur(var(--glass-blur, 0px)) saturate(var(--glass-sat, 1));
-    -webkit-backdrop-filter: blur(var(--glass-blur, 0px)) saturate(var(--glass-sat, 1));
-    box-shadow: var(--glass-clear-depth);
+    inset: 20px 24px;
+    width: auto;
+    max-width: 1100px;
+    margin: 0 auto;
+    transform: none;
+    border-radius: 20px;
+    border: 1px solid var(--glass-border);
+    background: var(--settings-wash, transparent);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    box-shadow: none;
     overflow: hidden;
     --st-pad: 28px;
   }
@@ -2852,4 +2854,10 @@ html body .settings-screen .settings-section.is-side-by-side .settings-card > .s
 /* Clean top: the settings page is a flat white or black plate, so the wallpaper never greys the header */
 html[data-bg-color='none'] body .settings-screen {
   background: light-dark(#fff, #000);
+}
+
+/* Flat, symmetric cards (no grey tint) on every screen size */
+html body .settings-screen .settings-card {
+  background: transparent;
+  box-shadow: none;
 }
