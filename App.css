@@ -2744,3 +2744,17 @@ html body .home-radial .home-radial-btn.is-hot:not(#_) { scale: 1.1; }
   border: 1px solid var(--rim, var(--glass-border));
   box-shadow: 0 12px 20px light-dark(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.6)), inset 0 -6px 10px light-dark(rgba(0, 0, 0, 0.12), rgba(255, 255, 255, 0.1));
 }
+
+/* Only the centre orb is a container; no button draws its own disc */
+html body .stage .home-radial .home-radial-btn:not(#_):not(#_),
+html body .stage .home-radial .home-radial-btn:hover:not(#_):not(#_),
+html body .stage .home-radial .home-radial-btn:active:not(#_):not(#_),
+html body .stage .home-radial .home-radial-btn.is-hot:not(#_):not(#_),
+html body .stage .home-radial .home-radial-btn.is-search:not(#_):not(#_) {
+  background: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  color: var(--ink);
+  scale: 1;
+}
+html body .stage .home-radial .home-radial-btn.is-hot:not(#_):not(#_) { scale: 1.12; }
