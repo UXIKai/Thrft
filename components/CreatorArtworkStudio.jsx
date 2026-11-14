@@ -114,34 +114,57 @@ export default function CreatorArtworkStudio({ initialArtwork, onReady, onBusy }
 
   return (
     <div className="creator-artwork-studio">
-      <label className="listing-field">
-        <span>Artwork (PNG or JPEG, up to 20 MB)</span>
-        <input type="file" accept="image/png,image/jpeg" disabled={busy} onChange={upload} />
+      <div className="creator-section-heading">
+        <span>Artwork</span>
+        <small>Made by you</small>
+      </div>
+      <label className={`creator-upload-target${artworkUrl ? ' has-artwork' : ''}${busy ? ' is-busy' : ''}`}>
+        <input className="creator-file-input" type="file" accept="image/png,image/jpeg"
+          aria-label="Upload artwork" disabled={busy} onChange={upload} />
+        {artworkUrl ? <img className="creator-artwork-preview" src={artworkUrl}
+          alt="Uploaded creator artwork" onLoad={(event) => setDimensions({
+            width: event.currentTarget.naturalWidth, height: event.currentTarget.naturalHeight,
+          })} onError={() => setError('Uploaded artwork could not be loaded. Check the Thrft bucket is public.')} />
+          : <svg className="creator-upload-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 16V4m-4 4 4-4 4 4M4 15v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4"
+              fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>}
+        <span className="creator-upload-title">{artworkUrl ? 'Replace artwork' : 'Upload your artwork'}</span>
+        <small>{artworkUrl ? 'Tap to choose another image' : 'PNG or JPG, up to 20 MB'}</small>
       </label>
-      {artworkUrl && <img className="creator-artwork-preview" src={artworkUrl}
-        alt="Uploaded creator artwork" onLoad={(event) => setDimensions({
-          width: event.currentTarget.naturalWidth, height: event.currentTarget.naturalHeight,
-        })} onError={() => setError('Uploaded artwork could not be loaded. Check the Thrft bucket is public.')} />}
-      <label className="listing-field">
-        <span>Printful blank</span>
-        <select className="listing-input is-inset" value={productId} disabled={busy}
-          onChange={(event) => {
-            invalidate(); setVariants([]); setSelectedIds([]); setColor(''); setProductId(event.target.value)
-          }}>
-          <option value="">Choose a blank product</option>
-          {products.map((product) => <option key={product.id} value={product.id}>{product.title}</option>)}
-        </select>
-      </label>
-      <label className="listing-field">
-        <span>Color</span>
-        <select className="listing-input is-inset" value={color} disabled={busy || !variants.length}
-          onChange={(event) => { invalidate(); setSelectedIds([]); setColor(event.target.value) }}>
-          <option value="">Choose a garment color</option>
-          {colors.map((name) => <option key={name} value={name}>{name}</option>)}
-        </select>
-      </label>
+      <div className="creator-garment-fields">
+        <div className="creator-section-heading">
+          <span>Your garment</span>
+          <small>Choose the canvas</small>
+        </div>
+        <label className="creator-select-field">
+          <span>Blank garment</span>
+          <span className="creator-select-wrap">
+            <select className="listing-input is-inset" aria-label="Blank garment"
+              value={productId} disabled={busy} onChange={(event) => {
+                invalidate(); setVariants([]); setSelectedIds([]); setColor(''); setProductId(event.target.value)
+              }}>
+              <option value="">Choose a garment</option>
+              {products.map((product) => <option key={product.id} value={product.id}>{product.title}</option>)}
+            </select>
+            <svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 6 4 4 4-4" /></svg>
+          </span>
+        </label>
+        <label className="creator-select-field">
+          <span>Color</span>
+          <span className="creator-select-wrap">
+            <select className="listing-input is-inset" aria-label="Garment color"
+              value={color} disabled={busy || !variants.length}
+              onChange={(event) => { invalidate(); setSelectedIds([]); setColor(event.target.value) }}>
+              <option value="">{productId ? 'Choose a color' : 'Choose a garment first'}</option>
+              {colors.map((name) => <option key={name} value={name}>{name}</option>)}
+            </select>
+            <svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 6 4 4 4-4" /></svg>
+          </span>
+        </label>
+      </div>
       {color && <fieldset className="creator-size-field">
-        <legend>Available sizes (choose one or more)</legend>
+        <legend>Sizes <span>Choose one or more</span></legend>
         <div className="creator-size-options">
           {colorVariants.map((variant) => (
             <button key={variant.id} type="button" role="checkbox"
@@ -154,15 +177,19 @@ export default function CreatorArtworkStudio({ initialArtwork, onReady, onBusy }
           ))}
         </div>
       </fieldset>}
-      <p>Artwork fits the front print area without stretching. Buyers choose from your selected sizes on one listing.</p>
+      <p className="creator-print-note">Front print. One listing, all your sizes.</p>
       <button type="button" className="creator-generate is-bare"
         disabled={busy || !artworkUrl || !dimensions || !selected.length} onClick={generate}>
-        {busy ? 'Preparing mockups...' : 'Generate mockups'}
+        <span>{busy ? 'Preparing mockups...' : 'Generate mockups'}</span>
+        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h12m-5-5 5 5-5 5" /></svg>
       </button>
-      <div className="creator-mockup-previews">
-        {mockups.map((url) => <img key={url} src={url} alt="Printful product mockup" />)}
-      </div>
-      {error && <p role="alert">{error}</p>}
+      {mockups.length > 0 && <>
+        <div className="creator-section-heading"><span>Your previews</span><small>{selected.length} sizes</small></div>
+        <div className="creator-mockup-previews">
+          {mockups.map((url) => <img key={url} src={url} alt="Printful product mockup" />)}
+        </div>
+      </>}
+      {error && <p className="creator-studio-error" role="alert">{error}</p>}
     </div>
   )
 }

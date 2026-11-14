@@ -22,7 +22,7 @@ import ClosetNumberLookup from './ClosetNumberLookup.jsx'
 import CreatorArtworkStudio from './CreatorArtworkStudio.jsx'
 import { uploadCreatorArtwork } from '../artworkStorage.js'
 import { creatorPricing, formatCreatorPrice } from '../creatorProducts.js'
-import { ClosetIcon, MarketIcon, StoreIcon } from './SegmentIcons.jsx'
+import { ClosetIcon, MarketIcon, ShirtIcon, StoreIcon } from './SegmentIcons.jsx'
 import './CreateListing.css'
 
 function CameraIcon() {
@@ -586,7 +586,7 @@ export default function CreateListing({ onPosted, initialSegment = 'market' } = 
       ref={walkthroughRef}
       tabIndex={-1}
       onPointerUp={(e) => {
-        if (step === 'destination' || e.clientY < window.innerHeight - 90 || e.target.closest?.('button, input, textarea, select, a')) return
+        if (step === 'destination' || e.clientY < window.innerHeight - 90 || e.target.closest?.('button, input, textarea, select, a, label')) return
         const stage = document.querySelector('.stage')
         if (!stage) return
         stage.classList.add('is-create-nav-peek')
@@ -594,8 +594,14 @@ export default function CreateListing({ onPosted, initialSegment = 'market' } = 
         navPeekTimer.current = window.setTimeout(() => stage.classList.remove('is-create-nav-peek'), 5000)
       }}
     >
-      {currentStep !== 'destination' && <header className="listing-walkthrough-header">
-        <p>{segmentLabel(segment)} · {stepIndex + 1} of {steps.length}</p>
+      {currentStep !== 'destination' && <header className={`listing-walkthrough-header${isStore && creatorMode ? ' creator-flow-header' : ''}`}>
+        {isStore && creatorMode ? <>
+          <div className="creator-flow-meta"><span>Print on demand</span><span>{stepIndex + 1} / {steps.length}</span></div>
+          <h2>Product studio</h2>
+          <div className="creator-flow-progress" aria-hidden="true">
+            {steps.map((name, index) => <span key={name} className={index <= stepIndex ? 'is-complete' : ''} />)}
+          </div>
+        </> : <p>{segmentLabel(segment)} · {stepIndex + 1} of {steps.length}</p>}
       </header>}
       {addSheetOpen ? (
         <button
@@ -622,15 +628,18 @@ export default function CreateListing({ onPosted, initialSegment = 'market' } = 
       </div>}
 
       {currentStep === 'photo' && isStore && (
-        <label className="listing-field">
-          <span>Create a Printful product</span>
-          <input type="checkbox" checked={creatorMode} disabled={scanning || posting}
+        <label className="creator-mode-toggle">
+          <ShirtIcon className="creator-mode-icon" />
+          <span className="creator-mode-copy"><strong>Print on demand</strong><small>Your artwork, made to order</small></span>
+          <input type="checkbox" aria-label="Create a Printful product"
+            checked={creatorMode} disabled={scanning || posting}
             onChange={(event) => {
               setCreatorMode(event.target.checked)
               setCreatorArtwork(null)
               setMarketPhotos([])
               setPostError('')
             }} />
+          <span className="creator-mode-switch" aria-hidden="true" />
         </label>
       )}
       {currentStep === 'photo' && isStore && creatorMode && (

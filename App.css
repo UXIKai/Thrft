@@ -2403,7 +2403,9 @@ html body .stage > .tab-bar.tab-bar.tab-bar.is-create-open {
   transition: opacity 0.25s ease 0.28s;
 }
 .create-page {
-  --pitch: 96px;
+  --tile-width: clamp(92px, 24vw, 128px);
+  --tile-height: 154px;
+  --pitch: calc(var(--tile-width) + 12px);
   position: absolute;
   inset: 0;
   z-index: 3;
@@ -2419,25 +2421,22 @@ html body .stage > .tab-bar.tab-bar.tab-bar.is-create-open {
   pointer-events: auto;
   transition: visibility 0s;
 }
-/* One row in the middle of the screen: Closet, Store, Market side by side.
-   Circles are 76px and their centers are --pitch apart, so the row is centered with Store in the middle.
-   Closed, every option is tucked into the × (--pop-from); --plus-dy is how far below the screen's
-   middle the × sits (set when the menu opens). */
+/* Keep the cards centered so their open/close animation still starts at the ×. */
 .create-page .create-menu-btn {
   position: absolute;
-  left: calc(50% - 38px);
-  top: calc(50% - 38px);
-  width: 76px;
-  height: 76px;
+  left: calc(50% - var(--tile-width) / 2);
+  top: calc(50% - var(--tile-height) / 2);
+  width: var(--tile-width);
+  height: var(--tile-height);
   margin: 0;
-  padding: 0;
+  padding: 16px 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 5px;
+  gap: 10px;
   border: 0;
-  border-radius: 50%;
+  border-radius: 24px;
   background: transparent;
   color: inherit;
   font: inherit;
@@ -2453,16 +2452,16 @@ html body .stage > .tab-bar.tab-bar.tab-bar.is-create-open {
   opacity: 0;
   transition: transform 0.26s cubic-bezier(0.5, 0, 0.75, 0), opacity 0.2s ease 0.06s;
 }
-.create-page .create-menu-ico { width: 32px; height: 32px; }
+.create-page .create-menu-ico { width: 30px; height: 30px; margin-bottom: 4px; }
 .create-page .create-menu-btn.is-closet {
-  left: calc(50% - 38px - var(--pitch));
+  left: calc(50% - var(--tile-width) / 2 - var(--pitch));
   --pop-from: translate(var(--pitch), var(--plus-dy, 300px));
 }
 .create-page .create-menu-btn.is-store {
   --pop-from: translate(0, var(--plus-dy, 300px));
 }
 .create-page .create-menu-btn.is-market {
-  left: calc(50% - 38px + var(--pitch));
+  left: calc(50% - var(--tile-width) / 2 + var(--pitch));
   --pop-from: translate(calc(var(--pitch) * -1), var(--plus-dy, 300px));
 }
 
@@ -2477,13 +2476,13 @@ html body .stage > .tab-bar.tab-bar.tab-bar.is-create-open {
   from { transform: var(--pop-from) scale(0.15); opacity: 0; }
 }
 
-/* Soft circle behind an option while it's pressed (or hovered with a mouse / focused by keyboard) */
+/* Soft highlight while a card is pressed, hovered, or focused. */
 .create-page .create-menu-btn::before {
   content: '';
   position: absolute;
   inset: 0;
   z-index: -1;
-  border-radius: 50%;
+  border-radius: inherit;
   background: light-dark(rgba(0, 0, 0, 0.08), rgba(255, 255, 255, 0.16));
   opacity: 0;
   transition: opacity 0.14s ease;
@@ -2494,13 +2493,70 @@ html body .stage > .tab-bar.tab-bar.tab-bar.is-create-open {
 @media (hover: hover) {
   .create-page .create-menu-btn:hover::before { opacity: 1; }
 }
-html body .stage .create-page .create-menu-btn {
-  border: 0 !important;
-  box-shadow: none !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  background-color: transparent !important;
+html body .stage .create-page .create-menu-btn:not(#_) {
+  border: 1px solid light-dark(rgba(0, 0, 0, 0.16), rgba(255, 255, 255, 0.2)) !important;
+  box-shadow: inset 0 1px 0 light-dark(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.08)) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  background-color: light-dark(rgba(255, 255, 255, 0.5), rgba(0, 0, 0, 0.54)) !important;
   background-image: none !important;
+}
+
+.create-menu-label {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.create-menu-note {
+  min-height: 28px;
+  max-width: 90px;
+  font-size: 11px;
+  line-height: 1.3;
+  font-weight: 400;
+  opacity: 0.8;
+  text-align: center;
+}
+
+.create-menu-heading {
+  position: absolute;
+  top: calc(50% - 184px);
+  left: 50%;
+  width: min(440px, 90%);
+  transform: translateX(-50%);
+  text-align: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease;
+}
+
+.create-page.is-open .create-menu-heading {
+  opacity: 1;
+  transition-delay: 0.3s;
+}
+
+.create-menu-heading p {
+  margin: 0 0 10px;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+
+.create-menu-heading h2 {
+  margin: 0;
+  font-size: 28px;
+  letter-spacing: -0.035em;
+  font-weight: 500;
+}
+
+@media (max-height: 599px) {
+  .create-menu-heading { top: max(16px, calc(50% - 170px)); }
+}
+
+@media (max-height: 450px) {
+  .create-page { --tile-height: 132px; }
+  .create-menu-heading h2 { font-size: 24px; }
 }
 
 /* Market: two-column photo cards under a heading and filter chips, in the app's thin-outline style */

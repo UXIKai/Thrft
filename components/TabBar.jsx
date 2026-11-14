@@ -73,9 +73,9 @@ const TABS = [
 
 // Closet, Create (the Store flow) and Market side by side in the middle of the screen (positions live in App.css).
 const CREATE_OPTIONS = [
-  { id: 'closet', label: 'Closet', Icon: ClosetIcon },
-  { id: 'store', label: 'Create', Icon: ShirtIcon },
-  { id: 'market', label: 'Market', Icon: StallIcon },
+  { id: 'closet', label: 'Closet', note: 'Save your finds', Icon: ClosetIcon },
+  { id: 'store', label: 'Create', note: 'Design & sell', Icon: ShirtIcon },
+  { id: 'market', label: 'Market', note: 'List a piece', Icon: StallIcon },
 ]
 
 export default function TabBar({ active = 'home', onChange, onCreate }) {
@@ -363,7 +363,11 @@ export default function TabBar({ active = 'home', onChange, onCreate }) {
       aria-label="Create"
       aria-hidden={!createOpen}
     >
-      {CREATE_OPTIONS.map(({ id, label, Icon }) => (
+      <div className="create-menu-heading" role="presentation">
+        <p>Create</p>
+        <h2>Choose your space</h2>
+      </div>
+      {CREATE_OPTIONS.map(({ id, label, note, Icon }) => (
         <button
           key={id}
           type="button"
@@ -374,7 +378,8 @@ export default function TabBar({ active = 'home', onChange, onCreate }) {
           onClick={() => pickCreate(id)}
         >
           <Icon className="create-menu-ico" />
-          <span>{label}</span>
+          <span className="create-menu-label">{label}</span>
+          <span className="create-menu-note">{note}</span>
         </button>
       ))}
     </div>,

@@ -33,7 +33,7 @@ The API uses `SUPABASE_SERVICE_ROLE_KEY`, `PRINTFUL_API_TOKEN`, and
 
 ## Creator workflow
 
-In **Create → Store → photo**, enable **Create a Printful product**. Upload the
+In **Create → Store → photo**, enable **Print on demand**. Upload the
 original artwork directly to Thrft Storage, choose a Printful blank, one color,
 and multiple available sizes, then generate mockups. PNG/JPEG files up to 20 MB are supported.
 Artwork is centered and fitted to the front print area without stretching; blanks without a front printfile return an
