@@ -41,7 +41,9 @@ function fitScreen() {
   // In a browser tab the toolbar legitimately changes the height; only the
   // installed app keeps the largest value.
   // The keyboard shrinks the viewport; keep the full-height background behind it.
-  const kbOpen = vv ? window.innerHeight - vv.height > 120 || measured < maxHeight - 120 : false
+  // Desktop windows have no on-screen keyboard; a transient resize must never read as one.
+  const hasKeyboard = window.matchMedia?.('(pointer: coarse)').matches ?? true
+  const kbOpen = vv && hasKeyboard ? window.innerHeight - vv.height > 120 || measured < maxHeight - 120 : false
   const height = standalone || kbOpen ? maxHeight : measured
   // Never follow the visual viewport's offset: the keyboard must not slide the page.
   const top = 0
@@ -49,7 +51,7 @@ function fitScreen() {
   if (window.scrollY || window.scrollX || (vv && vv.offsetTop > 0)) window.scrollTo(0, 0)
   const root = document.documentElement
   // Keyboard height: the page stays put and docked bars ride above the keyboard.
-  const kb = vv ? Math.max(0, Math.round(window.innerHeight - vv.height)) : 0
+  const kb = vv && hasKeyboard ? Math.max(0, Math.round(window.innerHeight - vv.height)) : 0
   // iOS pans the visual viewport to reveal the field; pin the app to it so nothing appears to move.
   const app = document.getElementById('root')
   const dy = viewportOffset({
@@ -117,7 +119,7 @@ document.addEventListener(
     if (!isTextField(t) || document.activeElement === t) return
     e.preventDefault()
     if (t.closest(DOCKED)) {
-      document.documentElement.style.setProperty('--kb-height', `${lastKb || 346}px`)
+      if (window.matchMedia?.('(pointer: coarse)').matches) document.documentElement.style.setProperty('--kb-height', `${lastKb || 346}px`)
     } else {
       liftForKeyboard(t)
     }

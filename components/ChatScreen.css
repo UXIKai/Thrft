@@ -1551,6 +1551,11 @@
   transform: translateX(-50%);
 }
 
+/* Desktop has no on-screen keyboard: the bar always sits on the bottom edge */
+@media (hover: hover) and (pointer: fine) {
+  .chat-compose { bottom: 20px; }
+}
+
 .chat-compose-attach {
   position: relative;
   flex: 0 0 auto;
