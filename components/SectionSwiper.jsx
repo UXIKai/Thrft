@@ -14,7 +14,6 @@ export default function SectionSwiper({
   idPrefix,
   controls,
   className = '',
-  showPager = true,
   children,
 }) {
   const index = Math.max(0, sections.findIndex((s) => s.id === value))
@@ -40,7 +39,7 @@ export default function SectionSwiper({
 
   return (
     <>
-      {showPager && <div className="section-pager" role="tablist" aria-label={label} onKeyDown={onKeyDown}>
+      <div className="section-pager" role="tablist" aria-label={label} onKeyDown={onKeyDown}>
         <span className="section-pager-icon" aria-hidden="true">
           <Icon />
         </span>
@@ -60,7 +59,7 @@ export default function SectionSwiper({
             />
           ))}
         </div>
-      </div>}
+      </div>
       <div ref={ref} className={`section-swipe ${className}`.trim()}>
         {children}
       </div>

@@ -509,8 +509,6 @@ export default function ProfileScreen({
   onOpenAccountPage,
   onOpenProduct,
   onSignOut,
-  space,
-  onSpaceChange,
 }) {
   const [closetSplit, setClosetSplit] = useState(false)
   const [closetPeople, setClosetPeople] = useState(null)
@@ -554,9 +552,7 @@ export default function ProfileScreen({
     setClosetSplit(false)
     setClosetSelected(null)
   }
-  const [localSpace, setLocalSpace] = useState('closet') // 'store' | 'market' | 'closet'
-  const spaceTab = space ?? localSpace
-  const setSpaceTab = onSpaceChange ?? setLocalSpace
+  const [spaceTab, setSpaceTab] = useState('closet') // 'store' | 'market' | 'closet'
   const [panelListingTab, setPanelListingTab] = useState('active')
   const [storeProducts, setStoreProducts] = useState([])
   const [marketListings, setMarketListings] = useState([])
@@ -1219,7 +1215,6 @@ export default function ProfileScreen({
           onChange={switchSpace}
           label="Closet, Store and Market"
           idPrefix="profile-space"
-          showPager={false}
           className="profile-spaces-inline-body"
         >
           {spaceTab !== 'closet' && (
