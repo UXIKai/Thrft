@@ -1129,8 +1129,11 @@ html[data-bg-color='none'] .stage.is-bg-none .atmosphere {
     box-shadow 0.22s ease;
 }
 
-.product-box.is-empty {
-  /* Blank containers — no inner copy */
+.product-box-photo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .brand-row {

@@ -33,6 +33,12 @@ The API uses `SUPABASE_SERVICE_ROLE_KEY`, `PRINTFUL_API_TOKEN`, and
 
 ## Creator workflow
 
+Store feeds and brand pages load active `brand_products` through
+`GET /api/creator/products` (optionally filtered by brand). Empty catalogs show an
+empty state rather than demo listings. Store tiles display the first mockup;
+the Product Detail sheet lets buyers swipe through all generated mockups and
+choose only the listing's published sizes before adding to their bag.
+
 In **Create → Store → photo**, enable **Print on demand**. Upload the
 original artwork directly to Thrft Storage, choose a Printful blank, one color,
 and multiple available sizes, then generate mockups. PNG/JPEG files up to 20 MB are supported.

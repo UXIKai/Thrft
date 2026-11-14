@@ -11,33 +11,10 @@ import {
   filterListingsByColor,
   filterListingsByClothingType,
   parseListingPrice,
-  TYPE_TO_CATEGORIES,
 } from '../listings.js'
 import { isSupabaseConfigured } from '../supabase.js'
-import { STORE_BRAND_ROWS } from '../brandsCatalog.js'
 
-const MARKET_ROW_COUNT = 50
 const MARKET_PRODUCTS_PER_ROW = 20
-
-// Preview content: 50 rows x 20, cycling through every brand so each row is a mixed bag.
-const MARKET_SAMPLES = Array.from({ length: MARKET_ROW_COUNT * MARKET_PRODUCTS_PER_ROW }, (_, i) => {
-  const brand = STORE_BRAND_ROWS[(i * 7) % STORE_BRAND_ROWS.length]
-  const product = brand.products[Math.floor(i / STORE_BRAND_ROWS.length) % brand.products.length]
-  return {
-    ...product,
-    id: `market-demo-${i}-${product.id}`,
-    title: `Sample · ${product.title}`,
-    category: TYPE_TO_CATEGORIES[product.clothingType]?.[0] || product.clothingType,
-    description: `Sample Market product for preview. ${product.description}`,
-    isMock: true,
-  }
-})
-
-const PLACEHOLDER_ROWS = Array.from({ length: PERSONALIZED_ROW_COUNT }, (_, r) => ({
-  id: `loading-row-${r}`,
-  name: 'Store',
-  products: Array.from({ length: PERSONALIZED_PRODUCTS_PER_ROW }, (_, i) => ({ id: `loading-${r}-${i}` })),
-}))
 
 const MARKET_CHIPS = [
   { id: 'all', label: 'All' },
@@ -114,11 +91,16 @@ function ProductCard({ product, onOpen }) {
   return (
     <button
       type="button"
-      className={`product-box is-empty tone-${product.tone || '1'}`}
+      className={`product-box tone-${product.tone || '1'}`}
       aria-label={label}
       title={label}
       onClick={() => onOpen?.(product)}
-    />
+    >
+      {(product.photoUrl || product.image_url) && (
+        <img className="product-box-photo" src={product.photoUrl || product.image_url}
+          alt="" loading="lazy" draggable="false" />
+      )}
+    </button>
   )
 }
 
@@ -255,9 +237,10 @@ function CrawlRow({ row, rowIndex, onOpenProduct, onHoldRow, market = false, lik
   )
 }
 
-/** Full page for one Store row: 8 rows of 5 products, each a manually scrolled strip like the Store rows. */
+/** Full page for one Store brand, with each live listing shown once. */
 function StoreRowPage({ row, onBack, onOpenProduct }) {
   const ref = useRef(null)
+  const products = [...new Map((row.products || []).map((product) => [product.id, product])).values()]
   useLayoutEffect(() => {
     const page = ref.current?.closest('.home-scroll')
     if (page) page.scrollTop = 0
@@ -279,10 +262,10 @@ function StoreRowPage({ row, onBack, onOpenProduct }) {
         <span className="store-row-page-spacer" aria-hidden />
       </header>
       <div className="store-row-list">
-        {Array.from({ length: 8 }, (_, i) => (row.products || []).slice(i * 5, i * 5 + 5)).map((chunk, i) => (
+        {Array.from({ length: Math.ceil(products.length / 5) }, (_, i) => products.slice(i * 5, i * 5 + 5)).map((chunk, i) => (
           <div key={i} className="store-row-strip">
-            {chunk.map((p) => (
-              <ProductCard key={`${row.id}-${p.id}`} product={p} onOpen={(item) => onOpenProduct?.({ ...item, detailVariant: 'store' })} />
+            {chunk.map((p, index) => (
+              <ProductCard key={`${row.id}-${p.id}-${index}`} product={p} onOpen={(item) => onOpenProduct?.({ ...item, detailVariant: 'store' })} />
             ))}
           </div>
         ))}
@@ -309,7 +292,7 @@ export default function ProductRows({
   brandSizes = {},
   savedProductIds = [],
 }) {
-  const [listings, setListings] = useState(() => segment === 'market' ? MARKET_SAMPLES : [])
+  const [listings, setListings] = useState([])
   const [savedItems, setSavedItems] = useState([])
   const [status, setStatus] = useState('loading')
   const [error, setError] = useState('')
@@ -338,14 +321,10 @@ export default function ProductRows({
 
   useEffect(() => {
     let alive = true
-    if (segment === 'store' && !isSupabaseConfigured()) {
-      setStatus('ready')
-      setListings([])
-      return undefined
-    }
     setStatus('loading')
     setError('')
-    const request = segment === 'store'
+    setOpenRow(null)
+    const request = segment === 'market' && isSupabaseConfigured()
       ? Promise.allSettled([fetchAvailableListings({ limit: 240 }), fetchStoreProducts()])
         .then((results) => {
           const failed = results.filter((result) => result.status === 'rejected')
@@ -357,14 +336,14 @@ export default function ProductRows({
     request
       .then((rows) => {
         if (!alive) return
-        setListings(segment === 'market' ? [...rows, ...MARKET_SAMPLES] : rows)
+        setListings(rows)
         setStatus('ready')
       })
       .catch((err) => {
         if (!alive) return
-        setListings(segment === 'market' ? MARKET_SAMPLES : [])
+        setListings([])
         setError(err.message || 'Could not load products.')
-        setStatus('ready')
+        setStatus('error')
       })
     return () => {
       alive = false
@@ -447,7 +426,7 @@ export default function ProductRows({
     return (
       <section className="product-feed market-product-feed" id="home-product-panel" role="tabpanel" aria-labelledby="home-market-tab" aria-busy={status === 'loading'}>
         {error && <p role="alert">{error}</p>}
-        {!marketItems.length && <p role="status">{status === 'loading' ? 'Loading products...' : 'No Market products found.'}</p>}
+        {!marketItems.length && status !== 'error' && <p role="status">{status === 'loading' ? 'Loading products...' : 'No Market products found.'}</p>}
         <div className="market-chips" role="tablist" aria-label="Market filters">
           {ALL_CHIPS.map((c) => (
             <button
@@ -484,12 +463,9 @@ export default function ProductRows({
   }
 
   if (status === 'loading' && !rows.length) {
-    // Empty tiles stand in for the rows while listings load, so the page is never blank
     return (
       <section className="product-feed" id="home-product-panel" role="tabpanel" aria-labelledby={`home-${segment}-tab`} aria-busy="true">
-        {PLACEHOLDER_ROWS.map((row, rowIndex) => (
-          <CrawlRow key={row.id} row={row} rowIndex={rowIndex} />
-        ))}
+        <p role="status">Loading products...</p>
       </section>
     )
   }
@@ -497,7 +473,7 @@ export default function ProductRows({
   return (
     <section className="product-feed" id="home-product-panel" role="tabpanel" aria-labelledby={`home-${segment}-tab`}>
       {error && <p role="alert">{error}</p>}
-      {!rows.length && <p role="status">No {segment === 'market' ? 'Market' : 'Store'} products found.</p>}
+      {!rows.length && status !== 'error' && <p role="status">No Store products found.</p>}
       {rows.map((row, rowIndex) => (
         <CrawlRow
           key={row.id}

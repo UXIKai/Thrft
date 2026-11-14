@@ -348,7 +348,7 @@ export async function fetchMyProducts({ status = '', segment = '' } = {}) {
 }
 
 export async function fetchStoreProducts({ brand = '' } = {}) {
-  const data = await api(`/api/${isSupabaseConfigured() ? 'creator/' : ''}products${brand ? `?${new URLSearchParams({ brand })}` : ''}`)
+  const data = await api(`/api/creator/products${brand ? `?${new URLSearchParams({ brand })}` : ''}`)
   if (!Array.isArray(data.products)) throw new Error('Invalid store products response')
   return data.products
 }

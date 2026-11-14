@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { useBag } from '../BagContext.jsx'
 import { LETTER_SIZES } from '../sizeOptions.js'
 import { productSizeOptions } from '../productSizes.js'
+import { storedPrintfulVariants } from '../creatorProducts.js'
 import './GlassOverlay.css'
 import './ProductDetail.css'
 
@@ -29,10 +30,12 @@ function PlusIcon() {
   )
 }
 
-function productPhoto(product) {
-  const photo = product?.photoUrl || product?.imageUrl || product?.image_url || ''
-  if (!photo || /^placeholder$/i.test(photo)) return ''
-  return photo
+function productPhotos(product) {
+  const mockups = product?.mockupUrls?.length ? product.mockupUrls : product?.mockup_urls
+  const photos = mockups?.length ? mockups :
+    [product?.photoUrl || product?.photo_url || product?.imageUrl || product?.image_url]
+  return [...new Set(photos.filter((photo) =>
+    typeof photo === 'string' && photo && !/^placeholder$/i.test(photo)))]
 }
 
 /** Product page with a size picker and bag controls. */
@@ -59,7 +62,9 @@ export default function ProductDetail({
   )
   const qty = inBag
   const added = inBag > 0
-  const isPrintful = Boolean(product?.printfulVariants?.length || product?.printfulVariantId)
+  const variants = product?.printfulVariants?.length ? product.printfulVariants :
+    storedPrintfulVariants(product || {})
+  const isPrintful = Boolean(variants.length || product?.printfulVariantId)
   const isMarket = product?.detailVariant === 'market' && !isPrintful
 
   useEffect(() => {
@@ -115,7 +120,7 @@ export default function ProductDetail({
   }
 
   function pickSize(size) {
-    if (!product) return
+    if (!product || (isPrintful && !availableSizes.includes(size))) return
     if (inBag) {
       replaceItems(
         items.map((row) =>
@@ -152,7 +157,8 @@ export default function ProductDetail({
 
   if (!product || !stageEl) return null
 
-  const photo = productPhoto(product)
+  const photos = productPhotos(product)
+  const photo = photos[0] || ''
   const name = product.title || product.brandName || 'Product'
   const brand = String(product.brandName || product.brand || '').trim()
   const title = String(name).trim()
@@ -165,10 +171,11 @@ export default function ProductDetail({
     : title
 
   const originalSizeOptions = productSizeOptions(product)
-  const numericSizes = (sizeFormat || (originalSizeOptions.some((option) => /\d/.test(option.value)) ? 'numbers' : 'letters')) === 'numbers'
+  const availableSizes = [...new Set((variants.length ? variants.map((variant) => variant.size) :
+    product.sizes?.length ? product.sizes : [product.size]).filter(Boolean))]
+  const numericSizes = !isPrintful && (sizeFormat || (originalSizeOptions.some((option) => /\d/.test(option.value)) ? 'numbers' : 'letters')) === 'numbers'
   const sizeOptions = isPrintful
-    ? (product.sizes?.length ? product.sizes : [product.size]).filter(Boolean)
-      .map((size) => ({ value: size, letter: size, en: size, eu: size }))
+    ? availableSizes.map((size) => ({ value: size, letter: size, en: size, eu: size }))
     : productSizeOptions(product, numericSizes ? 'numbers' : 'letters')
   const canShowLetters = sizeOptions.some((option) => /[a-z]/i.test(option.letter))
   const sizePanel = sizing && !isMarket ? (
@@ -214,7 +221,7 @@ export default function ProductDetail({
         }}
       >
         <div className="product-detail-sizes" role="group" aria-label="Sizes">
-          {(product.sizes?.length ? product.sizes : LETTER_SIZES).map((size) => (
+          {(isPrintful ? availableSizes : product.sizes?.length ? product.sizes : LETTER_SIZES).map((size) => (
             <button
               key={size}
               type="button"
@@ -300,7 +307,7 @@ export default function ProductDetail({
       aria-modal="true"
       aria-label={name}
     >
-      {sizing && !isMarket && (!numericSizes || canShowLetters) && (
+      {sizing && !isMarket && !isPrintful && (!numericSizes || canShowLetters) && (
         <button
           type="button"
           className="product-detail-format-toggle is-bare"
@@ -333,9 +340,13 @@ export default function ProductDetail({
             {brand}
           </button>
         )}
-        <div className="product-detail-photo">
-          {photo ? (
-            <img src={photo} alt="" />
+        <div className={`product-detail-photo${photos.length > 1 ? ' has-mockup-gallery' : ''}`}
+          role={photos.length > 1 ? 'region' : undefined}
+          aria-label={photos.length > 1 ? 'Product mockups; swipe to see more' : undefined}
+          tabIndex={photos.length > 1 ? 0 : undefined}>
+          {photos.length ? (
+            photos.map((url, index) => <img key={url} src={url}
+              alt={`${name}, preview ${index + 1} of ${photos.length}`} />)
           ) : (
             <span className="product-detail-photo-empty" aria-hidden />
           )}

@@ -1,5 +1,5 @@
 import { HOME_TYPE_TO_GARMENTS } from './sizeOptions.js'
-import { STORE_BRAND_ROWS, findBrandById } from './brandsCatalog.js'
+import { findBrandById } from './brandsCatalog.js'
 
 const INTEREST_KEY = 'thrft-product-interest-v1'
 const SEARCH_KEY = 'thrft-search-history-v1'
@@ -193,26 +193,11 @@ function labelForType(typeId) {
 function padProducts(list, count, pool) {
   if (!count) return []
   const source = list.length ? list : pool
-  if (!source.length) {
-    return Array.from({ length: count }, (_, i) => ({
-      id: `empty-${i}`,
-      code: `E${i + 1}`,
-      title: '',
-      price: '',
-      brandId: '',
-      brandName: '',
-      clothingType: '',
-      tone: i % 2 === 0 ? 'charcoal' : 'olive',
-    }))
-  }
+  if (!source.length) return []
   const out = []
   for (let i = 0; i < count; i += 1) {
     const base = source[i % source.length]
-    out.push({
-      ...base,
-      id: `${base.id || 'p'}-r${i}`,
-      code: base.code || `P${i + 1}`,
-    })
+    out.push(base)
   }
   return out
 }
@@ -233,8 +218,8 @@ function pickForTheme(catalog, theme, ctx, count) {
 }
 
 /**
- * Build exactly `rowCount` home marquee rows (default 40) with `productsPerRow`
- * boxes each, seeded from search history + likes + interest, then catalog brands.
+ * Build up to `rowCount` brand marquees from live products, ranked by affinity.
+ * Repeated tiles retain the listing ID used by the bag and checkout.
  */
 export function buildPersonalizedRows({
   catalog = [],
@@ -261,10 +246,8 @@ export function buildPersonalizedRows({
     brandSizes,
   }
 
-  const pool =
-    Array.isArray(catalog) && catalog.length
-      ? catalog
-      : STORE_BRAND_ROWS.flatMap((b) => b.products)
+  const pool = Array.isArray(catalog) ? catalog : []
+  if (!pool.length) return []
 
   // Every Store row is one brand. Brands you like, searched and view most go first.
   const themes = []
@@ -272,11 +255,13 @@ export function buildPersonalizedRows({
 
   function pushBrand(brandId, name, category) {
     if (!brandId || seen.has(brandId) || themes.length >= rowCount) return
+    const product = pool.find((item) => item.brandId === brandId)
+    if (!product) return
     const meta = findBrandById(brandId)
     seen.add(brandId)
     themes.push({
       id: `brand-${brandId}`,
-      name: name || meta?.name || labelForType(brandId),
+      name: name || product.brandName || meta?.name || labelForType(brandId),
       category: category || meta?.category || 'Brand',
       brandId,
     })
@@ -291,12 +276,11 @@ export function buildPersonalizedRows({
   }
   const brandRank = Object.entries(interest.brands).sort((a, b) => b[1] - a[1])
   for (const [brandId] of brandRank) pushBrand(brandId, '', 'For you')
-  for (const brand of STORE_BRAND_ROWS) pushBrand(brand.id, brand.name, brand.category)
+  for (const product of pool) pushBrand(product.brandId, product.brandName, '')
 
   return themes.slice(0, rowCount).map((theme) => {
     const own = pool.filter((p) => p.brandId === theme.brandId)
-    const fallback = findBrandById(theme.brandId)?.products || []
-    const ranked = pickForTheme(own.length ? own : fallback, theme, ctx, productsPerRow)
+    const ranked = pickForTheme(own, theme, ctx, productsPerRow)
     return {
       id: theme.id,
       name: theme.name,

@@ -687,3 +687,15 @@ html body .product-detail-photo::after {
 html body .product-detail-photo img {
   background: transparent;
 }
+
+.product-detail-photo.has-mockup-gallery {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+}
+
+.product-detail-photo.has-mockup-gallery img {
+  flex: 0 0 100%;
+  min-width: 100%;
+  scroll-snap-align: start;
+}

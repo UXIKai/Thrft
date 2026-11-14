@@ -22,6 +22,7 @@ const { handleCreatorApi, mockupFiles } = await import('../server/creatorApi.js'
 const { verifyStripeEvent, resolveCheckoutItems, fulfillPaidCheckout,
   getCheckoutSession } = await import('../stripeCheckout.js')
 const { creatorPricing, mapCreatorProduct } = await import('../creatorProducts.js')
+const { buildPersonalizedRows } = await import('../forYou.js')
 
 function json(body, status = 200) {
   return new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } })
@@ -140,6 +141,34 @@ function signedEvent(type = 'checkout.session.completed') {
   const hash = createHmac('sha256', process.env.STRIPE_WEBHOOK_SECRET).update(`${time}.${body}`).digest('hex')
   return { body, signature: `t=${time},v1=${hash}` }
 }
+
+test('Store and brand feeds expose only active Supabase listings with mockups and sizes', async () => {
+  const f = fixture()
+  const active = { id: productId, creator_id: creatorId, brand: 'Louis Vuitton',
+    title: 'Printed tee', status: 'active', price: 25,
+    mockup_urls: ['https://images.test/front.jpg', 'https://images.test/back.jpg'],
+    printful_variants: [{ variant_id: 4011, size: 'M' }, { variant_id: 4012, size: 'L' }] }
+  f.tables.brand_products.push(active, { ...active, id: 'archived', status: 'archived' },
+    { ...active, id: 'other-brand', brand: 'Independent Studio' })
+  const feed = await request('/api/creator/products', { token: null })
+  assert.deepEqual(feed.body.products.map((product) => product.id), [productId, 'other-brand'])
+  const brand = await request('/api/creator/products?brand=Louis%20Vuitton', { token: null })
+  assert.equal(brand.body.products.length, 1)
+  assert.equal(brand.body.products[0].brandId, 'lv')
+  assert.deepEqual(brand.body.products[0].mockupUrls, active.mockup_urls)
+  assert.deepEqual(brand.body.products[0].sizes, ['M', 'L'])
+})
+
+test('Store rows preserve real listing IDs and never synthesize missing brands or empty products', () => {
+  const first = mapCreatorProduct({ id: productId, brand: 'Independent Studio', price: 25 })
+  const second = mapCreatorProduct({ id: 'nike-product', brand: 'Nike', price: 30 })
+  const rows = buildPersonalizedRows({ catalog: [first, second], favoredBrands: ['lv', 'nike'],
+    rowCount: 40, productsPerRow: 40 })
+  assert.deepEqual(rows.map((row) => row.name), ['Nike', 'Independent Studio'])
+  assert.ok(rows[0].products.every((product) => product.id === second.id))
+  assert.ok(rows[1].products.every((product) => product.id === first.id))
+  assert.deepEqual(buildPersonalizedRows({ catalog: [], favoredBrands: ['lv'] }), [])
+})
 
 test('owned artwork → mockups → published product → trusted checkout → one paid Printful draft', async () => {
   const f = fixture()

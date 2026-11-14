@@ -1,3 +1,5 @@
+import { STORE_BRAND_ROWS } from './brandsCatalog.js'
+
 const usdPrice = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' })
 
 export function isAvailablePrintfulVariant(variant) {
@@ -54,12 +56,14 @@ export const formatCreatorPrice = (price) => usdPrice.format(price)
 
 export function mapCreatorProduct(row) {
   const variants = storedPrintfulVariants(row)
+  const brand = STORE_BRAND_ROWS.find((entry) =>
+    entry.name.toLowerCase() === String(row.brand || '').trim().toLowerCase())
   return {
     ...row,
     accountId: row.creator_id,
     creatorId: row.creator_id,
     brandName: row.brand,
-    brandId: String(row.brand || '').toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+    brandId: brand?.id || String(row.brand || '').toLowerCase().replace(/[^a-z0-9]+/g, '-'),
     clothingType: String(row.category || '').toLowerCase(),
     priceRaw: row.price,
     price: usdPrice.format(Number(row.price)),

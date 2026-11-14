@@ -1,7 +1,5 @@
 import { createPortal } from 'react-dom'
 import { useEffect, useState } from 'react'
-import { fetchListingsForBrand } from '../listings.js'
-import { isSupabaseConfigured } from '../supabase.js'
 import { fetchStoreProducts } from '../api.js'
 import { findBrandById } from '../brandsCatalog.js'
 import './GlassOverlay.css'
@@ -42,24 +40,13 @@ export default function BrandProfile({ brandId, brandName, onClose, onOpenProduc
     setLoadError('')
     const resolvedName = brandName || findBrandById(brandId)?.name
     if (!resolvedName) {
+      setLoadError('Brand name is required to load listings.')
       setStatus('error')
       return undefined
     }
-    Promise.allSettled([
-      fetchStoreProducts({ brand: resolvedName }),
-      isSupabaseConfigured() ? fetchListingsForBrand({ brandId, brandName: resolvedName }) : Promise.resolve([]),
-    ])
-      .then((results) => {
+    fetchStoreProducts({ brand: resolvedName })
+      .then((rows) => {
         if (!alive) return
-        const failed = results.filter((result) => result.status === 'rejected')
-        if (failed.length === results.length) throw failed[0].reason
-        if (failed.length) setLoadError(failed.map((result) => result.reason.message).join('; '))
-        const store = results[0].status === 'fulfilled' ? results[0].value : []
-        const market = results[1].status === 'fulfilled' ? results[1].value : []
-        const rows = [
-          ...store.map((product) => ({ ...product, listingSource: 'store' })),
-          ...market.map((product) => ({ ...product, listingSource: 'market' })),
-        ]
         setProducts(rows)
         setStatus(rows.length ? 'ready' : 'empty')
       })
@@ -67,6 +54,7 @@ export default function BrandProfile({ brandId, brandName, onClose, onOpenProduc
         console.error('Could not load brand products:', error)
         if (!alive) return
         setProducts([])
+        setLoadError(error.message || 'Could not load listings.')
         setStatus('error')
       })
     return () => {
@@ -101,10 +89,9 @@ export default function BrandProfile({ brandId, brandName, onClose, onOpenProduc
         )}
         {status === 'error' && (
           <p className="brand-profile-empty" role="alert">
-            Could not load listings
+            {loadError || 'Could not load listings'}
           </p>
         )}
-        {loadError && <p className="brand-profile-empty" role="alert">{loadError}</p>}
         {status === 'empty' && (
           <p className="brand-profile-empty" role="status">
             No listings yet
@@ -112,11 +99,11 @@ export default function BrandProfile({ brandId, brandName, onClose, onOpenProduc
         )}
         <ul className="brand-profile-list">
           {products.map((p) => (
-            <li key={`${p.listingSource}-${p.id}`}>
+            <li key={p.id}>
               <button
                 type="button"
                 className="brand-profile-row"
-                onClick={() => onOpenProduct?.(p)}
+                onClick={() => onOpenProduct?.({ ...p, detailVariant: 'store' })}
               >
                 <span>{p.title}</span>
                 <span>{p.price}</span>
