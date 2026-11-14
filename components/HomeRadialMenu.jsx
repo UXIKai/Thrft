@@ -54,6 +54,7 @@ export default function HomeRadialMenu({ onPick, onClose, bagCount = 0 }) {
             onClick={() => onPick?.(id)}
           >
             <Icon />
+            <span className="home-radial-label">{label}</span>
             {id === 'cart' && bagCount > 0 ? <span className="home-radial-badge">{bagCount > 9 ? '9+' : bagCount}</span> : null}
           </button>
         ))}
