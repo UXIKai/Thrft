@@ -2750,10 +2750,9 @@ html body .home-radial .home-radial-btn:active {
   }
   html body .market-product-feed .market-chips { padding: 0 0 18px; gap: 14px; }
   html body .market-product-feed .market-chips .market-chip {
-    flex: 1 1 0;
-    min-width: 0;
+    flex: 0 0 auto;
     height: 46px;
-    padding: 0 12px;
+    padding: 0 22px;
     font-size: 1rem;
   }
   html body .stage > .tab-bar,

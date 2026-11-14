@@ -38,6 +38,30 @@ const MARKET_CHIPS = [
   { id: 'outerwear', label: 'Outerwear' },
 ]
 
+const EXTRA_CATEGORY_LABELS = [
+  'Dresses', 'Skirts', 'Jeans', 'Shorts', 'Pants', 'Joggers', 'Leggings', 'Sweatpants',
+  'T-Shirts', 'Polos', 'Tank Tops', 'Button-Downs', 'Blouses', 'Hoodies', 'Sweatshirts', 'Sweaters',
+  'Cardigans', 'Vests', 'Jackets', 'Coats', 'Blazers', 'Puffers', 'Denim Jackets', 'Leather Jackets',
+  'Windbreakers', 'Rompers', 'Jumpsuits', 'Suits', 'Swimwear', 'Activewear', 'Loungewear', 'Pajamas',
+  'Underwear', 'Socks', 'Sneakers', 'Boots', 'Sandals', 'Heels', 'Flats', 'Loafers',
+  'Slides', 'Hats', 'Caps', 'Beanies', 'Scarves', 'Gloves', 'Belts', 'Sunglasses',
+  'Watches', 'Jewelry', 'Necklaces', 'Bracelets', 'Rings', 'Earrings', 'Backpacks', 'Handbags',
+  'Totes', 'Crossbody', 'Wallets', 'Ties', 'Vintage', 'Streetwear', 'Designer', 'Y2K',
+  'Athleisure', 'Formal', 'Casual', 'Workwear', 'Outdoor', 'Western', 'Boho', 'Preppy',
+  'Grunge', 'Minimalist', 'Gym', 'Kids', 'Baby', 'Unisex', 'Costumes', 'Jerseys',
+]
+
+// Extra chips match a listing's category, title or brand text (plural trimmed: Boots -> boot).
+const EXTRA_CHIPS = EXTRA_CATEGORY_LABELS.map((label) => {
+  const lower = label.toLowerCase()
+  return {
+    id: `cat-${lower.replace(/[^a-z0-9]+/g, '-')}`,
+    label,
+    key: lower.length > 4 && lower.endsWith('s') && !lower.endsWith('ss') ? lower.slice(0, -1) : lower,
+  }
+})
+const ALL_CHIPS = [...MARKET_CHIPS, ...EXTRA_CHIPS]
+
 function MarketCard({ product, onOpen, liked, onToggleLike }) {
   const photo = product.photoUrl || product.image_url
   const likes = Math.max(0, Number(product.likes ?? product.likeCount ?? 0)) + (liked ? 1 : 0)
@@ -367,6 +391,12 @@ export default function ProductRows({
 
   const marketItems = useMemo(() => {
     if (chip === 'all') return filteredCatalog
+    const extra = EXTRA_CHIPS.find((c) => c.id === chip)
+    if (extra) {
+      return filteredCatalog.filter((p) =>
+        `${p.category || ''} ${p.title || ''} ${p.brandName || ''}`.toLowerCase().includes(extra.key),
+      )
+    }
     if (chip === 'under10') return filteredCatalog.filter((p) => parseListingPrice(p.price) < 10)
     return filterListingsByClothingType(filteredCatalog, chip)
   }, [filteredCatalog, chip])
@@ -376,7 +406,7 @@ export default function ProductRows({
       <section className="product-feed market-product-feed" id="home-product-panel" role="tabpanel" aria-labelledby="home-market-tab" aria-busy={status === 'loading'}>
         {!marketItems.length && <p role="status">{status === 'loading' ? 'Loading products...' : 'No Market products found.'}</p>}
         <div className="market-chips" role="tablist" aria-label="Market filters">
-          {MARKET_CHIPS.map((c) => (
+          {ALL_CHIPS.map((c) => (
             <button
               key={c.id}
               type="button"
