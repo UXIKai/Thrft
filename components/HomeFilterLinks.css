@@ -364,6 +364,5 @@ html body .home-search-modal .home-search-blur {
 }
 
 html body .home-search-blur > .atmosphere {
-  --atmosphere-base: initial;
   background: var(--page-base);
 }
