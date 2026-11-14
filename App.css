@@ -2016,7 +2016,8 @@ html body .tab-bar.is-pressed .tab-pill::before {
   left: calc(50% + 34px);
   transform: rotate(90deg);
 }
-.home-segment-slider .wheel-arrow.is-hidden {
+.home-segment-slider .wheel-arrow.is-hidden,
+.home-segment-slider .wheel-arrow.is-end {
   opacity: 0;
 }
 
