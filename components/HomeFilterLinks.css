@@ -415,3 +415,19 @@ html body .home-search-backdrop.is-tinted:not(#_):not(#_) {
 html body .home-search-backdrop.is-tinted .home-search-modal:not(#_) {
   --card-ink: var(--tint-ink);
 }
+
+/* Nothing behind the filter page can be pressed */
+html body .stage.is-home-search-open .nav-toggle:not(#_),
+html body .stage.is-home-search-open .home-segment-slider:not(#_) {
+  visibility: hidden;
+  pointer-events: none;
+}
+html body .home-search-backdrop:not(#_):not(#_) {
+  pointer-events: auto;
+}
+html body .stage.is-home-search-open .home-scroll > *:not(#_) {
+  pointer-events: none;
+}
+html body .stage.is-home-search-open .home-search-backdrop *:not(#_) {
+  pointer-events: auto;
+}
