@@ -2888,3 +2888,10 @@ html[data-scheme='light'] .settings-screen :is(p, span, small, label, h1, h2, h3
 
 /* The effect switch sits beside Profile, where the moon button used to be */
 html body .settings-theme-toggle .settings-effect-switch.is-in-row { margin: 0; justify-self: center; }
+
+html body .settings-screen .settings-theme-toggle:not(#_) {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  outline: 0 !important;
+}
