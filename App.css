@@ -2772,6 +2772,9 @@ html body .stage .home-radial .home-radial-btn.is-hot:not(#_):not(#_) { scale: 1
 
 /* Header and products hang lower on the page */
 .wordmark-wrap {
-  padding-top: 64px;
+  padding-top: 8px;
   padding-bottom: 28px;
+}
+.wordmark-wrap > .wordmark {
+  margin-bottom: 70px;
 }
