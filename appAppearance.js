@@ -106,6 +106,7 @@ let currentBg = DEFAULT_BG_IMAGE
 let currentBgEffects = [...DEFAULT_BG_EFFECTS]
 let currentTheme = 'dark'
 let pageIsDark = false
+let lastVoidRgb = [5, 5, 5]
 let matchBackgroundColor = false
 // Moonlight: the moon button's black page + inverted containers look.
 let moonlightOn = false
@@ -163,10 +164,19 @@ function syncColorScheme() {
       scheme = relativeLuminance(color.rgb) > 0.179 ? 'light' : 'dark'
     }
   }
-  if (!moonlightOn && !pageIsDark) {
-    // A bright chosen background or container color needs dark ink, effect on or off.
-    for (const color of [resolveBgColor(currentBgColorId), resolveColor(currentColorId)]) {
-      if (color.id !== 'none' && relativeLuminance(color.rgb) > 0.4) scheme = 'light'
+  if (!moonlightOn) {
+    // Light and dark mode only change how bright a chosen colour ends up; ink follows the resulting shade.
+    const shade = (rgb) => (currentTheme === 'light'
+      ? rgb.map((c) => Math.round(c * 0.7 + 255 * 0.3))
+      : rgb.map((c) => Math.round(c * 0.55)))
+    const container = resolveColor(currentColorId)
+    const bg = resolveBgColor(currentBgColorId)
+    if (container.id !== 'none') {
+      scheme = relativeLuminance(shade(container.rgb)) > 0.3 ? 'light' : 'dark'
+    } else if (bg.id !== 'none' && !matchBackgroundColor) {
+      const lifts = [0.58, 0.3, 0.12].map((amount) => liftRgb(bg.rgb, amount))
+      const wash = [0, 1, 2].map((i) => Math.round(lastVoidRgb[i] * 0.5 + (lifts[0][i] + lifts[1][i] + lifts[2][i]) / 3 * 0.5))
+      scheme = relativeLuminance(wash) > 0.3 ? 'light' : 'dark'
     }
   }
   if (dimOpacity >= DARKENS_PAGE_AT_DIM) scheme = 'dark'
@@ -569,6 +579,7 @@ export function applyBgAtmosphereTokens() {
     : [5, 5, 5]
 
   pageIsDark = relativeLuminance(voidRgb) < 0.2
+  lastVoidRgb = voidRgb
   root.style.setProperty('--void', `rgb(${voidRgb.join(', ')})`)
   root.style.setProperty('--atmosphere-base', `rgb(${voidRgb.join(', ')})`)
   root.style.setProperty('--atmosphere-base-rgb', voidRgb.join(', '))
