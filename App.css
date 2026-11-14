@@ -2510,9 +2510,9 @@ html body .market-chips .market-chip.is-active {
 }
 
 html body .market-product-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px 12px;
-  padding: 0 16px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 14px 6px;
+  padding: 0 10px;
 }
 
 html body .market-card {
@@ -2590,6 +2590,21 @@ html body .market-card .market-card-like {
 .market-card-price {
   font-size: 0.95rem;
   font-weight: 700;
+}
+
+/* Five across on a phone: shrink the card details to fit */
+@media (max-width: 719px) {
+  .market-card-photo { border-radius: 10px; }
+  html body .market-card .market-card-like { top: 2px; right: 2px; padding: 1px; font-size: 0.6rem; }
+  .market-card-like svg { width: 15px; height: 15px; }
+  .market-card-name,
+  .market-card-price {
+    font-size: 0.62rem;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
 
 /* Hold the home picker: a plus-shaped menu opens at the centre of the page */
@@ -2693,12 +2708,10 @@ html body .home-radial .home-radial-btn:active {
     box-sizing: border-box;
   }
   html body .market-product-feed .market-product-grid {
-    grid-template-columns: repeat(10, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 20px 14px;
     padding: 0;
   }
-  /* 10 columns × 10 rows at most */
-  html body .market-product-feed .market-product-grid > :nth-child(n + 101) { display: none; }
   html body .market-product-feed .market-chips { padding: 0 0 18px; gap: 14px; }
   html body .market-product-feed .market-chips .market-chip {
     flex: 1 1 0;
