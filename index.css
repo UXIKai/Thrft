@@ -59,7 +59,8 @@ body {
   -webkit-font-smoothing: antialiased;
   /* Stick to the visible screen, including when mobile chrome shows or hides */
   position: fixed;
-  top: var(--app-top, 0px);
+  /* 1px off the top edge: iOS 26 Safari blurs and fades content that touches it */
+  top: calc(var(--app-top, 0px) + 1px);
   left: var(--app-left, 0px);
   overflow: hidden;
 }
@@ -159,17 +160,3 @@ html:root[data-bg-image='none'] body {
 #root {
   background: transparent;
 }
-
-/* A solid strip behind the status bar, like a native app: iOS then has one flat colour to blur instead of the page's gradient and header */
-body::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: env(safe-area-inset-top, 0px);
-  z-index: 2147483000;
-  background: var(--status-strip, #050505);
-  pointer-events: none;
-}
-html[data-bg-photo] body::before { display: none; }
