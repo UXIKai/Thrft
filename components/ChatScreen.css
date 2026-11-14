@@ -5363,12 +5363,23 @@ html body .chat-thread-scroll > .chat-thread-body {
   }
 }
 
-/* Full-screen glass layers leave the status-bar strip clear so no blur band shows at the top edge */
+/* No blur anywhere on the full-screen chat layers, so nothing smears at the top edge */
 .chat-thread::before,
 .chat-menu-scrim,
 .chat-sheet-scrim,
 .chat-contact-scrim,
-.stage > .chat-liked-picker {
-  -webkit-mask-image: linear-gradient(to bottom, transparent env(safe-area-inset-top, 0px), #000 calc(env(safe-area-inset-top, 0px) + 1px));
-  mask-image: linear-gradient(to bottom, transparent env(safe-area-inset-top, 0px), #000 calc(env(safe-area-inset-top, 0px) + 1px));
+.stage > .chat-liked-picker,
+.stage > .chat-users-picker {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Side panels (chat list and Online) are outlined all the way round */
+@media (max-width: 719px), (max-height: 499px) {
+  html body .chat-screen .chat-list-section,
+  html body .chat-desktop-thread .chat-friends-active:not([hidden]) {
+    border: 1px solid light-dark(rgba(0, 0, 0, 0.3), rgba(255, 255, 255, 0.3)) !important;
+    border-radius: 28px;
+    box-sizing: border-box;
+  }
 }
