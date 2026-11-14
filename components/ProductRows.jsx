@@ -17,7 +17,7 @@ import { isSupabaseConfigured } from '../supabase.js'
 import { BRAND_ROWS } from '../brandsCatalog.js'
 
 const MARKET_SAMPLES = BRAND_ROWS.flatMap((brand) =>
-  brand.products.slice(0, 3).map((product) => ({
+  brand.products.slice(0, 10).map((product) => ({
     ...product,
     id: `market-demo-${product.id}`,
     title: `Sample · ${product.title}`,
