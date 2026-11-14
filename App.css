@@ -2522,9 +2522,9 @@ html body .market-chips .market-chip.is-active {
 }
 
 html body .market-product-grid {
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 14px 6px;
-  padding: 0 10px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px 10px;
+  padding: 0 14px;
 }
 
 html body .market-card {
@@ -2604,18 +2604,42 @@ html body .market-card .market-card-like {
   font-weight: 700;
 }
 
-/* Five across on a phone: shrink the card details to fit */
+/* Four across on a phone: tidy cards with a glass heart and one-line text */
 @media (max-width: 719px) {
-  .market-card-photo { border-radius: 10px; }
-  html body .market-card .market-card-like { top: 2px; right: 2px; padding: 1px; font-size: 0.6rem; }
-  .market-card-like svg { width: 15px; height: 15px; }
+  .market-card-photo { border-radius: 16px; }
+  html body .market-card .market-card-open { gap: 2px; }
+  html body .market-card .market-card-like {
+    top: 6px;
+    right: 6px;
+    flex-direction: row;
+    gap: 2px;
+    padding: 3px 5px;
+    font-size: 0.62rem;
+    border-radius: 999px !important;
+    background: rgba(0, 0, 0, 0.38) !important;
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    filter: none;
+  }
+  .market-card-like svg { width: 14px; height: 14px; }
   .market-card-name,
   .market-card-price {
-    font-size: 0.62rem;
-    line-height: 1.2;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    line-height: 1.25;
+  }
+  .market-card-name {
+    margin-top: 6px;
+    padding: 0 2px;
+    font-size: 0.74rem;
+    font-weight: 600;
+  }
+  .market-card-price {
+    padding: 0 2px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    opacity: 0.75;
   }
 }
 
@@ -2720,8 +2744,8 @@ html body .home-radial .home-radial-btn:active {
     box-sizing: border-box;
   }
   html body .market-product-feed .market-product-grid {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: 20px 14px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 24px 16px;
     padding: 0;
   }
   html body .market-product-feed .market-chips { padding: 0 0 18px; gap: 14px; }
