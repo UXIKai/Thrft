@@ -105,6 +105,7 @@ let currentGlassPct = DEFAULT_BAR_TRANSPARENCY
 let currentBg = DEFAULT_BG_IMAGE
 let currentBgEffects = [...DEFAULT_BG_EFFECTS]
 let currentTheme = 'dark'
+let pageIsDark = false
 let matchBackgroundColor = false
 // Moonlight: the moon button's black page + inverted containers look.
 let moonlightOn = false
@@ -162,7 +163,7 @@ function syncColorScheme() {
       scheme = relativeLuminance(color.rgb) > 0.179 ? 'light' : 'dark'
     }
   }
-  if (!moonlightOn) {
+  if (!moonlightOn && !pageIsDark) {
     // A bright chosen background or container color needs dark ink, effect on or off.
     for (const color of [resolveBgColor(currentBgColorId), resolveColor(currentColorId)]) {
       if (color.id !== 'none' && relativeLuminance(color.rgb) > 0.4) scheme = 'light'
@@ -567,6 +568,7 @@ export function applyBgAtmosphereTokens() {
       ]
     : [5, 5, 5]
 
+  pageIsDark = relativeLuminance(voidRgb) < 0.2
   root.style.setProperty('--void', `rgb(${voidRgb.join(', ')})`)
   root.style.setProperty('--atmosphere-base', `rgb(${voidRgb.join(', ')})`)
   root.style.setProperty('--atmosphere-base-rgb', voidRgb.join(', '))
