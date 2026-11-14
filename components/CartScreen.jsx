@@ -87,7 +87,7 @@ export default function CartScreen({
       setError('Unavailable')
     } catch (err) {
       const status = err?.status
-      setError(status === 401 ? 'Sign in' : 'Unavailable')
+      setError(status === 401 ? 'Sign in' : err.message || 'Checkout unavailable')
     } finally {
       setBusy(false)
     }

@@ -165,7 +165,9 @@ export default function ProductDetail({
 
   const originalSizeOptions = productSizeOptions(product)
   const numericSizes = (sizeFormat || (originalSizeOptions.some((option) => /\d/.test(option.value)) ? 'numbers' : 'letters')) === 'numbers'
-  const sizeOptions = productSizeOptions(product, numericSizes ? 'numbers' : 'letters')
+  const sizeOptions = product.printfulVariantId && product.size
+    ? [{ value: product.size, letter: product.size, en: product.size, eu: product.size }]
+    : productSizeOptions(product, numericSizes ? 'numbers' : 'letters')
   const canShowLetters = sizeOptions.some((option) => /[a-z]/i.test(option.letter))
   const sizePanel = sizing && !isMarket ? (
       <section className="product-store-size-panel" aria-label="Select size">

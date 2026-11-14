@@ -19,6 +19,8 @@ import {
 } from '../listingCatalog.js'
 import BrandGlobe from './BrandGlobe.jsx'
 import ClosetNumberLookup from './ClosetNumberLookup.jsx'
+import CreatorArtworkStudio from './CreatorArtworkStudio.jsx'
+import { uploadCreatorArtwork } from '../artworkStorage.js'
 import { ClosetIcon, MarketIcon, StoreIcon } from './SegmentIcons.jsx'
 import './CreateListing.css'
 
@@ -241,6 +243,8 @@ export default function CreateListing({ onPosted, initialSegment = 'market' } = 
   const photoGalleryRef = useRef(null)
   const [photoChoice, setPhotoChoice] = useState(false)
   const [marketPhotos, setMarketPhotos] = useState([])
+  const [creatorMode, setCreatorMode] = useState(false)
+  const [creatorArtwork, setCreatorArtwork] = useState(null)
 
   const isMarket = segment === 'market'
   const isStore = segment === 'store'
@@ -304,6 +308,8 @@ export default function CreateListing({ onPosted, initialSegment = 'market' } = 
     setDateD(now.getDate())
     setDateY(now.getFullYear())
     setMarketPhotos([])
+    setCreatorArtwork(null)
+    setCreatorMode(false)
     setScanPreview('')
     setScanImage('')
     setScanZoom(1)
@@ -442,9 +448,15 @@ export default function CreateListing({ onPosted, initialSegment = 'market' } = 
     setPostError('')
     try {
       const cutouts = await processCreatePhotos(files, removeImageBackground)
-      setMarketPhotos((prev) => [...prev, ...cutouts].slice(0, 6))
+      const photos = isStore
+        ? await Promise.all(cutouts.map(async (cutout) => {
+          const blob = await (await fetch(cutout)).blob()
+          return uploadCreatorArtwork(new File([blob], 'product.png', { type: blob.type }))
+        }))
+        : cutouts
+      setMarketPhotos((prev) => [...prev, ...photos].slice(0, 6))
     } catch (error) {
-      setPostError(String(error?.message || 'Could not remove the photo background.'))
+      setPostError(String(error?.message || 'Could not prepare the photos.'))
     } finally {
       setScanning(false)
     }
@@ -509,6 +521,10 @@ export default function CreateListing({ onPosted, initialSegment = 'market' } = 
       return
     }
     if (isStore) {
+      if (creatorMode && !creatorArtwork) {
+        setPostError('Generate product mockups before posting.')
+        return
+      }
       setPosting(true)
       try {
         const product = await createListingProduct({
@@ -520,7 +536,8 @@ export default function CreateListing({ onPosted, initialSegment = 'market' } = 
           condition: 'New',
           description: description.trim(),
           segment: 'store',
-          photoUrl: marketPhotos[0] || '',
+          photoUrl: creatorMode ? '' : marketPhotos[0] || '',
+          mockup_task_key: creatorArtwork?.taskKey,
         })
         finishListing(product, 'store')
       } catch (err) {
@@ -560,7 +577,7 @@ export default function CreateListing({ onPosted, initialSegment = 'market' } = 
 
   return (
     <section
-      className={`create-listing is-walkthrough${addSheetOpen ? ' is-adding' : ''}`}
+      className={`create-listing is-walkthrough${addSheetOpen ? ' is-adding' : ''}${isStore && creatorMode && currentStep === 'photo' ? ' is-artwork-studio' : ''}`}
       aria-label="Create listing"
       ref={walkthroughRef}
       tabIndex={-1}
@@ -600,12 +617,30 @@ export default function CreateListing({ onPosted, initialSegment = 'market' } = 
       )}
       </div>}
 
-      {currentStep === 'photo' && (isMarket || isStore) && (
+      {currentStep === 'photo' && isStore && (
+        <label className="listing-field">
+          <span>Create a Printful product</span>
+          <input type="checkbox" checked={creatorMode} disabled={scanning || posting}
+            onChange={(event) => {
+              setCreatorMode(event.target.checked)
+              setCreatorArtwork(null)
+              setMarketPhotos([])
+              setPostError('')
+            }} />
+        </label>
+      )}
+      {currentStep === 'photo' && isStore && creatorMode && (
+        <CreatorArtworkStudio initialArtwork={creatorArtwork} onBusy={setScanning} onReady={(artwork) => {
+          setCreatorArtwork(artwork)
+          setMarketPhotos(artwork?.mockupUrls || [])
+        }} />
+      )}
+      {currentStep === 'photo' && (isMarket || isStore) && !(isStore && creatorMode) && (
         <div className={`listing-photo-drop${marketPhotos.length ? ' has-preview' : ''}${photoChoice ? ' is-choosing' : ''}`} role="group" aria-label="Add photos">
           <input ref={photoCameraRef} type="file" accept="image/*" capture="environment" className="listing-scan-input" aria-hidden tabIndex={-1} onChange={onMarketPhoto} />
           <input ref={photoGalleryRef} type="file" accept="image/*" multiple className="listing-scan-input" aria-hidden tabIndex={-1} onChange={onMarketPhoto} />
           <button type="button" className="listing-photo-hit is-bare" aria-label="Add photos" title="Add photos" disabled={scanning} onClick={() => setPhotoChoice(true)}>
-            {scanning ? <span role="status">Removing background...</span> : marketPhotos.length ? (
+            {scanning ? <span role="status">{isStore ? 'Preparing photos...' : 'Removing background...'}</span> : marketPhotos.length ? (
               <span className={`listing-photo-thumbs${marketPhotos.length > 1 ? ' has-multiple' : ''}`}>
                 {marketPhotos.map((src, i) => (
                   <img key={i} src={src} alt="" />

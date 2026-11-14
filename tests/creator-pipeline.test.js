@@ -1,0 +1,323 @@
+import assert from 'node:assert/strict'
+import { createHmac } from 'node:crypto'
+import { Readable } from 'node:stream'
+import { after, test } from 'node:test'
+
+process.env.VITE_SUPABASE_URL = 'https://thrft-test.supabase.co'
+process.env.SUPABASE_SERVICE_ROLE_KEY = 'test-service-key'
+process.env.PRINTFUL_API_TOKEN = 'test-printful-token'
+process.env.STRIPE_SECRET_KEY = 'sk_test_fixture'
+process.env.STRIPE_WEBHOOK_SECRET = 'whsec_fixture'
+process.env.APP_ORIGIN = 'https://thrft.test'
+
+const creatorId = '11111111-1111-4111-8111-111111111111'
+const productId = '22222222-2222-4222-8222-222222222222'
+const artwork = `https://thrft-test.supabase.co/storage/v1/object/public/Thrft/${creatorId}/art.png`
+const realFetch = globalThis.fetch
+let provider
+globalThis.fetch = (...args) => provider(...args)
+after(() => { globalThis.fetch = realFetch })
+
+const { handleCreatorApi, mockupFiles } = await import('../server/creatorApi.js')
+const { verifyStripeEvent, resolveCheckoutItems, fulfillPaidCheckout,
+  getCheckoutSession } = await import('../stripeCheckout.js')
+
+function json(body, status = 200) {
+  return new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } })
+}
+
+async function request(path, { method = 'GET', body, token = 'test-user-token', signature } = {}) {
+  const req = Readable.from(body === undefined ? [] : [Buffer.from(
+    typeof body === 'string' ? body : JSON.stringify(body))])
+  req.url = path
+  req.method = method
+  req.headers = { host: 'thrft.test', ...(token ? { authorization: `Bearer ${token}` } : {}),
+    ...(signature ? { 'stripe-signature': signature } : {}) }
+  let status, result
+  const res = {
+    writeHead(code) { status = code },
+    end(value) { result = JSON.parse(value) },
+  }
+  assert.equal(await handleCreatorApi(req, res), true)
+  return { status, body: result }
+}
+
+function fixture() {
+  const tables = { creator_mockup_tasks: [], brand_products: [], creator_checkout_orders: [] }
+  const calls = []
+  let paid = false
+  let draft
+  provider = async (input, options = {}) => {
+    const url = new URL(input instanceof Request ? input.url : String(input))
+    const method = options.method || 'GET'
+    const body = typeof options.body === 'string' && options.body.startsWith('{')
+      ? JSON.parse(options.body) : options.body
+    calls.push({ url, method, body })
+    if (url.origin === 'https://thrft-test.supabase.co') {
+      if (url.pathname === '/auth/v1/user') {
+        const userId = new Headers(options.headers).get('Authorization')?.includes('other-token')
+          ? productId : creatorId
+        return json({ id: userId, email: 'creator@example.test',
+          user_metadata: { username: 'creator', displayName: 'Creator' } })
+      }
+      if (url.pathname.startsWith('/storage/v1/object/Thrft/')) return json({ Key: url.pathname })
+      if (url.pathname === '/rest/v1/rpc/claim_creator_fulfillment') {
+        const order = tables.creator_checkout_orders.find((row) => row.stripe_session_id === body.session_id)
+        if (!order || ['draft', 'not_required', 'processing'].includes(order.fulfillment_status)) return json([])
+        order.fulfillment_status = 'processing'
+        return json([order])
+      }
+      const table = url.pathname.split('/').at(-1)
+      if (tables[table]) {
+        const matches = (row) => [...url.searchParams].every(([key, value]) =>
+          !value.startsWith('eq.') || String(row[key]) === value.slice(3))
+        if (method === 'POST') {
+          const row = { ...(table === 'brand_products' ? { id: productId, status: 'active',
+            segment: 'store', mockup_urls: [], created_at: new Date().toISOString() } : {}),
+          ...(table === 'creator_checkout_orders' ? {
+            id: '33333333-3333-4333-8333-333333333333', payment_status: 'unpaid',
+            fulfillment_status: 'pending',
+          } : {}), ...body }
+          tables[table].push(row)
+          return json(row, 201)
+        }
+        const rows = tables[table].filter(matches)
+        if (method === 'PATCH') {
+          rows.forEach((row) => Object.assign(row, body))
+          return json(rows[0] || null)
+        }
+        const headers = new Headers(options.headers)
+        return json(headers.get('accept')?.includes('object') ? rows[0] || null : rows)
+      }
+    }
+    if (url.origin === 'https://api.printful.com') {
+      if (url.pathname === '/products/71') return json({ result: {
+        product: { id: 71 }, variants: [{ id: 4011, size: 'M', color: 'Black' }],
+      } })
+      if (url.pathname === '/mockup-generator/printfiles/71') return json({ result: {
+        printfiles: [{ printfile_id: 1, width: 1800, height: 2400 }],
+        variant_printfiles: [{ variant_id: 4011, placements: { front: 1 } }],
+      } })
+      if (url.pathname === '/mockup-generator/create-task/71') return json({ result: { task_key: 'task-1', status: 'pending' } })
+      if (url.pathname === '/mockup-generator/task') return json({ result: {
+        status: 'completed', mockups: [{ mockup_url: 'https://mockups.printful.test/image.jpg' }],
+      } })
+      if (url.pathname.startsWith('/orders/@')) return draft ? json({ result: draft })
+        : json({ error: { message: 'Order not found' } }, 404)
+      if (url.pathname === '/orders' && method === 'POST') {
+        draft = { id: 9001, status: 'draft' }
+        return json({ result: draft })
+      }
+    }
+    if (url.origin === 'https://mockups.printful.test') {
+      return new Response(new Uint8Array([255, 216, 255]), { headers: { 'Content-Type': 'image/jpeg' } })
+    }
+    if (url.origin === 'https://api.stripe.com') {
+      const snapshot = tables.creator_checkout_orders[0]
+      const amount = snapshot?.amount_total || 5000
+      return json({ id: 'cs_test_1', url: 'https://checkout.stripe.test/cs_test_1',
+        status: paid ? 'complete' : 'open', payment_status: paid ? 'paid' : 'unpaid',
+        amount_total: amount, currency: 'usd', metadata: { customerId: creatorId },
+        shipping_details: { name: 'Test Customer', address: {
+          line1: '1 Test Road', line2: '', city: 'Test City', state: 'CA', country: 'US', postal_code: '90001',
+        } }, customer_details: { email: 'customer@example.test' } })
+    }
+    throw new Error(`Unexpected provider request: ${method} ${url}`)
+  }
+  return { tables, calls, markPaid() { paid = true } }
+}
+
+function signedEvent(type = 'checkout.session.completed') {
+  const body = JSON.stringify({ type, data: { object: { id: 'cs_test_1' } } })
+  const time = Math.floor(Date.now() / 1000)
+  const hash = createHmac('sha256', process.env.STRIPE_WEBHOOK_SECRET).update(`${time}.${body}`).digest('hex')
+  return { body, signature: `t=${time},v1=${hash}` }
+}
+
+test('owned artwork → mockups → published product → trusted checkout → one paid Printful draft', async () => {
+  const f = fixture()
+  const task = await request('/api/printful/mockups', { method: 'POST',
+    body: { product_id: 71, variant_id: 4011, artwork_url: artwork } })
+  assert.equal(task.status, 202)
+  const createTask = f.calls.find((call) => call.url.pathname.includes('create-task'))
+  assert.deepEqual(createTask.body.variant_ids, [4011])
+  assert.equal(createTask.body.files[0].image_url, artwork)
+  assert.equal((await request('/api/printful/mockups/task-1', { token: 'other-token' })).status, 404)
+  const completed = await request('/api/printful/mockups/task-1')
+  assert.equal(completed.status, 200)
+  assert.match(completed.body.mockup_urls[0], /\/public\/Thrft\/.*\/mockups\//)
+  const published = await request('/api/creator/products', { method: 'POST', body: {
+    title: 'Creator Tee', brand: 'Test Brand', price: 25,
+    mockup_task_key: 'task-1', creator_id: 'attacker', printful_variant_id: 999,
+  } })
+  assert.equal(published.status, 201)
+  assert.equal(published.body.product.creator_id, creatorId)
+  assert.equal(published.body.product.printful_variant_id, 4011)
+  assert.equal(published.body.product.artwork_url, artwork)
+  const feed = await request('/api/creator/products', { token: null })
+  assert.equal(feed.body.products[0].photoUrl, completed.body.mockup_urls[0])
+  const own = await request('/api/creator/me/products')
+  assert.equal(own.body.products.length, 1)
+  const brand = await request('/api/creator/accounts/creator', { token: null })
+  assert.equal(brand.body.products[0].id, productId)
+  const checkout = await request('/api/checkout/session', { method: 'POST', body: {
+    items: [{ id: productId, qty: 2, price: 0.01, printfulVariantId: 999,
+      artworkUrl: 'https://attacker.test/art.png', selectedSizes: ['M', 'M'] }],
+  } })
+  assert.equal(checkout.status, 200)
+  const stripeCall = f.calls.find((call) => call.url.origin === 'https://api.stripe.com' && call.method === 'POST')
+  const params = new URLSearchParams(stripeCall.body)
+  assert.equal(params.get('line_items[0][price_data][unit_amount]'), '2500')
+  assert.equal(params.get('line_items[0][quantity]'), '2')
+  assert.equal(params.get('shipping_address_collection[allowed_countries][0]'), 'US')
+  assert.equal(f.tables.creator_checkout_orders[0].amount_total, 5000)
+  const unpaid = signedEvent()
+  assert.equal((await request('/api/webhooks/stripe', { method: 'POST', ...unpaid, token: null })).status, 200)
+  assert.equal(f.calls.filter((call) => call.url.pathname === '/orders').length, 0)
+  f.markPaid()
+  const paid = signedEvent('checkout.session.async_payment_succeeded')
+  assert.equal((await request('/api/webhooks/stripe', { method: 'POST', ...paid, token: null })).status, 200)
+  assert.equal((await request('/api/webhooks/stripe', { method: 'POST', ...paid, token: null })).status, 200)
+  const orders = f.calls.filter((call) => call.url.pathname === '/orders')
+  assert.equal(orders.length, 1)
+  assert.equal(orders[0].url.searchParams.get('confirm'), 'false')
+  assert.equal(orders[0].body.recipient.zip, '90001')
+  assert.deepEqual(orders[0].body.items, [{ variant_id: 4011, quantity: 2,
+    files: [{ type: 'front', url: artwork }] }])
+  assert.equal(f.tables.creator_checkout_orders[0].fulfillment_status, 'draft')
+  await assert.rejects(getCheckoutSession('cs_test_1', productId), /another account/)
+  const status = await request('/api/checkout/session/cs_test_1')
+  assert.equal(status.body.paymentStatus, 'paid')
+  assert.equal(status.body.fulfillmentStatus, 'draft')
+})
+
+test('creator routes reject anonymous, foreign artwork and unknown variants', async () => {
+  fixture()
+  assert.equal((await request('/api/printful/mockups', { method: 'POST', token: null, body: {} })).status, 401)
+  assert.equal((await request('/api/printful/mockups', { method: 'POST', body: {
+    product_id: 71, variant_id: 4011, artwork_url: artwork.replace(creatorId, productId),
+  } })).status, 400)
+  assert.equal((await request('/api/printful/mockups', { method: 'POST', body: {
+    product_id: 71, variant_id: 999, artwork_url: artwork,
+  } })).status, 400)
+  assert.equal((await request('/api/creator/products', { method: 'POST', body: {
+    title: 'Unverified artwork', price: 25, artwork_url: artwork, printful_variant_id: 4011,
+  } })).status, 400)
+})
+
+test('Stripe signatures reject tampering, missing signatures and replayed events', () => {
+  const event = signedEvent()
+  assert.equal(verifyStripeEvent(Buffer.from(event.body), event.signature).type, 'checkout.session.completed')
+  assert.throws(() => verifyStripeEvent(Buffer.from(`${event.body} `), event.signature), /signature/)
+  assert.throws(() => verifyStripeEvent(Buffer.from(event.body), ''), /signature/)
+  assert.throws(() => verifyStripeEvent(Buffer.from(event.body), event.signature, 'whsec_fixture',
+    Date.now() + 301000), /timestamp/)
+})
+
+test('checkout refuses invalid quantities, missing products and unavailable sizes', async () => {
+  const store = { getProduct: async () => ({ id: productId, status: 'active', price: 25,
+    title: 'Tee', printful_variant_id: 4011, artwork_url: artwork, size: 'M' }) }
+  await assert.rejects(resolveCheckoutItems({ items: [{ id: productId, qty: 0 }] }, store), /Quantity/)
+  await assert.rejects(resolveCheckoutItems({ items: [{ id: productId, qty: 1.5 }] }, store), /Quantity/)
+  await assert.rejects(resolveCheckoutItems({ items: [{ id: productId, selectedSizes: ['L'] }] }, store), /published size/)
+  await assert.rejects(resolveCheckoutItems({ items: [{ id: productId }] },
+    { getProduct: async () => null }), /no longer available/)
+})
+
+test('failed fulfillment is retryable and recovers a previously created draft', async () => {
+  const row = { id: productId, amount_total: 2500, currency: 'usd',
+    creator_customer_id: creatorId, fulfillment_status: 'pending',
+    items: [{ printfulVariantId: 4011, artworkUrl: artwork, quantity: 1, placement: 'front' }] }
+  const session = { id: 'cs_retry', payment_status: 'paid', amount_total: 2500,
+    currency: 'usd', metadata: { customerId: creatorId } }
+  let remoteDraft
+  let submissions = 0
+  let failSave = true
+  const store = {
+    getOrder: async () => row,
+    claimOrder: async () => ({ ...row }),
+    updateOrder: async (_, patch) => {
+      if (patch.fulfillment_status === 'draft' && failSave) {
+        failSave = false
+        throw new Error('Database temporarily unavailable')
+      }
+      Object.assign(row, patch)
+      return row
+    },
+  }
+  const printful = {
+    getOrder: async () => {
+      if (!remoteDraft) throw Object.assign(new Error('Not found'), { status: 404 })
+      return remoteDraft
+    },
+    createOrder: async () => { submissions++; remoteDraft = { id: 123 }; return remoteDraft },
+  }
+  session.shipping_details = { name: 'Test', address: {
+    line1: '1 Test', city: 'City', country: 'US', postal_code: '90001',
+  } }
+  await assert.rejects(fulfillPaidCheckout(session, { store, printful }), /Database temporarily/)
+  assert.equal(row.fulfillment_status, 'failed')
+  await fulfillPaidCheckout(session, { store, printful })
+  assert.equal(row.fulfillment_status, 'draft')
+  assert.equal(submissions, 1)
+})
+
+test('unpaid, mismatched, or concurrently processing checkouts never submit', async () => {
+  let claimed = 0
+  const store = { getOrder: async () => ({ amount_total: 2500, currency: 'usd',
+    creator_customer_id: creatorId }), claimOrder: async () => { claimed++; return null } }
+  const session = { id: 'cs_locked', payment_status: 'unpaid', amount_total: 2500,
+    currency: 'usd', metadata: { customerId: creatorId } }
+  await fulfillPaidCheckout(session, { store })
+  assert.equal(claimed, 0)
+  session.payment_status = 'paid'
+  session.amount_total = 1
+  await assert.rejects(fulfillPaidCheckout(session, { store }), /does not match/)
+  assert.equal(claimed, 0)
+  session.amount_total = 2500
+  await assert.rejects(fulfillPaidCheckout(session, { store }), /already processing/)
+})
+
+test('mockups reject print placements not present on the selected variant', () => {
+  assert.throws(() => mockupFiles({ printfiles: [], variant_printfiles: [] }, 4011,
+    'front', artwork), /does not support/)
+})
+
+test('mockup artwork preserves aspect ratio and centers within the blank print area', () => {
+  const [file] = mockupFiles({
+    printfiles: [{ printfile_id: 1, width: 1800, height: 2400 }],
+    variant_printfiles: [{ variant_id: 4011, placements: { front: 1 } }],
+  }, 4011, 'front', artwork, { width: 1000, height: 1000 })
+  assert.deepEqual(file.position, { area_width: 1800, area_height: 2400,
+    width: 1800, height: 1800, left: 0, top: 300 })
+})
+
+test('mixed carts send only printable items to Printful; ordinary carts need no draft', async () => {
+  const row = { id: productId, amount_total: 3500, currency: 'usd',
+    creator_customer_id: creatorId, fulfillment_status: 'pending',
+    items: [
+      { printfulVariantId: 4011, artworkUrl: artwork, quantity: 1, placement: 'front' },
+      { printfulVariantId: null, artworkUrl: null, quantity: 1 },
+    ] }
+  const session = { id: 'cs_mixed', payment_status: 'paid', amount_total: 3500,
+    currency: 'usd', metadata: { customerId: creatorId }, shipping_details: {
+      name: 'Test', address: { line1: '1 Test', city: 'City', country: 'US', postal_code: '90001' },
+    } }
+  const store = {
+    getOrder: async () => row, claimOrder: async () => row,
+    updateOrder: async (_, patch) => Object.assign(row, patch),
+  }
+  let submitted
+  const printful = {
+    getOrder: async () => { throw Object.assign(new Error('Not found'), { status: 404 }) },
+    createOrder: async (order) => { submitted = order; return { id: 123 } },
+  }
+  await fulfillPaidCheckout(session, { store, printful })
+  assert.equal(submitted.items.length, 1)
+  row.items = [row.items[1]]
+  row.fulfillment_status = 'pending'
+  submitted = null
+  await fulfillPaidCheckout(session, { store, printful })
+  assert.equal(row.fulfillment_status, 'not_required')
+  assert.equal(submitted, null)
+})

@@ -35,6 +35,7 @@ import {
   fetchSaved,
   saveProfile,
   recordInterest,
+  fetchCheckoutSession,
 } from './api.js'
 import {
   getAuthSession,
@@ -117,6 +118,7 @@ export default function App() {
   )
   const [tab, setTab] = useState('home')
   const [createSegment, setCreateSegment] = useState('market')
+  const [checkoutError, setCheckoutError] = useState('')
   const [searchSignal, setSearchSignal] = useState(0)
   const [clothingType, setClothingType] = useState('all')
   const [homeColor, setHomeColor] = useState('')
@@ -369,14 +371,26 @@ export default function App() {
     const params = new URLSearchParams(window.location.search)
     const flag = params.get('checkout')
     if (!flag) return
-    if (flag === 'success') {
-      empty()
-      setCartOpen(false)
+    async function verifyPayment() {
+      if (flag === 'success') {
+        const sessionId = params.get('session_id')
+        if (!sessionId) throw new Error('Checkout return is missing its session ID')
+        const checkout = await fetchCheckoutSession(sessionId)
+        if (checkout.paymentStatus !== 'paid') {
+          throw new Error('Payment is still pending. Your cart has been kept; check again shortly.')
+        }
+        empty()
+        setCartOpen(false)
+      }
+      params.delete('checkout')
+      params.delete('session_id')
+      const next = `${window.location.pathname}${params.toString() ? `?${params}` : ''}${window.location.hash}`
+      window.history.replaceState({}, '', next)
     }
-    params.delete('checkout')
-    params.delete('session_id')
-    const next = `${window.location.pathname}${params.toString() ? `?${params}` : ''}${window.location.hash}`
-    window.history.replaceState({}, '', next)
+    verifyPayment().catch((error) => {
+      console.error('Checkout verification failed:', error)
+      setCheckoutError(error.message)
+    })
     return undefined
   }, [])
 
@@ -505,6 +519,7 @@ export default function App() {
       style={{ '--bubble-size': `${BUBBLE}px` }}
     >
       <LiquidGlassDefs />
+      {checkoutError && <p className="checkout-return-error" role="alert">{checkoutError}</p>}
       <div className="atmosphere" aria-hidden>
         <span className="atmosphere-bloom atmosphere-bloom-a" />
         <span className="atmosphere-bloom atmosphere-bloom-b" />

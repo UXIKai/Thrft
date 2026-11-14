@@ -20,11 +20,11 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/brand-icons/, ''),
       },
       '/api/checkout': {
-        target: 'http://127.0.0.1:8790',
+        target: 'http://127.0.0.1:8787',
         changeOrigin: true,
       },
       '/api/webhooks': {
-        target: 'http://127.0.0.1:8790',
+        target: 'http://127.0.0.1:8787',
         changeOrigin: true,
       },
       '/api/': {
@@ -44,11 +44,11 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/brand-icons/, ''),
       },
       '/api/checkout': {
-        target: 'http://127.0.0.1:8790',
+        target: 'http://127.0.0.1:8787',
         changeOrigin: true,
       },
       '/api/webhooks': {
-        target: 'http://127.0.0.1:8790',
+        target: 'http://127.0.0.1:8787',
         changeOrigin: true,
       },
       '/api/': {

@@ -3370,3 +3370,12 @@ html body .stage .home-radial .home-radial-btn:not(#_):not(#_):not(#_) {
   .brand-row.is-market .market-card { width: clamp(150px, 12vw, 200px); }
   .brand-row.is-market.is-idle { height: calc(clamp(150px, 12vw, 200px) * 4 / 3 + 62px); }
 }
+.checkout-return-error {
+  position: fixed;
+  z-index: 10000;
+  inset: auto 16px 100px;
+  padding: 12px;
+  border-radius: 12px;
+  background: var(--page-bg);
+  color: var(--ink);
+}

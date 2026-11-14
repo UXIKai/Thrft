@@ -3,7 +3,7 @@
  * Requires PRINTFUL_API_TOKEN (a private token from https://developers.printful.com).
  * Set PRINTFUL_STORE_ID too when the token covers more than one store.
  */
-const PRINTFUL_BASE = process.env.PRINTFUL_API_BASE || 'https://api.printful.com'
+const PRINTFUL_BASE = 'https://api.printful.com'
 const PRINTFUL_TOKEN = process.env.PRINTFUL_API_TOKEN || ''
 const PRINTFUL_STORE_ID = process.env.PRINTFUL_STORE_ID || ''
 const TIMEOUT_MS = 15000
@@ -37,14 +37,16 @@ async function printful(path, { method = 'GET', body, query } = {}) {
     body: body === undefined ? undefined : JSON.stringify(body),
     signal: AbortSignal.timeout(TIMEOUT_MS),
   })
-  const json = await res.json().catch(() => ({}))
+  const json = await res.json()
   if (!res.ok) {
     const err = new Error(
-      json?.error?.message || json?.result || `Printful request failed (${res.status})`,
+      json?.error?.message || (typeof json?.result === 'string' ? json.result : '') ||
+        `Printful request failed (${res.status})`,
     )
     err.status = res.status
     throw err
   }
+  if (!Object.hasOwn(json, 'result')) throw new Error('Invalid Printful API response')
   return json.result
 }
 
@@ -82,7 +84,7 @@ export const createOrder = ({ recipient, items, externalId, confirm = false }) =
   printful('/orders', {
     method: 'POST',
     body: { external_id: externalId, recipient, items },
-    query: { confirm: confirm ? 'true' : '' },
+    query: { confirm: String(confirm) },
   })
 
 export const getOrder = (id) => printful(`/orders/${id}`)
@@ -90,3 +92,15 @@ export const getOrder = (id) => printful(`/orders/${id}`)
 export const confirmOrder = (id) => printful(`/orders/${id}/confirm`, { method: 'POST' })
 
 export const cancelOrder = (id) => printful(`/orders/${id}`, { method: 'DELETE' })
+
+export const getPrintfileLayout = (productId) =>
+  printful(`/mockup-generator/printfiles/${encodeURIComponent(productId)}`)
+
+export const createMockupTask = (productId, { variantIds, files }) =>
+  printful(`/mockup-generator/create-task/${encodeURIComponent(productId)}`, {
+    method: 'POST',
+    body: { variant_ids: variantIds, format: 'jpg', files },
+  })
+
+export const getMockupTask = (taskKey) =>
+  printful('/mockup-generator/task', { query: { task_key: taskKey } })

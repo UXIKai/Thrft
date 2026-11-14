@@ -1,4 +1,5 @@
 import http from 'node:http'
+import { handleCreatorApi } from './creatorApi.js'
 import { lookupProductNumbers } from '../productLookup.js'
 import {
   getProfile,
@@ -26,11 +27,7 @@ import {
 } from '../forYou.js'
 import {
   getStripeCheckoutConfig,
-  createCheckoutSession,
-  getCheckoutSession,
-  retrieveLiveCheckout,
 } from '../stripeCheckout.js'
-import { getPrintfulConfig, checkPrintfulConnection } from '../printful.js'
 import {
   getIdmeConfig,
   createAuthorizeRequest,
@@ -122,6 +119,7 @@ const server = http.createServer(async (req, res) => {
   }
 
   try {
+    if (await handleCreatorApi(req, res)) return
     if (req.method === 'GET' && pathname === '/api/health') {
       const idme = getIdmeConfig()
       const auth = getAuthConfig()
@@ -658,58 +656,6 @@ const server = http.createServer(async (req, res) => {
       const profile = await getProfile(session?.account?.id ?? null)
       const feed = await buildForYouFeed(key, profile, { limit })
       send(res, 200, feed)
-      return
-    }
-
-    /* ——— Stripe Checkout ——— */
-
-    if (req.method === 'GET' && pathname === '/api/checkout/config') {
-      send(res, 200, getStripeCheckoutConfig())
-      return
-    }
-
-    if (req.method === 'GET' && pathname === '/api/printful/status') {
-      const config = getPrintfulConfig()
-      if (!config.configured) {
-        send(res, 200, { ...config, connected: false })
-        return
-      }
-      try {
-        send(res, 200, { ...config, ...(await checkPrintfulConnection()) })
-      } catch (err) {
-        send(res, 200, { ...config, connected: false, message: String(err?.message || err) })
-      }
-      return
-    }
-
-    if (req.method === 'POST' && pathname === '/api/checkout/create') {
-      const body = await readJson(req)
-      const token = bearerToken(req)
-      const session = token ? await sessionFromToken(token) : null
-      const key = accountKeyFromSession(session)
-      try {
-        const checkout = await createCheckoutSession(body, { accountKey: key })
-        send(res, 200, checkout)
-      } catch (err) {
-        send(res, err.status || 400, {
-          error: err.code || 'checkout_failed',
-          message: String(err.message || err),
-        })
-      }
-      return
-    }
-
-    if (req.method === 'GET' && pathname.startsWith('/api/checkout/session/')) {
-      const sessionId = decodeURIComponent(pathname.slice('/api/checkout/session/'.length))
-      let data = await getCheckoutSession(sessionId)
-      if (!data && getStripeCheckoutConfig().configured) {
-        data = await retrieveLiveCheckout(sessionId)
-      }
-      if (!data) {
-        send(res, 404, { error: 'not_found', message: 'Checkout session not found' })
-        return
-      }
-      send(res, 200, data)
       return
     }
 

@@ -1,7 +1,7 @@
 /**
  * Client for Thrft APIs.
  * Auth → Supabase (browser) or local PostgreSQL API (:8787).
- * Checkout estimate/session → backend :8790.
+ * Creator products, Printful and checkout → shared server/Vercel API.
  */
 
 import { getSupabase, isSupabaseConfigured } from './supabase.js'
@@ -325,7 +325,7 @@ export async function fetchIdmeStatus() {
 }
 
 export async function fetchAccountPage(username) {
-  return api(`/api/accounts/${encodeURIComponent(username)}`)
+  return api(`/api/${isSupabaseConfigured() ? 'creator/' : ''}accounts/${encodeURIComponent(username)}`)
 }
 
 export async function searchAccounts(query) {
@@ -343,18 +343,18 @@ export async function fetchMyProducts({ status = '', segment = '' } = {}) {
   if (status) q.set('status', status)
   if (segment) q.set('segment', segment)
   const suffix = q.toString() ? `?${q}` : ''
-  const data = await api(`/api/me/products${suffix}`)
+  const data = await api(`/api/${isSupabaseConfigured() ? 'creator/' : ''}me/products${suffix}`)
   return Array.isArray(data.products) ? data.products : []
 }
 
 export async function fetchStoreProducts({ brand = '' } = {}) {
-  const data = await api(`/api/products${brand ? `?${new URLSearchParams({ brand })}` : ''}`)
+  const data = await api(`/api/${isSupabaseConfigured() ? 'creator/' : ''}products${brand ? `?${new URLSearchParams({ brand })}` : ''}`)
   if (!Array.isArray(data.products)) throw new Error('Invalid store products response')
   return data.products
 }
 
 export async function createListingProduct(payload) {
-  const data = await api('/api/products', {
+  const data = await api(`/api/${isSupabaseConfigured() ? 'creator/' : ''}products`, {
     method: 'POST',
     body: JSON.stringify(payload),
   })
@@ -369,7 +369,7 @@ export async function lookupProductNumbers({ brand, partNumber, orderNumber }, s
 }
 
 export async function updateListingProduct(id, patch) {
-  const data = await api(`/api/products/${encodeURIComponent(id)}`, {
+  const data = await api(`/api/${isSupabaseConfigured() ? 'creator/' : ''}products/${encodeURIComponent(id)}`, {
     method: 'PUT',
     body: JSON.stringify(patch),
   })
@@ -451,6 +451,14 @@ export async function estimateCheckout({ items, address, shippingAddress } = {})
     }),
   })
 }
+
+export const fetchPrintfulProducts = (signal) => api('/api/printful/products', { signal })
+export const fetchPrintfulProduct = (id, signal) => api(`/api/printful/products/${id}`, { signal })
+export const startPrintfulMockups = (body, signal) => api('/api/printful/mockups', {
+  method: 'POST', body: JSON.stringify(body), signal,
+})
+export const fetchPrintfulMockups = (key, signal) =>
+  api(`/api/printful/mockups/${encodeURIComponent(key)}`, { signal })
 
 export async function fetchCheckoutSession(sessionId) {
   return api(`/api/checkout/session/${encodeURIComponent(sessionId)}`)

@@ -25,6 +25,7 @@ function BackIcon() {
 export default function BrandProfile({ brandId, brandName, onClose, onOpenProduct }) {
   const [stageEl, setStageEl] = useState(null)
   const [products, setProducts] = useState([])
+  const [loadError, setLoadError] = useState('')
   const [status, setStatus] = useState('loading') // loading | ready | empty | error
 
   useEffect(() => {
@@ -38,17 +39,23 @@ export default function BrandProfile({ brandId, brandName, onClose, onOpenProduc
     let alive = true
     setStatus('loading')
     setProducts([])
+    setLoadError('')
     const resolvedName = brandName || findBrandById(brandId)?.name
     if (!resolvedName) {
       setStatus('error')
       return undefined
     }
-    Promise.all([
+    Promise.allSettled([
       fetchStoreProducts({ brand: resolvedName }),
       isSupabaseConfigured() ? fetchListingsForBrand({ brandId, brandName: resolvedName }) : Promise.resolve([]),
     ])
-      .then(([store, market]) => {
+      .then((results) => {
         if (!alive) return
+        const failed = results.filter((result) => result.status === 'rejected')
+        if (failed.length === results.length) throw failed[0].reason
+        if (failed.length) setLoadError(failed.map((result) => result.reason.message).join('; '))
+        const store = results[0].status === 'fulfilled' ? results[0].value : []
+        const market = results[1].status === 'fulfilled' ? results[1].value : []
         const rows = [
           ...store.map((product) => ({ ...product, listingSource: 'store' })),
           ...market.map((product) => ({ ...product, listingSource: 'market' })),
@@ -97,6 +104,7 @@ export default function BrandProfile({ brandId, brandName, onClose, onOpenProduc
             Could not load listings
           </p>
         )}
+        {loadError && <p className="brand-profile-empty" role="alert">{loadError}</p>}
         {status === 'empty' && (
           <p className="brand-profile-empty" role="status">
             No listings yet

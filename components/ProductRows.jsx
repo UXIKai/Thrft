@@ -346,7 +346,13 @@ export default function ProductRows({
     setStatus('loading')
     setError('')
     const request = segment === 'store'
-      ? fetchAvailableListings({ limit: 240 })
+      ? Promise.allSettled([fetchAvailableListings({ limit: 240 }), fetchStoreProducts()])
+        .then((results) => {
+          const failed = results.filter((result) => result.status === 'rejected')
+          if (failed.length === results.length) throw failed[0].reason
+          if (alive && failed.length) setError(failed.map((result) => result.reason.message).join('; '))
+          return results.flatMap((result) => result.status === 'fulfilled' ? result.value : [])
+        })
       : fetchStoreProducts()
     request
       .then((rows) => {
@@ -440,6 +446,7 @@ export default function ProductRows({
   if (segment === 'market') {
     return (
       <section className="product-feed market-product-feed" id="home-product-panel" role="tabpanel" aria-labelledby="home-market-tab" aria-busy={status === 'loading'}>
+        {error && <p role="alert">{error}</p>}
         {!marketItems.length && <p role="status">{status === 'loading' ? 'Loading products...' : 'No Market products found.'}</p>}
         <div className="market-chips" role="tablist" aria-label="Market filters">
           {ALL_CHIPS.map((c) => (
@@ -489,6 +496,7 @@ export default function ProductRows({
 
   return (
     <section className="product-feed" id="home-product-panel" role="tabpanel" aria-labelledby={`home-${segment}-tab`}>
+      {error && <p role="alert">{error}</p>}
       {!rows.length && <p role="status">No {segment === 'market' ? 'Market' : 'Store'} products found.</p>}
       {rows.map((row, rowIndex) => (
         <CrawlRow
