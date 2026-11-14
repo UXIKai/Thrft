@@ -206,10 +206,10 @@ export default function App() {
     }
     let down = null
     const CONTROLS = 'button, a, input, select, [role="dialog"], .home-search-backdrop, .home-radial, .tab-bar'
-    const onDown = (e) => { down = { ctl: Boolean(e.target.closest?.(CONTROLS)), x: e.clientX, y: e.clientY, t: e.timeStamp, scroll: el?.scrollTop || 0 } }
+    const onDown = (e) => { if (stage.classList.contains('is-home-search-open')) return; down = { ctl: Boolean(e.target.closest?.(CONTROLS)), x: e.clientX, y: e.clientY, t: e.timeStamp, scroll: el?.scrollTop || 0 } }
     const show = (e) => {
       // Taps on controls (filters, picker, dialogs) are not taps on the screen
-      if (down?.ctl || e.target.closest?.(CONTROLS)) return
+      if (stage.classList.contains('is-home-search-open') || down?.ctl || e.target.closest?.(CONTROLS)) return
       // A scroll or drag that ends in a click must not count as a tap
       if (down && (Math.hypot(e.clientX - down.x, e.clientY - down.y) > 8 || (el?.scrollTop || 0) !== down.scroll || e.timeStamp - down.t > 600)) return
       setAtBottom(false)

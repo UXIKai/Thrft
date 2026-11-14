@@ -398,3 +398,9 @@ html body .stage.is-home-search-open > .tab-bar:not(#_) {
   visibility: hidden;
   pointer-events: none;
 }
+
+/* The filter page itself stays visible even though the page content around it is hidden */
+.stage.is-home-search-open .home-search-backdrop,
+.stage.is-home-search-open .home-search-backdrop * {
+  visibility: visible;
+}
