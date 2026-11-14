@@ -2194,6 +2194,12 @@ export default function ProfileScreen({
         settingsOpen &&
         createPortal(
           <SwipeBackPage className={`settings-slide${settingsClosing ? ' is-closing' : ''}`} onDismiss={() => { setSettingsOpen(false); setSettingsClosing(false) }}>
+          <div className="atmosphere" aria-hidden>
+            <span className="atmosphere-bloom atmosphere-bloom-a" />
+            <span className="atmosphere-bloom atmosphere-bloom-b" />
+            <span className="atmosphere-bloom atmosphere-bloom-c" />
+            <span className="atmosphere-bloom atmosphere-bloom-d" />
+          </div>
           <SettingsScreen
             onBack={closeSettings}
             userProfile={userProfile}

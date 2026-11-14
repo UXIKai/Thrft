@@ -2862,3 +2862,15 @@ html body .settings-screen .settings-card {
   background: transparent;
   box-shadow: none;
 }
+
+/* Effect switch lives in the header's right corner */
+.settings-top:has(.settings-effect-switch) {
+  grid-template-columns: 46px 1fr 46px;
+}
+html body .settings-top .settings-effect-switch.is-in-header {
+  justify-self: end;
+  margin-right: -6px;
+}
+.settings-block.settings-palette-block {
+  padding-top: 18px;
+}
