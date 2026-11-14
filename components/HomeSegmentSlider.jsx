@@ -49,13 +49,13 @@ const scrolledDown = (el, stop) => {
 
 // Store and Market sit side by side (swipe left / right); the Leaderboard sits above them:
 // pull down at the very top of the page to reach it, swipe up to come back. Swiping up at the bottom opens checkout.
-export default function HomeSegmentSlider({ value, onChange, fireSame = false, onSearch, onCart, onTap, bagCount = 0 }) {
+export default function HomeSegmentSlider({ value, onChange, fireSame = false, onSearch, onCart, onTap, onHold, bagCount = 0 }) {
   const rootRef = useRef(null)
   const [menuOpen, setMenuOpen] = useState(false)
   const menuRef = useRef(false)
   menuRef.current = menuOpen
   const actionsRef = useRef({})
-  actionsRef.current = { onSearch, onCart, onTap }
+  actionsRef.current = { onSearch, onCart, onTap, onHold }
   const pickRef = useRef(null)
   pickRef.current = (id) => {
     setMenuOpen(false)
@@ -126,6 +126,7 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false, o
         holdRef.current = setTimeout(() => {
           if (d && !d.axis) {
             d = null
+            actionsRef.current.onHold?.()
             setMenuOpen(true)
           }
         }, HOLD_MS)
