@@ -518,7 +518,7 @@ export default function App() {
       {signedIn && (
         <>
       <div
-        className={`home-scroll${hideTabBar ? ' is-chat-thread' : ''}${homeIdle ? ' is-home-idle' : ''}`}
+        className={`home-scroll${hideTabBar ? ' is-chat-thread' : ''}${homeIdle ? ' is-home-idle' : ''}${rowPageOpen ? ' is-row-page' : ''}`}
         ref={scrollRef}
       >
         {tab === 'home' && (

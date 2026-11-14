@@ -1150,6 +1150,8 @@ html[data-bg-color='none'] .stage.is-bg-none .atmosphere {
   }
 }
 
+.home-scroll.is-row-page > .wordmark-wrap { display: none; }
+
 .store-row-page-head {
   display: grid;
   grid-template-columns: 40px 1fr 40px;
