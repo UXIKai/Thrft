@@ -1845,23 +1845,6 @@ export default function SettingsScreen({
             title="Profile"
             onClick={onEditProfile}
           />
-          <button
-            type="button"
-            className="settings-theme-toggle is-bare"
-            aria-label={moonlightOn ? 'Switch to normal mode' : 'Switch to moon mode'}
-            aria-pressed={moonlightOn}
-            onClick={toggleDisplayMode}
-          >
-            <svg className="settings-row-ico" viewBox="0 0 24 24" aria-hidden="true">
-              <path
-                d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z"
-                fill="currentColor"
-                stroke="currentColor"
-                strokeWidth="1.4"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </button>
         </Section>
 
         <Section label="Accounts">

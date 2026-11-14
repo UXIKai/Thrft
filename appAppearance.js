@@ -173,6 +173,9 @@ function syncColorScheme() {
     const bg = resolveBgColor(currentBgColorId)
     if (container.id !== 'none') {
       scheme = relativeLuminance(shade(container.rgb)) > 0.3 ? 'light' : 'dark'
+    } else if (bg.id !== 'none' && currentBg === 'none') {
+      // Effect off: the page is the flat chosen colour whatever the mode
+      scheme = relativeLuminance(bg.rgb) > 0.179 ? 'light' : 'dark'
     } else if (bg.id !== 'none' && !matchBackgroundColor) {
       const lifts = [0.58, 0.3, 0.12].map((amount) => liftRgb(bg.rgb, amount))
       const wash = [0, 1, 2].map((i) => Math.round(lastVoidRgb[i] * 0.5 + (lifts[0][i] + lifts[1][i] + lifts[2][i]) / 3 * 0.5))
@@ -749,11 +752,8 @@ export function applyCustomBgColor(hex, { matchColor = false } = {}) {
 let searchBackgroundSnapshot = null
 
 export function readMoonlight() {
-  try {
-    return localStorage.getItem(MOONLIGHT_KEY) === 'on'
-  } catch {
-    return false
-  }
+  // Moon mode is retired: ink and outlines follow the page shade instead
+  return false
 }
 
 function saveMoonlight(on) {
