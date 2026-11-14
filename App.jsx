@@ -12,7 +12,6 @@ import HomeFilterLinks from './components/HomeFilterLinks.jsx'
 import HomeSegmentSlider from './components/HomeSegmentSlider.jsx'
 import LiquidGlassDefs from './components/LiquidGlassDefs.jsx'
 import CartScreen from './components/CartScreen.jsx'
-import NavButtonGlyph from './components/NavButtonGlyph.jsx'
 import ProductDetail from './components/ProductDetail.jsx'
 import { guardSignedInNavigation } from './signedInNavigation.js'
 import ProductRows from './components/ProductRows.jsx'
@@ -822,17 +821,6 @@ export default function App() {
       )}
       </div>
 
-      {signedIn && tab !== 'home' && !activeProduct && !(tab === 'chat' && chatThreadOpen) && (
-        <button
-          type="button"
-          className="nav-toggle is-bare"
-          aria-label={atBottom ? 'Show navigation' : 'Hide navigation'}
-          aria-expanded={!atBottom}
-          onClick={() => setAtBottom((hidden) => !hidden)}
-        >
-          <NavButtonGlyph />
-        </button>
-      )}
       {signedIn && showNav && <TabBar active={tab} onCreate={(segment) => {
         setCreateSegment(segment)
         setHomeBrand(null)
