@@ -356,6 +356,12 @@ export async function fetchLeaderboard() {
   return data.profiles
 }
 
+export async function fetchOrders(kind) {
+  const data = await api(`/api/creator/me/orders?kind=${encodeURIComponent(kind)}`)
+  if (!Array.isArray(data.items)) throw new Error('Invalid orders response')
+  return data.items
+}
+
 export async function searchAccounts(query) {
   const data = await api(`/api/accounts?q=${encodeURIComponent(query)}`)
   if (!Array.isArray(data.accounts)) throw new Error('Invalid account search response')

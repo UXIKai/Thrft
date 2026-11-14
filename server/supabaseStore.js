@@ -41,10 +41,10 @@ export const checkoutStore = {
   async getProduct(id) {
     const db = getAdminSupabase()
     const product = checked(await db.from('brand_products').select('*').eq('id', id).maybeSingle())
-    if (product) return product
+    if (product) return { ...product, checkout_source: 'store' }
     const listing = checked(await db.from('listings').select('*').eq('id', id).maybeSingle())
     if (!listing) return null
-    return { ...listing, status: listing.status === 'available' ? 'active' : listing.status,
+    return { ...listing, checkout_source: 'market', status: listing.status === 'available' ? 'active' : listing.status,
       photo_url: listing.image_url }
   },
   async saveOrder(row) {

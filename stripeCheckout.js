@@ -41,13 +41,17 @@ export async function resolveCheckoutItems(body, store = checkoutStore) {
   const input = body.items || [{ id: body.productId || body.id, qty: body.quantity || 1 }]
   if (!Array.isArray(input) || !input.length || input.length > 50) fail('Choose 1 to 50 cart items')
   const items = []
+  const seen = new Set()
   for (const item of input) {
     const id = item?.id || item?.productId
     if (typeof id !== 'string' || !/^[0-9a-f-]{36}$/i.test(id)) fail('Invalid product ID')
+    if (seen.has(id)) fail('Each product must appear only once in the cart')
+    seen.add(id)
     const quantity = Number(item.qty ?? item.quantity ?? 1)
     if (!Number.isInteger(quantity) || quantity < 1 || quantity > 10) fail('Quantity must be 1 to 10')
     const product = await store.getProduct(id)
     if (!product || product.status !== 'active') fail('A cart product is no longer available', 409)
+    if (product.checkout_source === 'market' && quantity !== 1) fail('Market listings are limited to one item')
     const unitAmount = Math.round(Number(product.price) * 100)
     if (!Number.isSafeInteger(unitAmount) || unitAmount < 50) fail('Product price is invalid', 409)
     const variants = storedPrintfulVariants(product)
@@ -71,8 +75,9 @@ export async function resolveCheckoutItems(body, store = checkoutStore) {
     for (const group of groups.values()) {
       items.push({
         productId: product.id, title: group.variant?.size ? `${product.title} (${group.variant.size})` : product.title,
-        unitAmount, quantity: group.quantity, size: group.variant?.size || '',
+        unitAmount, quantity: group.quantity, size: group.variant?.size || product.size || '',
         photoUrl: product.mockup_urls?.[0] || product.photo_url || product.image_url || '',
+        source: product.checkout_source || (product.seller_id ? 'market' : 'store'),
         printfulVariantId: group.variant?.variant_id || null,
         creatorId: product.creator_id || product.seller_id || null,
         baseAmount: group.variant?.currency === 'USD' && Number(group.variant.base_price) > 0
@@ -244,6 +249,7 @@ export async function fulfillPaidCheckout(session, {
     if (!printable.length) {
       return await store.updateOrder(session.id, {
         payment_status: 'paid', fulfillment_status: 'not_required', claim_until: null,
+        recipient: recipientFromSession(session),
       })
     }
     const externalId = order.id.replaceAll('-', '')
@@ -268,6 +274,7 @@ export async function fulfillPaidCheckout(session, {
     if (!draft.id) throw new Error('Printful did not return a draft order ID')
     return await store.updateOrder(session.id, {
       payment_status: 'paid', fulfillment_status: 'draft', printful_order_id: draft.id,
+      recipient: order.recipient || recipientFromSession(session),
       fulfillment_error: null, claim_until: null,
     })
   } catch (error) {

@@ -74,6 +74,8 @@ export function addToCart(product) {
       code: product.code || '',
       clothingType: product.clothingType || product.category || '',
       photoUrl: product.photoUrl || product.image_url || '',
+      detailVariant: product.detailVariant,
+      mockupUrls: product.mockupUrls || product.mockup_urls || [],
       description: product.description || '',
       printfulVariantId:
         product.printfulVariantId ||

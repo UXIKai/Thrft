@@ -128,8 +128,8 @@ export default function ProductDetail({
             ? {
                 ...row,
                 size,
-                qty: Math.min(inBag + 1, 99),
-                selectedSizes: [...selectedSizes, size].slice(0, 99),
+                qty: Math.min(inBag + 1, 10),
+                selectedSizes: [...selectedSizes, size].slice(0, 10),
               }
             : row,
         ),
@@ -149,7 +149,7 @@ export default function ProductDetail({
     replaceItems(
       items.map((row) =>
         row.id === product.id
-          ? { ...row, qty: Math.min(next, 99), selectedSizes: selectedSizes.slice(0, next) }
+          ? { ...row, qty: Math.min(next, 10), selectedSizes: selectedSizes.slice(0, next) }
           : row,
       ),
     )
@@ -413,6 +413,7 @@ export default function ProductDetail({
             type="button"
             className="product-detail-step product-detail-plus-btn is-bare"
             aria-label="Add one"
+            disabled={qty >= 10}
             tabIndex={added && !sizing ? 0 : -1}
             onClick={start}
           >

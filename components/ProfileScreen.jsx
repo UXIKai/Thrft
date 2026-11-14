@@ -19,6 +19,7 @@ import { getSupabase, isSupabaseConfigured } from '../supabase.js'
 import BrandGlobe from './BrandGlobe.jsx'
 import GiveBack from './GiveBack.jsx'
 import OrbitCarousel from './OrbitCarousel.jsx'
+import OrdersScreen from './OrdersScreen.jsx'
 import SectionSwiper from './SectionSwiper.jsx'
 import SettingsScreen from './SettingsScreen.jsx'
 import SwipeBackPage from './SwipeBackPage.jsx'
@@ -423,44 +424,6 @@ function EmptyBoxIcon() {
         strokeWidth="1.6"
         strokeLinejoin="round"
         d="M10 24 32 12l22 12v26H10V24zm0 0 22 12 22-12M32 36v26M10 50l22 12 22-12"
-      />
-    </svg>
-  )
-}
-
-function ShipMap() {
-  return (
-    <svg className="profile-ship-map" viewBox="0 0 320 168" aria-hidden>
-      <rect width="320" height="168" fill="currentColor" fillOpacity="0.02" />
-      <path
-        fill="currentColor"
-        fillOpacity="0.1"
-        d="M22 70c14-22 40-34 68-30 22 3 36 18 56 16 14-2 22-16 38-18 24-3 48 10 70 6 18-3 34-16 50-8 12 6 16 22 10 34-8 16-28 20-42 30-18 12-22 32-42 38-24 8-52 0-74-10-16-7-26-22-42-26-20-6-46 4-62-12-10-10-8-24-4-30z"
-      />
-      <path
-        fill="currentColor"
-        fillOpacity="0.06"
-        d="M48 118c10-6 24-4 34 2 8 5 10 16 4 24-8 10-24 12-36 6-10-5-12-20-2-32zM248 40c16-4 32 6 36 18 3 10-6 20-16 22-14 4-28-4-34-14-5-9 0-22 14-26z"
-      />
-      <path
-        d="M78 96c28-10 58-22 96-28 24-4 48-2 72 8"
-        fill="none"
-        stroke="currentColor"
-        strokeOpacity="0.5"
-        strokeWidth="1.4"
-        strokeDasharray="3.5 4.5"
-        strokeLinecap="round"
-      />
-      <circle cx="78" cy="96" r="3.8" fill="currentColor" />
-      <circle cx="174" cy="70" r="3.2" fill="currentColor" />
-      <circle cx="246" cy="76" r="4.6" fill="currentColor" />
-      <circle
-        cx="246"
-        cy="76"
-        r="8.5"
-        fill="none"
-        stroke="currentColor"
-        strokeOpacity="0.28"
       />
     </svg>
   )
@@ -2238,59 +2201,7 @@ export default function ProfileScreen({
       {stageEl &&
         shipOpen &&
         createPortal(
-          <div
-            className="profile-panel is-popup is-orders"
-            role="dialog"
-            aria-modal="true"
-            aria-label="Orders"
-          >
-            <header className="profile-panel-top">
-              <button
-                type="button"
-                className="profile-panel-back"
-                aria-label="Back to profile"
-                onClick={() => setShipOpen(false)}
-              >
-                <BackIcon />
-              </button>
-              <div className="profile-label-row is-panel-title">
-                <h2 className="profile-suppliers-title" id="ship-label">
-                  Orders
-                </h2>
-                <span className="profile-live">
-                  <span className="profile-live-dot" aria-hidden />
-                  Live
-                </span>
-              </div>
-              <span className="profile-panel-spacer" aria-hidden />
-            </header>
-            <div className="profile-panel-body">
-              <div className="profile-ship-card">
-                <div className="profile-ship-map-wrap">
-                  <ShipMap />
-                  <div className="profile-ship-chip" aria-hidden>
-                    WI
-                  </div>
-                </div>
-                <div className="profile-ship-stats">
-                  <div className="profile-ship-stat">
-                    <span className="profile-ship-n">-</span>
-                    <span className="profile-ship-l">Cities</span>
-                  </div>
-                  <div className="profile-ship-rule" aria-hidden />
-                  <div className="profile-ship-stat">
-                    <span className="profile-ship-n">-</span>
-                    <span className="profile-ship-l">Regions</span>
-                  </div>
-                  <div className="profile-ship-rule" aria-hidden />
-                  <div className="profile-ship-stat">
-                    <span className="profile-ship-n">-</span>
-                    <span className="profile-ship-l">Orders</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>,
+          <OrdersScreen onBack={() => setShipOpen(false)} />,
           stageEl,
         )}
 

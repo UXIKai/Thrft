@@ -27,6 +27,8 @@ const { verifyStripeEvent, resolveCheckoutItems, fulfillPaidCheckout,
 const { creatorPricing, mapCreatorProduct } = await import('../creatorProducts.js')
 const { buildPersonalizedRows } = await import('../forYou.js')
 const { checkoutStore } = await import('../server/supabaseStore.js')
+const { fetchOrders } = await import('../server/orders.js')
+const { addToCart, readCart, clearCart } = await import('../cart.js')
 
 function json(body, status = 200) {
   return new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } })
@@ -53,7 +55,7 @@ function fixture() {
     creator_profiles: [{ id: creatorId, username: 'creator', display_name: 'Creator',
       avatar_url: '', bio: '', created_at: '2026-01-01T00:00:00Z' }],
     creator_follows: [], creator_profile_preferences: [], creator_saved_products: [],
-    creator_leaderboard: [], listings: [] }
+    creator_leaderboard: [], creator_order_items: [], listings: [] }
   const calls = []
   let paid = false
   let draft
@@ -206,6 +208,87 @@ test('Store rows preserve real listing IDs and never synthesize missing brands o
   assert.ok(rows[0].products.every((product) => product.id === second.id))
   assert.ok(rows[1].products.every((product) => product.id === first.id))
   assert.deepEqual(buildPersonalizedRows({ catalog: [], favoredBrands: ['lv'] }), [])
+})
+
+test('cart retains Printful sizes and mockups for the checkout snapshot', async () => {
+  const previous = Object.getOwnPropertyDescriptor(globalThis, 'localStorage')
+  const storage = new Map()
+  Object.defineProperty(globalThis, 'localStorage', { configurable: true, value: {
+    getItem: (key) => storage.get(key) || null,
+    setItem: (key, value) => storage.set(key, value),
+  } })
+  try {
+    const product = mapCreatorProduct({ id: productId, title: 'Tee', price: 25,
+      artwork_url: artwork, mockup_urls: ['https://images.test/tee.jpg'],
+      printful_variants: [{ variant_id: 4011, size: 'M' }, { variant_id: 4012, size: 'L' }] })
+    addToCart({ ...product, detailVariant: 'store', size: 'M' })
+    addToCart({ ...product, detailVariant: 'store', size: 'L' })
+    assert.deepEqual(readCart()[0].selectedSizes, ['M', 'L'])
+    assert.deepEqual(readCart()[0].mockupUrls, product.mockupUrls)
+    const resolved = await resolveCheckoutItems({ items: readCart() }, {
+      getProduct: async () => ({ ...product, price: product.priceRaw, status: 'active' }),
+    })
+    assert.deepEqual(resolved.map((item) => item.printfulVariantId), [4011, 4012])
+    clearCart()
+  } finally {
+    if (previous) Object.defineProperty(globalThis, 'localStorage', previous)
+    else delete globalThis.localStorage
+  }
+})
+
+test('orders API scopes purchases and sales and never returns private snapshots', async () => {
+  const f = fixture()
+  const base = { order_id: productId, item_index: 1, buyer_id: creatorId, seller_id: productId,
+    source: 'store', fulfillment_status: 'draft', created_at: '2026-01-01',
+    item: { title: 'Tee', quantity: 2, unitAmount: 2500, baseAmount: 1000,
+      printfulVariantId: 4011, artworkUrl: artwork, size: 'M' } }
+  f.tables.creator_order_items.push(base, { ...base, order_id: creatorId,
+    buyer_id: productId, seller_id: creatorId, source: 'market', item: {
+      title: 'Coat', quantity: 1, unitAmount: 3000, artworkUrl: artwork,
+    } })
+  assert.equal((await request('/api/creator/me/orders?kind=purchases', { token: null })).status, 401)
+  const purchases = await request('/api/creator/me/orders?kind=purchases')
+  const sales = await request('/api/creator/me/orders?kind=sales')
+  assert.deepEqual(purchases.body.items.map((row) => row.title), ['Tee'])
+  assert.deepEqual(sales.body.items.map((row) => row.title), ['Coat'])
+  assert.equal(purchases.body.items[0].margin, null)
+  assert.equal(JSON.stringify(purchases.body).includes(artwork), false)
+  assert.equal((await request('/api/creator/me/orders?kind=all')).status, 400)
+})
+
+test('orders display live Printful status, safe tracking and known seller margin', async () => {
+  const row = { order_id: productId, item_index: 1, source: 'store', printful_order_id: 123,
+    shipments: [{ carrier: 'UPS', tracking_number: '1Z123', tracking_url: 'https://ups.test/track' },
+      { tracking_number: 'bad-link', tracking_url: 'javascript:alert(1)' }],
+    item: { title: 'Tee', quantity: 2, unitAmount: 2500, baseAmount: 1000, printfulVariantId: 4011 } }
+  const query = { order: () => query, range: async () => ({ data: [row] }) }
+  const db = { from: () => ({ select: () => ({ eq: () => query }) }) }
+  const [sale] = await fetchOrders(creatorId, 'sales', {
+    db, fetchPrintful: async () => ({ id: 123, status: 'inprocess' }),
+  })
+  assert.equal(sale.status, 'inprocess')
+  assert.equal(sale.margin, 3000)
+  assert.equal(sale.tracking[0].url, 'https://ups.test/track')
+  assert.equal(sale.tracking[1].url, null)
+})
+
+test('paid Market orders retain the Stripe delivery address and reject multiple quantities', async () => {
+  const f = fixture()
+  f.tables.listings.push({ id: productId, seller_id: creatorId, title: 'Coat', price: 30,
+    status: 'available', image_url: 'https://images.test/coat.jpg' })
+  const invalid = await request('/api/checkout/session', { method: 'POST',
+    body: { items: [{ id: productId, qty: 2 }] } })
+  assert.equal(invalid.status, 400)
+  const checkout = await request('/api/checkout/session', { method: 'POST',
+    body: { items: [{ id: productId, qty: 1 }] } })
+  assert.equal(checkout.status, 200)
+  f.markPaid()
+  const event = signedEvent()
+  assert.equal((await request('/api/webhooks/stripe', { method: 'POST', ...event })).status, 200)
+  const order = f.tables.creator_checkout_orders[0]
+  assert.equal(order.items[0].source, 'market')
+  assert.equal(order.recipient.address1, '1 Test Road')
+  assert.equal(order.payment_status, 'paid')
 })
 
 test('member pages exist without products and report real follow relationships', async () => {

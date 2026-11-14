@@ -9,6 +9,7 @@ import { createCheckoutSession, estimateCheckout, getCheckoutSession, handleStri
   getStripeCheckoutConfig } from '../stripeCheckout.js'
 import { fetchPublicAccount, fetchSocialProfile, saveSocialProfile,
   fetchSocialSaved, saveSocialSaved, fetchLeaderboard } from './socialStore.js'
+import { fetchOrders } from './orders.js'
 
 function fail(message, status = 400) {
   throw Object.assign(new Error(message), { status })
@@ -130,7 +131,9 @@ export async function handleCreatorApi(req, res) {
     }
     const user = await requireCreator(req)
     const db = getAdminSupabase()
-    if (path === '/api/creator/me/profile' && req.method === 'GET') {
+    if (path === '/api/creator/me/orders' && req.method === 'GET') {
+      send(res, 200, { items: await fetchOrders(user.id, url.searchParams.get('kind')) })
+    } else if (path === '/api/creator/me/profile' && req.method === 'GET') {
       send(res, 200, await fetchSocialProfile(user))
     } else if (path === '/api/creator/me/profile' && req.method === 'PUT') {
       send(res, 200, await saveSocialProfile(user, await readBody(req)))
@@ -242,7 +245,9 @@ export async function handleCreatorApi(req, res) {
     }
   } catch (error) {
     console.error('[creator-api]', error.message)
-    if (['PGRST205', '42P01'].includes(error.code) && /creator_(profiles|public_profiles|profile_preferences|saved_products|leaderboard)/.test(error.message)) {
+    if (['PGRST205', '42P01'].includes(error.code) && /creator_order_items/.test(error.message)) {
+      send(res, 503, { message: 'Run supabase/orders.sql to enable Orders.' })
+    } else if (['PGRST205', '42P01'].includes(error.code) && /creator_(profiles|public_profiles|profile_preferences|saved_products|leaderboard)/.test(error.message)) {
       send(res, 503, { message: 'Run supabase/social.sql to enable profiles, Saved, and the Leaderboard.' })
     } else if (error.code === 'PGRST204' && /printful_variants|recipient|shipping_rate|tracking_number|tracking_url|shipments/.test(error.message)) {
       send(res, 503, { message: 'Run supabase/creator-pipeline.sql to update the creator and checkout tables, then retry.' })

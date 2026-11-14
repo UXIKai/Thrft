@@ -1,0 +1,79 @@
+.orders-screen {
+  z-index: 56;
+  padding-top: env(safe-area-inset-top, 0px);
+  background: var(--page-bg);
+}
+
+.orders-tabs {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  padding: 8px 16px 14px;
+}
+
+.orders-tabs button {
+  min-width: 115px;
+  padding: 9px 16px;
+  border-radius: 999px;
+  color: inherit;
+}
+
+.orders-tabs button[aria-selected="true"] {
+  outline: 1px solid currentColor;
+}
+
+.orders-body {
+  width: min(100%, 700px);
+  margin: 0 auto;
+}
+
+.orders-list {
+  display: grid;
+  gap: 12px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.orders-item {
+  display: flex;
+  gap: 14px;
+  padding: 12px;
+  border: 1px solid var(--glass-border, rgba(160, 160, 160, .25));
+  border-radius: 18px;
+  background: var(--glass-clear-tint, rgba(128, 128, 128, .08));
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.orders-photo {
+  flex: 0 0 86px;
+  height: 100px;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.orders-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.orders-info {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.orders-info h2 {
+  font-size: 1rem;
+  margin: 0 0 6px;
+}
+
+.orders-info p {
+  font-size: .85rem;
+  margin: 4px 0;
+}
+
+.orders-info a {
+  color: inherit;
+}
