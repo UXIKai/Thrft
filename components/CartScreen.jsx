@@ -135,6 +135,42 @@ export default function CartScreen({
     onClose?.()
   }
 
+  // Holding the button opens the menu; moving rotates a choice into the middle and letting go picks it
+  const heldRef = useRef(false)
+  const pickMenu = (id) => {
+    setMenuOpen(false)
+    if (id !== 'cart') onMenuPick?.(id)
+  }
+  const onHoldDown = (e) => {
+    if (e.pointerType === 'mouse' && e.button !== 0) return
+    clearTimeout(holdRef.current)
+    heldRef.current = false
+    holdRef.current = setTimeout(() => {
+      heldRef.current = true
+      setMenuOpen(true)
+    }, 420)
+  }
+  const cancelHold = () => clearTimeout(holdRef.current)
+  useEffect(() => {
+    if (!menuOpen) return undefined
+    const onMove = (e) => moveKnob(e.clientX, e.clientY)
+    const onUp = () => {
+      const hit = radialAt()
+      if (hit) pickMenu(hit.dataset.radial)
+      else setMenuOpen(false)
+    }
+    window.addEventListener('pointermove', onMove)
+    window.addEventListener('pointerup', onUp)
+    window.addEventListener('pointercancel', onUp)
+    return () => {
+      window.removeEventListener('pointermove', onMove)
+      window.removeEventListener('pointerup', onUp)
+      window.removeEventListener('pointercancel', onUp)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [menuOpen])
+  useEffect(() => () => clearTimeout(holdRef.current), [])
+
   if (!stageEl) return null
 
   return createPortal(
@@ -148,17 +184,31 @@ export default function CartScreen({
       onTouchMove={onTouchMove}
       onTouchEnd={() => { swipeRef.current = null }}
     >
-      <button type="button" className="cart-chevron is-bare" aria-label="Show navigation" onClick={() => onShowNav?.()}>
+      <button
+        type="button"
+        className="cart-chevron is-bare"
+        aria-label="Show navigation"
+        style={{ touchAction: 'none' }}
+        onPointerDown={onHoldDown}
+        onPointerUp={cancelHold}
+        onPointerLeave={cancelHold}
+        onPointerCancel={cancelHold}
+        onContextMenu={(e) => e.preventDefault()}
+        onClick={() => {
+          if (heldRef.current) {
+            heldRef.current = false
+            return
+          }
+          onShowNav?.()
+        }}
+      >
         <NavButtonGlyph icon={<svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M3 4h2.4l2.1 11h9.6l1.9-8H6.2" /><circle cx="9" cy="19" r="1.2" /><circle cx="16.5" cy="19" r="1.2" /></g></svg>} />
       </button>
       {menuOpen && (
         <HomeRadialMenu
           bagCount={items.length}
           onClose={() => setMenuOpen(false)}
-          onPick={(id) => {
-            setMenuOpen(false)
-            if (id !== 'cart') onMenuPick?.(id)
-          }}
+          onPick={pickMenu}
         />
       )}
       <div className="glass-overlay-body cart-body">
