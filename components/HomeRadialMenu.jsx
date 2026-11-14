@@ -56,7 +56,10 @@ export function moveKnob(x, y) {
   wheel.querySelectorAll('[data-radial]').forEach((el) => {
     const [sx, sy] = SLOTS[el.dataset.radial]
     el.classList.toggle('is-hot', el.dataset.radial === id)
-    el.style.opacity = Math.hypot(sx + dx, sy + dy) > R * 1.6 ? '0' : ''
+    // Foreshortening: buttons shrink and fade as they turn away around the globe
+    const c = Math.cos(Math.min(Math.hypot(sx + dx, sy + dy) / (R * 1.7), 1) * (Math.PI / 2))
+    el.style.setProperty('--gs', (0.5 + 0.5 * c).toFixed(3))
+    el.style.opacity = (0.25 + 0.75 * c).toFixed(3)
   })
   wheel.dataset.sel = id
 }
@@ -87,6 +90,15 @@ export default function HomeRadialMenu({ onPick, onClose, bagCount = 0 }) {
   return createPortal(
     <div className="home-radial-scrim" onPointerDown={(e) => e.target === e.currentTarget && onClose?.()}>
       <div className="home-radial" role="menu" aria-label="Menu">
+        <svg className="home-radial-grid" viewBox="-100 -100 200 200" aria-hidden="true">
+          <g fill="none" stroke="currentColor" strokeWidth="0.6">
+            <ellipse rx="100" ry="34" />
+            <ellipse rx="100" ry="68" />
+            <ellipse rx="34" ry="100" />
+            <ellipse rx="68" ry="100" />
+            <path d="M-100 0H100M0 -100V100" />
+          </g>
+        </svg>
         <span className="home-radial-lens" aria-hidden="true" />
         {ITEMS.map(({ id, label, Icon }) => (
           <button
