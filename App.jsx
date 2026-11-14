@@ -194,53 +194,6 @@ export default function App() {
   useEffect(() => {
     setAtBottom(true)
   }, [tab])
-
-  function changeTab(nextTab) {
-    if (nextTab !== tab) {
-      setHomeBrand(null)
-      setClothingType('all')
-      setHomeColor('')
-      setHomePickerQuery('')
-      closeHomePicker()
-      clearSearchBackground()
-    }
-    setTab(nextTab)
-  }
-
-  // Holding the bottom button opens Home / Chat / Liked / Profile; moving picks one and letting go goes there
-  const [tabMenuOpen, setTabMenuOpen] = useState(false)
-  const tabHoldRef = useRef(null)
-  const tabHeldRef = useRef(false)
-  const startTabHold = (e) => {
-    if (e.pointerType === 'mouse' && e.button !== 0) return
-    clearTimeout(tabHoldRef.current)
-    tabHeldRef.current = false
-    tabHoldRef.current = setTimeout(() => {
-      tabHeldRef.current = true
-      setTabMenuOpen(true)
-    }, 420)
-  }
-  const cancelTabHold = () => clearTimeout(tabHoldRef.current)
-  const pickTab = (id) => {
-    setTabMenuOpen(false)
-    if (id && id !== 'stay' && id !== tab) changeTab(id)
-  }
-  const pickTabRef = useRef(pickTab)
-  pickTabRef.current = pickTab
-  useEffect(() => {
-    if (!tabMenuOpen) return undefined
-    const onMove = (e) => moveKnob(e.clientX, e.clientY)
-    const onUp = () => pickTabRef.current(radialAt()?.dataset.radial)
-    window.addEventListener('pointermove', onMove)
-    window.addEventListener('pointerup', onUp)
-    window.addEventListener('pointercancel', onUp)
-    return () => {
-      window.removeEventListener('pointermove', onMove)
-      window.removeEventListener('pointerup', onUp)
-      window.removeEventListener('pointercancel', onUp)
-    }
-  }, [tabMenuOpen])
-  useEffect(() => () => clearTimeout(tabHoldRef.current), [])
   useEffect(() => {
     const stage = stageRef.current
     const el = scrollRef.current
@@ -875,25 +828,10 @@ export default function App() {
           className="nav-toggle is-bare"
           aria-label={atBottom ? 'Show navigation' : 'Hide navigation'}
           aria-expanded={!atBottom}
-          style={{ touchAction: 'none' }}
-          onPointerDown={startTabHold}
-          onPointerUp={cancelTabHold}
-          onPointerLeave={cancelTabHold}
-          onPointerCancel={cancelTabHold}
-          onContextMenu={(e) => e.preventDefault()}
-          onClick={() => {
-            if (tabHeldRef.current) {
-              tabHeldRef.current = false
-              return
-            }
-            setAtBottom((hidden) => !hidden)
-          }}
+          onClick={() => setAtBottom((hidden) => !hidden)}
         >
           <NavButtonGlyph />
         </button>
-      )}
-      {tabMenuOpen && (
-        <HomeRadialMenu mode="tabs" current={tab} onClose={() => setTabMenuOpen(false)} onPick={pickTab} />
       )}
       {signedIn && showNav && <TabBar active={tab} onCreate={(segment) => {
         setCreateSegment(segment)
@@ -901,7 +839,17 @@ export default function App() {
         closeHomePicker()
         clearSearchBackground()
         setTab('design')
-      }} onChange={changeTab} />}
+      }} onChange={(nextTab) => {
+        if (nextTab !== tab) {
+          setHomeBrand(null)
+          setClothingType('all')
+          setHomeColor('')
+          setHomePickerQuery('')
+          closeHomePicker()
+          clearSearchBackground()
+        }
+        setTab(nextTab)
+      }} />}
     </div>
   )
 }
