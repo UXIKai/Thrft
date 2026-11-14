@@ -282,7 +282,6 @@ export default function ProductRows({
   if (segment === 'market') {
     return (
       <section className="product-feed market-product-feed" id="home-product-panel" role="tabpanel" aria-labelledby="home-market-tab" aria-busy={status === 'loading'}>
-        {error && <p role="alert">{error}</p>}
         {!marketItems.length && <p role="status">{status === 'loading' ? 'Loading products...' : 'No Market products found.'}</p>}
         <h2 className="market-heading">Suggested for you</h2>
         <div className="market-chips" role="tablist" aria-label="Market filters">
@@ -318,7 +317,7 @@ export default function ProductRows({
 
   return (
     <section className="product-feed" id="home-product-panel" role="tabpanel" aria-labelledby={`home-${segment}-tab`}>
-      {error ? <p role="alert">{error}</p> : !rows.length && <p role="status">No {segment === 'market' ? 'Market' : 'Store'} products found.</p>}
+      {!rows.length && <p role="status">No {segment === 'market' ? 'Market' : 'Store'} products found.</p>}
       {rows.map((row, rowIndex) => (
         <CrawlRow
           key={row.id}
