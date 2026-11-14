@@ -36,17 +36,20 @@ const DIRS = { leaderboard: [0, -1], store: [-1, 0], market: [1, 0], cart: [0, 1
 let origin = null
 let selected = 'search'
 
-// The whole menu follows the finger; whichever button ends up nearest the middle is chosen
+// The chosen button comes forward into the middle (leaning slightly with the finger) and the old middle button takes its slot
 function paint(id, ox = 0, oy = 0) {
   const wheel = document.querySelector('.home-radial')
   if (!wheel) return
   selected = id
   wheel.querySelectorAll('[data-radial]').forEach((el) => {
     const k = el.dataset.radial
-    const [ux, uy] = DIRS[k]
+    const slotOf = k === 'search' ? id : k
     const centre = k === id
+    const [ux, uy] = centre ? [0, 0] : DIRS[slotOf]
+    const lx = centre ? ox : 0
+    const ly = centre ? oy : 0
     el.style.transform = 'none'
-    el.style.translate = `calc(-50% + ${ux * SLOT + ox}px) calc(-50% + ${uy * SLOT + oy}px)`
+    el.style.translate = `calc(-50% + ${ux * SLOT + lx}px) calc(-50% + ${uy * SLOT + ly}px)`
     el.style.setProperty('--gs', centre ? '1' : '0.8')
     el.style.opacity = centre ? '1' : '0.8'
     el.classList.toggle('is-hot', centre && id !== 'search')
@@ -54,20 +57,19 @@ function paint(id, ox = 0, oy = 0) {
   wheel.dataset.sel = id
 }
 
-// Moving the finger slides the menu with it, so the button in the opposite direction comes to the middle
+// Swiping any direction picks the button on the opposite side, by angle, so diagonals lean toward the nearest one
 export function moveKnob(x, y) {
   if (!origin) origin = [x, y]
-  let ox = x - origin[0]
-  let oy = y - origin[1]
-  const len = Math.hypot(ox, oy)
-  if (len > SLOT) { ox = ox / len * SLOT; oy = oy / len * SLOT }
-  let best = 'search'
-  let bestD = Infinity
-  for (const [k, [ux, uy]] of Object.entries(DIRS)) {
-    const d = Math.hypot(ux * SLOT + ox, uy * SLOT + oy) + (k === selected ? -10 : 0)
-    if (d < bestD) { bestD = d; best = k }
+  const dx = x - origin[0]
+  const dy = y - origin[1]
+  const len = Math.hypot(dx, dy)
+  const lean = Math.min(len, SLOT) / (len || 1) * 0.3
+  let id = 'search'
+  if (len > 8) {
+    const horizontal = Math.abs(dx) > Math.abs(dy)
+    id = horizontal ? (dx < 0 ? 'market' : 'store') : dy < 0 ? 'cart' : 'leaderboard'
   }
-  paint(best, ox, oy)
+  paint(id, dx * lean, dy * lean)
 }
 
 export function radialAt() {
