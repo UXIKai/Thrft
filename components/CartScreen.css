@@ -355,7 +355,8 @@
 .cart-screen .cart-nav {
   --slot: 40px;
   position: absolute;
-  top: calc(env(safe-area-inset-top, 0px) + 12px);
+  top: auto;
+  bottom: calc(max(4px, env(safe-area-inset-bottom, 0px) * 0.3) + 27px);
   left: 50%;
   z-index: 3;
   width: calc(var(--slot) * 3);
