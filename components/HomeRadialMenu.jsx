@@ -55,7 +55,10 @@ function paint(id) {
   wheel.dataset.sel = id
 }
 
-// Swiping a direction brings the button on the opposite side to the middle
+// Each swipe steps the selection one place that way; swiping back goes through Search in the middle
+const PICKS = { '0,0': 'search', '0,-1': 'cart', '0,1': 'leaderboard', '-1,0': 'market', '1,0': 'store' }
+let cursor = [0, 0]
+
 export function moveKnob(x, y) {
   if (!origin) origin = [x, y]
   const dx = x - origin[0]
@@ -63,8 +66,14 @@ export function moveKnob(x, y) {
   if (Math.hypot(dx, dy) < 14) return
   // Direction only: the finger can be anywhere, and each fresh swipe restarts from where it is
   const horizontal = Math.abs(dx) > Math.abs(dy)
-  const id = horizontal ? (dx < 0 ? 'market' : 'store') : dy < 0 ? 'cart' : 'leaderboard'
+  const step = horizontal ? [Math.sign(dx), 0] : [0, Math.sign(dy)]
   origin = [x, y]
+  const sameAxis = horizontal ? cursor[1] === 0 : cursor[0] === 0
+  const next = sameAxis
+    ? [Math.max(-1, Math.min(1, cursor[0] + step[0])), Math.max(-1, Math.min(1, cursor[1] + step[1]))]
+    : step
+  cursor = next
+  const id = PICKS[`${next[0]},${next[1]}`]
   if (id !== selected) paint(id)
 }
 
@@ -74,6 +83,7 @@ export function radialAt() {
 
 function resetKnob() {
   origin = null
+  cursor = [0, 0]
   selected = 'search'
   requestAnimationFrame(() => paint('search'))
 }
