@@ -31,46 +31,32 @@ const CartIcon = () => (
   </svg>
 )
 
-const TH = (60 * Math.PI) / 180
-const RS = 112
+const SLOT = 97
 const DIRS = { leaderboard: [0, -1], store: [-1, 0], market: [1, 0], cart: [0, 1], search: [0, 0] }
 let origin = null
 let selected = 'search'
-let cur = [0, 0]
-let target = [0, 0]
-let raf = 0
 
-// Each button sits on a globe: turning the globe carries it along the surface, shrinking and fading as it rolls away
-function paint() {
+// The chosen button comes forward into the middle and the old middle button takes the chosen one's place
+function paint(id) {
   const wheel = document.querySelector('.home-radial')
   if (!wheel) return
-  const [ax, ay] = cur
+  selected = id
   wheel.querySelectorAll('[data-radial]').forEach((el) => {
-    const [ux, uy] = DIRS[el.dataset.radial]
-    let x = ux * Math.sin(TH)
-    let y = uy * Math.sin(TH)
-    let z = Math.cos(TH)
-    if (!ux && !uy) z = 1
-    const x1 = x * Math.cos(ay) + z * Math.sin(ay)
-    const z1 = -x * Math.sin(ay) + z * Math.cos(ay)
-    const y2 = y * Math.cos(ax) - z1 * Math.sin(ax)
-    const z2 = y * Math.sin(ax) + z1 * Math.cos(ax)
-    x = x1
-    y = y2
-    z = z2
+    const k = el.dataset.radial
+    const slotOf = k === 'search' ? id : k
+    const centre = k === id
+    const [ux, uy] = centre ? [0, 0] : DIRS[slotOf]
     el.style.transform = 'none'
-    el.style.transition = 'none'
-    el.style.translate = `calc(-50% + ${(x * RS).toFixed(1)}px) calc(-50% + ${(y * RS).toFixed(1)}px + var(--lift, 0px))`
-    el.style.setProperty('--gs', (0.45 + 0.55 * Math.max(z, 0)).toFixed(3))
-    el.style.opacity = Math.max(0, Math.min(1, z * 1.6)).toFixed(3)
-    el.style.pointerEvents = z > 0.3 ? '' : 'none'
+    el.style.translate = `calc(-50% + ${ux * SLOT}px) calc(-50% + ${uy * SLOT}px)`
+    el.style.setProperty('--gs', centre ? '1' : '0.8')
+    el.style.opacity = centre ? '1' : '0.8'
+    el.classList.toggle('is-hot', centre && id !== 'search')
   })
+  wheel.dataset.sel = id
 }
 
-// Pointing a direction raises that button a little; the buttons themselves stay put
+// Pointing a direction brings that button to the middle
 export function moveKnob(x, y) {
-  const wheel = document.querySelector('.home-radial')
-  if (!wheel) return
   if (!origin) origin = [x, y]
   const dx = x - origin[0]
   const dy = y - origin[1]
@@ -78,13 +64,7 @@ export function moveKnob(x, y) {
   if (Math.hypot(dx, dy) > 10) {
     id = Math.abs(dx) > Math.abs(dy) ? (dx < 0 ? 'store' : 'market') : dy < 0 ? 'leaderboard' : 'cart'
   }
-  selected = id
-  wheel.querySelectorAll('[data-radial]').forEach((el) => {
-    const on = el.dataset.radial === id
-    el.classList.toggle('is-hot', on)
-    el.style.setProperty('--lift', on && id !== 'search' ? '-7px' : '0px')
-  })
-  wheel.dataset.sel = id
+  if (id !== selected) paint(id)
 }
 
 export function radialAt() {
@@ -94,11 +74,7 @@ export function radialAt() {
 function resetKnob() {
   origin = null
   selected = 'search'
-  cur = [0, 0]
-  target = [0, 0]
-  cancelAnimationFrame(raf)
-  raf = 0
-  requestAnimationFrame(paint)
+  requestAnimationFrame(() => paint('search'))
 }
 
 const ITEMS = [
