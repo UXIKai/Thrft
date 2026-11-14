@@ -190,7 +190,8 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false })
   const arrow = (
     <svg viewBox="0 0 12 10" aria-hidden="true"><path d="M6 1.2 10.6 8.4H1.4Z" fill="currentColor" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /></svg>
   )
-  const hide = onLeaderboard ? ' is-hidden' : ''
+  // Arrows at a dead end are dimmed; the Leaderboard has no left/right neighbours.
+  const side = onLeaderboard ? ' is-end' : ''
 
   return (
     <div
@@ -199,10 +200,10 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false })
       role="status"
       aria-label={`${SEGMENTS.find((s) => s.id === value)?.label}. Swipe left or right for Store and Market; pull down at the top for the Leaderboard.`}
     >
-      <span className={`wheel-arrow is-left${hide}${shopIndex === 0 ? ' is-end' : ''}`} aria-hidden="true">{arrow}</span>
-      <span className={`wheel-arrow is-right${hide}${shopIndex === 1 ? ' is-end' : ''}`} aria-hidden="true">{arrow}</span>
-      <span className={`wheel-arrow is-up${hide}`} aria-hidden="true">{arrow}</span>
-      <span className={`wheel-arrow is-down${onLeaderboard ? '' : ' is-hidden'}`} aria-hidden="true">{arrow}</span>
+      <span className={`wheel-arrow is-left${shopIndex === 0 ? ' is-end' : side}`} aria-hidden="true">{arrow}</span>
+      <span className={`wheel-arrow is-right${shopIndex === 1 ? ' is-end' : side}`} aria-hidden="true">{arrow}</span>
+      <span className={`wheel-arrow is-up${onLeaderboard ? ' is-end' : ''}`} aria-hidden="true">{arrow}</span>
+      <span className={`wheel-arrow is-down${onLeaderboard ? '' : ' is-end'}`} aria-hidden="true">{arrow}</span>
       <div className="home-segment-track" aria-hidden="true">
         {SEGMENTS.map(({ id, Icon }) => (
           <span key={id} className={`home-segment-tab is-${id}`}>
