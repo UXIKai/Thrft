@@ -2720,7 +2720,7 @@ html body .home-radial .home-radial-btn.is-search:not(#_) {
 
 /* The selected button sits in the middle; the old middle swaps into its slot */
 html body .home-radial .home-radial-btn:not(#_) {
-  translate: var(--kx, 0px) var(--ky, 0px);
+  translate: calc(-50% + var(--kx, 0px)) calc(-50% + var(--ky, 0px));
   transition: translate 0.16s ease, scale 0.16s ease;
 }
 html body .home-radial .home-radial-btn.is-hot:not(#_) { scale: 1.25; }
