@@ -36,40 +36,46 @@ const DIRS = { leaderboard: [0, -1], store: [-1, 0], market: [1, 0], cart: [0, 1
 let origin = null
 let selected = 'search'
 
-// The chosen button comes forward into the middle (leaning slightly with the finger) and the old middle button takes its slot
-function paint(id, ox = 0, oy = 0) {
+const EDGE = 112
+
+// Every button is placed continuously from the finger offset, so nothing snaps or sticks.
+// Buttons slide with the finger, are kept inside the sphere, and fade as they reach its rim.
+function paint(ox = 0, oy = 0) {
   const wheel = document.querySelector('.home-radial')
   if (!wheel) return
-  selected = id
+  let best = 'search'
+  let bestD = Infinity
   wheel.querySelectorAll('[data-radial]').forEach((el) => {
     const k = el.dataset.radial
-    const slotOf = k === 'search' ? id : k
-    const centre = k === id
-    const [ux, uy] = centre ? [0, 0] : DIRS[slotOf]
-    const lx = centre ? ox : 0
-    const ly = centre ? oy : 0
+    const [ux, uy] = DIRS[k]
+    const x = ux * SLOT + ox
+    const y = uy * SLOT + oy
+    const d = Math.hypot(x, y)
+    const kd = d + (k === selected ? -6 : 0)
+    if (kd < bestD) { bestD = kd; best = k }
+    const k2 = d > EDGE ? EDGE / d : 1
+    const fade = d <= EDGE ? 1 : Math.max(0, 1 - (d - EDGE) / 36)
     el.style.transform = 'none'
-    el.style.translate = `calc(-50% + ${ux * SLOT + lx}px) calc(-50% + ${uy * SLOT + ly}px)`
-    el.style.setProperty('--gs', centre ? '1' : '0.8')
-    el.style.opacity = centre ? '1' : '0.8'
-    el.classList.toggle('is-hot', centre && id !== 'search')
+    el.style.transition = 'none'
+    el.style.translate = `calc(-50% + ${x * k2}px) calc(-50% + ${y * k2}px)`
+    el.style.setProperty('--gs', String(0.8 + 0.2 * (1 - Math.min(d, SLOT) / SLOT)))
+    el.style.setProperty('opacity', String((0.55 + 0.45 * (1 - Math.min(d, SLOT) / SLOT)) * fade), 'important')
   })
-  wheel.dataset.sel = id
+  selected = best
+  wheel.querySelectorAll('[data-radial]').forEach((el) => {
+    el.classList.toggle('is-hot', el.dataset.radial === best && best !== 'search')
+  })
+  wheel.dataset.sel = best
 }
 
-// Swiping any direction picks the button on the opposite side, by angle, so diagonals lean toward the nearest one
+// The menu slides with the finger, so swiping up brings the bottom button to the middle
 export function moveKnob(x, y) {
   if (!origin) origin = [x, y]
-  const dx = x - origin[0]
-  const dy = y - origin[1]
-  const len = Math.hypot(dx, dy)
-  const lean = Math.min(len, SLOT) / (len || 1) * 0.3
-  let id = 'search'
-  if (len > 8) {
-    const horizontal = Math.abs(dx) > Math.abs(dy)
-    id = horizontal ? (dx < 0 ? 'market' : 'store') : dy < 0 ? 'cart' : 'leaderboard'
-  }
-  paint(id, dx * lean, dy * lean)
+  let ox = x - origin[0]
+  let oy = y - origin[1]
+  const len = Math.hypot(ox, oy)
+  if (len > SLOT) { ox = ox / len * SLOT; oy = oy / len * SLOT }
+  paint(ox, oy)
 }
 
 export function radialAt() {
@@ -79,7 +85,7 @@ export function radialAt() {
 function resetKnob() {
   origin = null
   selected = 'search'
-  requestAnimationFrame(() => paint('search'))
+  requestAnimationFrame(() => paint(0, 0))
 }
 
 const ITEMS = [
