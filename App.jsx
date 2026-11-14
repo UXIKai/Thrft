@@ -230,25 +230,6 @@ export default function App() {
     return () => stage.classList.remove('is-product-open')
   }, [activeProduct])
 
-  // Desktop: the nav bar stays hidden until the mouse nears the bottom edge
-  useEffect(() => {
-    const stage = stageRef.current
-    const desktop = window.matchMedia('(min-width: 720px) and (min-height: 500px)')
-    if (!stage || !desktop.matches) return undefined
-    stage.classList.add('is-nav-autohide')
-    const onMove = (e) => {
-      stage.classList.toggle('is-nav-near', window.innerHeight - e.clientY < 140)
-    }
-    const onLeave = () => stage.classList.remove('is-nav-near')
-    window.addEventListener('mousemove', onMove)
-    document.addEventListener('mouseleave', onLeave)
-    return () => {
-      window.removeEventListener('mousemove', onMove)
-      document.removeEventListener('mouseleave', onLeave)
-      stage.classList.remove('is-nav-autohide', 'is-nav-near')
-    }
-  }, [])
-
   useEffect(() => {
     if (!signedIn) return undefined
     return guardSignedInNavigation(window)
