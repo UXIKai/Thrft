@@ -213,8 +213,13 @@ function CrawlRow({ row, rowIndex, onOpenProduct, onHoldRow }) {
 
 /** Full page for one Store row: 8 rows of 5 products, each a manually scrolled strip like the Store rows. */
 function StoreRowPage({ row, onBack, onOpenProduct }) {
+  const ref = useRef(null)
+  useLayoutEffect(() => {
+    const page = ref.current?.closest('.home-scroll')
+    if (page) page.scrollTop = 0
+  }, [])
   return (
-    <section className="product-feed store-row-page" id="home-product-panel" role="tabpanel" aria-label={row.name}>
+    <section ref={ref} className="product-feed store-row-page" id="home-product-panel" role="tabpanel" aria-label={row.name}>
       <header className="store-row-page-head">
         <button type="button" className="store-row-page-back" onClick={onBack} aria-label="Back to Store">
           <svg viewBox="0 0 24 24" aria-hidden><path d="m15 5-7 7 7 7" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
@@ -243,6 +248,7 @@ function StoreRowPage({ row, onBack, onOpenProduct }) {
 export default function ProductRows({
   segment = 'store',
   onOpenProduct,
+  onRowPageChange,
   clothingType = 'all',
   brandId = '',
   colorId = '',
@@ -260,6 +266,11 @@ export default function ProductRows({
   const [error, setError] = useState('')
   const [chip, setChip] = useState('all')
   const [openRow, setOpenRow] = useState(null)
+
+  useEffect(() => {
+    onRowPageChange?.(Boolean(openRow))
+  }, [openRow, onRowPageChange])
+  useEffect(() => () => onRowPageChange?.(false), [onRowPageChange])
 
   useEffect(() => {
     let alive = true

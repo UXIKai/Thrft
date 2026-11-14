@@ -191,6 +191,8 @@ export default function App() {
 
   // The nav bar shows on every page and stays until the bottom button is tapped to hide it.
   const [atBottom, setAtBottom] = useState(false)
+  // A held Store row's page: no wheel button or swipe-out, only its back button leaves.
+  const [rowPageOpen, setRowPageOpen] = useState(false)
   useEffect(() => {
     setAtBottom(false)
   }, [tab])
@@ -544,7 +546,7 @@ export default function App() {
                 onOpenCategory={() => openHomePicker('category')}
                 openSignal={searchSignal}
               />
-              <HomeSegmentSlider
+              {!rowPageOpen && <HomeSegmentSlider
                 value={homeSegment}
                 fireSame={!homeOpen}
                 bagCount={bagCount}
@@ -556,7 +558,7 @@ export default function App() {
                   setHomeSegment(id)
                   setHomeOpen(true)
                 }}
-              />
+              />}
             </header>
 
 
@@ -587,6 +589,7 @@ export default function App() {
               key={homeSegment}
               segment={homeSegment}
               onOpenProduct={handleOpenProduct}
+              onRowPageChange={setRowPageOpen}
               clothingType={clothingType}
               colorId={homeColor}
               brandId={homeBrand?.id || ''}
