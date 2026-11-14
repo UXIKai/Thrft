@@ -2009,11 +2009,11 @@ html body .tab-bar.is-pressed .tab-pill::before {
   margin-top: -4px;
 }
 .home-segment-slider .wheel-arrow.is-left {
-  left: calc(50% - 34px);
+  left: calc(50% - 17px);
   transform: rotate(-90deg);
 }
 .home-segment-slider .wheel-arrow.is-right {
-  left: calc(50% + 34px);
+  left: calc(50% + 17px);
   transform: rotate(90deg);
 }
 .home-segment-slider .wheel-arrow.is-hidden,
