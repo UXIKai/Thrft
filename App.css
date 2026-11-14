@@ -2718,10 +2718,28 @@ html body .home-radial .home-radial-btn.is-search:not(#_) {
   box-shadow: 0 12px 20px light-dark(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.6)), inset 0 -6px 10px light-dark(rgba(0, 0, 0, 0.12), rgba(255, 255, 255, 0.1)) !important;
 }
 
-/* The selected button sits in the middle; the old middle swaps into its slot */
+/* The glass orb is the selector: it slides onto the chosen button while the buttons stay put */
 html body .home-radial .home-radial-btn:not(#_) {
-  translate: calc(-50% + var(--kx, 0px)) calc(-50% + var(--ky, 0px));
-  transition: translate 0.16s ease, scale 0.16s ease;
+  background: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  scale: 1;
+  z-index: 1;
 }
-html body .home-radial .home-radial-btn.is-hot:not(#_) { scale: 1.25; }
-html body .home-radial[data-sel]:not([data-sel='search']) .home-radial-btn.is-search:not(.is-hot):not(#_) { scale: 1; }
+html body .home-radial .home-radial-btn.is-hot:not(#_) { scale: 1.1; }
+.home-radial-lens {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  translate: calc(-50% + var(--lx, 0px)) calc(-50% + var(--ly, 0px));
+  transition: translate 0.18s cubic-bezier(0.2, 0.9, 0.3, 1.1);
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 18%, light-dark(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.4)) 0%, transparent 38%),
+    radial-gradient(circle at 50% 40%, light-dark(rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.16)), light-dark(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.05)));
+  border: 1px solid var(--rim, var(--glass-border));
+  box-shadow: 0 12px 20px light-dark(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.6)), inset 0 -6px 10px light-dark(rgba(0, 0, 0, 0.12), rgba(255, 255, 255, 0.1));
+}

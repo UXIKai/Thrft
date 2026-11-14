@@ -36,7 +36,7 @@ const SLOTS = { leaderboard: [0, -R], store: [-R, 0], market: [R, 0], cart: [0, 
 let origin = null
 let selected = 'search'
 
-// Moving the finger from where it first pressed rotates that direction's button into the middle; the old middle takes its place
+// Moving the finger from where it first pressed slides the glass orb onto the button in that direction
 export function moveKnob(x, y) {
   const wheel = document.querySelector('.home-radial')
   if (!wheel) return
@@ -49,13 +49,9 @@ export function moveKnob(x, y) {
   }
   selected = id
   const [px, py] = SLOTS[id]
-  wheel.querySelectorAll('[data-radial]').forEach((el) => {
-    const k = el.dataset.radial
-    const [kx, ky] = k === id ? [-px, -py] : k === 'search' ? [px, py] : [0, 0]
-    el.style.setProperty('--kx', `${kx}px`)
-    el.style.setProperty('--ky', `${ky}px`)
-    el.classList.toggle('is-hot', k === id)
-  })
+  wheel.style.setProperty('--lx', `${px}px`)
+  wheel.style.setProperty('--ly', `${py}px`)
+  wheel.querySelectorAll('[data-radial]').forEach((el) => el.classList.toggle('is-hot', el.dataset.radial === id))
   wheel.dataset.sel = id
 }
 
@@ -85,6 +81,7 @@ export default function HomeRadialMenu({ onPick, onClose, bagCount = 0 }) {
   return createPortal(
     <div className="home-radial-scrim" onPointerDown={(e) => e.target === e.currentTarget && onClose?.()}>
       <div className="home-radial" role="menu" aria-label="Menu">
+        <span className="home-radial-lens" aria-hidden="true" />
         {ITEMS.map(({ id, label, Icon }) => (
           <button
             key={id}
