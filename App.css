@@ -3321,10 +3321,15 @@ html body .stage .home-radial .home-radial-btn:not(#_):not(#_):not(#_) {
 }
 
 .nav-toggle .ninja-star {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
   width: 52px;
   height: 52px;
   display: block;
   overflow: visible;
+  pointer-events: none;
   filter: drop-shadow(0 0 3px light-dark(rgba(0, 0, 0, 0.25), rgba(255, 255, 255, 0.35)));
 }
 .ninja-star .ns-hi { stop-color: light-dark(#6b6b70, #ffffff); }

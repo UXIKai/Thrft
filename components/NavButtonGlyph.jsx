@@ -1,3 +1,5 @@
+import { useLayoutEffect, useRef } from 'react'
+
 // The open ninja star's top blade; the other arrows are 90-degree turns of it (set in CSS).
 export const arrow = (
   <svg viewBox="313 39 146 238" aria-hidden="true"><polygon points="389,39 459,175 410,277 313,214" fill="currentColor" stroke="currentColor" strokeWidth="12" strokeLinejoin="round" /></svg>
@@ -12,9 +14,48 @@ const STAR_FRAMES = [
   '413,147 458,293 393,385 307,305',
 ]
 
-/** The empty-middle state: four blades that twist shut like a shutter into a ninja star. */
+const STAR_MS = 900
+const easeInOutCubic = (t) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2)
+// Overshoots a little, then settles, so the shutter clicks shut.
+const easeOutBack = (t) => 1 + 2.2 * (t - 1) ** 3 + 1.2 * (t - 1) ** 2
+
+const FRAME_NUMS = STAR_FRAMES.map((f) => f.split(' ').map((pt) => pt.split(',').map(Number)))
+const blendFrames = (p) => {
+  const pos = Math.min(Math.max(p, 0), 1) * (FRAME_NUMS.length - 1)
+  const i = Math.min(Math.floor(pos), FRAME_NUMS.length - 2)
+  const f = pos - i
+  return FRAME_NUMS[i]
+    .map(([x, y], k) => `${(x + (FRAME_NUMS[i + 1][k][0] - x) * f).toFixed(1)},${(y + (FRAME_NUMS[i + 1][k][1] - y) * f).toFixed(1)}`)
+    .join(' ')
+}
+
+/** The empty-middle state: four blades that twist shut like a camera shutter into a ninja star. */
 function NinjaStar() {
-  const still = typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+  const groupRef = useRef(null)
+  const bladeRefs = useRef([])
+
+  useLayoutEffect(() => {
+    const apply = (shape, spin) => {
+      bladeRefs.current.forEach((el) => el?.setAttribute('points', shape))
+      groupRef.current?.setAttribute('transform', `rotate(${spin.toFixed(2)} 400 400)`)
+    }
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
+      apply(blendFrames(1), 0)
+      return undefined
+    }
+    let raf = 0
+    let start = 0
+    const tick = (now) => {
+      if (!start) start = now
+      const t = Math.min((now - start) / STAR_MS, 1)
+      apply(blendFrames(easeInOutCubic(t)), 90 * easeOutBack(t))
+      if (t < 1) raf = requestAnimationFrame(tick)
+    }
+    apply(blendFrames(0), 0)
+    raf = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(raf)
+  }, [])
+
   return (
     <svg className="ninja-star" viewBox="0 0 800 800" aria-hidden="true">
       <defs>
@@ -24,41 +65,16 @@ function NinjaStar() {
           <stop offset="1" className="ns-lo" />
         </linearGradient>
       </defs>
-      <g>
-        {!still && (
-          // Blades twist a quarter turn as they close, like a camera shutter.
-          <animateTransform
-            attributeName="transform"
-            type="rotate"
-            from="0 400 400"
-            to="90 400 400"
-            dur="0.7s"
-            begin="0s"
-            calcMode="spline"
-            keyTimes="0;1"
-            keySplines="0.45 0 0.2 1"
-            fill="freeze"
-          />
-        )}
-        {[0, 90, 180, 270].map((deg) => (
+      <g ref={groupRef}>
+        {[0, 90, 180, 270].map((deg, i) => (
           <polygon
             key={deg}
+            ref={(el) => { bladeRefs.current[i] = el }}
             className="ns-blade"
             transform={`rotate(${deg} 400 400)`}
-            points={STAR_FRAMES[still ? 4 : 0]}
+            points={STAR_FRAMES[0]}
             fill="url(#ninja-star-chrome)"
-          >
-            {!still && (
-              <animate
-                attributeName="points"
-                values={STAR_FRAMES.join(';')}
-                keyTimes="0;0.25;0.5;0.75;1"
-                dur="0.7s"
-                begin="0s"
-                fill="freeze"
-              />
-            )}
-          </polygon>
+          />
         ))}
       </g>
     </svg>
