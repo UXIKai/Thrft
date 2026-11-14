@@ -16,6 +16,8 @@ export const MIN_CENTER_DIST = DISK + CONTACT_GAP
 const ROW_GAP = BUBBLE + 10
 const TOP = 4
 const COL_GAP = 18
+/** Width of the two columns; the leaderboard container is exactly this wide and centred by CSS. */
+export const HELIX_W = BUBBLE * 2 + COL_GAP
 const RIGHT_STAGGER = BUBBLE / 2
 
 export function sideOfRank(rank) {

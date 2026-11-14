@@ -27,6 +27,7 @@ import {
 import {
   BUBBLE,
   slotForRank,
+  HELIX_W,
 } from './layout.js'
 import { applyBackgroundImage, clearSearchBackground, applySearchBackground, readBackgroundImage } from './appAppearance.js'
 import {
@@ -126,7 +127,6 @@ export default function App() {
   const [homePickerPhase, setHomePickerPhase] = useState('closed')
   const [homePickerQuery, setHomePickerQuery] = useState('')
   const [activeTypePage, setActiveTypePage] = useState(null) // type id or null
-  const [stageW, setStageW] = useState(390)
   const homeCategoryItems = useMemo(() => buildHomeCategoryItems(), [])
   // Dashboard stays locked until a verified Supabase session exists.
   const [signedIn, setSignedIn] = useState(false)
@@ -184,7 +184,6 @@ export default function App() {
   const { items: cartItems, count: bagCount, addItem, replaceItems, empty } =
     useBag()
   const stageRef = useRef(null)
-  const columnRef = useRef(null)
   const scrollRef = useRef(null)
   const hideTabBar = tab === 'chat' || tab === 'saved'
   const homeIdle = tab === 'home' && !homeOpen
@@ -240,16 +239,6 @@ export default function App() {
     () => new Map(profiles.map((p) => [p.id, p])),
     [profiles],
   )
-
-  useEffect(() => {
-    const el = columnRef.current
-    if (!el) return undefined
-    const ro = new ResizeObserver(([entry]) => {
-      setStageW(Math.min(entry.contentRect.width, 560))
-    })
-    ro.observe(el)
-    return () => ro.disconnect()
-  }, [])
 
   // Always keep the flowing B/W/gray atmosphere behind the stage.
   useEffect(() => {
@@ -531,7 +520,6 @@ export default function App() {
 
       <div
         className={`app-column${tab === 'home' && signedIn ? ' is-home-wide' : ''}${tab === 'chat' ? ' is-chat-wide' : ''}${tab === 'profile' ? ' is-profile-wide' : ''}`}
-        ref={columnRef}
       >
       {signedIn && (
         <>
@@ -590,7 +578,7 @@ export default function App() {
                   const profile = byId.get(id)
                   if (!profile) return null
                   const rank = i + 1
-                  const pos = slotForRank(rank, stageW)
+                  const pos = slotForRank(rank, HELIX_W)
                   return (
                     <Bubble
                       key={id}
