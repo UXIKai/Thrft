@@ -1141,12 +1141,12 @@ html[data-bg-color='none'] .stage.is-bg-none .atmosphere {
 
 /* Rows far off screen keep their height but render no tiles */
 .brand-row.is-idle {
-  height: 142px;
+  height: 158px;
 }
 
 @media (min-width: 720px) {
   .brand-row.is-idle {
-    height: calc(clamp(118px, 10vw, 176px) * 1.2034);
+    height: calc(clamp(118px, 10vw, 176px) * 1.2034 + 16px);
   }
 }
 
@@ -3365,8 +3365,8 @@ html body .stage .home-radial .home-radial-btn:not(#_):not(#_):not(#_) {
   flex: 0 0 auto;
   width: 112px;
 }
-.brand-row.is-market.is-idle { height: 196px; }
+.brand-row.is-market.is-idle { height: 210px; }
 @media (min-width: 720px) {
   .brand-row.is-market .market-card { width: clamp(150px, 12vw, 200px); }
-  .brand-row.is-market.is-idle { height: calc(clamp(150px, 12vw, 200px) * 1.33 + 56px); }
+  .brand-row.is-market.is-idle { height: calc(clamp(150px, 12vw, 200px) * 4 / 3 + 62px); }
 }
