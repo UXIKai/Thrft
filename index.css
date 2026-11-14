@@ -59,8 +59,7 @@ body {
   -webkit-font-smoothing: antialiased;
   /* Stick to the visible screen, including when mobile chrome shows or hides */
   position: fixed;
-  /* 1px off the top edge: iOS 26 Safari blurs and fades content that touches it */
-  top: calc(var(--app-top, 0px) + 1px);
+  top: var(--app-top, 0px);
   left: var(--app-left, 0px);
   overflow: hidden;
 }
