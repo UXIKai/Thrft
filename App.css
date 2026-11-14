@@ -2577,3 +2577,27 @@ html body .home-radial .home-radial-btn {
   -webkit-user-select: none;
   user-select: none;
 }
+
+/* Desktop: keep Market in the same centred column as the rest of the app, no blur on the nav */
+@media (min-width: 720px) {
+  html body .market-product-feed {
+    width: 100%;
+    max-width: 560px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  html body .stage > .tab-bar,
+  html:not([data-moonlight='on']) body .stage > .tab-bar {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: light-dark(#fff, #000) !important;
+    border: 1px solid var(--glass-border) !important;
+    box-shadow: none !important;
+  }
+}
+@media (hover: hover) {
+  html body .market-card .market-card-open,
+  html body .market-card .market-card-like,
+  html body .market-chips .market-chip { cursor: pointer; }
+  html body .market-card:hover .market-card-photo { border-color: light-dark(#000, #fff); }
+}
