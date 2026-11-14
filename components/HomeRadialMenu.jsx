@@ -41,16 +41,26 @@ export function moveKnob(x, y) {
   const wheel = document.querySelector('.home-radial')
   if (!wheel) return
   if (!origin) origin = [x, y]
-  const dx = x - origin[0]
-  const dy = y - origin[1]
+  let dx = x - origin[0]
+  let dy = y - origin[1]
+  const len = Math.hypot(dx, dy)
+  if (len > R) {
+    dx = (dx / len) * R
+    dy = (dy / len) * R
+  }
+  // The orb follows the finger around the sphere; the nearest button is the one selected
   let id = 'search'
-  if (Math.hypot(dx, dy) > 24) {
-    id = Math.abs(dx) > Math.abs(dy) ? (dx < 0 ? 'store' : 'market') : dy < 0 ? 'leaderboard' : 'cart'
+  let best = Infinity
+  for (const [k, [sx, sy]] of Object.entries(SLOTS)) {
+    const d = Math.hypot(dx - sx, dy - sy)
+    if (d < best) {
+      best = d
+      id = k
+    }
   }
   selected = id
-  const [px, py] = SLOTS[id]
-  wheel.style.setProperty('--lx', `${px}px`)
-  wheel.style.setProperty('--ly', `${py}px`)
+  wheel.style.setProperty('--lx', `${dx}px`)
+  wheel.style.setProperty('--ly', `${dy}px`)
   wheel.querySelectorAll('[data-radial]').forEach((el) => el.classList.toggle('is-hot', el.dataset.radial === id))
   wheel.dataset.sel = id
 }
