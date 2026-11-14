@@ -151,7 +151,9 @@ html:root[data-theme='light'] body {
   background-repeat: no-repeat;
 }
 html:root[data-bg-photo],
-html:root[data-bg-photo] body {
+html:root[data-bg-photo] body,
+html:root[data-bg-image='none'],
+html:root[data-bg-image='none'] body {
   background-image: none;
 }
 #root {
