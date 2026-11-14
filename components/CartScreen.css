@@ -15,6 +15,44 @@
   gap: 0;
 }
 
+.cart-shipping-form {
+  width: min(440px, 94%);
+  max-height: calc(100dvh - 230px - env(safe-area-inset-top, 0px));
+  overflow-y: auto;
+  text-align: left;
+}
+
+.cart-shipping-form fieldset {
+  display: grid;
+  gap: 12px;
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+
+.cart-shipping-form label {
+  display: grid;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.cart-shipping-form :is(input, select) {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 16px;
+}
+
+.cart-shipping-form p {
+  font-size: 12px;
+}
+
 .cart-bottom-dock {
   position: absolute;
   left: 0;

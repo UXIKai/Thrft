@@ -4,7 +4,7 @@
  */
 import { createHmac, timingSafeEqual } from 'node:crypto'
 import { checkoutStore } from './server/supabaseStore.js'
-import { createOrder, getOrder } from './printful.js'
+import { createOrder, getOrder, getShippingRates } from './printful.js'
 import { storedPrintfulVariants } from './creatorProducts.js'
 
 const STRIPE_SECRET = process.env.STRIPE_SECRET_KEY || ''
@@ -92,6 +92,15 @@ function redirectUrl(value, fallback) {
 export async function createCheckoutSession(body = {}, { accountKey, store = checkoutStore } = {}) {
   if (!accountKey) fail('Sign in before checkout', 401)
   const items = await resolveCheckoutItems(body, store)
+  const printable = items.filter((item) => item.printfulVariantId)
+  const recipient = printable.length ? checkoutRecipient(body.address || body.shippingAddress) : null
+  const rates = printable.length ? await shippingRates(items, recipient) : []
+  const shipping = rates.length ? (body.shippingRateId
+    ? rates.find((rate) => rate.id === body.shippingRateId) : rates[0]) : null
+  if (rates.length && !shipping) fail('Choose an available shipping service')
+  if (shipping && body.shippingAmount != null && body.shippingAmount !== shipping.amount) {
+    fail('Shipping price changed. Review the updated shipping rates before paying.', 409)
+  }
   const params = new URLSearchParams({
     mode: 'payment',
     success_url: redirectUrl(body.successUrl, '/?checkout=success&session_id={CHECKOUT_SESSION_ID}'),
@@ -99,9 +108,19 @@ export async function createCheckoutSession(body = {}, { accountKey, store = che
     client_reference_id: accountKey,
     'metadata[customerId]': accountKey,
   })
-  // Printful needs structured recipient data, collected directly by Stripe.
-  for (const [i, country] of ['US', 'CA', 'GB', 'AU', 'DE', 'FR', 'ES', 'IT', 'NL', 'IE', 'NZ'].entries()) {
-    params.set(`shipping_address_collection[allowed_countries][${i}]`, country)
+  if (recipient) {
+    // Delivery is fixed to the quoted address; Stripe may collect a separate billing address.
+    const customer = await stripe('customers', new URLSearchParams({
+      name: recipient.name, 'shipping[name]': recipient.name,
+      'shipping[address][line1]': recipient.address1, 'shipping[address][line2]': recipient.address2,
+      'shipping[address][city]': recipient.city, 'shipping[address][state]': recipient.state_code,
+      'shipping[address][postal_code]': recipient.zip, 'shipping[address][country]': recipient.country_code,
+    }))
+    params.set('customer', customer.id)
+  } else {
+    for (const [i, country] of ['US', 'CA', 'GB', 'AU', 'DE', 'FR', 'ES', 'IT', 'NL', 'IE', 'NZ'].entries()) {
+      params.set(`shipping_address_collection[allowed_countries][${i}]`, country)
+    }
   }
   items.forEach((item, i) => {
     const prefix = `line_items[${i}]`
@@ -113,13 +132,67 @@ export async function createCheckoutSession(body = {}, { accountKey, store = che
       params.set(`${prefix}[price_data][product_data][images][0]`, item.photoUrl)
     }
   })
+  if (shipping) {
+    const prefix = `line_items[${items.length}]`
+    params.set(`${prefix}[quantity]`, '1')
+    params.set(`${prefix}[price_data][currency]`, 'usd')
+    params.set(`${prefix}[price_data][unit_amount]`, String(shipping.amount))
+    params.set(`${prefix}[price_data][product_data][name]`, `Shipping - ${shipping.name}`)
+  }
   const session = await stripe('checkout/sessions', params)
   await store.saveOrder({
     stripe_session_id: session.id, creator_customer_id: accountKey, items,
-    amount_total: items.reduce((sum, item) => sum + item.unitAmount * item.quantity, 0),
-    currency: 'usd',
+    amount_total: items.reduce((sum, item) => sum + item.unitAmount * item.quantity, 0) + (shipping?.amount || 0),
+    currency: 'usd', ...(recipient ? { recipient, shipping_rate: shipping } : {}),
   })
   return { id: session.id, url: session.url, status: session.status, mode: 'live' }
+}
+
+function checkoutRecipient(address) {
+  if (!address || typeof address !== 'object' || Array.isArray(address)) {
+    fail('Enter a complete shipping address before checkout')
+  }
+  const recipient = {}
+  for (const field of ['name', 'address1', 'address2', 'city', 'state_code', 'country_code', 'zip']) {
+    const value = address[field] ?? ''
+    if (typeof value !== 'string' || value.length > 200) fail('Shipping address is invalid')
+    recipient[field] = value.trim()
+  }
+  recipient.country_code = recipient.country_code.toUpperCase()
+  if (!recipient.name || !recipient.address1 || !recipient.city || !recipient.zip ||
+      !/^[A-Z]{2}$/.test(recipient.country_code) ||
+      (['US', 'CA', 'AU'].includes(recipient.country_code) && !recipient.state_code)) {
+    fail('Enter a complete shipping address, including country and state/province')
+  }
+  return recipient
+}
+
+async function shippingRates(items, recipient) {
+  const grouped = new Map()
+  for (const item of items.filter((entry) => entry.printfulVariantId)) {
+    grouped.set(item.printfulVariantId, (grouped.get(item.printfulVariantId) || 0) + item.quantity)
+  }
+  const result = await getShippingRates({ recipient, currency: 'USD',
+    items: [...grouped].map(([variant_id, quantity]) => ({ variant_id, quantity })) })
+  if (!Array.isArray(result) || !result.length) fail('Printful has no shipping rates for this address', 409)
+  const rates = result.map((rate) => {
+    const amount = Math.round(Number(rate.rate) * 100)
+    if (!rate.id || !rate.name || rate.currency !== 'USD' ||
+        rate.rate == null || String(rate.rate).trim() === '' ||
+        !Number.isSafeInteger(amount) || amount < 0) {
+      fail('Printful returned an invalid shipping rate', 502)
+    }
+    return { id: String(rate.id), name: rate.name, amount, currency: 'usd' }
+  })
+  return rates.sort((a, b) => a.amount - b.amount)
+}
+
+export async function estimateCheckout(body, { store = checkoutStore } = {}) {
+  const items = await resolveCheckoutItems(body, store)
+  const printable = items.some((item) => item.printfulVariantId)
+  const rates = printable ? await shippingRates(items, checkoutRecipient(body.address || body.shippingAddress)) : []
+  return { subtotal: items.reduce((sum, item) => sum + item.unitAmount * item.quantity, 0),
+    currency: 'usd', shippingRates: rates }
 }
 
 export function verifyStripeEvent(rawBody, signature, secret = STRIPE_WEBHOOK_SECRET, now = Date.now()) {
@@ -160,7 +233,7 @@ export async function fulfillPaidCheckout(session, {
       session.metadata?.customerId !== saved.creator_customer_id) {
     fail('Paid checkout does not match its saved order', 409)
   }
-  if (['draft', 'not_required'].includes(saved.fulfillment_status)) return saved
+  if (['draft', 'partially_shipped', 'shipped', 'not_required'].includes(saved.fulfillment_status)) return saved
   const order = await store.claimOrder(session.id)
   if (!order) fail('Order fulfillment is already processing; retry shortly', 409)
   try {
@@ -180,7 +253,9 @@ export async function fulfillPaidCheckout(session, {
     }
     if (!draft) {
       draft = await printful.createOrder({
-        externalId, confirm: false, recipient: recipientFromSession(session),
+        externalId, confirm: false, shipping: order.shipping_rate?.id,
+        recipient: order.recipient ? { ...order.recipient, email: session.customer_details?.email || '' }
+          : recipientFromSession(session),
         items: printable.map((item) => ({
           variant_id: item.printfulVariantId, quantity: item.quantity,
           files: [{ type: item.placement, url: item.artworkUrl }],
@@ -219,7 +294,10 @@ export async function getCheckoutSession(sessionId, accountKey) {
   const fulfillment = await fulfillPaidCheckout(session)
   return { id: session.id, status: session.status, paymentStatus: session.payment_status,
     fulfillmentStatus: fulfillment.fulfillment_status || order.fulfillment_status,
-    amountTotal: session.amount_total, currency: session.currency }
+    amountTotal: session.amount_total, currency: session.currency,
+    trackingNumber: fulfillment.tracking_number || order.tracking_number || null,
+    trackingUrl: fulfillment.tracking_url || order.tracking_url || null,
+    shipments: fulfillment.shipments || order.shipments || [] }
 }
 
 // Kept for existing callers; ownership is still required.

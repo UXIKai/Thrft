@@ -8,11 +8,14 @@ process.env.SUPABASE_SERVICE_ROLE_KEY = 'test-service-key'
 process.env.PRINTFUL_API_TOKEN = 'test-printful-token'
 process.env.STRIPE_SECRET_KEY = 'sk_test_fixture'
 process.env.STRIPE_WEBHOOK_SECRET = 'whsec_fixture'
+process.env.PRINTFUL_WEBHOOK_SECRET = 'printful-test-webhook-token'
 process.env.APP_ORIGIN = 'https://thrft.test'
 
 const creatorId = '11111111-1111-4111-8111-111111111111'
 const productId = '22222222-2222-4222-8222-222222222222'
 const artwork = `https://thrft-test.supabase.co/storage/v1/object/public/Thrft/${creatorId}/art.png`
+const address = { name: 'Test Customer', address1: '1 Test Road', address2: '',
+  city: 'Test City', state_code: 'CA', country_code: 'US', zip: '90001' }
 const realFetch = globalThis.fetch
 let provider
 globalThis.fetch = (...args) => provider(...args)
@@ -23,6 +26,7 @@ const { verifyStripeEvent, resolveCheckoutItems, fulfillPaidCheckout,
   getCheckoutSession } = await import('../stripeCheckout.js')
 const { creatorPricing, mapCreatorProduct } = await import('../creatorProducts.js')
 const { buildPersonalizedRows } = await import('../forYou.js')
+const { checkoutStore } = await import('../server/supabaseStore.js')
 
 function json(body, status = 200) {
   return new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } })
@@ -49,6 +53,8 @@ function fixture() {
   const calls = []
   let paid = false
   let draft
+  let rates = [{ id: 'STANDARD', name: 'Standard', rate: '5.00', currency: 'USD' },
+    { id: 'EXPRESS', name: 'Express', rate: '12.00', currency: 'USD' }]
   provider = async (input, options = {}) => {
     const url = new URL(input instanceof Request ? input.url : String(input))
     const method = options.method || 'GET'
@@ -72,7 +78,8 @@ function fixture() {
       const table = url.pathname.split('/').at(-1)
       if (tables[table]) {
         const matches = (row) => [...url.searchParams].every(([key, value]) =>
-          !value.startsWith('eq.') || String(row[key]) === value.slice(3))
+          value.startsWith('eq.') ? String(row[key]) === value.slice(3) :
+            value.startsWith('neq.') ? String(row[key]) !== value.slice(4) : true)
         if (method === 'POST') {
           const row = { ...(table === 'brand_products' ? { id: productId, status: 'active',
             segment: 'store', mockup_urls: [], created_at: new Date().toISOString() } : {}),
@@ -93,6 +100,7 @@ function fixture() {
       }
     }
     if (url.origin === 'https://api.printful.com') {
+      if (url.pathname === '/shipping/rates') return json({ result: rates })
       if (url.pathname === '/products/71') return json({ result: {
         product: { id: 71, currency: 'USD' }, variants: [
           { id: 4011, size: 'M', color: 'Black', price: '10.00', in_stock: true },
@@ -112,8 +120,9 @@ function fixture() {
       } })
       if (url.pathname.startsWith('/orders/@')) return draft ? json({ result: draft })
         : json({ error: { message: 'Order not found' } }, 404)
+      if (url.pathname === '/orders/9001' && method === 'GET') return json({ result: draft })
       if (url.pathname === '/orders' && method === 'POST') {
-        draft = { id: 9001, status: 'draft' }
+        draft = { id: 9001, status: 'draft', external_id: body.external_id }
         return json({ result: draft })
       }
     }
@@ -121,8 +130,15 @@ function fixture() {
       return new Response(new Uint8Array([255, 216, 255]), { headers: { 'Content-Type': 'image/jpeg' } })
     }
     if (url.origin === 'https://api.stripe.com') {
+      if (url.pathname === '/v1/customers') return json({ id: 'cus_test_1' })
       const snapshot = tables.creator_checkout_orders[0]
-      const amount = snapshot?.amount_total || 5000
+      const params = new URLSearchParams(body)
+      let requestedAmount = 0
+      for (let i = 0; params.has(`line_items[${i}][quantity]`); i++) {
+        requestedAmount += Number(params.get(`line_items[${i}][quantity]`)) *
+          Number(params.get(`line_items[${i}][price_data][unit_amount]`))
+      }
+      const amount = snapshot?.amount_total || requestedAmount
       return json({ id: 'cs_test_1', url: 'https://checkout.stripe.test/cs_test_1',
         status: paid ? 'complete' : 'open', payment_status: paid ? 'paid' : 'unpaid',
         amount_total: amount, currency: 'usd', metadata: { customerId: creatorId },
@@ -132,7 +148,8 @@ function fixture() {
     }
     throw new Error(`Unexpected provider request: ${method} ${url}`)
   }
-  return { tables, calls, markPaid() { paid = true } }
+  return { tables, calls, markPaid() { paid = true }, setRates(value) { rates = value },
+    markShipped(status, shipments) { Object.assign(draft, { status, shipments }) } }
 }
 
 function signedEvent(type = 'checkout.session.completed') {
@@ -197,16 +214,21 @@ test('owned artwork → mockups → published product → trusted checkout → o
   const brand = await request('/api/creator/accounts/creator', { token: null })
   assert.equal(brand.body.products[0].id, productId)
   const checkout = await request('/api/checkout/session', { method: 'POST', body: {
+    address,
     items: [{ id: productId, qty: 2, price: 0.01, printfulVariantId: 999,
       artworkUrl: 'https://attacker.test/art.png', selectedSizes: ['M', 'M'] }],
   } })
   assert.equal(checkout.status, 200)
-  const stripeCall = f.calls.find((call) => call.url.origin === 'https://api.stripe.com' && call.method === 'POST')
+  const stripeCall = f.calls.find((call) => call.url.pathname === '/v1/checkout/sessions' && call.method === 'POST')
   const params = new URLSearchParams(stripeCall.body)
   assert.equal(params.get('line_items[0][price_data][unit_amount]'), '2500')
   assert.equal(params.get('line_items[0][quantity]'), '2')
-  assert.equal(params.get('shipping_address_collection[allowed_countries][0]'), 'US')
-  assert.equal(f.tables.creator_checkout_orders[0].amount_total, 5000)
+  assert.equal(params.get('customer'), 'cus_test_1')
+  assert.equal(params.get('shipping_address_collection[allowed_countries][0]'), null)
+  assert.equal(params.get('line_items[1][price_data][unit_amount]'), '500')
+  assert.equal(f.tables.creator_checkout_orders[0].amount_total, 5500)
+  assert.deepEqual(f.tables.creator_checkout_orders[0].recipient, address)
+  assert.equal(f.tables.creator_checkout_orders[0].shipping_rate.id, 'STANDARD')
   const unpaid = signedEvent()
   assert.equal((await request('/api/webhooks/stripe', { method: 'POST', ...unpaid, token: null })).status, 200)
   assert.equal(f.calls.filter((call) => call.url.pathname === '/orders').length, 0)
@@ -375,18 +397,110 @@ test('one multi-size listing routes each buyer size to its trusted Printful vari
   assert.equal(published.body.product.size, '')
   assert.deepEqual(published.body.product.printfulVariants.map((variant) => variant.base_price), [10, 12])
   const checkout = await request('/api/checkout/session', { method: 'POST', body: {
+    address,
     items: [{ id: productId, qty: 3, selectedSizes: ['M', 'L', 'M'], printfulVariantId: 999 }],
   } })
   assert.equal(checkout.status, 200)
   assert.deepEqual(f.tables.creator_checkout_orders[0].items.map((item) =>
     [item.printfulVariantId, item.quantity]), [[4011, 2], [4012, 1]])
-  assert.equal(f.tables.creator_checkout_orders[0].amount_total, 7500)
+  assert.equal(f.tables.creator_checkout_orders[0].amount_total, 8000)
   f.markPaid()
   assert.equal((await request('/api/webhooks/stripe', {
     method: 'POST', ...signedEvent(), token: null,
   })).status, 200)
   const draft = f.calls.find((call) => call.url.pathname === '/orders')
   assert.deepEqual(draft.body.items.map((item) => [item.variant_id, item.quantity]), [[4011, 2], [4012, 1]])
+  assert.equal(draft.body.shipping, 'STANDARD')
+  assert.deepEqual(f.calls.find((call) => call.url.pathname === '/shipping/rates').body.items,
+    [{ variant_id: 4011, quantity: 2 }, { variant_id: 4012, quantity: 1 }])
+})
+
+test('shipping quotes use trusted variants, selected rates, and include shipping in the paid snapshot', async () => {
+  const f = fixture()
+  f.tables.brand_products.push({ id: productId, status: 'active', title: 'Tee', price: 25,
+    printful_variant_id: 4011, artwork_url: artwork, size: 'M' })
+  const items = [{ id: productId, qty: 2, size: 'M', printfulVariantId: 999 }]
+  const estimate = await request('/api/checkout/estimate', { method: 'POST', body: { items, address } })
+  assert.equal(estimate.status, 200)
+  assert.equal(estimate.body.subtotal, 5000)
+  assert.deepEqual(estimate.body.shippingRates.map((rate) => rate.amount), [500, 1200])
+  const rateCall = f.calls.find((call) => call.url.pathname === '/shipping/rates')
+  assert.deepEqual(rateCall.body, { recipient: address, currency: 'USD',
+    items: [{ variant_id: 4011, quantity: 2 }] })
+  const checkout = await request('/api/checkout/session', { method: 'POST',
+    body: { items, address, shippingRateId: 'EXPRESS', shippingAmount: 1200 } })
+  assert.equal(checkout.status, 200)
+  assert.equal(f.tables.creator_checkout_orders[0].amount_total, 6200)
+  assert.equal(f.tables.creator_checkout_orders[0].shipping_rate.id, 'EXPRESS')
+  f.markPaid()
+  await request('/api/webhooks/stripe', { method: 'POST', ...signedEvent(), token: null })
+  assert.equal(f.calls.find((call) => call.url.pathname === '/orders').body.shipping, 'EXPRESS')
+})
+
+test('invalid addresses, unavailable or changed rates never create a Stripe session', async () => {
+  const f = fixture()
+  f.tables.brand_products.push({ id: productId, status: 'active', title: 'Tee', price: 25,
+    printful_variant_id: 4011, artwork_url: artwork, size: 'M' })
+  const body = { items: [{ id: productId, qty: 1, size: 'M' }], address }
+  for (const patch of [{ address: 'not structured' }, { address: { ...address, state_code: '' } },
+    { shippingRateId: 'fake' }, { shippingRateId: 'STANDARD', shippingAmount: 1 }]) {
+    const result = await request('/api/checkout/session', { method: 'POST', body: { ...body, ...patch } })
+    assert.ok([400, 409].includes(result.status))
+  }
+  f.setRates([])
+  assert.equal((await request('/api/checkout/session', { method: 'POST', body })).status, 409)
+  f.setRates([{ id: 'STANDARD', name: 'Standard', rate: '5', currency: 'EUR' }])
+  assert.equal((await request('/api/checkout/session', { method: 'POST', body })).status, 502)
+  assert.equal(f.calls.filter((call) => call.url.origin === 'https://api.stripe.com').length, 0)
+})
+
+test('ordinary checkout does not quote or charge Printful shipping', async () => {
+  const f = fixture()
+  f.tables.brand_products.push({ id: productId, status: 'active', title: 'Vintage Tee', price: 25 })
+  const checkout = await request('/api/checkout/session', { method: 'POST',
+    body: { items: [{ id: productId, qty: 1 }] } })
+  assert.equal(checkout.status, 200)
+  assert.equal(f.calls.filter((call) => call.url.pathname === '/shipping/rates').length, 0)
+  assert.equal(f.tables.creator_checkout_orders[0].amount_total, 2500)
+})
+
+test('authenticated Printful shipment events persist provider tracking and never resubmit fulfillment', async () => {
+  const f = fixture()
+  f.tables.brand_products.push({ id: productId, status: 'active', title: 'Tee', price: 25,
+    printful_variant_id: 4011, artwork_url: artwork, size: 'M' })
+  await request('/api/checkout/session', { method: 'POST',
+    body: { items: [{ id: productId, qty: 1 }], address } })
+  f.markPaid()
+  await request('/api/webhooks/stripe', { method: 'POST', ...signedEvent(), token: null })
+  const body = { type: 'package_shipped', data: { order: { id: 9001 },
+    shipment: { id: 1, tracking_number: 'forged-tracking' } } }
+  const endpoint = '/api/webhooks/printful?token=printful-test-webhook-token'
+  assert.equal((await request('/api/webhooks/printful', { method: 'POST', body, token: null })).status, 401)
+  assert.equal((await request(endpoint, { method: 'POST', body, token: null })).status, 409)
+  const shipment = { id: 1, tracking_number: 'TRACK-1', tracking_url: 'https://carrier.test/TRACK-1' }
+  f.markShipped('partial', [shipment])
+  assert.equal((await request(endpoint, { method: 'POST', body, token: null })).status, 200)
+  const saved = f.tables.creator_checkout_orders[0]
+  assert.equal(saved.fulfillment_status, 'partially_shipped')
+  assert.equal(saved.tracking_number, 'TRACK-1')
+  f.markShipped('fulfilled', [shipment, { id: 2, tracking_number: 'TRACK-2' }])
+  for (let i = 0; i < 2; i++) {
+    assert.equal((await request(endpoint, { method: 'POST', body, token: null })).status, 200)
+  }
+  assert.equal(saved.fulfillment_status, 'shipped')
+  assert.equal(saved.shipments.length, 2)
+  await checkoutStore.updateShipment(saved.stripe_session_id, {
+    fulfillment_status: 'partially_shipped', shipments: [],
+  })
+  assert.equal(saved.fulfillment_status, 'shipped')
+  assert.equal(saved.shipments.length, 2)
+  f.markShipped('partial', [shipment])
+  await request(endpoint, { method: 'POST', body, token: null })
+  assert.equal(saved.shipments.length, 2)
+  const status = await request('/api/checkout/session/cs_test_1')
+  assert.equal(status.body.fulfillmentStatus, 'shipped')
+  assert.equal(status.body.trackingNumber, 'TRACK-1')
+  assert.equal(f.calls.filter((call) => call.url.pathname === '/orders').length, 1)
 })
 
 test('multi-size mockups reject mixed colors and out-of-stock sizes', async () => {

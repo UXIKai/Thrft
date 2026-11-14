@@ -1,7 +1,7 @@
 import { createPortal } from 'react-dom'
 import { useEffect, useRef, useState } from 'react'
 import HomeRadialMenu, { moveKnob, radialAt } from './HomeRadialMenu.jsx'
-import { createCheckoutSession } from '../api.js'
+import { createCheckoutSession, estimateCheckout } from '../api.js'
 import { useBag } from '../BagContext.jsx'
 import './GlassOverlay.css'
 import './CartScreen.css'
@@ -43,6 +43,19 @@ export default function CartScreen({
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const [confirmId, setConfirmId] = useState(null)
+  const [shippingOpen, setShippingOpen] = useState(false)
+  const [recipient, setRecipient] = useState(() => ({
+    name: '', address1: typeof shippingAddress === 'string' ? shippingAddress : '',
+    address2: '', city: '', state_code: '', zip: '', country_code: 'US',
+    ...(shippingAddress && typeof shippingAddress === 'object' ? shippingAddress : {}),
+  }))
+  const [quote, setQuote] = useState(null)
+  const [shippingRateId, setShippingRateId] = useState('')
+  const shippingForm = useRef(null)
+  const printable = items.some((item) => item.printfulVariants?.length || item.printfulVariantId)
+  const quoteKey = JSON.stringify({ items, recipient })
+  const currentQuote = quote?.key === quoteKey ? quote : null
+  const selectedRate = currentQuote?.shippingRates.find((rate) => rate.id === shippingRateId)
 
   useEffect(() => {
     setStageEl(document.querySelector('.stage'))
@@ -51,7 +64,7 @@ export default function CartScreen({
     return () => stage?.classList.remove('is-overlay-open')
   }, [])
 
-  const total = bag.total
+  const total = (currentQuote ? currentQuote.subtotal / 100 : bag.total) + (selectedRate?.amount || 0) / 100
   const totalLabel = bag.formatMoney(total)
 
   function setQty(item, qty) {
@@ -72,12 +85,26 @@ export default function CartScreen({
 
   async function pay() {
     if (!items.length || busy) return
+    if (printable && !shippingOpen) {
+      setShippingOpen(true)
+      return
+    }
+    if (printable && !shippingForm.current?.reportValidity()) return
     setBusy(true)
     setError('')
     try {
+      if (printable && !currentQuote) {
+        const result = await estimateCheckout({ items, address: recipient })
+        if (!result.shippingRates?.length) throw new Error('No shipping service is available for this address')
+        setQuote({ ...result, key: quoteKey })
+        setShippingRateId(result.shippingRates[0].id)
+        return
+      }
       const session = await createCheckoutSession({
         items,
-        address: shippingAddress || undefined,
+        address: printable ? recipient : shippingAddress || undefined,
+        shippingRateId: selectedRate?.id,
+        shippingAmount: selectedRate?.amount,
       })
       const url = session?.data?.url || session?.url
       if (url) {
@@ -86,6 +113,7 @@ export default function CartScreen({
       }
       setError('Unavailable')
     } catch (err) {
+      if (err.status === 409) setQuote(null)
       const status = err?.status
       setError(status === 401 ? 'Sign in' : err.message || 'Checkout unavailable')
     } finally {
@@ -193,6 +221,40 @@ export default function CartScreen({
       <div className="glass-overlay-body cart-body">
         {items.length === 0 ? (
           <p className="cart-empty">Your bag is empty</p>
+        ) : shippingOpen && printable ? (
+          <form className="cart-shipping-form" ref={shippingForm}
+            onSubmit={(event) => { event.preventDefault(); pay() }}>
+            <h2>Shipping address</h2>
+            <fieldset disabled={busy}>
+              {[
+                ['name', 'Full name', 'name'], ['address1', 'Street address', 'address-line1'],
+                ['address2', 'Apartment / unit (optional)', 'address-line2'],
+                ['city', 'City', 'address-level2'], ['state_code', 'State / province', 'address-level1'],
+                ['zip', 'Postal code', 'postal-code'], ['country_code', 'Country code (e.g. US)', 'country'],
+              ].map(([field, label, autoComplete]) => <label key={field}>
+                <span>{label}</span>
+                <input value={recipient[field]} autoComplete={autoComplete}
+                  required={!['address2', 'state_code'].includes(field)}
+                  maxLength={field === 'country_code' ? 2 : 200}
+                  onChange={(event) => {
+                    setRecipient({ ...recipient, [field]: event.target.value })
+                    setQuote(null)
+                    setError('')
+                  }} />
+              </label>)}
+              {currentQuote && <label>
+                <span>Shipping service</span>
+                <select value={shippingRateId} onChange={(event) => setShippingRateId(event.target.value)}>
+                  {currentQuote.shippingRates.map((rate) => <option key={rate.id} value={rate.id}>
+                    {rate.name} - {bag.formatMoney(rate.amount / 100)}
+                  </option>)}
+                </select>
+              </label>}
+            </fieldset>
+            <p>Delivery uses this address. Billing details are entered in Stripe.</p>
+            <button type="button" className="is-bare" disabled={busy}
+              onClick={() => setShippingOpen(false)}>Back to bag</button>
+          </form>
         ) : (
           <ul className="cart-list">
             {items.map((item) => (
@@ -266,11 +328,11 @@ export default function CartScreen({
               <button
                 type="button"
                 className="cart-pay"
-                aria-label="Pay"
+                aria-label={shippingOpen && printable && !currentQuote ? 'Get shipping rates' : 'Pay'}
                 disabled={busy}
                 onClick={pay}
               >
-                {busy ? '…' : <BagIcon />}
+                {busy ? '…' : shippingOpen && printable && !currentQuote ? 'Get rates' : <BagIcon />}
               </button>
             </div>
           </div>

@@ -3,9 +3,9 @@ import { getAdminSupabase, requireCreator, requireArtworkUrl } from './supabaseS
 import { mapCreatorProduct, selectCatalogVariants, storedPrintfulVariants } from '../creatorProducts.js'
 import {
   getPrintfulConfig, checkPrintfulConnection, listCatalogProducts, getCatalogProduct,
-  getPrintfileLayout, createMockupTask, getMockupTask,
+  getPrintfileLayout, createMockupTask, getMockupTask, handlePrintfulWebhook,
 } from '../printful.js'
-import { createCheckoutSession, getCheckoutSession, handleStripeWebhook,
+import { createCheckoutSession, estimateCheckout, getCheckoutSession, handleStripeWebhook,
   getStripeCheckoutConfig } from '../stripeCheckout.js'
 
 function fail(message, status = 400) {
@@ -90,7 +90,7 @@ async function saveMockupImages(db, task, urls) {
 
 export function isCreatorApiPath(path) {
   return path.startsWith('/api/creator/') || path.startsWith('/api/printful/') ||
-    path.startsWith('/api/checkout/') || path === '/api/webhooks/stripe'
+    path.startsWith('/api/checkout/') || ['/api/webhooks/stripe', '/api/webhooks/printful'].includes(path)
 }
 
 export async function handleCreatorApi(req, res) {
@@ -100,6 +100,10 @@ export async function handleCreatorApi(req, res) {
   try {
     if (path === '/api/webhooks/stripe' && req.method === 'POST') {
       send(res, 200, await handleStripeWebhook(await readRawBody(req), req.headers['stripe-signature']))
+      return true
+    }
+    if (path === '/api/webhooks/printful' && req.method === 'POST') {
+      send(res, 200, await handlePrintfulWebhook(await readBody(req), url.searchParams.get('token')))
       return true
     }
     if (path === '/api/checkout/config' && req.method === 'GET') {
@@ -216,6 +220,8 @@ export async function handleCreatorApi(req, res) {
         .eq('id', path.split('/').at(-1)).eq('creator_id', user.id).select().maybeSingle())
       if (!row) fail('Product not found', 404)
       send(res, 200, { product: mapCreatorProduct(row) })
+    } else if (path === '/api/checkout/estimate' && req.method === 'POST') {
+      send(res, 200, await estimateCheckout(await readBody(req)))
     } else if (['/api/checkout/session', '/api/checkout/create'].includes(path) && req.method === 'POST') {
       send(res, 200, await createCheckoutSession(await readBody(req), { accountKey: user.id }))
     } else if (path.startsWith('/api/checkout/session/') && req.method === 'GET') {
@@ -227,8 +233,8 @@ export async function handleCreatorApi(req, res) {
     }
   } catch (error) {
     console.error('[creator-api]', error.message)
-    if (error.code === 'PGRST204' && /printful_variants/.test(error.message)) {
-      send(res, 503, { message: 'Run supabase/creator-pipeline.sql to enable multi-size products, then retry.' })
+    if (error.code === 'PGRST204' && /printful_variants|recipient|shipping_rate|tracking_number|tracking_url|shipments/.test(error.message)) {
+      send(res, 503, { message: 'Run supabase/creator-pipeline.sql to update the creator and checkout tables, then retry.' })
     } else {
       send(res, error.status || 500, { message: error.message || 'Creator API request failed' })
     }

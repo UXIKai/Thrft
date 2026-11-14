@@ -66,12 +66,24 @@ create table if not exists public.creator_checkout_orders (
   currency text not null default 'usd',
   payment_status text not null default 'unpaid',
   fulfillment_status text not null default 'pending'
-    check (fulfillment_status in ('pending', 'processing', 'draft', 'failed', 'not_required')),
+    check (fulfillment_status in ('pending', 'processing', 'draft', 'failed', 'not_required', 'partially_shipped', 'shipped')),
   claim_until timestamptz,
   printful_order_id bigint,
   fulfillment_error text,
   created_at timestamptz not null default now()
 );
+alter table public.creator_checkout_orders
+  add column if not exists recipient jsonb,
+  add column if not exists shipping_rate jsonb,
+  add column if not exists tracking_number text,
+  add column if not exists tracking_url text,
+  add column if not exists shipments jsonb not null default '[]'::jsonb;
+alter table public.creator_checkout_orders
+  drop constraint if exists creator_checkout_orders_fulfillment_status_check;
+alter table public.creator_checkout_orders
+  add constraint creator_checkout_orders_fulfillment_status_check
+  check (fulfillment_status in ('pending', 'processing', 'draft', 'failed', 'not_required', 'partially_shipped', 'shipped'));
+create index if not exists creator_checkout_printful on public.creator_checkout_orders (printful_order_id);
 alter table public.creator_checkout_orders enable row level security;
 revoke all on public.creator_checkout_orders from anon, authenticated;
 grant all on public.creator_checkout_orders to service_role;

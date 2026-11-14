@@ -9,8 +9,8 @@ The API uses `SUPABASE_SERVICE_ROLE_KEY`, `PRINTFUL_API_TOKEN`, and
 1. Run `supabase/creator-pipeline.sql` in the Supabase SQL Editor. The public
    **Thrft** bucket and its Storage SELECT/INSERT policies do not create these
    product, mockup-task, or checkout-order tables. Existing deployments should
-   rerun the file to add the `printful_variants` JSONB columns without deleting
-   products or orders; legacy single-size listings remain supported.
+   rerun the file to add the multi-size, shipping quote, recipient, and tracking
+   columns and shipped statuses without deleting products or orders.
 2. Allow authenticated Storage uploads under the user's UUID folder in **Thrft**.
    Artwork paths are `<auth-user-id>/<random-id>.png` or `.jpg`. Mockups are copied
    server-side into `<auth-user-id>/mockups/` so expiring Printful images do not
@@ -30,6 +30,13 @@ The API uses `SUPABASE_SERVICE_ROLE_KEY`, `PRINTFUL_API_TOKEN`, and
    Locally, `npm run server` serves the same handlers on port 8787; the existing
    local server also requires its Prisma `DATABASE_URL`. For a Supabase-only
    local API, run `node server/creatorServer.js`.
+6. Set a random server-only `PRINTFUL_WEBHOOK_SECRET` (at least 32 random bytes)
+   and register a Printful V1 webhook URL:
+   `https://<app-domain>/api/webhooks/printful?token=<secret>`, subscribing to
+   `package_shipped`. Keep the URL/token out of client code and public logs.
+   V1 deliveries do not have Stripe-style signatures: the endpoint checks this
+   shared secret, then retrieves the order from Printful to verify the shipment,
+   external order ID, and tracking data before writing anything.
 
 ## Creator workflow
 
@@ -63,15 +70,32 @@ Store tab, brand pages, and storefront feeds load these records.
 ## Checkout and fulfillment
 
 Checkout reloads each cart product and its price from Supabase. Browser-supplied
-prices, variant IDs, and artwork URLs are not fulfillment inputs. Stripe collects
-a structured shipping address and stores a durable item snapshot in
-`creator_checkout_orders`.
+prices, variant IDs, and artwork URLs are not fulfillment inputs. For Printful
+items, buyers enter a structured delivery address in the bag before payment.
+`POST /api/checkout/estimate` retrieves Printful `/shipping/rates` using that
+address and server-resolved variant quantities, then shows shipping services and
+the total. Checkout re-quotes the selected service before creating Stripe; a
+changed price requires another review. Provider errors or unavailable shipping
+block checkout rather than substituting free shipping.
+
+Shipping is charged as a separate Stripe line item. The quoted address is saved
+as the Stripe customer's shipping address and in `creator_checkout_orders`
+alongside the selected rate and total (including shipping). Stripe collects
+billing details, not a different delivery address, so the shipping quote cannot
+be invalidated after payment. Fulfillment uses the saved address and shipping
+service. Ordinary, non-Printful items retain their existing checkout behavior;
+mixed carts quote Printful shipping only for printable items.
 
 Only a verified **paid** Stripe session creates a Printful order with
 `confirm=false`. It remains a **draft**: no automatic Printful confirmation or
 production charge. Mixed carts include only printable items in the Printful
-draft. Shipping/production costs are not added to the Stripe price by this
-integration; creators must account for those in pricing and review drafts.
+draft. Manufacturing costs are not added separately; creators must account for
+them in retail pricing and review/confirm drafts before Printful can ship.
+
+Verified `package_shipped` events update `fulfillment_status` to
+`partially_shipped` or `shipped` and save `tracking_number`, `tracking_url`, and
+all package tracking entries in `shipments`. Repeated notifications are safe,
+and later Stripe callbacks do not create another draft for shipped orders.
 
 Signed webhooks support delayed payments and retries. A database claim prevents
 concurrent submissions; Printful's external order ID allows recovery if the
@@ -93,8 +117,15 @@ empty the cart just because a return URL says `checkout=success`.
 | GET | `/api/creator/me/products` | Current creator's products |
 | GET | `/api/creator/accounts/:username` | Creator storefront |
 | POST | `/api/checkout/session` | Authenticated cart checkout |
+| POST | `/api/checkout/estimate` | `{ items, address }` → subtotal and live Printful shipping rates |
 | GET | `/api/checkout/session/:id` | Owner-only Stripe-verified payment/fulfillment status |
 | POST | `/api/webhooks/stripe` | Raw-body, signed Stripe webhook |
+| POST | `/api/webhooks/printful?token=<secret>` | Authenticated, provider-verified shipment updates |
+
+The structured `address` uses Printful fields: `name`, `address1`, optional
+`address2`, `city`, `state_code`, `country_code` (two-letter ISO code), and `zip`.
+Checkout accepts the selected `shippingRateId` and quoted `shippingAmount` in
+integer USD cents; both are checked against a fresh provider quote.
 
 Run `node --test tests/creator-pipeline.test.js` and `npm run build` for local
 validation. Tests use mocked provider responses and never create real orders.

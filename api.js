@@ -428,6 +428,8 @@ export async function createCheckoutSession({
   items,
   address,
   shippingAddress,
+  shippingRateId,
+  shippingAmount,
   successUrl,
   cancelUrl,
 } = {}) {
@@ -436,6 +438,8 @@ export async function createCheckoutSession({
     body: JSON.stringify({
       items: items || [],
       address: address || shippingAddress || undefined,
+      shippingRateId,
+      shippingAmount,
       successUrl,
       cancelUrl,
     }),

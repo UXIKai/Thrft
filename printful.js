@@ -3,6 +3,9 @@
  * Requires PRINTFUL_API_TOKEN (a private token from https://developers.printful.com).
  * Set PRINTFUL_STORE_ID too when the token covers more than one store.
  */
+import { timingSafeEqual } from 'node:crypto'
+import { checkoutStore } from './server/supabaseStore.js'
+
 const PRINTFUL_BASE = 'https://api.printful.com'
 const PRINTFUL_TOKEN = process.env.PRINTFUL_API_TOKEN || ''
 const PRINTFUL_STORE_ID = process.env.PRINTFUL_STORE_ID || ''
@@ -80,10 +83,10 @@ export const estimateOrderCosts = ({ recipient, items }) =>
  * Create an order. Pass `confirm: true` to submit it for fulfillment immediately;
  * otherwise it stays a draft.
  */
-export const createOrder = ({ recipient, items, externalId, confirm = false }) =>
+export const createOrder = ({ recipient, items, externalId, shipping, confirm = false }) =>
   printful('/orders', {
     method: 'POST',
-    body: { external_id: externalId, recipient, items },
+    body: { external_id: externalId, recipient, items, ...(shipping ? { shipping } : {}) },
     query: { confirm: String(confirm) },
   })
 
@@ -104,3 +107,40 @@ export const createMockupTask = (productId, { variantIds, files }) =>
 
 export const getMockupTask = (taskKey) =>
   printful('/mockup-generator/task', { query: { task_key: taskKey } })
+
+export async function handlePrintfulWebhook(event, token, {
+  store = checkoutStore, secret = process.env.PRINTFUL_WEBHOOK_SECRET, fetchOrder = getOrder,
+} = {}) {
+  if (!secret) throw Object.assign(new Error('Set PRINTFUL_WEBHOOK_SECRET to receive shipment updates'), { status: 503 })
+  const supplied = Buffer.from(typeof token === 'string' ? token : '')
+  const expected = Buffer.from(secret)
+  if (supplied.length !== expected.length || !timingSafeEqual(supplied, expected)) {
+    throw Object.assign(new Error('Invalid Printful webhook token'), { status: 401 })
+  }
+  if (event.type !== 'package_shipped') return { received: true }
+  const id = event.data?.order?.id
+  const shipmentId = event.data?.shipment?.id
+  if (!Number.isSafeInteger(id) || id < 1 || !Number.isSafeInteger(shipmentId) || shipmentId < 1) {
+    throw Object.assign(new Error('Invalid Printful shipment event'), { status: 400 })
+  }
+  const saved = await store.getOrderByPrintfulId(id)
+  if (!saved) return { received: true, ignored: true }
+  if (saved.fulfillment_status === 'shipped') return { received: true }
+  // V1 webhooks have no Stripe-style signature; verify shipment details with the provider.
+  const order = await fetchOrder(id)
+  const shipment = order.shipments?.find((entry) => entry.id === shipmentId)
+  if (order.id !== id || order.external_id !== saved.id.replaceAll('-', '') ||
+      !['partial', 'fulfilled', 'inprocess'].includes(order.status) ||
+      !shipment) {
+    throw Object.assign(new Error('Printful shipment could not be verified; retry later'), { status: 409 })
+  }
+  await store.updateShipment(saved.stripe_session_id, {
+    fulfillment_status: order.status === 'fulfilled' ? 'shipped' : 'partially_shipped',
+    tracking_number: shipment.tracking_number || null, tracking_url: shipment.tracking_url || null,
+    shipments: order.shipments.map((entry) => ({
+      id: entry.id, carrier: entry.carrier, service: entry.service,
+      tracking_number: entry.tracking_number, tracking_url: entry.tracking_url,
+    })),
+  })
+  return { received: true }
+}

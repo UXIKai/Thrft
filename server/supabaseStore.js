@@ -54,6 +54,16 @@ export const checkoutStore = {
     return checked(await getAdminSupabase().from('creator_checkout_orders')
       .select('*').eq('stripe_session_id', id).maybeSingle())
   },
+  async getOrderByPrintfulId(id) {
+    return checked(await getAdminSupabase().from('creator_checkout_orders')
+      .select('*').eq('printful_order_id', id).maybeSingle())
+  },
+  async updateShipment(id, patch) {
+    let query = getAdminSupabase().from('creator_checkout_orders')
+      .update(patch).eq('stripe_session_id', id)
+    if (patch.fulfillment_status === 'partially_shipped') query = query.neq('fulfillment_status', 'shipped')
+    return checked(await query.select().maybeSingle())
+  },
   async claimOrder(id) {
     const rows = checked(await getAdminSupabase().rpc('claim_creator_fulfillment', { session_id: id }))
     return rows?.[0] || null
