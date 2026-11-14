@@ -1300,3 +1300,6 @@ html body .saved-screen .saved-list-title svg {
   text-shadow: none !important;
   opacity: 1;
 }
+
+html body .saved-grid.market-product-grid { padding: 0; }
+html body .market-card.is-selected .market-card-photo { border-color: light-dark(#000, #fff); }

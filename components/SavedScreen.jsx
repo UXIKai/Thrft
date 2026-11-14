@@ -800,7 +800,7 @@ export default function SavedScreen({
               </button>
             ))}
       </div>
-      <div className="saved-grid is-products">
+      <div className="saved-grid is-products market-product-grid">
         {visibleItems.map((item) => {
               const photo =
                 item.photoUrl || item.imageUrl || item.image_url || ''
@@ -809,33 +809,20 @@ export default function SavedScreen({
                 photo !== 'placeholder' &&
                 !/^placeholder$/i.test(photo)
               return (
-                <button
-                  key={item.id}
-                  type="button"
-                  className={`saved-item${selectedKeys.includes(`item-${item.id}`) ? ' is-selected' : ''}`}
-                  onClick={() => (selectMode ? toggleSelected(`item-${item.id}`) : onOpenProduct?.(item))}
-                  aria-label={item.title || item.brandName || 'Saved item'}
-                >
-                  <span className="saved-item-media is-product" aria-hidden>
-                    {showPhoto ? (
-                      <img
-                        className="saved-item-photo"
-                        src={photo}
-                        alt=""
-                        loading="lazy"
-                      />
-                    ) : (
-                      <span className="saved-item-mark">
-                        {String(item.code || item.title || '?')
-                          .slice(0, 2)
-                          .toUpperCase()}
-                      </span>
-                    )}
-                  </span>
-                  <span className="saved-item-name">
-                    {item.brandName || item.title || item.code}
-                  </span>
-                </button>
+                <div key={item.id} className={`market-card${selectedKeys.includes(`item-${item.id}`) ? ' is-selected' : ''}`}>
+                  <button
+                    type="button"
+                    className="market-card-open"
+                    onClick={() => (selectMode ? toggleSelected(`item-${item.id}`) : onOpenProduct?.(item))}
+                    aria-label={item.title || item.brandName || 'Saved item'}
+                  >
+                    <span className="market-card-photo" aria-hidden>
+                      {showPhoto ? <img src={photo} alt="" loading="lazy" draggable="false" /> : null}
+                    </span>
+                    <span className="market-card-name">{item.brandName || item.title || item.code}</span>
+                    {item.price ? <span className="market-card-price">{item.price}</span> : null}
+                  </button>
+                </div>
               )
             })}
       </div>
