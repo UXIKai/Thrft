@@ -3110,7 +3110,7 @@ html body .stage .home-radial .home-radial-btn:not(#_):not(#_):not(#_) {
 
 /* Desktop: bigger nav bar, smaller toggle above it, Settings in the window's corner */
 @media (min-width: 900px) {
-  html body .stage > .tab-bar.tab-bar:not(#_) { scale: 1.5; transform-origin: 50% 100%; }
+  html body .stage > .tab-bar.tab-bar:not(#_) { scale: 1.5; transform-origin: 0 100%; }
   html body .stage > .nav-toggle:not(#_) {
     scale: 1;
     bottom: calc(var(--nav-bottom) + 98px);
