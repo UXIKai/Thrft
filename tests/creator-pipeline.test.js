@@ -49,7 +49,11 @@ async function request(path, { method = 'GET', body, token = 'test-user-token', 
 }
 
 function fixture() {
-  const tables = { creator_mockup_tasks: [], brand_products: [], creator_checkout_orders: [] }
+  const tables = { creator_mockup_tasks: [], brand_products: [], creator_checkout_orders: [],
+    creator_profiles: [{ id: creatorId, username: 'creator', display_name: 'Creator',
+      avatar_url: '', bio: '', created_at: '2026-01-01T00:00:00Z' }],
+    creator_follows: [], creator_profile_preferences: [], creator_saved_products: [],
+    creator_leaderboard: [], listings: [] }
   const calls = []
   let paid = false
   let draft
@@ -75,12 +79,28 @@ function fixture() {
         order.fulfillment_status = 'processing'
         return json([order])
       }
+      if (url.pathname === '/rest/v1/rpc/replace_creator_saved_products') {
+        tables.creator_saved_products = tables.creator_saved_products.filter((row) => row.user_id !== body.owner_id)
+        tables.creator_saved_products.push(...body.products.map((row) => ({
+          ...row, user_id: body.owner_id, created_at: new Date().toISOString(),
+        })))
+        return json(null)
+      }
       const table = url.pathname.split('/').at(-1)
-      if (tables[table]) {
+      const source = table === 'creator_public_profiles' ? tables.creator_profiles.map((profile) => ({
+        ...profile, following_count: tables.creator_follows.filter((row) => row.follower_id === profile.id).length,
+        follower_count: tables.creator_follows.filter((row) => row.followed_id === profile.id).length,
+      })) : tables[table]
+      if (source) {
         const matches = (row) => [...url.searchParams].every(([key, value]) =>
           value.startsWith('eq.') ? String(row[key]) === value.slice(3) :
+            value.startsWith('in.(') ? value.slice(4, -1).split(',').includes(String(row[key])) :
             value.startsWith('neq.') ? String(row[key]) !== value.slice(4) : true)
         if (method === 'POST') {
+          if (table === 'creator_profile_preferences') {
+            const existing = source.find((row) => row.user_id === body.user_id)
+            if (existing) { Object.assign(existing, body); return json(existing) }
+          }
           const row = { ...(table === 'brand_products' ? { id: productId, status: 'active',
             segment: 'store', mockup_urls: [], created_at: new Date().toISOString() } : {}),
           ...(table === 'creator_checkout_orders' ? {
@@ -90,7 +110,8 @@ function fixture() {
           tables[table].push(row)
           return json(row, 201)
         }
-        const rows = tables[table].filter(matches)
+        const rows = source.filter(matches)
+        if (table === 'creator_leaderboard') rows.sort((a, b) => b.profit - a.profit || a.id.localeCompare(b.id))
         if (method === 'PATCH') {
           rows.forEach((row) => Object.assign(row, body))
           return json(rows[0] || null)
@@ -185,6 +206,72 @@ test('Store rows preserve real listing IDs and never synthesize missing brands o
   assert.ok(rows[0].products.every((product) => product.id === second.id))
   assert.ok(rows[1].products.every((product) => product.id === first.id))
   assert.deepEqual(buildPersonalizedRows({ catalog: [], favoredBrands: ['lv'] }), [])
+})
+
+test('member pages exist without products and report real follow relationships', async () => {
+  const f = fixture()
+  f.tables.creator_profiles.push({ id: productId, username: 'buyer', display_name: 'Buyer',
+    avatar_url: 'https://images.test/avatar.jpg', bio: 'Member bio', created_at: '2026-02-01T00:00:00Z' })
+  f.tables.creator_follows.push({ follower_id: creatorId, followed_id: productId })
+  const member = await request('/api/creator/accounts/buyer', { token: null })
+  assert.equal(member.status, 200)
+  assert.equal(member.body.account.followerCount, 1)
+  assert.equal(member.body.account.followingCount, 0)
+  assert.equal(member.body.account.avatarUrl, 'https://images.test/avatar.jpg')
+  assert.deepEqual(member.body.products, [])
+  assert.equal((await request('/api/creator/accounts/missing', { token: null })).status, 404)
+})
+
+test('saved products are account scoped and reloaded with trusted mockups, sizes, and prices', async () => {
+  const f = fixture()
+  f.tables.brand_products.push({ id: productId, creator_id: creatorId, title: 'Real Tee',
+    brand: 'Creator', status: 'active', price: 25, mockup_urls: ['https://images.test/tee.jpg'],
+    printful_variants: [{ variant_id: 4011, size: 'M' }], artwork_url: artwork })
+  assert.equal((await request('/api/creator/me/saved', { token: null })).status, 401)
+  const saved = await request('/api/creator/me/saved', { method: 'PUT', body: {
+    user_id: productId, items: [{ id: productId, title: 'Forged', price: 1, printfulVariantId: 999 }],
+  } })
+  assert.equal(saved.status, 200)
+  assert.equal(saved.body.items[0].title, 'Real Tee')
+  assert.equal(saved.body.items[0].price, '$25.00')
+  assert.deepEqual(saved.body.items[0].sizes, ['M'])
+  assert.equal(saved.body.items[0].mockupUrls[0], 'https://images.test/tee.jpg')
+  assert.deepEqual((await request('/api/creator/me/saved', { token: 'other-token' })).body.items, [])
+  f.tables.brand_products.push({ id: '55555555-5555-4555-8555-555555555555',
+    creator_id: productId, title: 'Private draft', status: 'archived', price: 10 })
+  assert.equal((await request('/api/creator/me/saved', { method: 'PUT',
+    body: { items: [{ id: '55555555-5555-4555-8555-555555555555' }] } })).status, 409)
+  assert.equal((await request('/api/creator/me/saved', { method: 'PUT',
+    body: { items: [{ id: 'Louis-Vuitton-Item-7' }] } })).status, 400)
+  const removed = await request('/api/creator/me/saved', { method: 'PUT', body: { items: [] } })
+  assert.deepEqual(removed.body.items, [])
+})
+
+test('favorite brand preferences persist privately and cannot forge public profile counts', async () => {
+  const f = fixture()
+  const saved = await request('/api/creator/me/profile', { method: 'PUT',
+    body: { favoredBrands: ['nike', 'lv'], followingCount: 900, identityStatus: 'verified' } })
+  assert.equal(saved.status, 200)
+  assert.deepEqual(saved.body.favoredBrands, ['nike', 'lv'])
+  assert.equal(saved.body.followingCount, 0)
+  assert.equal(saved.body.identityStatus, 'unverified')
+  assert.equal(f.tables.creator_profile_preferences[0].user_id, creatorId)
+  const loaded = await request('/api/creator/me/profile')
+  assert.deepEqual(loaded.body.favoredBrands, ['nike', 'lv'])
+  f.tables.creator_profiles.push({ id: productId, username: 'buyer', display_name: 'Buyer',
+    created_at: '2026-02-01T00:00:00Z' })
+  assert.equal((await request('/api/creator/me/profile', { token: 'other-token' })).body.favoredBrands, undefined)
+})
+
+test('Leaderboard loads ranked real identities without manufacturing placeholder slots', async () => {
+  const f = fixture()
+  assert.deepEqual((await request('/api/creator/leaderboard', { token: null })).body.profiles, [])
+  f.tables.creator_leaderboard.push(
+    { id: creatorId, username: 'creator', display_name: 'Creator', profit: 20, avatar_url: 'https://images.test/a.jpg' },
+    { id: productId, username: 'buyer', display_name: 'Buyer', profit: 30, avatar_url: '' })
+  const result = await request('/api/creator/leaderboard', { token: null })
+  assert.deepEqual(result.body.profiles.map((row) => row.id), [productId, creatorId])
+  assert.equal(result.body.profiles[1].avatarUrl, 'https://images.test/a.jpg')
 })
 
 test('owned artwork → mockups → published product → trusted checkout → one paid Printful draft', async () => {
@@ -403,6 +490,8 @@ test('one multi-size listing routes each buyer size to its trusted Printful vari
   assert.equal(checkout.status, 200)
   assert.deepEqual(f.tables.creator_checkout_orders[0].items.map((item) =>
     [item.printfulVariantId, item.quantity]), [[4011, 2], [4012, 1]])
+  assert.deepEqual(f.tables.creator_checkout_orders[0].items.map((item) =>
+    [item.creatorId, item.baseAmount]), [[creatorId, 1000], [creatorId, 1200]])
   assert.equal(f.tables.creator_checkout_orders[0].amount_total, 8000)
   f.markPaid()
   assert.equal((await request('/api/webhooks/stripe', {

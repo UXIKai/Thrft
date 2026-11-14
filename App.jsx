@@ -21,10 +21,6 @@ import SavedScreen from './components/SavedScreen.jsx'
 import TabBar from './components/TabBar.jsx'
 import { useBag } from './BagContext.jsx'
 import {
-  INITIAL_PROFILES,
-  sortByProfit,
-} from './profiles.js'
-import {
   BUBBLE,
   slotForRank,
   HELIX_W,
@@ -33,6 +29,7 @@ import { applyBackgroundImage, clearSearchBackground, applySearchBackground, rea
 import {
   fetchProfile,
   fetchSaved,
+  fetchLeaderboard,
   saveProfile,
   recordInterest,
   fetchCheckoutSession,
@@ -112,10 +109,10 @@ function CartIcon() {
 }
 
 export default function App() {
-  const [profiles] = useState(INITIAL_PROFILES)
-  const [order] = useState(() =>
-    sortByProfit(INITIAL_PROFILES).map((p) => p.id),
-  )
+  const [profiles, setProfiles] = useState([])
+  const [leaderboardStatus, setLeaderboardStatus] = useState('loading')
+  const [leaderboardError, setLeaderboardError] = useState('')
+  const order = useMemo(() => profiles.map((profile) => profile.id), [profiles])
   const [tab, setTab] = useState('home')
   const [createSegment, setCreateSegment] = useState('market')
   const [checkoutError, setCheckoutError] = useState('')
@@ -236,6 +233,24 @@ export default function App() {
     [profiles],
   )
 
+  useEffect(() => {
+    if (!signedIn || homeSegment !== 'leaderboard') return undefined
+    let alive = true
+    setLeaderboardStatus('loading')
+    setLeaderboardError('')
+    fetchLeaderboard().then((rows) => {
+      if (!alive) return
+      setProfiles(rows)
+      setLeaderboardStatus('ready')
+    }).catch((error) => {
+      if (!alive) return
+      setProfiles([])
+      setLeaderboardError(error.message || 'Could not load the Leaderboard')
+      setLeaderboardStatus('error')
+    })
+    return () => { alive = false }
+  }, [signedIn, homeSegment, feedRefresh])
+
   // Always keep the flowing B/W/gray atmosphere behind the stage.
   useEffect(() => {
     applyBackgroundImage(readBackgroundImage())
@@ -251,10 +266,15 @@ export default function App() {
   function applySession(session) {
     if (session?.user || session?.token) {
       if (session.profile) {
-        setUserProfile({
+        setUserProfile((prev) => ({
           ...session.profile,
-          username: session.account?.username || session.profile.username || '',
-        })
+          ...(prev.email === session.profile.email ? prev : {}),
+          email: session.profile.email,
+          avatarUrl: session.profile.avatarUrl,
+          displayName: session.profile.displayName,
+          username: prev.email === session.profile.email && prev.username
+            ? prev.username : session.account?.username || session.profile.username || '',
+        }))
       }
       setAccount(session.account || null)
       setSignedIn(true)
@@ -306,32 +326,6 @@ export default function App() {
       applySession(session)
       setAuthReady(true)
 
-      if (session) {
-        const profile = await fetchProfile().catch(() => null)
-        if (alive && profile) {
-          setUserProfile((prev) => ({
-            ...prev,
-            ...profile,
-            email: session.profile?.email || profile.email || prev.email,
-            avatarUrl: session.profile?.avatarUrl || profile.avatarUrl || prev.avatarUrl || '',
-            displayName:
-              session.profile?.displayName ||
-              profile.displayName ||
-              prev.displayName,
-            username:
-              session.account?.username ||
-              profile.username ||
-              prev.username ||
-              '',
-          }))
-        }
-        const items = await fetchSaved().catch(() => null)
-        if (alive && Array.isArray(items)) {
-          setSavedIds(
-            items.map((it) => it?.id || it?.productId).filter(Boolean),
-          )
-        }
-      }
     })()
 
     const stop = onAuthChange((session) => {
@@ -345,6 +339,18 @@ export default function App() {
       stop()
     }
   }, [])
+
+  useEffect(() => {
+    if (!signedIn || !account?.id) return undefined
+    let alive = true
+    fetchProfile().then((profile) => {
+      if (alive) setUserProfile((prev) => ({ ...prev, ...profile }))
+    }).catch((error) => console.error('Could not load member preferences:', error))
+    fetchSaved().then((items) => {
+      if (alive) setSavedIds(items.map((item) => item.id))
+    }).catch((error) => console.error('Could not load saved products:', error))
+    return () => { alive = false }
+  }, [signedIn, account?.id, forYouRefresh])
 
   // Return from ID.me OAuth callback (?idme=verified|error)
   useEffect(() => {
@@ -580,8 +586,11 @@ export default function App() {
 
             {homeOpen && homeSegment === 'leaderboard' && <section
               className="leaderboard-panel"
-              aria-label="Account ranks by profit"
+              aria-label="Account ranks by estimated gross product margin"
             >
+              {leaderboardStatus === 'loading' && <p role="status">Loading Leaderboard...</p>}
+              {leaderboardError && <p role="alert">{leaderboardError}</p>}
+              {leaderboardStatus === 'ready' && !profiles.length && <p role="status">No paid product sales yet.</p>}
               <div className="helix helix-embedded">
                 {order.map((id, i) => {
                   const profile = byId.get(id)
@@ -595,6 +604,7 @@ export default function App() {
                       rank={rank}
                       x={pos.x}
                       y={pos.y}
+                      onOpen={() => setActiveAccount({ username: profile.username, isOwn: profile.id === account?.id })}
                     />
                   )
                 })}
@@ -660,7 +670,7 @@ export default function App() {
           <ProfileScreen
             userProfile={{
               ...userProfile,
-              username: account?.username || userProfile?.username || '',
+              username: userProfile?.username || account?.username || '',
             }}
             account={account}
             onSaveProfile={handleSaveProfile}
@@ -670,7 +680,7 @@ export default function App() {
               setTab('design')
             }}
             onOpenAccountPage={() => {
-              const username = account?.username || userProfile?.username
+              const username = userProfile?.username || account?.username
               if (!username) return
               setActiveAccount({ username, isOwn: true })
             }}

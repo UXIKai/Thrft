@@ -294,6 +294,8 @@ export default function ProductRows({
 }) {
   const [listings, setListings] = useState([])
   const [savedItems, setSavedItems] = useState([])
+  const [savedError, setSavedError] = useState('')
+  const savingSaved = useRef(false)
   const [status, setStatus] = useState('loading')
   const [error, setError] = useState('')
   const [chip, setChip] = useState('all')
@@ -310,9 +312,13 @@ export default function ProductRows({
       .then((rows) => {
         if (!alive) return
         setSavedItems(Array.isArray(rows) ? rows : [])
+        setSavedError('')
       })
-      .catch(() => {
-        if (alive) setSavedItems([])
+      .catch((error) => {
+        if (alive) {
+          setSavedItems([])
+          setSavedError(error.message || 'Could not load saved products')
+        }
       })
     return () => {
       alive = false
@@ -390,13 +396,24 @@ export default function ProductRows({
 
   const savedIdSet = useMemo(() => new Set(savedItems.map((item) => String(item?.id))), [savedItems])
 
-  const toggleLike = (product) => {
+  const toggleLike = async (product) => {
+    if (savingSaved.current) return
     const id = String(product.id)
     const next = savedIdSet.has(id)
       ? savedItems.filter((item) => String(item?.id) !== id)
       : [...savedItems, product]
     setSavedItems(next)
-    saveSavedItems(next)
+    savingSaved.current = true
+    setSavedError('')
+    try {
+      const result = await saveSavedItems(next)
+      setSavedItems(result.items)
+    } catch (error) {
+      setSavedItems(savedItems)
+      setSavedError(error.message || 'Could not save this product')
+    } finally {
+      savingSaved.current = false
+    }
   }
 
   const marketItems = useMemo(() => {
@@ -426,6 +443,7 @@ export default function ProductRows({
     return (
       <section className="product-feed market-product-feed" id="home-product-panel" role="tabpanel" aria-labelledby="home-market-tab" aria-busy={status === 'loading'}>
         {error && <p role="alert">{error}</p>}
+        {savedError && <p role="alert">{savedError}</p>}
         {!marketItems.length && status !== 'error' && <p role="status">{status === 'loading' ? 'Loading products...' : 'No Market products found.'}</p>}
         <div className="market-chips" role="tablist" aria-label="Market filters">
           {ALL_CHIPS.map((c) => (
@@ -473,6 +491,7 @@ export default function ProductRows({
   return (
     <section className="product-feed" id="home-product-panel" role="tabpanel" aria-labelledby={`home-${segment}-tab`}>
       {error && <p role="alert">{error}</p>}
+      {savedError && <p role="alert">{savedError}</p>}
       {!rows.length && status !== 'error' && <p role="status">No Store products found.</p>}
       {rows.map((row, rowIndex) => (
         <CrawlRow

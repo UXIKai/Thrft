@@ -40,6 +40,9 @@ The API uses `SUPABASE_SERVICE_ROLE_KEY`, `PRINTFUL_API_TOKEN`, and
 
 ## Creator workflow
 
+For member profiles, follow counts, account-scoped Saved products, and the real
+Leaderboard, also apply `supabase/social.sql`; see [social data](social-data.md).
+
 Store feeds and brand pages load active `brand_products` through
 `GET /api/creator/products` (optionally filtered by brand). Empty catalogs show an
 empty state rather than demo listings. Store tiles display the first mockup;

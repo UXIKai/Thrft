@@ -43,6 +43,8 @@ export default function AccountPage({
     async function load() {
       setLoading(true)
       setError('')
+      setAccount(null)
+      setProducts([])
       try {
         const data = await fetchAccountPage(username)
         if (cancelled) return
@@ -86,7 +88,7 @@ export default function AccountPage({
           </div>
         )}
         {loading && <p className="account-page-muted">Loading…</p>}
-        {!loading && error && <p className="account-page-muted">{error}</p>}
+        {!loading && error && <p className="account-page-muted" role="alert">{error}</p>}
         {!loading && !error && account && (
           <>
             <div className="account-page-hero">
@@ -150,13 +152,8 @@ export default function AccountPage({
                       className="account-page-row"
                       onClick={() =>
                         onOpenProduct?.({
-                          id: p.id,
-                          title: p.title,
-                          price: p.price,
-                          brand: p.brand,
-                          category: p.category,
-                          condition: p.condition,
-                          description: p.description,
+                          ...p,
+                          detailVariant: 'store',
                           seller: name,
                           sellerUsername: handle,
                         })

@@ -214,6 +214,11 @@ function writeLocalSaved(items) {
 }
 
 export async function fetchProfile() {
+  if (isSupabaseConfigured()) {
+    const profile = await api('/api/creator/me/profile')
+    writeLocalProfile({ ...DEFAULT_PROFILE, ...profile })
+    return { ...DEFAULT_PROFILE, ...profile }
+  }
   try {
     const profile = await api('/api/profile')
     writeLocalProfile(profile)
@@ -238,7 +243,10 @@ export async function saveProfile(patch) {
       data: { ...metadata, ...(avatarUrl !== undefined ? { avatar_url: avatarUrl } : {}) },
     })
     if (error) throw new Error(error.message || 'Could not save your profile')
-    const next = writeLocalProfile({ ...base, ...patch, ...identity })
+  }
+  if (isSupabaseConfigured()) {
+    const profile = await api('/api/creator/me/profile', { method: 'PUT', body: JSON.stringify(patch) })
+    const next = writeLocalProfile({ ...base, ...profile })
     return { profile: next, source: 'supabase' }
   }
   try {
@@ -267,6 +275,12 @@ export async function connectProvider(provider, action = 'connect', extras = {})
 }
 
 export async function fetchSaved() {
+  if (isSupabaseConfigured()) {
+    const data = await api('/api/creator/me/saved')
+    if (!Array.isArray(data.items)) throw new Error('Invalid saved products response')
+    writeLocalSaved(data.items)
+    return data.items
+  }
   try {
     const data = await api('/api/saved')
     const items = Array.isArray(data.items) ? data.items : []
@@ -279,6 +293,14 @@ export async function fetchSaved() {
 
 export async function saveSavedItems(items) {
   const list = Array.isArray(items) ? items : []
+  if (isSupabaseConfigured()) {
+    if (!Array.isArray(items)) throw new Error('Saved products must be a list')
+    const data = await api('/api/creator/me/saved', { method: 'PUT',
+      body: JSON.stringify({ items: list.map((item) => ({ id: item?.id })) }) })
+    if (!Array.isArray(data.items)) throw new Error('Invalid saved products response')
+    writeLocalSaved(data.items)
+    return { items: data.items, source: 'supabase' }
+  }
   try {
     const data = await api('/api/saved', {
       method: 'PUT',
@@ -326,6 +348,12 @@ export async function fetchIdmeStatus() {
 
 export async function fetchAccountPage(username) {
   return api(`/api/${isSupabaseConfigured() ? 'creator/' : ''}accounts/${encodeURIComponent(username)}`)
+}
+
+export async function fetchLeaderboard() {
+  const data = await api('/api/creator/leaderboard')
+  if (!Array.isArray(data.profiles)) throw new Error('Invalid leaderboard response')
+  return data.profiles
 }
 
 export async function searchAccounts(query) {

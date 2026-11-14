@@ -2,7 +2,7 @@
  * Fixed-size profile node.
  * Empty ring when `avatarUrl` is null; filled circle when a real profile is wired.
  */
-export default function Bubble({ profile, rank, x, y, weaving, scale = 1 }) {
+export default function Bubble({ profile, rank, x, y, weaving, scale = 1, onOpen }) {
   const filled = Boolean(profile.avatarUrl)
   const s = Number.isFinite(scale) ? scale : 1
 
@@ -15,7 +15,17 @@ export default function Bubble({ profile, rank, x, y, weaving, scale = 1 }) {
         zIndex: weaving ? (s > 1.01 ? 8 : 5) : 1,
       }}
       data-rank={rank}
-      title={`${profile.label} · $${profile.profit.toLocaleString()} · #${rank}`}
+      title={`${profile.label} · $${profile.profit.toLocaleString()} estimated margin · #${rank}`}
+      role={onOpen ? 'button' : undefined}
+      tabIndex={onOpen ? 0 : undefined}
+      aria-label={onOpen ? `Rank ${rank}, ${profile.label}, view @${profile.username}` : undefined}
+      onClick={onOpen}
+      onKeyDown={onOpen ? (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault()
+          onOpen()
+        }
+      } : undefined}
     >
       <div className="bubble-body">
         {filled ? (

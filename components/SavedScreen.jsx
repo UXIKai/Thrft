@@ -341,6 +341,9 @@ export default function SavedScreen({
   onForYouRefresh,
 }) {
   const [items, setItems] = useState([])
+  const [savedLoading, setSavedLoading] = useState(true)
+  const [savedError, setSavedError] = useState('')
+  const [savingSaved, setSavingSaved] = useState(false)
   const [query, setQuery] = useState('')
   const [searchOpen, setSearchOpen] = useState(false)
   const searchWrapRef = useRef(null)
@@ -457,6 +460,10 @@ export default function SavedScreen({
     fetchSaved().then((remote) => {
       if (!alive) return
       setItems(Array.isArray(remote) ? remote : [])
+    }).catch((error) => {
+      if (alive) setSavedError(error.message || 'Could not load saved products')
+    }).finally(() => {
+      if (alive) setSavedLoading(false)
     })
     return () => {
       alive = false
@@ -523,15 +530,22 @@ export default function SavedScreen({
   }, [items, query, globeOpen])
 
   async function persistFavored(nextIds) {
+    const previous = favoriteBrands
     setFavoriteBrands(nextIds)
-    await onFavoredBrandsChange?.(nextIds)
-    onForYouRefresh?.()
+    setSavedError('')
+    try {
+      await onFavoredBrandsChange?.(nextIds)
+      onForYouRefresh?.()
+    } catch (error) {
+      setFavoriteBrands(previous)
+      setSavedError(error.message || 'Could not save favorite brands')
+    }
   }
 
   useEffect(() => {
     if (!selectMode) return undefined
     const leave = (event) => {
-      if (event.target.closest?.('.saved-item, .saved-fab')) return
+      if (event.target.closest?.('.saved-item, .market-card, .saved-fab')) return
       setSelectMode(false)
       setSelectedKeys([])
       setFabOpen(false)
@@ -540,14 +554,24 @@ export default function SavedScreen({
     return () => document.removeEventListener('pointerdown', leave)
   }, [selectMode])
 
-  function deleteSelected() {
-    if (!selectedKeys.length) return
+  async function deleteSelected() {
+    if (!selectedKeys.length || savingSaved) return
     const brandIds = selectedKeys.filter((k) => k.startsWith('brand-')).map((k) => k.slice(6))
     const itemIds = new Set(selectedKeys.filter((k) => k.startsWith('item-')).map((k) => k.slice(5)))
     if (itemIds.size) {
       const nextItems = items.filter((it) => !itemIds.has(String(it.id)))
-      setItems(nextItems)
-      saveSavedItems(nextItems)
+      setSavingSaved(true)
+      setSavedError('')
+      try {
+        const result = await saveSavedItems(nextItems)
+        setItems(result.items)
+        onForYouRefresh?.()
+      } catch (error) {
+        setSavedError(error.message || 'Could not remove saved products')
+        return
+      } finally {
+        setSavingSaved(false)
+      }
     }
     if (brandIds.length) persistFavored(favoriteBrands.filter((id) => !brandIds.includes(String(id))))
     setSelectedKeys([])
@@ -654,7 +678,7 @@ export default function SavedScreen({
               type="button"
               className="saved-fab-btn is-danger"
               aria-label="Delete selected"
-              disabled={!selectedKeys.length}
+              disabled={!selectedKeys.length || savingSaved}
               tabIndex={fabOpen ? 0 : -1}
               onClick={(e) => { e.currentTarget.blur(); deleteSelected() }}
             >
@@ -793,6 +817,9 @@ export default function SavedScreen({
             ))}
       </div>
       <div className="saved-grid is-products market-product-grid">
+        {savedLoading && <p role="status">Loading saved products...</p>}
+        {savedError && <p role="alert">{savedError}</p>}
+        {!savedLoading && !savedError && !visibleItems.length && <p role="status">No saved products yet.</p>}
         {visibleItems.map((item) => {
               const photo =
                 item.photoUrl || item.imageUrl || item.image_url || ''

@@ -74,6 +74,9 @@ export async function resolveCheckoutItems(body, store = checkoutStore) {
         unitAmount, quantity: group.quantity, size: group.variant?.size || '',
         photoUrl: product.mockup_urls?.[0] || product.photo_url || product.image_url || '',
         printfulVariantId: group.variant?.variant_id || null,
+        creatorId: product.creator_id || product.seller_id || null,
+        baseAmount: group.variant?.currency === 'USD' && Number(group.variant.base_price) > 0
+          ? Math.round(Number(group.variant.base_price) * 100) : null,
         artworkUrl: product.artwork_url || null,
         placement: product.printful_placement || 'front',
       })

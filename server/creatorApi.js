@@ -7,6 +7,8 @@ import {
 } from '../printful.js'
 import { createCheckoutSession, estimateCheckout, getCheckoutSession, handleStripeWebhook,
   getStripeCheckoutConfig } from '../stripeCheckout.js'
+import { fetchPublicAccount, fetchSocialProfile, saveSocialProfile,
+  fetchSocialSaved, saveSocialSaved, fetchLeaderboard } from './socialStore.js'
 
 function fail(message, status = 400) {
   throw Object.assign(new Error(message), { status })
@@ -119,17 +121,24 @@ export async function handleCreatorApi(req, res) {
     }
     const accountMatch = path.match(/^\/api\/creator\/accounts\/([^/]+)$/)
     if (accountMatch && req.method === 'GET') {
-      const username = decodeURIComponent(accountMatch[1])
-      const rows = checked(await getAdminSupabase().from('brand_products').select('*')
-        .eq('creator_username', username).eq('status', 'active').order('created_at', { ascending: false }))
-      if (!rows.length) fail('Creator storefront not found', 404)
-      send(res, 200, { account: { id: rows[0].creator_id, username,
-        displayName: rows[0].creator_name }, products: rows.map(mapCreatorProduct) })
+      send(res, 200, await fetchPublicAccount(decodeURIComponent(accountMatch[1])))
+      return true
+    }
+    if (path === '/api/creator/leaderboard' && req.method === 'GET') {
+      send(res, 200, { profiles: await fetchLeaderboard() })
       return true
     }
     const user = await requireCreator(req)
     const db = getAdminSupabase()
-    if (path === '/api/printful/status' && req.method === 'GET') {
+    if (path === '/api/creator/me/profile' && req.method === 'GET') {
+      send(res, 200, await fetchSocialProfile(user))
+    } else if (path === '/api/creator/me/profile' && req.method === 'PUT') {
+      send(res, 200, await saveSocialProfile(user, await readBody(req)))
+    } else if (path === '/api/creator/me/saved' && req.method === 'GET') {
+      send(res, 200, { items: await fetchSocialSaved(user.id) })
+    } else if (path === '/api/creator/me/saved' && req.method === 'PUT') {
+      send(res, 200, { items: await saveSocialSaved(user.id, (await readBody(req)).items) })
+    } else if (path === '/api/printful/status' && req.method === 'GET') {
       send(res, 200, { ...getPrintfulConfig(), ...(await checkPrintfulConnection()) })
     } else if (path === '/api/printful/products' && req.method === 'GET') {
       send(res, 200, { products: await listCatalogProducts() })
@@ -233,7 +242,9 @@ export async function handleCreatorApi(req, res) {
     }
   } catch (error) {
     console.error('[creator-api]', error.message)
-    if (error.code === 'PGRST204' && /printful_variants|recipient|shipping_rate|tracking_number|tracking_url|shipments/.test(error.message)) {
+    if (['PGRST205', '42P01'].includes(error.code) && /creator_(profiles|public_profiles|profile_preferences|saved_products|leaderboard)/.test(error.message)) {
+      send(res, 503, { message: 'Run supabase/social.sql to enable profiles, Saved, and the Leaderboard.' })
+    } else if (error.code === 'PGRST204' && /printful_variants|recipient|shipping_rate|tracking_number|tracking_url|shipments/.test(error.message)) {
       send(res, 503, { message: 'Run supabase/creator-pipeline.sql to update the creator and checkout tables, then retry.' })
     } else {
       send(res, error.status || 500, { message: error.message || 'Creator API request failed' })
