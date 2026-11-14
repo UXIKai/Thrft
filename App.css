@@ -2625,6 +2625,8 @@ html body .home-radial .home-radial-btn:active {
     gap: 20px 14px;
     padding: 0;
   }
+  /* 10 columns × 10 rows at most */
+  html body .market-product-feed .market-product-grid > :nth-child(n + 101) { display: none; }
   html body .market-product-feed .market-chips { padding: 0 0 18px; gap: 14px; }
   html body .market-product-feed .market-chips .market-chip {
     flex: 1 1 0;
