@@ -36,6 +36,14 @@ const scrollsSideways = (el, stop) => {
   return false
 }
 
+const scrolledDown = (el, stop) => {
+  for (let n = el; n; n = n.parentElement) {
+    if (n.scrollTop > 0) return true
+    if (n === stop) break
+  }
+  return false
+}
+
 // Store and Market sit side by side (swipe left / right); the Leaderboard sits above them:
 // pull down at the very top of the page to reach it, swipe up to come back.
 export default function HomeSegmentSlider({ value, onChange, fireSame = false }) {
@@ -172,6 +180,18 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false })
     page.addEventListener('touchmove', onTouchMove, { passive: false })
     page.addEventListener('touchend', onTouchEnd)
     page.addEventListener('touchcancel', onTouchCancel)
+    // The page itself never rubber-bands down; only the Leaderboard pull moves it.
+    let startY = 0
+    let canBounce = false
+    const onBounceStart = (e) => {
+      startY = e.touches[0].clientY
+      canBounce = !scrolledDown(e.target, page)
+    }
+    const onBounceMove = (e) => {
+      if (canBounce && e.cancelable && e.touches[0].clientY > startY) e.preventDefault()
+    }
+    page.addEventListener('touchstart', onBounceStart, { passive: true })
+    page.addEventListener('touchmove', onBounceMove, { passive: false })
     page.addEventListener('pointerdown', onMouseDown)
     page.addEventListener('pointermove', onMouseMove)
     page.addEventListener('pointerup', onMouseUp)
@@ -179,6 +199,8 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false })
       cancelAnimationFrame(frame)
       page.removeEventListener('touchstart', onTouchStart)
       page.removeEventListener('touchmove', onTouchMove)
+      page.removeEventListener('touchstart', onBounceStart)
+      page.removeEventListener('touchmove', onBounceMove)
       page.removeEventListener('touchend', onTouchEnd)
       page.removeEventListener('touchcancel', onTouchCancel)
       page.removeEventListener('pointerdown', onMouseDown)

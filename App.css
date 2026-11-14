@@ -179,7 +179,7 @@
   overflow-x: hidden;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  overscroll-behavior: contain;
+  overscroll-behavior: none;
   background: transparent;
   scrollbar-width: none;
   -ms-overflow-style: none;
