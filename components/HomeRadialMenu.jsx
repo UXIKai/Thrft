@@ -55,7 +55,7 @@ function paint(id) {
   wheel.dataset.sel = id
 }
 
-// Pointing a direction brings that button to the middle
+// Swiping a direction brings the button on the opposite side to the middle
 export function moveKnob(x, y) {
   if (!origin) origin = [x, y]
   const dx = x - origin[0]
@@ -63,7 +63,7 @@ export function moveKnob(x, y) {
   let id = 'search'
   if (Math.hypot(dx, dy) > 10) {
     const horizontal = Math.abs(dx) > Math.abs(dy)
-    const pick = horizontal ? (dx < 0 ? 'store' : 'market') : dy < 0 ? 'leaderboard' : 'cart'
+    const pick = horizontal ? (dx < 0 ? 'market' : 'store') : dy < 0 ? 'cart' : 'leaderboard'
     // Near a diagonal, keep the current button so it doesn't flicker between two
     const clear = Math.max(Math.abs(dx), Math.abs(dy)) > Math.min(Math.abs(dx), Math.abs(dy)) * 1.3
     id = clear || selected === 'search' ? pick : selected
