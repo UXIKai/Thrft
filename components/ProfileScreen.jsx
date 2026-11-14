@@ -506,6 +506,7 @@ export default function ProfileScreen({
   account,
   onSaveProfile,
   onPostListing,
+  onAddProduct,
   onOpenAccountPage,
   onOpenProduct,
   onSignOut,
@@ -1214,6 +1215,7 @@ export default function ProfileScreen({
           value={spaceTab}
           onChange={switchSpace}
           label="Closet, Store and Market"
+          onHold={onAddProduct}
           idPrefix="profile-space"
           className="profile-spaces-inline-body"
         >

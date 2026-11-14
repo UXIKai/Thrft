@@ -650,6 +650,10 @@ export default function App() {
             account={account}
             onSaveProfile={handleSaveProfile}
             onPostListing={() => setTab('design')}
+            onAddProduct={(segment) => {
+              setCreateSegment(segment)
+              setTab('design')
+            }}
             onOpenAccountPage={() => {
               const username = account?.username || userProfile?.username
               if (!username) return
