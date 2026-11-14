@@ -2520,7 +2520,8 @@ html body .market-card .market-card-like {
   height: calc(var(--r) * 2 + 76px);
   translate: -50% -50%;
   border-radius: 50%;
-  background: none;
+  border: 1px solid var(--glass-border);
+  background: light-dark(rgba(255, 255, 255, 0.78), rgba(0, 0, 0, 0.78));
   animation: home-radial-pop 0.2s cubic-bezier(0.2, 1.2, 0.4, 1);
 }
 
@@ -2620,4 +2621,18 @@ html body .home-radial .home-radial-btn:active {
 html body .home-radial .home-radial-btn.is-hot {
   background: light-dark(#000, #fff) !important;
   color: light-dark(#fff, #000) !important;
+}
+
+/* Bare icons inside one circle; no container around each */
+html body .home-radial .home-radial-btn {
+  background: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  color: light-dark(#000, #fff) !important;
+}
+html body .home-radial .home-radial-btn:hover,
+html body .home-radial .home-radial-btn:active,
+html body .home-radial .home-radial-btn.is-hot {
+  background: light-dark(rgba(0, 0, 0, 0.14), rgba(255, 255, 255, 0.22)) !important;
+  color: light-dark(#000, #fff) !important;
 }
