@@ -2644,3 +2644,9 @@ html body .stage .home-radial-scrim .home-radial:not(#_) {
   -webkit-backdrop-filter: blur(18px) saturate(1.4) !important;
   border: 1px solid light-dark(rgba(0, 0, 0, 0.2), rgba(255, 255, 255, 0.28));
 }
+
+/* Everything behind the wheel disappears while it is open */
+html body .stage .home-radial-scrim:not(#_) {
+  background: var(--page-bg, light-dark(#fff, #000)) !important;
+}
+.home-scroll.is-radial-open { transform: none; }
