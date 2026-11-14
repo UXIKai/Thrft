@@ -2895,3 +2895,28 @@ html body .settings-screen .settings-theme-toggle:not(#_) {
   box-shadow: none !important;
   outline: 0 !important;
 }
+
+/* Desktop: keep Settings compact instead of stretching every card across the window */
+@media (min-width: 720px) {
+  html body .settings-screen .settings-columns {
+    width: min(920px, 100%);
+    margin: 0 auto;
+    flex: 0 0 auto;
+    align-items: start;
+    gap: 32px;
+  }
+  html body .settings-screen .settings-column {
+    justify-content: flex-start;
+  }
+  html body .settings-screen .settings-column.is-customization > .settings-section,
+  html body .settings-screen .settings-column.is-customization .settings-card,
+  html body .settings-screen .settings-column.is-customization :is(.settings-palette-block, .settings-slider-block, .settings-color-stack) {
+    flex: 0 0 auto;
+    justify-content: flex-start;
+  }
+  html body .settings-screen .settings-column.is-customization .settings-color-stack { gap: 18px; }
+  html body .settings-screen .settings-swatches.is-full-palette {
+    width: min(100%, 420px);
+    margin-inline: auto;
+  }
+}
