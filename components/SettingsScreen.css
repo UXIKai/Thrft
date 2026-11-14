@@ -2874,3 +2874,14 @@ html body .settings-top .settings-effect-switch.is-in-header {
 .settings-block.settings-palette-block {
   padding-top: 18px;
 }
+
+/* Bright page (bright background or container colour): every label, caption and value is solid black */
+html[data-scheme='light'] .settings-screen {
+  --st-mute: rgba(0, 0, 0, 0.82);
+  --st-mute-2: rgba(0, 0, 0, 0.9);
+}
+html[data-scheme='light'] .settings-screen :is(p, span, small, label, h1, h2, h3, h4, strong, em, dt, dd):not([class*='avatar'], [class*='active'], [class*='badge'], [class*='green'], [class*='status'], .is-hot):not(#_) {
+  color: #000 !important;
+  opacity: 1;
+  text-shadow: none;
+}
