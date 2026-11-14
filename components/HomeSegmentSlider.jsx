@@ -1,4 +1,5 @@
-import { startTransition, useEffect, useLayoutEffect, useRef } from 'react'
+import { startTransition, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { MarketIcon, StoreIcon } from './SegmentIcons.jsx'
 
 const LeaderboardIcon = () => (
@@ -18,6 +19,26 @@ const SEGMENTS = [
 ]
 
 const SHOPS = ['store', 'market']
+const HOLD_MS = 420
+
+const SearchIcon = () => (
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <g fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+      <circle cx="11" cy="11" r="6.5" />
+      <path d="M16 16l4.5 4.5" />
+    </g>
+  </svg>
+)
+
+const CartIcon = () => (
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <g fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 4h2.4l2.1 11h9.6l1.9-8H6.2" />
+      <circle cx="9" cy="19" r="1.2" />
+      <circle cx="16.5" cy="19" r="1.2" />
+    </g>
+  </svg>
+)
 const DRAG_START_PX = 8
 const SLOT_PX = 200
 const EDGE_RESISTANCE = 0.35
@@ -46,8 +67,21 @@ const scrolledDown = (el, stop) => {
 
 // Store and Market sit side by side (swipe left / right); the Leaderboard sits above them:
 // pull down at the very top of the page to reach it, swipe up to come back.
-export default function HomeSegmentSlider({ value, onChange, fireSame = false }) {
+export default function HomeSegmentSlider({ value, onChange, fireSame = false, onSearch, onCart, bagCount = 0 }) {
   const rootRef = useRef(null)
+  const [menuOpen, setMenuOpen] = useState(false)
+  const menuRef = useRef(false)
+  menuRef.current = menuOpen
+  const actionsRef = useRef({})
+  actionsRef.current = { onSearch, onCart }
+  const pickRef = useRef(null)
+  pickRef.current = (id) => {
+    setMenuOpen(false)
+    if (id === 'search') actionsRef.current.onSearch?.()
+    else if (id === 'cart') actionsRef.current.onCart?.()
+    else chooseRef.current(id)
+  }
+  const holdRef = useRef(0)
   const onLeaderboard = value === 'leaderboard'
   const memRef = useRef('store')
   if (!onLeaderboard) memRef.current = value
@@ -95,6 +129,15 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false })
     const begin = (id, x, y, target) => {
       const { onLeaderboard: up, shopIndex: sx } = stateRef.current
       // Pulling down to the Leaderboard only works from the very top of the page.
+      clearTimeout(holdRef.current)
+      if (rootRef.current?.contains(target)) {
+        holdRef.current = setTimeout(() => {
+          if (d && !d.axis) {
+            d = null
+            setMenuOpen(true)
+          }
+        }, HOLD_MS)
+      }
       d = { id, x, y, up, sx, axis: null, samples: [], atTop: page.scrollTop <= 0, sideways: scrollsSideways(target, page) }
     }
     const move = (id, x, y, t, ev) => {
@@ -103,6 +146,7 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false })
       const dy = y - d.y
       if (!d.axis) {
         if (Math.max(Math.abs(dx), Math.abs(dy)) < DRAG_START_PX) return
+        clearTimeout(holdRef.current)
         if (Math.abs(dx) > Math.abs(dy) * 1.5 && !d.up && !d.sideways) d.axis = 'x'
         else if (Math.abs(dy) > Math.abs(dx) * 1.5 && (d.up ? dy < 0 : d.atTop && dy > 0)) d.axis = 'y'
         else {
@@ -123,6 +167,7 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false })
       if (!frame) frame = requestAnimationFrame(flush)
     }
     const end = (id, t, flick) => {
+      clearTimeout(holdRef.current)
       if (!d || d.id !== id) return
       const s = d
       d = null
@@ -139,9 +184,9 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false })
       if (s.axis === 'x') {
         paintRef.current(landing, 0)
         chooseRef.current(SHOPS[landing])
-      } else if (landing === 1) {
-        paintRef.current(s.sx, 1)
-        chooseRef.current('leaderboard')
+      } else if (landing === 1 && !s.up) {
+        paintRef.current(s.sx, 0)
+        actionsRef.current.onCart?.()
       } else {
         paintRef.current(s.sx, 0)
         chooseRef.current(SHOPS[s.sx])
@@ -162,6 +207,15 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false })
       if (t) move(t.identifier, t.clientX, t.clientY, e.timeStamp, e)
     }
     const onTouchEnd = (e) => {
+      if (menuRef.current && e.changedTouches.length) {
+        const t0 = e.changedTouches[0]
+        const hit = document.elementFromPoint(t0.clientX, t0.clientY)?.closest('[data-radial]')
+        if (hit) {
+          e.preventDefault()
+          pickRef.current(hit.dataset.radial)
+        }
+        return
+      }
       const t = touchById(e)
       if (t) end(t.identifier, e.timeStamp, true)
     }
@@ -188,7 +242,7 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false })
       canBounce = !scrolledDown(e.target, page)
     }
     const onBounceMove = (e) => {
-      if (canBounce && e.cancelable && e.touches[0].clientY > startY) e.preventDefault()
+      if (e.cancelable && (menuRef.current || (canBounce && e.touches[0].clientY > startY))) e.preventDefault()
     }
     page.addEventListener('touchstart', onBounceStart, { passive: true })
     page.addEventListener('touchmove', onBounceMove, { passive: false })
@@ -196,6 +250,7 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false })
     page.addEventListener('pointermove', onMouseMove)
     page.addEventListener('pointerup', onMouseUp)
     return () => {
+      clearTimeout(holdRef.current)
       cancelAnimationFrame(frame)
       page.removeEventListener('touchstart', onTouchStart)
       page.removeEventListener('touchmove', onTouchMove)
@@ -215,12 +270,20 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false })
   // Arrows at a dead end are dimmed; the Leaderboard has no left/right neighbours.
   const side = onLeaderboard ? ' is-end' : ''
 
+  const radial = [
+    { id: 'leaderboard', label: 'Leaderboard', Icon: LeaderboardIcon },
+    { id: 'store', label: 'Store', Icon: StoreIcon },
+    { id: 'search', label: 'Search', Icon: SearchIcon },
+    { id: 'market', label: 'Market', Icon: MarketIcon },
+    { id: 'cart', label: 'Checkout', Icon: CartIcon },
+  ]
+
   return (
     <div
       ref={rootRef}
       className="home-segment-slider"
       role="status"
-      aria-label={`${SEGMENTS.find((s) => s.id === value)?.label}. Swipe left or right for Store and Market; pull down at the top for the Leaderboard.`}
+      aria-label={`${SEGMENTS.find((s) => s.id === value)?.label}. Swipe left or right for Store and Market; pull down at the top for checkout; hold for the menu.`}
     >
       <span className={`wheel-arrow is-left${shopIndex === 0 ? ' is-end' : side}`} aria-hidden="true">{arrow}</span>
       <span className={`wheel-arrow is-right${shopIndex === 1 ? ' is-end' : side}`} aria-hidden="true">{arrow}</span>
@@ -233,6 +296,28 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false })
           </span>
         ))}
       </div>
+      {menuOpen &&
+        createPortal(
+          <div className="home-radial-scrim" onPointerDown={(e) => e.target === e.currentTarget && setMenuOpen(false)}>
+            <div className="home-radial" role="menu" aria-label="Home menu">
+              {radial.map(({ id, label, Icon }) => (
+                <button
+                  key={id}
+                  type="button"
+                  role="menuitem"
+                  className={`home-radial-btn is-${id}`}
+                  data-radial={id}
+                  aria-label={label}
+                  onClick={() => pickRef.current(id)}
+                >
+                  <Icon />
+                  {id === 'cart' && bagCount > 0 ? <span className="home-radial-badge">{bagCount > 9 ? '9+' : bagCount}</span> : null}
+                </button>
+              ))}
+            </div>
+          </div>,
+          document.querySelector('.stage') || document.body,
+        )}
     </div>
   )
 }

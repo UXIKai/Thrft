@@ -115,6 +115,7 @@ export default function App() {
   )
   const [tab, setTab] = useState('home')
   const [createSegment, setCreateSegment] = useState('market')
+  const [searchSignal, setSearchSignal] = useState(0)
   const [clothingType, setClothingType] = useState('all')
   const [homeColor, setHomeColor] = useState('')
   const [homeSegment, setHomeSegment] = useState('store')
@@ -561,26 +562,19 @@ export default function App() {
                 onOpenBrands={() => openHomePicker('brands')}
                 onOpenColors={() => openHomePicker('colors')}
                 onOpenCategory={() => openHomePicker('category')}
+                openSignal={searchSignal}
               />
               <HomeSegmentSlider
                 value={homeSegment}
                 fireSame={!homeOpen}
+                bagCount={bagCount}
+                onSearch={() => setSearchSignal((n) => n + 1)}
+                onCart={() => setCartOpen(true)}
                 onChange={(id) => {
                   setHomeSegment(id)
                   setHomeOpen(true)
                 }}
               />
-              <button
-                type="button"
-                className="home-checkout-btn"
-                aria-label={bagCount ? `Bag, ${bagCount} items` : 'Bag'}
-                onClick={() => setCartOpen(true)}
-              >
-                <CartIcon />
-                {bagCount > 0 ? (
-                  <span className="home-checkout-badge">{bagCount > 9 ? '9+' : bagCount}</span>
-                ) : null}
-              </button>
             </header>
 
 

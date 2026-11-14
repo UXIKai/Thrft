@@ -2501,3 +2501,79 @@ html body .market-card .market-card-like {
   font-size: 0.95rem;
   font-weight: 700;
 }
+
+/* Hold the home picker: a plus-shaped menu opens at the centre of the page */
+.home-radial-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  background: light-dark(rgba(255, 255, 255, 0.55), rgba(0, 0, 0, 0.55));
+  animation: home-radial-fade 0.16s ease-out;
+}
+
+.home-radial {
+  --r: 92px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(var(--r) * 2 + 76px);
+  height: calc(var(--r) * 2 + 76px);
+  translate: -50% -50%;
+  border-radius: 50%;
+  border: 1px solid var(--glass-border);
+  background: light-dark(#fff, #000);
+  animation: home-radial-pop 0.2s cubic-bezier(0.2, 1.2, 0.4, 1);
+}
+
+html body .home-radial .home-radial-btn {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 56px;
+  height: 56px;
+  min-height: 56px;
+  padding: 0;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  translate: -50% -50%;
+}
+
+.home-radial-btn svg {
+  width: 26px;
+  height: 26px;
+}
+
+.home-radial-btn.is-leaderboard { transform: translateY(calc(var(--r) * -1)); }
+.home-radial-btn.is-store { transform: translateX(calc(var(--r) * -1)); }
+.home-radial-btn.is-market { transform: translateX(var(--r)); }
+.home-radial-btn.is-cart { transform: translateY(var(--r)); }
+
+.home-radial-badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 9px;
+  display: grid;
+  place-items: center;
+  font: 700 0.68rem var(--font-sans);
+  background: light-dark(#000, #fff);
+  color: light-dark(#fff, #000);
+}
+
+@keyframes home-radial-fade {
+  from { opacity: 0; }
+}
+
+@keyframes home-radial-pop {
+  from { opacity: 0; scale: 0.7; }
+}
+
+.home-segment-slider {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}

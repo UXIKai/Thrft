@@ -23,12 +23,17 @@ export default function HomeFilterLinks({
   onOpenBrands,
   onOpenColors,
   onOpenCategory,
+  openSignal = 0,
 }) {
   const [open, setOpen] = useState(false)
   const [draftBrand, setDraftBrand] = useState(brandId)
   const [draftCategory, setDraftCategory] = useState(categoryId)
   const [draftColor, setDraftColor] = useState(colorId)
   const [resetRequested, setResetRequested] = useState(false)
+
+  useEffect(() => {
+    if (openSignal > 0) setOpen(true)
+  }, [openSignal])
 
   // Orbital picks (and external changes) flow back into the wheels.
   useEffect(() => setDraftBrand(brandId), [brandId])
@@ -105,18 +110,6 @@ export default function HomeFilterLinks({
 
   return (
     <div className="home-search">
-      <button
-        type="button"
-        className={`home-search-btn${brandLabel || categoryLabel ? ' is-set' : ''}`}
-        aria-label="Search brands and categories"
-        aria-haspopup="dialog"
-        onClick={() => setOpen(true)}
-      >
-        <svg className="home-search-ico" viewBox="0 0 24 24" aria-hidden>
-          <circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" strokeWidth="1.7" />
-          <path d="M16 16l4.5 4.5" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
-        </svg>
-      </button>
       {open && (
         <div
           className="home-search-backdrop"
