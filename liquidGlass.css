@@ -1455,7 +1455,7 @@ html[data-app-color='none'][data-moonlight='on'] body .listing-box,
 html[data-app-color='none'][data-moonlight='on'] body .listing-globe-trigger {
   background: #000 !important;
   border-color: #fff !important;
-  box-shadow: inset 0 0 0 1.5px #fff !important;
+  box-shadow: none !important;
   color: #fff;
 }
 html[data-app-color='none'][data-moonlight='on'] body .settings-section:not(.is-profile-controls) .settings-card *,
@@ -1477,7 +1477,7 @@ html[data-app-color='none'][data-moonlight='on'] body :is(.listing-box, .listing
 /* Effect switch: outline in the color opposite its track */
 html body button.settings-effect-switch,
 html[data-bg-color='none'] body button.settings-effect-switch {
-  border: 2px solid light-dark(#000, #fff) !important;
+  border: 1px solid light-dark(#000, #fff) !important;
 }
 html body button.settings-effect-switch.is-on,
 html[data-bg-color='none'] body button.settings-effect-switch.is-on {
@@ -1491,7 +1491,7 @@ html[data-moonlight='on'][data-app-color='none'] body .settings-effect-switch {
 html[data-app-color='none'][data-moonlight='on'] body .settings-account-active .settings-account-avatar {
   background: #000 !important;
   color: #fff !important;
-  box-shadow: inset 0 0 0 1.5px #fff;
+  box-shadow: none;
 }
 
 /* Product image container: always a white outline on the black moonlight page */
@@ -1528,7 +1528,7 @@ html[data-theme='light'][data-app-color='none'][data-moonlight='on'] body .listi
 html[data-theme='light'][data-app-color='none'][data-moonlight='on'] body .listing-globe-trigger {
   background: #fff !important;
   border-color: #000 !important;
-  box-shadow: inset 0 0 0 1.5px #000 !important;
+  box-shadow: none !important;
   color: #000;
 }
 html[data-theme='light'][data-app-color='none'][data-moonlight='on'] body .settings-section:not(.is-profile-controls) .settings-card *,
@@ -1552,7 +1552,7 @@ html[data-theme='light'][data-moonlight='on'][data-app-color='none'] body .setti
 html[data-theme='light'][data-app-color='none'][data-moonlight='on'] body .settings-account-active .settings-account-avatar {
   background: #fff !important;
   color: #000 !important;
-  box-shadow: inset 0 0 0 1.5px #000;
+  box-shadow: none;
 }
 html[data-theme='light'][data-moonlight='on'][data-app-color='none'] body .product-detail-photo {
   border-color: #000 !important;
@@ -1769,7 +1769,7 @@ html body .chat-friends-tabs .chat-friends-pill {
   top: 0;
   bottom: 0;
   height: auto;
-  border: 1.5px solid light-dark(rgba(0, 0, 0, 0.45), rgba(255, 255, 255, 0.6));
+  border: 1px solid light-dark(rgba(0, 0, 0, 0.45), rgba(255, 255, 255, 0.6));
   border-radius: 999px;
   background: light-dark(rgba(0, 0, 0, 0.06), rgba(255, 255, 255, 0.08));
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.22), 0 1px 0 rgba(255, 255, 255, 0.18);
