@@ -31,7 +31,7 @@ const CartIcon = () => (
   </svg>
 )
 
-const R = 84
+const R = 100
 const SLOTS = { leaderboard: [0, -R], store: [-R, 0], market: [R, 0], cart: [0, R], search: [0, 0] }
 let origin = null
 let selected = 'search'

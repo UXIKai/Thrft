@@ -2512,12 +2512,12 @@ html body .market-card .market-card-like {
 }
 
 .home-radial {
-  --r: 84px;
+  --r: 100px;
   position: absolute;
   left: 50%;
   top: 50%;
-  width: calc(var(--r) * 2 + 104px);
-  height: calc(var(--r) * 2 + 104px);
+  width: calc(var(--r) * 2 + 64px);
+  height: calc(var(--r) * 2 + 64px);
   translate: -50% -50%;
   border-radius: 50%;
   border: 1px solid var(--glass-border);
