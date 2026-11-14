@@ -4,8 +4,8 @@ import { BRAND_ROWS, findBrandById } from './brandsCatalog.js'
 const INTEREST_KEY = 'thrft-product-interest-v1'
 const SEARCH_KEY = 'thrft-search-history-v1'
 
-const ROW_COUNT = 10
-const PRODUCTS_PER_ROW = 20
+const ROW_COUNT = 40
+const PRODUCTS_PER_ROW = 40
 const SEARCH_LIMIT = 40
 
 function readInterest() {
@@ -245,11 +245,16 @@ function pickForTheme(catalog, theme, ctx, count) {
       ]
     }
   }
+  if (theme.brandId && theme.clothingType) {
+    const exact = (p) =>
+      p.brandId === theme.brandId && garmentMatchesHomeType(p.clothingType, theme.clothingType)
+    picked = [...picked.filter(exact), ...picked.filter((p) => !exact(p))]
+  }
   return padProducts(picked.slice(0, count), count, catalog)
 }
 
 /**
- * Build exactly `rowCount` home marquee rows (default 10) with `productsPerRow`
+ * Build exactly `rowCount` home marquee rows (default 40) with `productsPerRow`
  * boxes each, seeded from search history + likes + interest, then catalog brands.
  */
 export function buildPersonalizedRows({
@@ -378,6 +383,33 @@ export function buildPersonalizedRows({
       category: brand.category,
       brandId: brand.id,
       clothingType: '',
+    })
+  }
+
+  // More rows: each clothing type, then every brand + type pairing in the catalog.
+  const typeIds = [...new Set(pool.map((p) => p.clothingType).filter(Boolean))]
+  for (const clothingType of typeIds) {
+    pushTheme({
+      id: `type-${clothingType}`,
+      name: labelForType(clothingType),
+      category: 'Category',
+      brandId: '',
+      clothingType,
+    })
+  }
+  const pairs = new Map()
+  for (const p of pool) {
+    if (!p.brandId || !p.clothingType) continue
+    pairs.set(`${p.brandId}|${p.clothingType}`, p)
+  }
+  for (const p of pairs.values()) {
+    const brandName = p.brandName || findBrandById(p.brandId)?.name || p.brandId
+    pushTheme({
+      id: `mix-${p.brandId}-${p.clothingType}`,
+      name: `${brandName} ${labelForType(p.clothingType)}`,
+      category: brandName,
+      brandId: p.brandId,
+      clothingType: p.clothingType,
     })
   }
 

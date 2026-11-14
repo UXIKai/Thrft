@@ -1133,6 +1133,77 @@ html[data-bg-color='none'] .stage.is-bg-none .atmosphere {
   /* Blank containers — no inner copy */
 }
 
+.brand-row {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Rows far off screen keep their height but render no tiles */
+.brand-row.is-idle {
+  height: 142px;
+}
+
+@media (min-width: 720px) {
+  .brand-row.is-idle {
+    height: calc(clamp(118px, 10vw, 176px) * 1.2034);
+  }
+}
+
+.store-row-page-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: calc(env(safe-area-inset-top, 0px) + 8px) 12px 12px;
+}
+
+.store-row-page-back {
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  color: var(--ink);
+}
+
+.store-row-page-back svg {
+  width: 22px;
+  height: 22px;
+}
+
+.store-row-page-title h2 {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: var(--ink);
+}
+
+.store-row-page-title p {
+  margin: 2px 0 0;
+  font-family: var(--font-sans);
+  font-size: 0.74rem;
+  color: light-dark(rgba(11, 11, 13, 0.5), rgba(244, 244, 242, 0.5));
+}
+
+/* 5 columns x 8 rows */
+.store-row-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+  padding: 0 12px 120px;
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+.store-row-grid .product-box {
+  width: 100%;
+  min-width: 0;
+  height: auto;
+  aspect-ratio: 118 / 142;
+}
+
 .product-code {
   flex: 1;
   display: grid;
@@ -2149,7 +2220,8 @@ html body .stage.is-product-open .tab-bar {
 /* Refraction sampled outside the screen edge made wavy bumps on tiles cut off at the sides */
 html body .product-box,
 html body .brand-row .product-box,
-html body .market-product-grid .product-box {
+html body .market-product-grid .product-box,
+html body .store-row-grid .product-box {
   -webkit-backdrop-filter: blur(3px) !important;
   backdrop-filter: blur(3px) !important;
 }

@@ -86,16 +86,37 @@ function ProductCard({ product, onOpen }) {
   )
 }
 
-function CrawlRow({ row, rowIndex, onOpenProduct }) {
+const HOLD_MS = 480
+const HOLD_SLOP_PX = 10
+
+function CrawlRow({ row, rowIndex, onOpenProduct, onHoldRow }) {
+  const articleRef = useRef(null)
   const wrapRef = useRef(null)
   const seqRef = useRef(null)
+  const holdRef = useRef({ timer: 0, x: 0, y: 0, fired: false })
   const [loopPx, setLoopPx] = useState(0)
+  const [visible, setVisible] = useState(rowIndex < 4)
   const products = row.products || []
+
+  // 40 rows x 40 tiles is heavy, so only rows near the screen are mounted.
+  useEffect(() => {
+    const el = articleRef.current
+    if (!el || typeof IntersectionObserver === 'undefined') {
+      setVisible(true)
+      return undefined
+    }
+    const io = new IntersectionObserver(
+      ([entry]) => setVisible(entry.isIntersecting),
+      { rootMargin: '500px 0px' },
+    )
+    io.observe(el)
+    return () => io.disconnect()
+  }, [])
 
   useLayoutEffect(() => {
     const wrap = wrapRef.current
     const seq = seqRef.current
-    if (!wrap || !seq || !products.length) return undefined
+    if (!visible || !wrap || !seq || !products.length) return undefined
 
     const measure = () => {
       if (!seq.getBoundingClientRect().width) return
@@ -109,51 +130,106 @@ function CrawlRow({ row, rowIndex, onOpenProduct }) {
     ro.observe(wrap)
     ro.observe(seq)
     return () => ro.disconnect()
-  }, [products])
+  }, [products, visible])
+
+  useEffect(() => () => window.clearTimeout(holdRef.current.timer), [])
+
+  const cancelHold = () => {
+    window.clearTimeout(holdRef.current.timer)
+    holdRef.current.timer = 0
+  }
+  const onPointerDown = (e) => {
+    if (e.pointerType === 'mouse' && e.button !== 0) return
+    const hold = holdRef.current
+    hold.fired = false
+    hold.x = e.clientX
+    hold.y = e.clientY
+    cancelHold()
+    hold.timer = window.setTimeout(() => {
+      hold.timer = 0
+      hold.fired = true
+      onHoldRow?.(row)
+    }, HOLD_MS)
+  }
+  const onPointerMove = (e) => {
+    const hold = holdRef.current
+    if (!hold.timer) return
+    if (Math.hypot(e.clientX - hold.x, e.clientY - hold.y) > HOLD_SLOP_PX) cancelHold()
+  }
+  // A hold must not also count as a tap on the tile underneath.
+  const onClickCapture = (e) => {
+    if (!holdRef.current.fired) return
+    holdRef.current.fired = false
+    e.preventDefault()
+    e.stopPropagation()
+  }
 
   const goesRight = rowIndex % 2 === 0
   const estimated =
     products.length * (BOX_W + BOX_GAP) || PERSONALIZED_PRODUCTS_PER_ROW * (BOX_W + BOX_GAP)
   const loop = loopPx > 0 ? loopPx : estimated
   const durationSec = Math.max(18, loop / PX_PER_SEC)
+  const open = (item) => onOpenProduct?.({ ...item, detailVariant: 'store' })
 
   return (
-    <article className="brand-row">
-      <div ref={wrapRef} className="brand-row-track-wrap">
-        <div
-          className={`brand-row-track ${loopPx > 0 ? (goesRight ? 'crawl-right' : 'crawl-left') : ''}`}
-          style={{
-            '--loop': `${loop}px`,
-            '--crawl-duration': `${durationSec}s`,
-            animationPlayState: 'running',
-          }}
-        >
-          <div className="brand-row-seq" ref={seqRef}>
-            {products.map((p) => (
-              <ProductCard key={`${row.id}-${p.id}`} product={p} onOpen={(item) => onOpenProduct?.({ ...item, detailVariant: 'store' })} />
-            ))}
-          </div>
-          <div className="brand-row-seq" aria-hidden>
-            {products.map((p) => (
-              <ProductCard
-                key={`${row.id}-${p.id}-b`}
-                product={p}
-                onOpen={(item) => onOpenProduct?.({ ...item, detailVariant: 'store' })}
-              />
-            ))}
-          </div>
-          <div className="brand-row-seq" aria-hidden>
-            {products.map((p) => (
-              <ProductCard
-                key={`${row.id}-${p.id}-c`}
-                product={p}
-                onOpen={(item) => onOpenProduct?.({ ...item, detailVariant: 'store' })}
-              />
-            ))}
+    <article
+      ref={articleRef}
+      className={`brand-row${visible ? '' : ' is-idle'}`}
+      aria-label={`${row.name} row. Hold to see all.`}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={cancelHold}
+      onPointerCancel={cancelHold}
+      onPointerLeave={cancelHold}
+      onClickCapture={onClickCapture}
+      onContextMenu={(e) => e.preventDefault()}
+    >
+      {visible && (
+        <div ref={wrapRef} className="brand-row-track-wrap">
+          <div
+            className={`brand-row-track ${loopPx > 0 ? (goesRight ? 'crawl-right' : 'crawl-left') : ''}`}
+            style={{
+              '--loop': `${loop}px`,
+              '--crawl-duration': `${durationSec}s`,
+              animationPlayState: 'running',
+            }}
+          >
+            <div className="brand-row-seq" ref={seqRef}>
+              {products.map((p) => (
+                <ProductCard key={`${row.id}-${p.id}`} product={p} onOpen={open} />
+              ))}
+            </div>
+            <div className="brand-row-seq" aria-hidden>
+              {products.map((p) => (
+                <ProductCard key={`${row.id}-${p.id}-b`} product={p} onOpen={open} />
+              ))}
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </article>
+  )
+}
+
+/** Full page for one Store row: its 40 products as 5 columns x 8 rows. */
+function StoreRowPage({ row, onBack, onOpenProduct }) {
+  return (
+    <section className="product-feed store-row-page" id="home-product-panel" role="tabpanel" aria-label={row.name}>
+      <header className="store-row-page-head">
+        <button type="button" className="store-row-page-back" onClick={onBack} aria-label="Back to Store">
+          <svg viewBox="0 0 24 24" aria-hidden><path d="m15 5-7 7 7 7" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+        </button>
+        <div className="store-row-page-title">
+          <h2>{row.name}</h2>
+          {row.category ? <p>{row.category}</p> : null}
+        </div>
+      </header>
+      <div className="store-row-grid">
+        {(row.products || []).slice(0, 40).map((p) => (
+          <ProductCard key={`${row.id}-${p.id}`} product={p} onOpen={(item) => onOpenProduct?.({ ...item, detailVariant: 'store' })} />
+        ))}
+      </div>
+    </section>
   )
 }
 
@@ -179,6 +255,7 @@ export default function ProductRows({
   const [status, setStatus] = useState('loading')
   const [error, setError] = useState('')
   const [chip, setChip] = useState('all')
+  const [openRow, setOpenRow] = useState(null)
 
   useEffect(() => {
     let alive = true
@@ -306,6 +383,10 @@ export default function ProductRows({
     )
   }
 
+  if (openRow) {
+    return <StoreRowPage row={openRow} onBack={() => setOpenRow(null)} onOpenProduct={onOpenProduct} />
+  }
+
   if (status === 'loading' && !rows.length) {
     return (
       <section className="product-feed" id="home-product-panel" role="tabpanel" aria-labelledby={`home-${segment}-tab`} aria-busy="true">
@@ -323,6 +404,7 @@ export default function ProductRows({
           row={row}
           rowIndex={rowIndex}
           onOpenProduct={onOpenProduct}
+          onHoldRow={setOpenRow}
         />
       ))}
     </section>
