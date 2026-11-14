@@ -31,7 +31,7 @@ test('black Settings backgrounds disable dark mode, preserve contrast, and survi
   try {
     const appearance = await import('./appAppearance.js?black-background-test')
     appearance.applyTheme('dark')
-    appearance.setPaletteSlot(1, '#000000')
+    appearance.setPaletteSlot(1, '#000000', 'bg')
     appearance.applyBgColor('c1')
     assert.equal(appearance.readTheme(), 'light')
     assert.equal(root.dataset.theme, 'light')

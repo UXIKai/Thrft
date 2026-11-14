@@ -788,7 +788,7 @@ export default function SettingsScreen({
   const [customBgHex, setCustomBgHex] = useState(() => readCustomBgColorHex())
   const [paletteColors, setPaletteColors] = useState(() => {
     readPalette()
-    return getPaletteColors()
+    return { app: getPaletteColors('app'), bg: getPaletteColors('bg') }
   })
   const [paletteEditorOpen, setPaletteEditorOpen] = useState(false)
   const [bgEffectOn, setBgEffectOn] = useState(() => readBackgroundImage() === 'atmosphere')
@@ -1424,9 +1424,9 @@ export default function SettingsScreen({
     setRecentColors(rememberRecentColor(hex))
   }
 
-  function rememberPaletteId(id) {
+  function rememberPaletteId(id, target = 'app') {
     if (!id || id === 'none' || id === 'custom') return
-    const color = getPaletteColors().find((c) => c.id === id)
+    const color = getPaletteColors(target).find((c) => c.id === id)
     if (color?.swatch) rememberColor(color.swatch)
   }
 
@@ -1449,7 +1449,7 @@ export default function SettingsScreen({
     leaveMoonForBright(id)
     setBgColor(applyBgColor(id))
     setTheme(readTheme())
-    rememberPaletteId(id)
+    rememberPaletteId(id, 'bg')
   }
 
   function toggleDisplayMode() {
@@ -1495,7 +1495,7 @@ export default function SettingsScreen({
   }
 
   function refreshPalette() {
-    setPaletteColors(getPaletteColors())
+    setPaletteColors({ app: getPaletteColors('app'), bg: getPaletteColors('bg') })
   }
 
   function openWheel(target = 'app', slotIndex = 0) {
@@ -1503,7 +1503,7 @@ export default function SettingsScreen({
     if (target === 'bg') hex = customBgHex
     if (target === 'palette') {
       paletteSlotRef.current = slotIndex
-      hex = getPaletteHexes()[slotIndex] || customHex
+      hex = getPaletteHexes(paletteTarget)[slotIndex] || customHex
     }
     wheelTargetRef.current = target
     setWheelTarget(target)
@@ -1513,7 +1513,7 @@ export default function SettingsScreen({
 
   function applyWheelHex(hex) {
     if (wheelTargetRef.current === 'palette') {
-      setPaletteSlot(paletteSlotRef.current, hex)
+      setPaletteSlot(paletteSlotRef.current, hex, paletteTarget)
       setBlankSlots((prev) => {
         if (!prev.has(paletteSlotRef.current)) return prev
         const next = new Set(prev)
@@ -1587,7 +1587,7 @@ export default function SettingsScreen({
                     role="listbox"
                     aria-label="Container color"
                   >
-                    {paletteColors.map((c, ci) => {
+                    {paletteColors.app.map((c, ci) => {
                       if (ci > 0 && hiddenSlots.app.has(ci - 1)) return null
                       const selected = appColor === c.id
                       return (
@@ -1635,7 +1635,7 @@ export default function SettingsScreen({
                     role="listbox"
                     aria-label="Background color"
                   >
-                    {paletteColors.map((c, ci) => {
+                    {paletteColors.bg.map((c, ci) => {
                       if (ci > 0 && hiddenSlots.bg.has(ci - 1)) return null
                       const selected = bgColor === c.id
                       return (
@@ -3031,7 +3031,7 @@ export default function SettingsScreen({
               role="list"
               aria-label="Editable palette colors"
             >
-              {paletteColors
+              {paletteColors[paletteTarget]
                 .filter((c) => c.id !== 'none')
                 .map((c, index) => (
                   <button

@@ -67,8 +67,9 @@ export const DEFAULT_BG_IMAGE = 'atmosphere'
 export const DEFAULT_BG_EFFECTS = ['#c8c8c8', '#9a9a9a', '#6e6e6e']
 export const BG_EFFECT_COUNT = 3
 
-/** Editable swatch palette: 1 none + 11 replaceable colors (shared by both rows). */
+/** Editable swatch palettes: 1 none + 11 replaceable colors each, one set for Containers and one for Background. */
 export const PALETTE_KEY = 'thrft-swatch-palette-v1'
+export const BG_PALETTE_KEY = 'thrft-swatch-palette-bg-v1'
 export const PALETTE_SIZE = 11
 export const RECENT_COLORS_KEY = 'thrft-recent-colors-v1'
 export const RECENT_COLOR_COUNT = 8
@@ -93,7 +94,8 @@ const NONE_COLOR = {
   rgb: [255, 255, 255],
 }
 
-let paletteHexes = [...DEFAULT_PALETTE_HEXES]
+const paletteKeyOf = (target) => (target === 'bg' ? BG_PALETTE_KEY : PALETTE_KEY)
+let paletteHexes = { app: [...DEFAULT_PALETTE_HEXES], bg: [...DEFAULT_PALETTE_HEXES] }
 const COLOR_BY_ID = { none: NONE_COLOR }
 const BG_COLOR_BY_ID = { none: NONE_COLOR }
 
@@ -222,30 +224,31 @@ function rebuildColorMaps() {
   }
   COLOR_BY_ID.none = NONE_COLOR
   BG_COLOR_BY_ID.none = NONE_COLOR
-  for (let i = 0; i < PALETTE_SIZE; i += 1) {
-    const hex = paletteHexes[i] || DEFAULT_PALETTE_HEXES[i]
-    const rgb = hexToRgb(hex) || [100, 100, 100]
-    const entry = {
-      id: slotId(i),
-      label: `Color ${i + 1}`,
-      swatch: hex,
-      rgb,
+  for (const [target, map] of [['app', COLOR_BY_ID], ['bg', BG_COLOR_BY_ID]]) {
+    for (let i = 0; i < PALETTE_SIZE; i += 1) {
+      const hex = paletteHexes[target][i] || DEFAULT_PALETTE_HEXES[i]
+      const rgb = hexToRgb(hex) || [100, 100, 100]
+      map[slotId(i)] = {
+        id: slotId(i),
+        label: `Color ${i + 1}`,
+        swatch: hex,
+        rgb,
+      }
     }
-    COLOR_BY_ID[entry.id] = entry
-    BG_COLOR_BY_ID[entry.id] = entry
   }
 }
 
 rebuildColorMaps()
 
-/** Live list: none + 11 palette slots (Containers + Background). */
-export function getPaletteColors() {
+/** Live list: none + 11 palette slots for Containers ('app') or Background ('bg'). */
+export function getPaletteColors(target = 'app') {
+  const map = target === 'bg' ? BG_COLOR_BY_ID : COLOR_BY_ID
   return [
     NONE_COLOR,
-    ...paletteHexes.map((hex, i) => {
+    ...paletteHexes[target === 'bg' ? 'bg' : 'app'].map((hex, i) => {
       const id = slotId(i)
       return (
-        COLOR_BY_ID[id] || {
+        map[id] || {
           id,
           label: `Color ${i + 1}`,
           swatch: hex,
@@ -256,55 +259,69 @@ export function getPaletteColors() {
   ]
 }
 
-export function getPaletteHexes() {
-  return [...paletteHexes]
+export function getPaletteHexes(target = 'app') {
+  return [...paletteHexes[target === 'bg' ? 'bg' : 'app']]
 }
 
-export function setPaletteSlot(index, hex) {
-  const i = Number(index)
-  if (!Number.isInteger(i) || i < 0 || i >= PALETTE_SIZE) {
-    return getPaletteHexes()
-  }
-  const rgb = hexToRgb(hex)
-  if (!rgb) return getPaletteHexes()
-  const next = `#${String(hex).replace(/^#/, '').toLowerCase()}`
-  paletteHexes = [...paletteHexes]
-  paletteHexes[i] = next
+function savePalette(target) {
   try {
-    localStorage.setItem(PALETTE_KEY, JSON.stringify(paletteHexes))
+    localStorage.setItem(paletteKeyOf(target), JSON.stringify(paletteHexes[target]))
   } catch {
     /* ignore */
   }
+}
+
+export function setPaletteSlot(index, hex, target = 'app') {
+  const t = target === 'bg' ? 'bg' : 'app'
+  const i = Number(index)
+  if (!Number.isInteger(i) || i < 0 || i >= PALETTE_SIZE) {
+    return getPaletteHexes(t)
+  }
+  const rgb = hexToRgb(hex)
+  if (!rgb) return getPaletteHexes(t)
+  const next = `#${String(hex).replace(/^#/, '').toLowerCase()}`
+  paletteHexes = { ...paletteHexes, [t]: [...paletteHexes[t]] }
+  paletteHexes[t][i] = next
+  savePalette(t)
   rebuildColorMaps()
   applyGlassTokens()
   applyBgAtmosphereTokens()
-  return getPaletteHexes()
+  return getPaletteHexes(t)
 }
 
-export function readPalette() {
+function parsePalette(raw) {
   try {
-    const raw = localStorage.getItem(PALETTE_KEY)
-    if (raw) {
-      const parsed = JSON.parse(raw)
-      if (Array.isArray(parsed) && parsed.length >= PALETTE_SIZE) {
-        const next = []
-        for (let i = 0; i < PALETTE_SIZE; i += 1) {
-          const hex = parsed[i]
-          next.push(
-            hexToRgb(hex)
-              ? `#${String(hex).replace(/^#/, '').toLowerCase()}`
-              : DEFAULT_PALETTE_HEXES[i],
-          )
-        }
-        paletteHexes = next
-        rebuildColorMaps()
-        return getPaletteHexes()
+    const parsed = raw ? JSON.parse(raw) : null
+    if (Array.isArray(parsed) && parsed.length >= PALETTE_SIZE) {
+      const next = []
+      for (let i = 0; i < PALETTE_SIZE; i += 1) {
+        const hex = parsed[i]
+        next.push(
+          hexToRgb(hex)
+            ? `#${String(hex).replace(/^#/, '').toLowerCase()}`
+            : DEFAULT_PALETTE_HEXES[i],
+        )
       }
+      return next
     }
   } catch {
     /* ignore */
   }
-  paletteHexes = [...DEFAULT_PALETTE_HEXES]
+  return null
+}
+
+export function readPalette() {
+  try {
+    const app = parsePalette(localStorage.getItem(PALETTE_KEY))
+    // Background starts from the old shared palette so existing choices keep their colours
+    const bg = parsePalette(localStorage.getItem(BG_PALETTE_KEY)) || app
+    paletteHexes = {
+      app: app || [...DEFAULT_PALETTE_HEXES],
+      bg: bg || [...DEFAULT_PALETTE_HEXES],
+    }
+  } catch {
+    paletteHexes = { app: [...DEFAULT_PALETTE_HEXES], bg: [...DEFAULT_PALETTE_HEXES] }
+  }
   rebuildColorMaps()
   return getPaletteHexes()
 }
@@ -347,17 +364,17 @@ export function rememberRecentColor(hex) {
   return next
 }
 
-export function resetPalette() {
-  paletteHexes = [...DEFAULT_PALETTE_HEXES]
-  try {
-    localStorage.setItem(PALETTE_KEY, JSON.stringify(paletteHexes))
-  } catch {
-    /* ignore */
+export function resetPalette(target) {
+  const targets = target ? [target === 'bg' ? 'bg' : 'app'] : ['app', 'bg']
+  paletteHexes = { ...paletteHexes }
+  for (const t of targets) {
+    paletteHexes[t] = [...DEFAULT_PALETTE_HEXES]
+    savePalette(t)
   }
   rebuildColorMaps()
   applyGlassTokens()
   applyBgAtmosphereTokens()
-  return getPaletteHexes()
+  return getPaletteHexes(targets[0])
 }
 
 /** Prefer getPaletteColors() — snapshot for older static imports. */
