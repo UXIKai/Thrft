@@ -14,7 +14,7 @@ const STAR_FRAMES = [
   '413,147 458,293 393,385 307,305',
 ]
 
-const STAR_MS = 320
+const STAR_MS = 450
 const easeInOutCubic = (t) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2)
 // Overshoots a little, then settles, so the shutter clicks shut.
 const easeOutBack = (t) => 1 + 2.2 * (t - 1) ** 3 + 1.2 * (t - 1) ** 2
@@ -84,7 +84,7 @@ function NinjaStar() {
 
 // Where the real arrows sit, in star units: the open frame pushed out from the centre.
 const PUSH_UNITS = { vertical: 82, horizontal: 126 }
-const OPEN_MS = 320
+const OPEN_MS = 450
 
 /**
  * Plays the shutter backwards: the closed star opens up into the four arrows, then hands over to them.
