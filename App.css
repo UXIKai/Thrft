@@ -2896,3 +2896,10 @@ html body .stage .home-radial .home-radial-lens:not(#_) {
 }
 html body .stage .home-radial .home-radial-btn:not(#_):not(#_) { scale: var(--gs, 1); }
 html body .stage .home-radial .home-radial-btn.is-hot:not(#_):not(#_) { scale: calc(var(--gs, 1) * 1.12); }
+
+/* Opaque sphere: solid body with soft depth shading in the page colours, no lines */
+.home-radial-grid { display: none !important; }
+html body .stage .home-radial-scrim .home-radial:not(#_):not(#_):not(#_) {
+  background: radial-gradient(circle at 50% 38%, color-mix(in srgb, var(--page-bg, #000) 88%, light-dark(#000, #fff)) 0%, var(--page-bg, light-dark(#fff, #000)) 100%) !important;
+  box-shadow: inset 0 -18px 30px color-mix(in srgb, var(--page-bg, #000) 70%, light-dark(#000, #fff)) !important;
+}
