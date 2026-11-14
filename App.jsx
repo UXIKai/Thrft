@@ -19,7 +19,6 @@ import ProductRows from './components/ProductRows.jsx'
 import ProfileScreen from './components/ProfileScreen.jsx'
 import SavedScreen from './components/SavedScreen.jsx'
 import TabBar from './components/TabBar.jsx'
-import HomeRadialMenu, { moveKnob, radialAt } from './components/HomeRadialMenu.jsx'
 import { useBag } from './BagContext.jsx'
 import {
   INITIAL_PROFILES,
