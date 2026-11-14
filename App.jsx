@@ -189,10 +189,10 @@ export default function App() {
   const homeIdle = tab === 'home' && !homeOpen
   const showNav = !(tab === 'chat' && chatThreadOpen) && !homeIdle
 
-  // Home hides the nav bar until the screen is tapped (it stays until the button is tapped); every other page keeps it showing.
-  const [atBottom, setAtBottom] = useState(true)
+  // The nav bar shows on every page and stays until the bottom button is tapped to hide it.
+  const [atBottom, setAtBottom] = useState(false)
   useEffect(() => {
-    setAtBottom(true)
+    setAtBottom(false)
   }, [tab])
   useEffect(() => {
     const stage = stageRef.current
@@ -498,7 +498,7 @@ export default function App() {
 
   return (
     <div
-      className={`stage${atBottom && tab === 'home' ? ' is-nav-hidden' : ''}${document.documentElement.dataset.bgImage === 'atmosphere' ? ' is-bg-atmosphere' : ' is-bg-none'}`}
+      className={`stage${atBottom ? ' is-nav-hidden' : ''}${document.documentElement.dataset.bgImage === 'atmosphere' ? ' is-bg-atmosphere' : ' is-bg-none'}`}
       ref={stageRef}
       style={{ '--bubble-size': `${BUBBLE}px` }}
     >
