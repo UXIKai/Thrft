@@ -1843,8 +1843,13 @@ export default function SettingsScreen({
             onClick={toggleDisplayMode}
           >
             <svg className="settings-row-ico" viewBox="0 0 24 24" aria-hidden="true">
-              <circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" strokeWidth="1.6" />
-              <path d="M12 4a8 8 0 0 0 0 16Z" fill="currentColor" />
+              <path
+                d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z"
+                fill="currentColor"
+                stroke="currentColor"
+                strokeWidth="1.4"
+                strokeLinejoin="round"
+              />
             </svg>
           </button>
         </Section>
