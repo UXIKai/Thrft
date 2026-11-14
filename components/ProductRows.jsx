@@ -33,6 +33,12 @@ const MARKET_SAMPLES = Array.from({ length: MARKET_ROW_COUNT * MARKET_PRODUCTS_P
   }
 })
 
+const PLACEHOLDER_ROWS = Array.from({ length: PERSONALIZED_ROW_COUNT }, (_, r) => ({
+  id: `loading-row-${r}`,
+  name: 'Store',
+  products: Array.from({ length: PERSONALIZED_PRODUCTS_PER_ROW }, (_, i) => ({ id: `loading-${r}-${i}` })),
+}))
+
 const MARKET_CHIPS = [
   { id: 'all', label: 'All' },
   { id: 'under10', label: 'Under $10' },
@@ -125,7 +131,7 @@ function CrawlRow({ row, rowIndex, onOpenProduct, onHoldRow, market = false, lik
   const seqRef = useRef(null)
   const holdRef = useRef({ timer: 0, x: 0, y: 0, fired: false })
   const [loopPx, setLoopPx] = useState(0)
-  const [visible, setVisible] = useState(rowIndex < 4)
+  const [visible, setVisible] = useState(rowIndex < 6)
   const products = row.products || []
 
   // 40 rows x 40 tiles is heavy, so only rows near the screen are mounted.
@@ -465,9 +471,12 @@ export default function ProductRows({
   }
 
   if (status === 'loading' && !rows.length) {
+    // Empty tiles stand in for the rows while listings load, so the page is never blank
     return (
       <section className="product-feed" id="home-product-panel" role="tabpanel" aria-labelledby={`home-${segment}-tab`} aria-busy="true">
-        <p role="status">Loading products...</p>
+        {PLACEHOLDER_ROWS.map((row, rowIndex) => (
+          <CrawlRow key={row.id} row={row} rowIndex={rowIndex} />
+        ))}
       </section>
     )
   }
