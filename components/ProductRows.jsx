@@ -283,7 +283,6 @@ export default function ProductRows({
     return (
       <section className="product-feed market-product-feed" id="home-product-panel" role="tabpanel" aria-labelledby="home-market-tab" aria-busy={status === 'loading'}>
         {!marketItems.length && <p role="status">{status === 'loading' ? 'Loading products...' : 'No Market products found.'}</p>}
-        <h2 className="market-heading">Suggested for you</h2>
         <div className="market-chips" role="tablist" aria-label="Market filters">
           {MARKET_CHIPS.map((c) => (
             <button
