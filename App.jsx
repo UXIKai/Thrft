@@ -189,7 +189,7 @@ export default function App() {
   const homeIdle = tab === 'home' && !homeOpen
   const showNav = !(tab === 'chat' && chatThreadOpen) && !homeIdle
 
-  // Scrolled all the way down on Home: the nav bar steps out of the way.
+  // Scrolling the Home feed down hides the nav bar; scrolling back up brings it back.
   const [atBottom, setAtBottom] = useState(false)
   useEffect(() => {
     const el = scrollRef.current
@@ -197,8 +197,15 @@ export default function App() {
       setAtBottom(false)
       return undefined
     }
-    const update = () => setAtBottom(el.scrollHeight > el.clientHeight + 8 && el.scrollTop + el.clientHeight >= el.scrollHeight - 8)
-    update()
+    let last = el.scrollTop
+    const update = () => {
+      const top = el.scrollTop
+      if (top < 40) setAtBottom(false)
+      else if (top > last + 6) setAtBottom(true)
+      else if (top < last - 6) setAtBottom(false)
+      last = top
+    }
+    setAtBottom(false)
     el.addEventListener('scroll', update, { passive: true })
     window.addEventListener('resize', update)
     return () => {
