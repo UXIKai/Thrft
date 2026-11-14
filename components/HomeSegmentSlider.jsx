@@ -17,103 +17,127 @@ const SEGMENTS = [
   { id: 'leaderboard', label: 'Leaderboard', Icon: LeaderboardIcon },
 ]
 
-const LAST = SEGMENTS.length - 1
+const SHOPS = ['store', 'market']
 const DRAG_START_PX = 8
 const SLOT_PX = 200
 const EDGE_RESISTANCE = 0.35
 const FLICK_LOOKAHEAD_MS = 150
 
-const clamp = (n) => Math.min(LAST, Math.max(0, n))
+const clamp01 = (n) => Math.min(1, Math.max(0, n))
 // Dragging past either end stretches, then springs back.
-const resist = (n) => (n < 0 ? n * EDGE_RESISTANCE : n > LAST ? LAST + (n - LAST) * EDGE_RESISTANCE : n)
+const resist = (n) => (n < 0 ? n * EDGE_RESISTANCE : n > 1 ? 1 + (n - 1) * EDGE_RESISTANCE : n)
 
-// Store / Market / Leaderboard: the chosen icon shows in the middle with arrows above and below.
-// At the top of the page, swipe up for the next segment (Leaderboard) and down to go back (Market / Store).
-// Swiping up over scrollable products still scrolls them, unless the swipe starts on this header strip.
+const scrollsSideways = (el, stop) => {
+  for (let n = el; n && n !== stop; n = n.parentElement) {
+    if (n.scrollWidth <= n.clientWidth) continue
+    const ox = getComputedStyle(n).overflowX
+    if (ox === 'auto' || ox === 'scroll') return true
+  }
+  return false
+}
+
+// Store and Market sit side by side (swipe left / right); the Leaderboard sits above them:
+// pull down at the very top of the page to reach it, swipe up to come back.
 export default function HomeSegmentSlider({ value, onChange, fireSame = false }) {
   const rootRef = useRef(null)
-  const index = Math.max(0, SEGMENTS.findIndex((s) => s.id === value))
+  const onLeaderboard = value === 'leaderboard'
+  const memRef = useRef('store')
+  if (!onLeaderboard) memRef.current = value
+  const shopIndex = Math.max(0, SHOPS.indexOf(memRef.current))
 
-  // Position is painted straight onto the DOM so a drag never re-renders React.
-  const paint = (x) => {
+  // The view point is (x, y): x 0..1 picks Store / Market, y 1 is the Leaderboard above them.
+  const paint = (x, y) => {
     const root = rootRef.current
     if (!root) return
+    const lx = shopIndex
     root.style.setProperty('--x', x)
-    root.querySelectorAll('.home-segment-tab').forEach((el, i) => el.style.setProperty('--d', Math.min(1, Math.abs(i - x))))
+    root.style.setProperty('--y', y)
+    root.style.setProperty('--lx', lx)
+    const dist = (tx, ty) => Math.min(1, Math.hypot(tx - x, ty - y))
+    const tabs = root.querySelectorAll('.home-segment-tab')
+    tabs[0].style.setProperty('--d', dist(0, 0))
+    tabs[1].style.setProperty('--d', dist(1, 0))
+    tabs[2].style.setProperty('--d', dist(lx, 1))
   }
   const paintRef = useRef(paint)
   paintRef.current = paint
   useLayoutEffect(() => {
-    paintRef.current(index)
-  }, [index])
+    paintRef.current(shopIndex, onLeaderboard ? 1 : 0)
+  }, [shopIndex, onLeaderboard])
 
   const chooseRef = useRef(null)
-  chooseRef.current = (i) => {
-    const next = SEGMENTS[clamp(i)]
-    if (!fireSame && next.id === value) return
+  chooseRef.current = (id) => {
+    if (!fireSame && id === value) return
     // Swap the (heavy) product list after the slide starts so the animation never stutters.
-    startTransition(() => onChange(next.id))
+    startTransition(() => onChange(id))
   }
-  const indexRef = useRef(index)
-  indexRef.current = index
+  const stateRef = useRef(null)
+  stateRef.current = { onLeaderboard, shopIndex }
 
   useEffect(() => {
     const page = rootRef.current?.closest('.home-scroll')
-    const header = rootRef.current?.parentElement
     if (!page) return undefined
     let d = null
     let frame = 0
-    let pending = 0
+    let pending = [0, 0]
     const flush = () => {
       frame = 0
-      paintRef.current(pending)
+      paintRef.current(pending[0], pending[1])
     }
     const begin = (id, x, y, target) => {
-      // Only from the very top of the page.
-      if (page.scrollTop > 0) {
-        d = null
-        return
-      }
-      d = { id, x, y, start: indexRef.current, moving: false, samples: [], fromHeader: header?.contains(target) }
+      const { onLeaderboard: up, shopIndex: sx } = stateRef.current
+      // Pulling down to the Leaderboard only works from the very top of the page.
+      d = { id, x, y, up, sx, axis: null, samples: [], atTop: page.scrollTop <= 0, sideways: scrollsSideways(target, page) }
     }
     const move = (id, x, y, t, ev) => {
       if (!d || d.id !== id) return
+      const dx = x - d.x
       const dy = y - d.y
-      if (!d.moving) {
-        if (Math.abs(dy) < DRAG_START_PX) return
-        const scrollable = page.scrollHeight > page.clientHeight + 1
-        // Swiping up over scrollable content is a normal scroll; the header strip always switches.
-        if (Math.abs(dy) < Math.abs(x - d.x) * 1.5 || (dy < 0 && scrollable && !d.fromHeader)) {
+      if (!d.axis) {
+        if (Math.max(Math.abs(dx), Math.abs(dy)) < DRAG_START_PX) return
+        if (Math.abs(dx) > Math.abs(dy) * 1.5 && !d.up && !d.sideways) d.axis = 'x'
+        else if (Math.abs(dy) > Math.abs(dx) * 1.5 && (d.up ? dy < 0 : d.atTop && dy > 0)) d.axis = 'y'
+        else {
           d = null
           return
         }
-        d.moving = true
-        d.y += Math.sign(dy) * DRAG_START_PX
+        d.ox = d.axis === 'x' ? d.x + Math.sign(dx) * DRAG_START_PX : d.x
+        d.oy = d.axis === 'y' ? d.y + Math.sign(dy) * DRAG_START_PX : d.y
         rootRef.current.classList.add('is-dragging')
       }
       if (ev.cancelable) ev.preventDefault()
-      const raw = d.start - (y - d.y) / SLOT_PX
+      // Swiping left reveals Market; pulling down reveals the Leaderboard; swiping up leaves it.
+      const raw = d.axis === 'x' ? d.sx - (x - d.ox) / SLOT_PX : (d.up ? 1 : 0) + (y - d.oy) / SLOT_PX
       d.samples.push({ t, pos: raw })
       if (d.samples.length > 6) d.samples.shift()
-      pending = resist(Math.min(d.start + 1, Math.max(d.start - 1, raw)))
+      const shown = resist(raw)
+      pending = d.axis === 'x' ? [shown, 0] : [d.sx, shown]
       if (!frame) frame = requestAnimationFrame(flush)
     }
     const end = (id, t, flick) => {
       if (!d || d.id !== id) return
       const s = d
       d = null
-      if (!s.moving) return
+      if (!s.axis) return
       cancelAnimationFrame(frame)
       frame = 0
       const last = s.samples[s.samples.length - 1]
       const from = s.samples.find((p) => last.t - p.t <= 100) || last
       const idle = t - last.t > 80
       const v = flick && !idle && last.t > from.t ? (last.pos - from.pos) / (last.t - from.t) : 0
-      // One segment per gesture, however far or fast the swipe.
-      const landing = clamp(Math.min(s.start + 1, Math.max(s.start - 1, Math.round(last.pos + v * FLICK_LOOKAHEAD_MS))))
+      // One step per gesture, however far or fast the swipe.
+      const landing = clamp01(Math.round(last.pos + v * FLICK_LOOKAHEAD_MS))
       rootRef.current.classList.remove('is-dragging')
-      paintRef.current(landing)
-      chooseRef.current(landing)
+      if (s.axis === 'x') {
+        paintRef.current(landing, 0)
+        chooseRef.current(SHOPS[landing])
+      } else if (landing === 1) {
+        paintRef.current(s.sx, 1)
+        chooseRef.current('leaderboard')
+      } else {
+        paintRef.current(s.sx, 0)
+        chooseRef.current(SHOPS[s.sx])
+      }
     }
 
     const onTouchStart = (e) => {
@@ -138,7 +162,7 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false })
       if (t) end(t.identifier, e.timeStamp, false)
     }
     const mouse = (fn) => (e) => {
-      if (e.pointerType === 'mouse' && e.isPrimary && (e.button === undefined || e.button === 0 || e.type !== 'pointerdown')) fn(e)
+      if (e.pointerType === 'mouse' && e.isPrimary && (e.type !== 'pointerdown' || e.button === 0)) fn(e)
     }
     const onMouseDown = mouse((e) => begin(e.pointerId, e.clientX, e.clientY, e.target))
     const onMouseMove = mouse((e) => move(e.pointerId, e.clientX, e.clientY, e.timeStamp, e))
@@ -166,19 +190,22 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false })
   const arrow = (
     <svg viewBox="0 0 12 10" aria-hidden="true"><path d="M6 1.2 10.6 8.4H1.4Z" fill="currentColor" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /></svg>
   )
+  const hide = onLeaderboard ? ' is-hidden' : ''
 
   return (
     <div
       ref={rootRef}
       className="home-segment-slider"
       role="status"
-      aria-label={`${SEGMENTS[index].label}. At the top of the page, swipe up or down to switch.`}
+      aria-label={`${SEGMENTS.find((s) => s.id === value)?.label}. Swipe left or right for Store and Market; pull down at the top for the Leaderboard.`}
     >
-      <span className={`wheel-arrow is-up${index === 0 ? ' is-end' : ''}`} aria-hidden="true">{arrow}</span>
-      <span className={`wheel-arrow is-down${index === LAST ? ' is-end' : ''}`} aria-hidden="true">{arrow}</span>
+      <span className={`wheel-arrow is-left${hide}${shopIndex === 0 ? ' is-end' : ''}`} aria-hidden="true">{arrow}</span>
+      <span className={`wheel-arrow is-right${hide}${shopIndex === 1 ? ' is-end' : ''}`} aria-hidden="true">{arrow}</span>
+      <span className={`wheel-arrow is-up${hide}`} aria-hidden="true">{arrow}</span>
+      <span className={`wheel-arrow is-down${onLeaderboard ? '' : ' is-hidden'}`} aria-hidden="true">{arrow}</span>
       <div className="home-segment-track" aria-hidden="true">
         {SEGMENTS.map(({ id, Icon }) => (
-          <span key={id} className="home-segment-tab">
+          <span key={id} className={`home-segment-tab is-${id}`}>
             <Icon />
           </span>
         ))}

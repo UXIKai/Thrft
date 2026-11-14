@@ -1993,6 +1993,9 @@ html body .tab-bar.is-pressed .tab-pill::before {
 .wheel-arrow.is-end {
   opacity: 0.2;
 }
+.home-segment-slider .wheel-arrow {
+  transition: opacity 0.2s ease;
+}
 .home-segment-slider .wheel-arrow.is-up {
   top: 1px;
 }
@@ -2000,24 +2003,41 @@ html body .tab-bar.is-pressed .tab-pill::before {
   top: auto;
   bottom: 1px;
 }
+.home-segment-slider .wheel-arrow.is-left,
+.home-segment-slider .wheel-arrow.is-right {
+  top: 50%;
+  margin-top: -4px;
+}
+.home-segment-slider .wheel-arrow.is-left {
+  left: calc(50% - 34px);
+  transform: rotate(-90deg);
+}
+.home-segment-slider .wheel-arrow.is-right {
+  left: calc(50% + 34px);
+  transform: rotate(90deg);
+}
+.home-segment-slider .wheel-arrow.is-hidden {
+  opacity: 0;
+}
 
+/* Store and Market sit side by side, the Leaderboard directly above whichever was last open */
 .home-segment-track {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  position: relative;
   width: 100%;
-  margin: 0;
-  transform: translateY(calc((1 - var(--x, 0)) * var(--slot)));
+  height: var(--slot);
+  transform: translate(calc(var(--x, 0) * var(--slot) * -1), calc(var(--y, 0) * var(--slot)));
   will-change: transform;
   transition: transform 0.32s cubic-bezier(0.22, 0.9, 0.3, 1);
 }
 
 .home-segment-tab {
-  flex: 0 0 var(--slot);
+  position: absolute;
+  top: 0;
+  left: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
+  width: var(--slot);
   height: var(--slot);
   color: light-dark(#000, #fff);
   opacity: calc(1 - var(--d, 0));
@@ -2028,6 +2048,14 @@ html body .tab-bar.is-pressed .tab-pill::before {
 .home-segment-slider.is-dragging .home-segment-track,
 .home-segment-slider.is-dragging .home-segment-tab {
   transition: none;
+}
+
+.home-segment-tab.is-market {
+  left: var(--slot);
+}
+.home-segment-tab.is-leaderboard {
+  top: calc(var(--slot) * -1);
+  left: calc(var(--lx, 0) * var(--slot));
 }
 
 .home-segment-tab svg {
