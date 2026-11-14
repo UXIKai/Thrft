@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
-import { fetchSaved, fetchStoreProducts } from '../api.js'
+import { fetchSaved, fetchStoreProducts, saveSavedItems } from '../api.js'
 import {
   buildPersonalizedRows,
   PERSONALIZED_PRODUCTS_PER_ROW,
@@ -38,22 +38,30 @@ const MARKET_CHIPS = [
   { id: 'outerwear', label: 'Outerwear' },
 ]
 
-function MarketCard({ product, onOpen }) {
+function MarketCard({ product, onOpen, liked, onToggleLike }) {
   const photo = product.photoUrl || product.image_url
-  const likes = Number(product.likes ?? product.likeCount ?? 0)
+  const likes = Math.max(0, Number(product.likes ?? product.likeCount ?? 0)) + (liked ? 1 : 0)
   const name = product.brandName || product.title || 'Item'
   return (
-    <button type="button" className="market-card" onClick={() => onOpen?.(product)} aria-label={`${name} ${product.price || ''}`}>
-      <span className={`market-card-photo tone-${product.tone || '1'}`}>
-        {photo ? <img src={photo} alt="" loading="lazy" draggable="false" /> : null}
-        <span className="market-card-like" aria-hidden>
-          <svg viewBox="0 0 24 24"><path d="M12 20.5s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.5 2.7c0 5.6-7.5 10.2-7.5 10.2Z" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /></svg>
-          {likes > 0 ? <span>{likes}</span> : null}
+    <div className="market-card">
+      <button type="button" className="market-card-open" onClick={() => onOpen?.(product)} aria-label={`${name} ${product.price || ''}`}>
+        <span className="market-card-photo">
+          {photo ? <img src={photo} alt="" loading="lazy" draggable="false" /> : null}
         </span>
-      </span>
-      <span className="market-card-name">{name}</span>
-      {product.price ? <span className="market-card-price">{product.price}</span> : null}
-    </button>
+        <span className="market-card-name">{name}</span>
+        {product.price ? <span className="market-card-price">{product.price}</span> : null}
+      </button>
+      <button
+        type="button"
+        className={`market-card-like${liked ? ' is-liked' : ''}`}
+        aria-pressed={liked}
+        aria-label={liked ? 'Remove from favorites' : 'Add to favorites'}
+        onClick={() => onToggleLike?.(product)}
+      >
+        <svg viewBox="0 0 24 24" aria-hidden><path d="M12 20.5s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.5 2.7c0 5.6-7.5 10.2-7.5 10.2Z" fill={liked ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /></svg>
+        {likes > 0 ? <span>{likes}</span> : null}
+      </button>
+    </div>
   )
 }
 
@@ -254,6 +262,17 @@ export default function ProductRows({
     segment,
   ])
 
+  const savedIdSet = useMemo(() => new Set(savedItems.map((item) => String(item?.id))), [savedItems])
+
+  const toggleLike = (product) => {
+    const id = String(product.id)
+    const next = savedIdSet.has(id)
+      ? savedItems.filter((item) => String(item?.id) !== id)
+      : [...savedItems, product]
+    setSavedItems(next)
+    saveSavedItems(next)
+  }
+
   const marketItems = useMemo(() => {
     if (chip === 'all') return filteredCatalog
     if (chip === 'under10') return filteredCatalog.filter((p) => parseListingPrice(p.price) < 10)
@@ -282,7 +301,7 @@ export default function ProductRows({
         </div>
         <div className="market-product-grid">
           {marketItems.map((product) => (
-            <MarketCard key={product.id} product={product} onOpen={(item) => onOpenProduct?.({ ...item, detailVariant: 'market' })} />
+            <MarketCard key={product.id} product={product} liked={savedIdSet.has(String(product.id))} onToggleLike={toggleLike} onOpen={(item) => onOpenProduct?.({ ...item, detailVariant: 'market' })} />
           ))}
         </div>
       </section>

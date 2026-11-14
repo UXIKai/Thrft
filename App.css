@@ -2425,7 +2425,16 @@ html body .market-product-grid {
   padding: 0 16px;
 }
 
-html body .market-card.market-card {
+html body .market-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  font-family: var(--font-sans);
+  color: var(--ink, light-dark(#000, #fff));
+}
+
+html body .market-card .market-card-open {
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -2437,8 +2446,8 @@ html body .market-card.market-card {
   background: none !important;
   box-shadow: none !important;
   border-radius: 0 !important;
-  color: var(--ink, light-dark(#000, #fff)) !important;
-  font-family: var(--font-sans);
+  color: inherit !important;
+  font-family: inherit;
 }
 
 .market-card-photo {
@@ -2458,14 +2467,21 @@ html body .market-card.market-card {
   display: block;
 }
 
-.market-card-like {
+html body .market-card .market-card-like {
   position: absolute;
-  top: 8px;
-  right: 8px;
+  top: 6px;
+  right: 6px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: #fff;
+  gap: 0;
+  padding: 2px;
+  min-width: 0;
+  border: 0 !important;
+  background: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  color: #fff !important;
   font: 700 0.78rem var(--font-sans);
   filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.55));
 }
