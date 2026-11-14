@@ -112,12 +112,8 @@ let matchBackgroundColor = false
 let moonlightOn = false
 
 export function readTheme() {
-  try {
-    return localStorage.getItem(THEME_KEY) === 'light' ? 'light' : 'dark'
-  } catch (error) {
-    console.warn('Unable to read display mode.', error)
-    return 'dark'
-  }
+  // The moon button is gone, so a saved light mode would only leave a grey page; always start from the original dark
+  return 'dark'
 }
 
 /** Mode the user picked with the moon button; a black background may override it temporarily. */
@@ -191,6 +187,7 @@ export function applyTheme(theme) {
   if (theme !== 'dark' && theme !== 'light') {
     throw new Error('Display mode must be dark or light.')
   }
+  theme = 'dark'
   currentTheme = theme
   document.documentElement.dataset.theme = theme
   applyGlassTokens()
