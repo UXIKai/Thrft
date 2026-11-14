@@ -1742,50 +1742,6 @@ export default function SettingsScreen({
                 </div>
                 <div
                   className="settings-glass-slider"
-                  style={{ '--pull': (uiScale - 85) / 45 }}
-                >
-                  <input
-                    className="settings-slider"
-                    type="range"
-                    min={85}
-                    max={130}
-                    value={uiScale}
-                    onChange={(e) => {
-                      const next = Number(e.target.value)
-                      setUiScale(next)
-                      applyUiScale(next)
-                    }}
-                    aria-label="Text and button size"
-                  />
-                  <div className="settings-slider-ends">
-                    <span>Small</span>
-                    <span>Large</span>
-                  </div>
-                </div>
-                <div
-                  className="settings-glass-slider"
-                  style={{ '--pull': containerEdge / 100 }}
-                >
-                  <input
-                    className="settings-slider"
-                    type="range"
-                    min={0}
-                    max={100}
-                    value={containerEdge}
-                    onChange={(e) => {
-                      const next = Number(e.target.value)
-                      setContainerEdge(next)
-                      applyContainerEdge(next)
-                    }}
-                    aria-label="Container height from Short to Tall"
-                  />
-                  <div className="settings-slider-ends">
-                    <span>Short</span>
-                    <span>Tall</span>
-                  </div>
-                </div>
-                <div
-                  className="settings-glass-slider"
                   style={{ '--pull': brightness / 100 }}
                 >
                   <input
