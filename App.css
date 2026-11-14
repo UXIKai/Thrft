@@ -2758,3 +2758,14 @@ html body .stage .home-radial .home-radial-btn.is-search:not(#_):not(#_) {
   scale: 1;
 }
 html body .stage .home-radial .home-radial-btn.is-hot:not(#_):not(#_) { scale: 1.12; }
+
+/* Logo row on top; the picker button and cart sit on the row below, pushing the products down */
+.wordmark-wrap > .wordmark {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  margin-bottom: 14px;
+}
+.wordmark-wrap > .home-segment-slider,
+.wordmark-wrap > .home-checkout-btn {
+  grid-row: 2;
+}

@@ -545,6 +545,9 @@ export default function App() {
         {tab === 'home' && (
           <>
             <header className="wordmark-wrap">
+              <h1 className="wordmark">
+                Thrft<span className="dot" aria-hidden="true">●</span>
+              </h1>
               <HomeFilterLinks
                 brands={HOME_BRAND_ITEMS}
                 categories={homeCategoryItems}
