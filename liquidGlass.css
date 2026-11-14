@@ -1900,7 +1900,7 @@ html[data-app-color='none'][data-moonlight='on'] body .settings-icon-tile:not(#_
 
 /* Settings: a little smaller on phones, and containers take the page's effect colour instead of flat black */
 @media (max-width: 719px) {
-  html body .settings-screen .settings-scroll {
+  html body .settings-screen :is(.settings-scroll, .settings-top) {
     zoom: 0.88;
   }
 }

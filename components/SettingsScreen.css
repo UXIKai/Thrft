@@ -2920,3 +2920,8 @@ html body .settings-screen .settings-theme-toggle:not(#_) {
     margin-inline: auto;
   }
 }
+
+/* The header sits above the scroller (not inside it) so the scroll area never touches the top edge; same side inset it had inside the scroller */
+.settings-screen > .settings-top {
+  margin-inline: var(--st-pad);
+}

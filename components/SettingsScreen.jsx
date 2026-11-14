@@ -1785,7 +1785,6 @@ export default function SettingsScreen({
       aria-modal="true"
       aria-label="Settings"
     >
-      <div className="settings-scroll">
       <header className="settings-top">
         <button
           type="button"
@@ -1798,6 +1797,7 @@ export default function SettingsScreen({
         <h1 className="settings-title">Settings</h1>
         <span aria-hidden="true" />
       </header>
+      <div className="settings-scroll">
       <div className="settings-columns">
       <div className="settings-column">
         <Section label="Account Settings" className="is-profile-controls">
