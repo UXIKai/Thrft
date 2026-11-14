@@ -200,7 +200,7 @@ export default function App() {
     let last = el.scrollTop
     const update = () => {
       const top = el.scrollTop
-      if (top > last + 6 && top >= 40) setAtBottom(true)
+      if (top > last + 6) setAtBottom(true)
       last = top
     }
     // Only a tap brings the nav bar back
