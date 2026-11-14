@@ -121,6 +121,13 @@ export default function CartScreen({
       onTouchMove={onTouchMove}
       onTouchEnd={() => { swipeRef.current = null }}
     >
+      <div className="cart-nav" aria-hidden="true">
+        <span className="wheel-arrow is-up is-end"><svg viewBox="0 0 12 10"><path d="M6 1.2 10.6 8.4H1.4Z" fill="currentColor" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /></svg></span>
+        <span className="wheel-arrow is-down"><svg viewBox="0 0 12 10"><path d="M6 1.2 10.6 8.4H1.4Z" fill="currentColor" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /></svg></span>
+        <span className="wheel-arrow is-left is-end"><svg viewBox="0 0 12 10"><path d="M6 1.2 10.6 8.4H1.4Z" fill="currentColor" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /></svg></span>
+        <span className="wheel-arrow is-right is-end"><svg viewBox="0 0 12 10"><path d="M6 1.2 10.6 8.4H1.4Z" fill="currentColor" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /></svg></span>
+        <svg className="cart-nav-ico" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M3 4h2.4l2.1 11h9.6l1.9-8H6.2" /><circle cx="9" cy="19" r="1.2" /><circle cx="16.5" cy="19" r="1.2" /></g></svg>
+      </div>
       <div className="glass-overlay-body cart-body">
         {items.length === 0 ? (
           <p className="cart-empty">Your bag is empty</p>

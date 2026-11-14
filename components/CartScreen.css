@@ -350,3 +350,49 @@
     column-gap: 8px;
   }
 }
+
+/* Top of the bag: the cart sits between its arrows; the down arrow shows the way out */
+.cart-screen .cart-nav {
+  --slot: 40px;
+  position: absolute;
+  top: calc(env(safe-area-inset-top, 0px) + 12px);
+  left: 50%;
+  z-index: 3;
+  width: calc(var(--slot) * 3);
+  height: var(--slot);
+  translate: -50% 0;
+  display: grid;
+  place-items: center;
+  color: light-dark(#000, #fff);
+  pointer-events: none;
+}
+
+.cart-screen .cart-nav .wheel-arrow {
+  position: absolute;
+}
+
+.cart-screen .cart-nav .wheel-arrow.is-up { top: 1px; }
+.cart-screen .cart-nav .wheel-arrow.is-down { bottom: 1px; }
+.cart-screen .cart-nav .wheel-arrow.is-left,
+.cart-screen .cart-nav .wheel-arrow.is-right { top: 50%; margin-top: -4px; }
+.cart-screen .cart-nav .wheel-arrow.is-left { left: calc(50% - 17px); transform: rotate(-90deg); }
+.cart-screen .cart-nav .wheel-arrow.is-right { left: calc(50% + 17px); transform: rotate(90deg); }
+.cart-screen .cart-nav .wheel-arrow.is-end { opacity: 0; }
+
+.cart-nav-ico {
+  width: 22px;
+  height: 22px;
+}
+
+/* Empty bag: the message sits dead centre of the page */
+.cart-screen .cart-empty {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+  font-size: 1rem;
+}
+
+.cart-screen .glass-overlay-body.cart-body {
+  padding-top: calc(env(safe-area-inset-top, 0px) + 68px);
+}
