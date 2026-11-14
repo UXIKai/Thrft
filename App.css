@@ -3022,3 +3022,14 @@ html body .saved-screen .saved-item-media:not(#_):not(#_) {
   -webkit-backdrop-filter: blur(3px) !important;
   backdrop-filter: blur(3px) !important;
 }
+
+/* Liked: no treasure chest, and the brands row has no visible container */
+.saved-header-spacer { width: 40px; height: 40px; }
+html body .saved-screen .saved-fav-brands:not(#_):not(#_) {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  border-radius: 0 !important;
+}
