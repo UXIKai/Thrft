@@ -2864,3 +2864,20 @@ html body .stage.is-nav-hidden > .tab-bar.tab-bar {
 .stage.is-nav-hidden .home-scroll:not(.is-home-idle) .wordmark-wrap > .home-segment-slider {
   bottom: calc(var(--nav-bottom) + 12px);
 }
+
+/* Flat theme: thin outline, page colour, no gloss, arcs or grey fills */
+html body .stage .home-radial-scrim .home-radial:not(#_):not(#_) {
+  background: var(--page-bg, light-dark(#fff, #000)) !important;
+  box-shadow: none !important;
+  border: 1px solid var(--glass-border) !important;
+}
+html body .stage .home-radial-scrim .home-radial:not(#_):not(#_)::before,
+html body .stage .home-radial-scrim .home-radial:not(#_):not(#_)::after {
+  content: none !important;
+  display: none !important;
+}
+html body .stage .home-radial .home-radial-lens:not(#_) {
+  background: none !important;
+  box-shadow: none !important;
+  border: 1px solid var(--glass-border) !important;
+}
