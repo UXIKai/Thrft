@@ -112,7 +112,11 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false, o
       const { onLeaderboard: up, shopIndex: sx } = stateRef.current
       // Pulling down to the Leaderboard only works from the very top of the page.
       clearTimeout(holdRef.current)
-      if (rootRef.current?.contains(target)) {
+      // The slider ignores pointer events itself, so hit-test the icon area by position.
+      const r = rootRef.current?.getBoundingClientRect()
+      const cx = r ? r.left + r.width / 2 : 0
+      const cy = r ? r.top + r.height / 2 : 0
+      if (r && Math.abs(x - cx) <= 44 && Math.abs(y - cy) <= 44) {
         holdRef.current = setTimeout(() => {
           if (d && !d.axis) {
             d = null
