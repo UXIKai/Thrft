@@ -540,7 +540,8 @@ html[data-bg-color='none'] .stage.is-bg-none .atmosphere {
 
 .leaderboard-panel {
   position: relative;
-  height: 420px;
+  /* Fills the space between the header and the tab bar; the 420px helix sits in the middle of it */
+  height: max(420px, calc(100dvh - 250px));
   margin: 0 0 16px;
   background: transparent;
 }
@@ -553,6 +554,9 @@ html[data-bg-color='none'] .stage.is-bg-none .atmosphere {
 }
 
 .helix-embedded {
+  inset: 50% 0 auto;
+  height: 420px;
+  margin-top: -210px;
   pointer-events: auto;
 }
 
