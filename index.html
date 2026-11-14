@@ -20,6 +20,16 @@
     />
     <!-- Critical paint: never flash white before CSS/JS load -->
     <style>
+      html {
+        height: 100%;
+      }
+      body {
+        position: fixed;
+        inset: 0;
+        margin: 0;
+        overflow: hidden;
+        background: #050505;
+      }
       html,
       body,
       #root {

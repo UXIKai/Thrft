@@ -59,8 +59,11 @@ body {
   -webkit-font-smoothing: antialiased;
   /* Stick to the visible screen, including when mobile chrome shows or hides */
   position: fixed;
-  top: var(--app-top, 0px);
-  left: var(--app-left, 0px);
+  /* Pinned to all four edges (not a measured height) so the page runs under Safari's top and bottom bars */
+  inset: 0;
+  width: auto;
+  height: auto;
+  max-height: none;
   overflow: hidden;
 }
 
