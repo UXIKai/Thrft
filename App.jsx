@@ -188,7 +188,7 @@ export default function App() {
   const homeIdle = tab === 'home' && !homeOpen
   const showNav = !(tab === 'chat' && chatThreadOpen) && !homeIdle
 
-  // Home hides the nav bar until the screen is tapped (scrolling down hides it again); every other page keeps it showing.
+  // Home hides the nav bar until the screen is tapped (it stays until the button is tapped); every other page keeps it showing.
   const [atBottom, setAtBottom] = useState(true)
   useEffect(() => {
     setAtBottom(true)
@@ -197,12 +197,6 @@ export default function App() {
     const stage = stageRef.current
     const el = scrollRef.current
     if (!stage) return undefined
-    let last = el?.scrollTop || 0
-    const update = () => {
-      const top = el.scrollTop
-      if (top > last + 6) setAtBottom(true)
-      last = top
-    }
     let down = null
     const CONTROLS = 'button, a, input, select, [role="dialog"], .home-search-backdrop, .home-radial, .home-segment-slider, .tab-bar'
     const onDown = (e) => { if (stage.classList.contains('is-home-search-open')) return; down = { ctl: Boolean(e.target.closest?.(CONTROLS)), x: e.clientX, y: e.clientY, t: e.timeStamp, scroll: el?.scrollTop || 0 } }
@@ -213,10 +207,8 @@ export default function App() {
       if (down && (Math.hypot(e.clientX - down.x, e.clientY - down.y) > 8 || (el?.scrollTop || 0) !== down.scroll || e.timeStamp - down.t > 600)) return
       setAtBottom(false)
     }
-    el?.addEventListener('scroll', update, { passive: true })
     stage.addEventListener('pointerdown', onDown, { passive: true })
     return () => {
-      el?.removeEventListener('scroll', update)
       stage.removeEventListener('pointerdown', onDown)
     }
   }, [tab, homeSegment, homeOpen])
