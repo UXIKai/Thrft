@@ -60,25 +60,14 @@ function paint() {
     z = z2
     el.style.transform = 'none'
     el.style.transition = 'none'
-    el.style.translate = `calc(-50% + ${(x * RS).toFixed(1)}px) calc(-50% + ${(y * RS).toFixed(1)}px)`
+    el.style.translate = `calc(-50% + ${(x * RS).toFixed(1)}px) calc(-50% + ${(y * RS).toFixed(1)}px + var(--lift, 0px))`
     el.style.setProperty('--gs', (0.45 + 0.55 * Math.max(z, 0)).toFixed(3))
     el.style.opacity = Math.max(0, Math.min(1, z * 1.6)).toFixed(3)
     el.style.pointerEvents = z > 0.3 ? '' : 'none'
   })
 }
 
-function tick() {
-  cur = [cur[0] + (target[0] - cur[0]) * 0.22, cur[1] + (target[1] - cur[1]) * 0.22]
-  if (Math.abs(target[0] - cur[0]) < 0.002 && Math.abs(target[1] - cur[1]) < 0.002) {
-    cur = [...target]
-    raf = 0
-  } else {
-    raf = requestAnimationFrame(tick)
-  }
-  paint()
-}
-
-// Pointing a direction turns the globe so that direction's button comes to the middle
+// Pointing a direction raises that button a little; the buttons themselves stay put
 export function moveKnob(x, y) {
   const wheel = document.querySelector('.home-radial')
   if (!wheel) return
@@ -90,10 +79,11 @@ export function moveKnob(x, y) {
     id = Math.abs(dx) > Math.abs(dy) ? (dx < 0 ? 'store' : 'market') : dy < 0 ? 'leaderboard' : 'cart'
   }
   selected = id
-  const [ux, uy] = DIRS[id]
-  target = [uy * TH, -ux * TH]
-  if (!raf) raf = requestAnimationFrame(tick)
-  wheel.querySelectorAll('[data-radial]').forEach((el) => el.classList.toggle('is-hot', el.dataset.radial === id))
+  wheel.querySelectorAll('[data-radial]').forEach((el) => {
+    const on = el.dataset.radial === id
+    el.classList.toggle('is-hot', on)
+    el.style.setProperty('--lift', on && id !== 'search' ? '-7px' : '0px')
+  })
   wheel.dataset.sel = id
 }
 

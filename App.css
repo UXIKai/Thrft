@@ -2930,3 +2930,10 @@ html body .stage .home-radial-scrim .home-radial:not(#_):not(#_):not(#_):not(#_)
     radial-gradient(circle at 50% 50%, transparent 55%, light-dark(rgba(0, 0, 0, 0.1), rgba(255, 255, 255, 0.08)) 100%),
     light-dark(rgba(255, 255, 255, 0.12), rgba(0, 0, 0, 0.22)) !important;
 }
+
+/* The pointed-at button lifts and brightens; the rest stay put */
+html body .stage .home-radial .home-radial-btn.is-hot:not(#_):not(#_) {
+  scale: calc(var(--gs, 1) * 1.35);
+  filter: drop-shadow(0 6px 6px rgba(0, 0, 0, 0.35));
+}
+html body .stage .home-radial[data-sel] .home-radial-btn:not(.is-hot):not(#_):not(#_) { opacity: 0.55 !important; }
