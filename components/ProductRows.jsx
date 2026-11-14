@@ -122,6 +122,9 @@ function ProductCard({ product, onOpen }) {
   )
 }
 
+// Every row's crawl is timed from here, so a row that remounts (back to Home, scrolled back in) picks up where it would be.
+const CRAWL_EPOCH = performance.now()
+
 const HOLD_MS = 480
 const HOLD_SLOP_PX = 10
 
@@ -133,6 +136,8 @@ function CrawlRow({ row, rowIndex, onOpenProduct, onHoldRow, market = false, lik
   const [loopPx, setLoopPx] = useState(0)
   const [visible, setVisible] = useState(rowIndex < 6)
   const products = row.products || []
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const crawlDelay = useMemo(() => `-${((performance.now() - CRAWL_EPOCH) / 1000).toFixed(3)}s`, [visible])
 
   // 40 rows x 40 tiles is heavy, so only rows near the screen are mounted.
   useEffect(() => {
@@ -233,6 +238,7 @@ function CrawlRow({ row, rowIndex, onOpenProduct, onHoldRow, market = false, lik
             style={{
               '--loop': `${loop}px`,
               '--crawl-duration': `${durationSec}s`,
+              animationDelay: crawlDelay,
               animationPlayState: 'running',
             }}
           >
