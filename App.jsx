@@ -731,6 +731,7 @@ export default function App() {
           items={cartItems}
           shippingAddress={userProfile?.shippingAddress || ''}
           onClose={() => setCartOpen(false)}
+          onShowNav={() => { setCartOpen(false); setAtBottom(false) }}
           onMenuPick={(id) => {
             setCartOpen(false)
             setTab('home')

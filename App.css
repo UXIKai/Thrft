@@ -3043,3 +3043,21 @@ html body .saved-grid.is-products .saved-item-name:not(#_) { font-size: 0.72rem 
 
 /* Liked: keep room for the brands row up top */
 html body .saved-screen .saved-fav-brands:not(#_):not(#_) { min-height: 84px; }
+
+/* Bag: same chevron as every other page */
+html body .cart-screen .cart-chevron:not(#_) {
+  position: absolute;
+  left: 50%;
+  bottom: calc(max(4px, env(safe-area-inset-bottom, 0px) * 0.3) + 27px);
+  translate: -50% 0;
+  scale: 1.25;
+  z-index: 3;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: light-dark(#000, #fff);
+}

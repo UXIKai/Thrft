@@ -28,6 +28,7 @@ function BagIcon() {
 export default function CartScreen({
   items: itemsProp,
   onClose,
+  onShowNav,
   onChange,
   onOpenProduct,
   shippingAddress = '',
@@ -125,38 +126,9 @@ export default function CartScreen({
       onTouchMove={onTouchMove}
       onTouchEnd={() => { swipeRef.current = null }}
     >
-      <div
-        className="cart-nav"
-        onTouchStart={(e) => {
-          clearTimeout(holdRef.current)
-          holdRef.current = setTimeout(() => setMenuOpen(true), 420)
-        }}
-        onTouchMove={(e) => {
-          if (!menuOpen) {
-            clearTimeout(holdRef.current)
-            return
-          }
-          e.preventDefault()
-          const t = e.touches[0]
-          moveKnob(t.clientX, t.clientY)
-        }}
-        onTouchEnd={(e) => {
-          clearTimeout(holdRef.current)
-          if (!menuOpen) return
-          const t = e.changedTouches[0]
-          const hit = radialAt()
-          e.preventDefault()
-          setMenuOpen(false)
-          if (hit && hit.dataset.radial !== 'cart') onMenuPick?.(hit.dataset.radial)
-        }}
-        onTouchCancel={() => clearTimeout(holdRef.current)}
-      >
-        <span className="wheel-arrow is-up is-end"><svg viewBox="0 0 12 10"><path d="M6 1.2 10.6 8.4H1.4Z" fill="currentColor" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /></svg></span>
-        <span className="wheel-arrow is-down"><svg viewBox="0 0 12 10"><path d="M6 1.2 10.6 8.4H1.4Z" fill="currentColor" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /></svg></span>
-        <span className="wheel-arrow is-left is-end"><svg viewBox="0 0 12 10"><path d="M6 1.2 10.6 8.4H1.4Z" fill="currentColor" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /></svg></span>
-        <span className="wheel-arrow is-right is-end"><svg viewBox="0 0 12 10"><path d="M6 1.2 10.6 8.4H1.4Z" fill="currentColor" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /></svg></span>
-        <svg className="cart-nav-ico" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M3 4h2.4l2.1 11h9.6l1.9-8H6.2" /><circle cx="9" cy="19" r="1.2" /><circle cx="16.5" cy="19" r="1.2" /></g></svg>
-      </div>
+      <button type="button" className="cart-chevron is-bare" aria-label="Show navigation" onClick={() => onShowNav?.()}>
+        <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 15l6-6 6 6" /></svg>
+      </button>
       {menuOpen && (
         <HomeRadialMenu
           bagCount={items.length}
