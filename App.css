@@ -3033,3 +3033,10 @@ html body .saved-screen .saved-fav-brands:not(#_):not(#_) {
   backdrop-filter: none !important;
   border-radius: 0 !important;
 }
+
+/* Liked products: bigger tiles */
+html body .saved-grid.is-products:not(#_):not(#_) {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 18px 14px !important;
+}
+html body .saved-grid.is-products .saved-item-name:not(#_) { font-size: 0.85rem !important; }
