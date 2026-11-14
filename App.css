@@ -3012,3 +3012,13 @@ html body .market-card .market-card-photo:not(#_) {
   -webkit-backdrop-filter: blur(3px) !important;
   backdrop-filter: blur(3px) !important;
 }
+
+/* Liked page containers match the Store's translucent tiles */
+html body .saved-screen .saved-item-media:not(#_):not(#_) {
+  background: light-dark(rgba(235, 235, 235, 0.22), rgba(120, 120, 120, 0.2)) !important;
+  border: 1px solid var(--glass-border, light-dark(rgba(0, 0, 0, 0.28), rgba(255, 255, 255, 0.28))) !important;
+  border-radius: 14px !important;
+  box-shadow: var(--glass-clear-depth, var(--glass-depth, 0 8px 24px rgba(0, 0, 0, 0.28))) !important;
+  -webkit-backdrop-filter: blur(3px) !important;
+  backdrop-filter: blur(3px) !important;
+}
