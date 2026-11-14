@@ -2896,7 +2896,7 @@ html body .stage.is-nav-hidden > .tab-bar.tab-bar {
   transition: bottom 0.25s ease;
 }
 .stage.is-nav-hidden .home-scroll:not(.is-home-idle) .wordmark-wrap > .home-segment-slider {
-  bottom: calc(var(--nav-bottom) + 12px);
+  bottom: calc(var(--nav-bottom) - 4px);
 }
 
 /* Flat theme: thin outline, page colour, no gloss, arcs or grey fills */
@@ -3034,7 +3034,7 @@ html body .stage .home-radial[data-sel] .home-radial-btn:not(.is-hot):not(#_):no
   transition: bottom 0.25s ease;
 }
 .stage.is-nav-hidden > .nav-toggle {
-  bottom: calc(var(--nav-bottom) + 12px);
+  bottom: calc(var(--nav-bottom) - 4px);
 }
 
 /* Market cards use the Store's translucent containers; names, prices and hearts stay as they are */
@@ -3149,7 +3149,7 @@ html body .stage .home-radial .home-radial-btn:not(#_):not(#_):not(#_) {
     scale: 1;
     bottom: calc(var(--nav-bottom) + 98px);
   }
-  html body .stage.is-nav-hidden > .nav-toggle:not(#_) { bottom: calc(var(--nav-bottom) + 12px); }
+  html body .stage.is-nav-hidden > .nav-toggle:not(#_) { bottom: calc(var(--nav-bottom) - 4px); }
   html body .stage > .nav-toggle:active:not(#_) { scale: 0.88; }
   .app-column.is-profile-wide { width: 100%; }
   .app-column.is-profile-wide .profile-screen { --pf-pad-x: max(18px, calc((100% - 560px) / 2 + 18px)); }
