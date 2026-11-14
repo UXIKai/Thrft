@@ -384,3 +384,17 @@ html body .home-search-backdrop .home-search-modal {
 .stage.is-home-search-open .home-segment-slider {
   visibility: hidden;
 }
+
+/* Opaque page in the globe's texture: solid page colour, soft top light, shaded rim */
+html body .home-search-backdrop:not(#_) {
+  z-index: 2000;
+  background:
+    radial-gradient(circle at 50% 0%, light-dark(rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.08)) 0%, transparent 45%),
+    radial-gradient(circle at 50% 50%, transparent 55%, light-dark(rgba(0, 0, 0, 0.1), rgba(255, 255, 255, 0.08)) 100%),
+    var(--page-bg, light-dark(#fff, #000));
+}
+html body .stage.is-home-search-open > .tab-bar:not(#_) {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
