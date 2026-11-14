@@ -187,12 +187,12 @@ export default function App() {
   const scrollRef = useRef(null)
   const hideTabBar = tab === 'chat' || tab === 'saved'
   const homeIdle = tab === 'home' && !homeOpen
-  const showNav = !(tab === 'chat' && chatThreadOpen) && !homeIdle
+  // A held Store row's page: no wheel button, nav bar or swipe-out, only its back button leaves.
+  const [rowPageOpen, setRowPageOpen] = useState(false)
+  const showNav = !(tab === 'chat' && chatThreadOpen) && !homeIdle && !rowPageOpen
 
   // The nav bar shows on every page and stays until the bottom button is tapped to hide it.
   const [atBottom, setAtBottom] = useState(false)
-  // A held Store row's page: no wheel button or swipe-out, only its back button leaves.
-  const [rowPageOpen, setRowPageOpen] = useState(false)
   useEffect(() => {
     setAtBottom(false)
   }, [tab])
