@@ -581,7 +581,7 @@ export default function CreateListing({ onPosted, initialSegment = 'market' } = 
 
   return (
     <section
-      className={`create-listing is-walkthrough${addSheetOpen ? ' is-adding' : ''}${isStore && creatorMode ? ' is-creator-product' : ''}${isStore && creatorMode && currentStep === 'photo' ? ' is-artwork-studio' : ''}`}
+      className={`create-listing is-walkthrough${isStore ? ' is-store-listing' : ''}${addSheetOpen ? ' is-adding' : ''}${isStore && creatorMode ? ' is-creator-product' : ''}${isStore && creatorMode && currentStep === 'photo' ? ' is-artwork-studio' : ''}`}
       aria-label="Create listing"
       ref={walkthroughRef}
       tabIndex={-1}
