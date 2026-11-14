@@ -20,14 +20,15 @@ const easeInOutCubic = (t) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 /
 const easeOutBack = (t) => 1 + 2.2 * (t - 1) ** 3 + 1.2 * (t - 1) ** 2
 
 const FRAME_NUMS = STAR_FRAMES.map((f) => f.split(' ').map((pt) => pt.split(',').map(Number)))
-const blendFrames = (p) => {
-  const pos = Math.min(Math.max(p, 0), 1) * (FRAME_NUMS.length - 1)
-  const i = Math.min(Math.floor(pos), FRAME_NUMS.length - 2)
+const blendList = (list, p) => {
+  const pos = Math.min(Math.max(p, 0), 1) * (list.length - 1)
+  const i = Math.min(Math.floor(pos), list.length - 2)
   const f = pos - i
-  return FRAME_NUMS[i]
-    .map(([x, y], k) => `${(x + (FRAME_NUMS[i + 1][k][0] - x) * f).toFixed(1)},${(y + (FRAME_NUMS[i + 1][k][1] - y) * f).toFixed(1)}`)
+  return list[i]
+    .map(([x, y], k) => `${(x + (list[i + 1][k][0] - x) * f).toFixed(1)},${(y + (list[i + 1][k][1] - y) * f).toFixed(1)}`)
     .join(' ')
 }
+const blendFrames = (p) => blendList(FRAME_NUMS, p)
 
 /** The empty-middle state: four blades that twist shut like a camera shutter into a ninja star. */
 function NinjaStar() {
@@ -74,6 +75,74 @@ function NinjaStar() {
             transform={`rotate(${deg} 400 400)`}
             points={STAR_FRAMES[0]}
             fill="url(#ninja-star-chrome)"
+          />
+        ))}
+      </g>
+    </svg>
+  )
+}
+
+// Where the real arrows sit, in star units: the open frame pushed out from the centre.
+const PUSH_UNITS = { vertical: 82, horizontal: 126 }
+const OPEN_MS = 950
+
+/**
+ * Plays the shutter backwards: the closed star opens up into the four arrows, then hands over to them.
+ * `final` is the end opacity of each arrow (up, right, down, left), 0 for hidden ones.
+ */
+export function OpeningStar({ final = [1, 1, 1, 1], onDone }) {
+  const groupRef = useRef(null)
+  const bladeRefs = useRef([])
+  const doneRef = useRef(onDone)
+  doneRef.current = onDone
+
+  useLayoutEffect(() => {
+    const open = FRAME_NUMS[0]
+    const lists = [0, 90, 180, 270].map((deg) => {
+      const push = deg % 180 === 0 ? PUSH_UNITS.vertical : PUSH_UNITS.horizontal
+      return [...FRAME_NUMS].reverse().concat([open.map(([x, y]) => [x + 17, y - push])])
+    })
+    const apply = (t) => {
+      const p = easeInOutCubic(t)
+      bladeRefs.current.forEach((el, i) => {
+        if (!el) return
+        el.setAttribute('points', blendList(lists[i], p))
+        el.setAttribute('opacity', (1 - (1 - final[i]) * p).toFixed(3))
+      })
+      groupRef.current?.setAttribute('transform', `rotate(${(90 * (1 - easeOutBack(t))).toFixed(2)} 400 400)`)
+    }
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
+      doneRef.current?.()
+      return undefined
+    }
+    let raf = 0
+    let start = 0
+    const tick = (now) => {
+      if (!start) start = now
+      const t = Math.min((now - start) / OPEN_MS, 1)
+      apply(t)
+      if (t < 1) raf = requestAnimationFrame(tick)
+      else doneRef.current?.()
+    }
+    apply(0)
+    raf = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(raf)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  return (
+    <svg className="opening-star" viewBox="0 0 800 800" aria-hidden="true">
+      <g ref={groupRef}>
+        {[0, 90, 180, 270].map((deg, i) => (
+          <polygon
+            key={deg}
+            ref={(el) => { bladeRefs.current[i] = el }}
+            transform={`rotate(${deg} 400 400)`}
+            points={STAR_FRAMES[4]}
+            fill="currentColor"
+            stroke="currentColor"
+            strokeWidth="12"
+            strokeLinejoin="round"
           />
         ))}
       </g>

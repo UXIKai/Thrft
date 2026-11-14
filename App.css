@@ -3309,15 +3309,23 @@ html body .stage .home-radial .home-radial-btn:not(#_):not(#_):not(#_) {
 }
 
 /*
- * Ninja star: with an icon in the middle (Home wheel) the arrows fly open from the centre;
+ * Ninja star: with an icon in the middle (Home wheel) the closed star opens up into the arrows;
  * with nothing in the middle (bottom nav button) four blades fly in and lock into a star.
  */
-@keyframes arrow-open {
-  from { scale: 0.3; rotate: -90deg; opacity: 0; }
-  to { scale: 1; rotate: 0deg; opacity: 1; }
-}
-.home-segment-slider .wheel-arrow {
-  animation: arrow-open 0.5s cubic-bezier(0.3, 1.35, 0.5, 1) both;
+/* The picker's arrows are hidden while the star opens, then take over with no fade */
+.home-segment-slider.is-opening .wheel-arrow { opacity: 0 !important; transition: none; }
+.home-segment-slider.is-settling .wheel-arrow { transition: none; }
+.home-segment-slider .opening-star {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+  width: 37px;
+  height: 37px;
+  z-index: 2;
+  overflow: visible;
+  color: light-dark(rgba(0, 0, 0, 0.55), rgba(255, 255, 255, 0.6));
+  pointer-events: none;
 }
 
 .nav-toggle .ninja-star {
@@ -3339,10 +3347,6 @@ html body .stage .home-radial .home-radial-btn:not(#_):not(#_):not(#_) {
   stroke: light-dark(rgba(0, 0, 0, 0.6), rgba(255, 255, 255, 0.85));
   stroke-width: 6;
   stroke-linejoin: round;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .home-segment-slider .wheel-arrow { animation-duration: 0.01s; }
 }
 
 /* Market: 50 crawling rows of 20, alternating direction like the Store */

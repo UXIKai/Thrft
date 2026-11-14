@@ -1,7 +1,7 @@
 import { startTransition, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import HomeRadialMenu, { moveKnob, radialAt } from './HomeRadialMenu.jsx'
 import { MarketIcon, StoreIcon } from './SegmentIcons.jsx'
-import { arrow } from './NavButtonGlyph.jsx'
+import { arrow, OpeningStar } from './NavButtonGlyph.jsx'
 
 const LeaderboardIcon = () => (
   <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -53,6 +53,13 @@ const scrolledDown = (el, stop) => {
 export default function HomeSegmentSlider({ value, onChange, fireSame = false, onSearch, onCart, onTap, onHold, bagCount = 0 }) {
   const rootRef = useRef(null)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [phase, setPhase] = useState('opening')
+  const settleTimer = useRef(0)
+  const finishOpening = () => {
+    setPhase('settle')
+    settleTimer.current = window.setTimeout(() => setPhase('done'), 80)
+  }
+  useEffect(() => () => window.clearTimeout(settleTimer.current), [])
   const menuRef = useRef(false)
   menuRef.current = menuOpen
   const actionsRef = useRef({})
@@ -313,14 +320,22 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false, o
 
   // Arrows at a dead end are dimmed; the Leaderboard has no left/right neighbours.
   const side = onLeaderboard ? ' is-end' : ''
+  // The arrows start as a closed star that opens up whenever the picker appears (Home, or back from a row page).
+  const openFinal = [
+    onLeaderboard ? 0 : 1,
+    onLeaderboard || shopIndex === 1 ? 0 : 1,
+    1,
+    onLeaderboard || shopIndex === 0 ? 0 : 1,
+  ]
 
   return (
     <div
       ref={rootRef}
-      className="home-segment-slider"
+      className={`home-segment-slider${phase === 'opening' ? ' is-opening' : phase === 'settle' ? ' is-settling' : ''}`}
       role="status"
       aria-label={`${SEGMENTS.find((s) => s.id === value)?.label}. Swipe left or right for Store and Market; pull down at the top for the Leaderboard, swipe up at the bottom for checkout; hold for the menu.`}
     >
+      {phase === 'opening' && <OpeningStar final={openFinal} onDone={finishOpening} />}
       <span className={`wheel-arrow is-left${shopIndex === 0 ? ' is-end' : side}`} aria-hidden="true">{arrow}</span>
       <span className={`wheel-arrow is-right${shopIndex === 1 ? ' is-end' : side}`} aria-hidden="true">{arrow}</span>
       <span className={`wheel-arrow is-up${onLeaderboard ? ' is-hidden' : ''}`} aria-hidden="true">{arrow}</span>
