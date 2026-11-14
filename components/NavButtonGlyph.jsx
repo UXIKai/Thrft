@@ -17,6 +17,7 @@ const STAR_FRAMES = [
 const STAR_MS = 450
 const easeInOutCubic = (t) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2)
 // Overshoots a little, then settles, so the shutter clicks shut.
+const easeOutCubic = (t) => 1 - (1 - t) ** 3
 const easeOutBack = (t) => 1 + 2.2 * (t - 1) ** 3 + 1.2 * (t - 1) ** 2
 
 const FRAME_NUMS = STAR_FRAMES.map((f) => f.split(' ').map((pt) => pt.split(',').map(Number)))
@@ -109,7 +110,7 @@ export function OpeningStar({ final = [1, 1, 1, 1], onDone }) {
         el.setAttribute('points', blendList(lists[i], p))
         el.setAttribute('opacity', (1 - (1 - final[i]) * p).toFixed(3))
       })
-      groupRef.current?.setAttribute('transform', `rotate(${(90 * (1 - easeOutBack(t))).toFixed(2)} 400 400)`)
+      groupRef.current?.setAttribute('transform', `rotate(${(90 * (1 - easeOutCubic(t))).toFixed(2)} 400 400)`)
     }
     if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
       doneRef.current?.()
