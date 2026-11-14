@@ -5,6 +5,7 @@ import { createCheckoutSession } from '../api.js'
 import { useBag } from '../BagContext.jsx'
 import './GlassOverlay.css'
 import './CartScreen.css'
+import NavButtonGlyph from './NavButtonGlyph.jsx'
 
 function BagIcon() {
   return (
@@ -127,7 +128,7 @@ export default function CartScreen({
       onTouchEnd={() => { swipeRef.current = null }}
     >
       <button type="button" className="cart-chevron is-bare" aria-label="Show navigation" onClick={() => onShowNav?.()}>
-        <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 15l6-6 6 6" /></svg>
+        <NavButtonGlyph />
       </button>
       {menuOpen && (
         <HomeRadialMenu

@@ -3061,3 +3061,14 @@ html body .cart-screen .cart-chevron:not(#_) {
   background: transparent;
   color: light-dark(#000, #fff);
 }
+
+/* Nav buttons on every page share the Home picker's look: the bag between four small arrows */
+html body .nav-toggle:not(#_), html body .cart-chevron:not(#_) { position: absolute; }
+.nav-toggle .nav-button-ico, .cart-chevron .nav-button-ico { display: grid; place-items: center; }
+.nav-toggle .nav-button-ico svg, .cart-chevron .nav-button-ico svg { width: 22px; height: 22px; }
+.nav-toggle .wheel-arrow.is-up, .cart-chevron .wheel-arrow.is-up { top: 1px; }
+.nav-toggle .wheel-arrow.is-down, .cart-chevron .wheel-arrow.is-down { top: auto; bottom: 1px; }
+.nav-toggle .wheel-arrow.is-left, .nav-toggle .wheel-arrow.is-right,
+.cart-chevron .wheel-arrow.is-left, .cart-chevron .wheel-arrow.is-right { top: 50%; margin-top: -4px; }
+.nav-toggle .wheel-arrow.is-left, .cart-chevron .wheel-arrow.is-left { left: calc(50% - 17px); transform: rotate(-90deg); }
+.nav-toggle .wheel-arrow.is-right, .cart-chevron .wheel-arrow.is-right { left: calc(50% + 17px); transform: rotate(90deg); }

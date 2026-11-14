@@ -12,6 +12,7 @@ import HomeFilterLinks from './components/HomeFilterLinks.jsx'
 import HomeSegmentSlider from './components/HomeSegmentSlider.jsx'
 import LiquidGlassDefs from './components/LiquidGlassDefs.jsx'
 import CartScreen from './components/CartScreen.jsx'
+import NavButtonGlyph from './components/NavButtonGlyph.jsx'
 import ProductDetail from './components/ProductDetail.jsx'
 import { guardSignedInNavigation } from './signedInNavigation.js'
 import ProductRows from './components/ProductRows.jsx'
@@ -841,7 +842,7 @@ export default function App() {
           aria-expanded={!atBottom}
           onClick={() => setAtBottom((hidden) => !hidden)}
         >
-          <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transform: atBottom ? 'none' : 'rotate(180deg)' }}><path d="M6 15l6-6 6 6" /></svg>
+          <NavButtonGlyph />
         </button>
       )}
       {signedIn && showNav && <TabBar active={tab} onCreate={(segment) => {
