@@ -188,7 +188,7 @@ function CrawlRow({ row, rowIndex, onOpenProduct, onHoldRow }) {
     e.stopPropagation()
   }
 
-  const goesRight = rowIndex % 2 === 0
+  const goesRight = rowIndex % 2 === 1
   const estimated =
     products.length * (BOX_W + BOX_GAP) || PERSONALIZED_PRODUCTS_PER_ROW * (BOX_W + BOX_GAP)
   const loop = loopPx > 0 ? loopPx : estimated
@@ -241,6 +241,10 @@ function StoreRowPage({ row, onBack, onOpenProduct }) {
   useLayoutEffect(() => {
     const page = ref.current?.closest('.home-scroll')
     if (page) page.scrollTop = 0
+    // Alternate rows start from the far end so neighbouring rows read in opposite directions.
+    ref.current?.querySelectorAll('.store-row-strip').forEach((el, i) => {
+      el.scrollLeft = i % 2 === 1 ? el.scrollWidth : 0
+    })
   }, [])
   return (
     <section ref={ref} className="product-feed store-row-page" id="home-product-panel" role="tabpanel" aria-label={row.name}>

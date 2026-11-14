@@ -970,7 +970,7 @@ html[data-bg-color='none'] .stage.is-bg-none .atmosphere {
   background: var(--type-chip-fill-active, light-dark(rgba(0, 0, 0, 0.12), rgba(255, 255, 255, 0.12)));
 }
 
-/* Brand product rows (slow one-direction crawl; first row goes right) */
+/* Brand product rows (slow one-direction crawl; first row goes left) */
 .product-feed {
   position: relative;
   z-index: 1;
