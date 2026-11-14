@@ -110,7 +110,7 @@ export default function HomeFilterLinks({
             aria-label="Search"
             style={cardStyle}
           >
-            {effectOn && (
+            {false && effectOn && (
               <div className="home-search-blur" aria-hidden>
                 <div className="atmosphere" aria-hidden>
                   <span className="atmosphere-bloom atmosphere-bloom-a" />

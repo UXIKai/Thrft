@@ -366,3 +366,21 @@ html body .home-search-modal .home-search-blur {
 html body .home-search-blur > .atmosphere {
   background: var(--page-base);
 }
+
+/* The stage's own effect shows through; the page content behind is hidden */
+html body .home-search-backdrop {
+  background: transparent;
+}
+
+.stage.is-home-search-open .home-scroll > * {
+  visibility: hidden;
+}
+
+html body .home-search-backdrop .home-search-modal {
+  --card-ink: light-dark(#000, #fff);
+}
+
+.stage.is-home-search-open .wordmark-wrap > :not(.home-search),
+.stage.is-home-search-open .home-segment-slider {
+  visibility: hidden;
+}
