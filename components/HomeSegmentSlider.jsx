@@ -64,6 +64,11 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false, o
     else chooseRef.current(id)
   }
   const holdRef = useRef(0)
+  useEffect(() => {
+    const page = rootRef.current?.closest('.home-scroll')
+    page?.classList.toggle('is-radial-open', menuOpen)
+    return () => page?.classList.remove('is-radial-open')
+  }, [menuOpen])
   const onLeaderboard = value === 'leaderboard'
   const memRef = useRef('store')
   if (!onLeaderboard) memRef.current = value
@@ -183,6 +188,19 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false, o
       }
     }
 
+    // Holding opens the wheel; letting go picks whatever is under the finger, or closes it.
+    const radialAt = (x, y) => document.elementFromPoint(x, y)?.closest('[data-radial]')
+    const markHot = (x, y) => {
+      const hit = radialAt(x, y)
+      document.querySelectorAll('.home-radial-btn.is-hot').forEach((el) => el !== hit && el.classList.remove('is-hot'))
+      hit?.classList.add('is-hot')
+    }
+    const releaseAt = (x, y) => {
+      const hit = radialAt(x, y)
+      if (hit) pickRef.current(hit.dataset.radial)
+      else setMenuOpen(false)
+    }
+
     const onTouchStart = (e) => {
       if (e.touches.length !== 1) {
         d = null
@@ -193,17 +211,18 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false, o
     }
     const touchById = (e) => (d ? Array.from(e.changedTouches).find((t) => t.identifier === d.id) : null)
     const onTouchMove = (e) => {
+      if (menuRef.current) {
+        markHot(e.touches[0].clientX, e.touches[0].clientY)
+        return
+      }
       const t = touchById(e)
       if (t) move(t.identifier, t.clientX, t.clientY, e.timeStamp, e)
     }
     const onTouchEnd = (e) => {
-      if (menuRef.current && e.changedTouches.length) {
+      if (menuRef.current) {
         const t0 = e.changedTouches[0]
-        const hit = document.elementFromPoint(t0.clientX, t0.clientY)?.closest('[data-radial]')
-        if (hit) {
-          e.preventDefault()
-          pickRef.current(hit.dataset.radial)
-        }
+        releaseAt(t0.clientX, t0.clientY)
+        if (e.cancelable) e.preventDefault()
         return
       }
       const t = touchById(e)
@@ -217,8 +236,8 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false, o
       if (e.pointerType === 'mouse' && e.isPrimary && (e.type !== 'pointerdown' || e.button === 0)) fn(e)
     }
     const onMouseDown = mouse((e) => begin(e.pointerId, e.clientX, e.clientY, e.target))
-    const onMouseMove = mouse((e) => move(e.pointerId, e.clientX, e.clientY, e.timeStamp, e))
-    const onMouseUp = mouse((e) => end(e.pointerId, e.timeStamp, true))
+    const onMouseMove = mouse((e) => (menuRef.current ? markHot(e.clientX, e.clientY) : move(e.pointerId, e.clientX, e.clientY, e.timeStamp, e)))
+    const onMouseUp = mouse((e) => (menuRef.current ? releaseAt(e.clientX, e.clientY) : end(e.pointerId, e.timeStamp, true)))
 
     page.addEventListener('touchstart', onTouchStart, { passive: true })
     page.addEventListener('touchmove', onTouchMove, { passive: false })

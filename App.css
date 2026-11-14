@@ -2613,3 +2613,11 @@ html body .home-radial .home-radial-btn:active {
   html body .market-chips .market-chip { cursor: pointer; }
   html body .market-card:hover .market-card-photo { border-color: light-dark(#000, #fff); }
 }
+
+/* Holding the home icon pushes the page down while the wheel is open */
+.home-scroll { transition: transform 0.22s cubic-bezier(0.2, 0.9, 0.3, 1); }
+.home-scroll.is-radial-open { transform: translateY(64px); }
+html body .home-radial .home-radial-btn.is-hot {
+  background: light-dark(#000, #fff) !important;
+  color: light-dark(#fff, #000) !important;
+}

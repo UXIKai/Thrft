@@ -131,17 +131,25 @@ export default function CartScreen({
           clearTimeout(holdRef.current)
           holdRef.current = setTimeout(() => setMenuOpen(true), 420)
         }}
-        onTouchMove={(e) => { if (menuOpen) e.preventDefault(); else clearTimeout(holdRef.current) }}
+        onTouchMove={(e) => {
+          if (!menuOpen) {
+            clearTimeout(holdRef.current)
+            return
+          }
+          e.preventDefault()
+          const t = e.touches[0]
+          const hit = document.elementFromPoint(t.clientX, t.clientY)?.closest('[data-radial]')
+          document.querySelectorAll('.home-radial-btn.is-hot').forEach((el) => el !== hit && el.classList.remove('is-hot'))
+          hit?.classList.add('is-hot')
+        }}
         onTouchEnd={(e) => {
           clearTimeout(holdRef.current)
           if (!menuOpen) return
           const t = e.changedTouches[0]
           const hit = document.elementFromPoint(t.clientX, t.clientY)?.closest('[data-radial]')
-          if (hit) {
-            e.preventDefault()
-            setMenuOpen(false)
-            onMenuPick?.(hit.dataset.radial)
-          }
+          e.preventDefault()
+          setMenuOpen(false)
+          if (hit && hit.dataset.radial !== 'cart') onMenuPick?.(hit.dataset.radial)
         }}
         onTouchCancel={() => clearTimeout(holdRef.current)}
       >
