@@ -3177,8 +3177,9 @@ html body .stage .home-radial[data-sel] .home-radial-btn:not(.is-hot):not(#_):no
   bottom: calc(var(--nav-bottom) - 4px);
 }
 
-/* Market cards use the Store's translucent containers; names, prices and hearts stay as they are */
-html body .market-card .market-card-photo:not(#_) {
+/* Market cards and Store tiles share one translucent glass container; names, prices and hearts stay as they are */
+html body .market-card .market-card-photo:not(#_),
+html body .product-box:not(#_) {
   background: light-dark(rgba(235, 235, 235, 0.22), rgba(120, 120, 120, 0.2)) !important;
   border: 1px solid var(--glass-border, light-dark(rgba(0, 0, 0, 0.28), rgba(255, 255, 255, 0.28))) !important;
   border-radius: 14px !important;
