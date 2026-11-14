@@ -32,7 +32,17 @@ const CartIcon = () => (
 )
 
 const SLOT = 97
-const DIRS = { leaderboard: [0, -1], store: [-1, 0], market: [1, 0], cart: [0, 1], search: [0, 0] }
+const HOME_DIRS = { leaderboard: [0, -1], store: [-1, 0], market: [1, 0], cart: [0, 1], search: [0, 0] }
+// Each swipe steps the selection one place that way; swiping back goes through the middle
+const HOME_PICKS = { '0,0': 'search', '0,-1': 'cart', '0,1': 'leaderboard', '-1,0': 'market', '1,0': 'store' }
+// Other pages: Home on top, Chat left, Liked right, Profile below, and "stay" in the middle
+const TAB_DIRS = { home: [0, -1], chat: [-1, 0], saved: [1, 0], profile: [0, 1], stay: [0, 0] }
+const TAB_PICKS = { '0,0': 'stay', '0,-1': 'profile', '0,1': 'home', '-1,0': 'saved', '1,0': 'chat' }
+const CONFIGS = {
+  home: { centre: 'search', dirs: HOME_DIRS, picks: HOME_PICKS },
+  tabs: { centre: 'stay', dirs: TAB_DIRS, picks: TAB_PICKS },
+}
+let cfg = CONFIGS.home
 let origin = null
 let selected = 'search'
 
@@ -43,20 +53,18 @@ function paint(id) {
   selected = id
   wheel.querySelectorAll('[data-radial]').forEach((el) => {
     const k = el.dataset.radial
-    const slotOf = k === 'search' ? id : k
+    const slotOf = k === cfg.centre ? id : k
     const centre = k === id
-    const [ux, uy] = centre ? [0, 0] : DIRS[slotOf]
+    const [ux, uy] = centre ? [0, 0] : cfg.dirs[slotOf]
     el.style.transform = 'none'
     el.style.translate = `calc(-50% + ${ux * SLOT}px) calc(-50% + ${uy * SLOT}px)`
     el.style.setProperty('--gs', centre ? '1' : '0.8')
     el.style.opacity = centre ? '1' : '0.8'
-    el.classList.toggle('is-hot', centre && id !== 'search')
+    el.classList.toggle('is-hot', centre && id !== cfg.centre)
   })
   wheel.dataset.sel = id
 }
 
-// Each swipe steps the selection one place that way; swiping back goes through Search in the middle
-const PICKS = { '0,0': 'search', '0,-1': 'cart', '0,1': 'leaderboard', '-1,0': 'market', '1,0': 'store' }
 let cursor = [0, 0]
 
 export function moveKnob(x, y) {
@@ -73,7 +81,7 @@ export function moveKnob(x, y) {
     ? [Math.max(-1, Math.min(1, cursor[0] + step[0])), Math.max(-1, Math.min(1, cursor[1] + step[1]))]
     : step
   cursor = next
-  const id = PICKS[`${next[0]},${next[1]}`]
+  const id = cfg.picks[`${next[0]},${next[1]}`]
   if (id !== selected) paint(id)
 }
 
@@ -84,20 +92,46 @@ export function radialAt() {
 function resetKnob() {
   origin = null
   cursor = [0, 0]
-  selected = 'search'
-  requestAnimationFrame(() => paint('search'))
+  selected = cfg.centre
+  const centre = cfg.centre
+  requestAnimationFrame(() => paint(centre))
 }
 
+const TabIcon = ({ d, circle }) => (
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    {circle && <circle cx="12" cy="8" r="3.4" fill="currentColor" />}
+    <path fill="currentColor" d={d} />
+  </svg>
+)
+export const TAB_ICONS = {
+  home: <TabIcon d="M12 3.2 3.5 10.2V21h6.2v-6.4h4.6V21h6.2V10.2L12 3.2z" />,
+  chat: <TabIcon d="M4 4.8h16A1.2 1.2 0 0 1 21.2 6v9.2a1.2 1.2 0 0 1-1.2 1.2H9.4L4.8 20.4V16.4H4A1.2 1.2 0 0 1 2.8 15.2V6A1.2 1.2 0 0 1 4 4.8z" />,
+  design: <TabIcon d="M11 5h2v6h6v2h-6v6h-2v-6H5v-2h6V5z" />,
+  saved: <TabIcon d="M12 20.4S3.6 15.1 3.6 9.7A4.1 4.1 0 0 1 12 7.2a4.1 4.1 0 0 1 8.4 2.5c0 5.4-8.4 10.7-8.4 10.7z" />,
+  profile: <TabIcon circle d="M5.2 19.6c.6-3.4 3.3-5.2 6.8-5.2s6.2 1.8 6.8 5.2H5.2z" />,
+}
+
+// `slot` is the class that places the button; the centre one is styled as the hub
 const ITEMS = [
-  { id: 'leaderboard', label: 'Leaderboard', Icon: LeaderboardIcon },
-  { id: 'store', label: 'Store', Icon: StoreIcon },
-  { id: 'search', label: 'Search', Icon: SearchIcon },
-  { id: 'market', label: 'Market', Icon: MarketIcon },
-  { id: 'cart', label: 'Checkout', Icon: CartIcon },
+  { id: 'leaderboard', slot: 'leaderboard', label: 'Leaderboard', Icon: LeaderboardIcon },
+  { id: 'store', slot: 'store', label: 'Store', Icon: StoreIcon },
+  { id: 'search', slot: 'search', label: 'Search', Icon: SearchIcon },
+  { id: 'market', slot: 'market', label: 'Market', Icon: MarketIcon },
+  { id: 'cart', slot: 'cart', label: 'Checkout', Icon: CartIcon },
+]
+
+const tabItems = (current) => [
+  { id: 'home', slot: 'leaderboard', label: 'Home', Icon: () => TAB_ICONS.home },
+  { id: 'chat', slot: 'store', label: 'Chat', Icon: () => TAB_ICONS.chat },
+  { id: 'stay', slot: 'search', label: 'Stay here', Icon: () => TAB_ICONS[current] || TAB_ICONS.home },
+  { id: 'saved', slot: 'market', label: 'Liked', Icon: () => TAB_ICONS.saved },
+  { id: 'profile', slot: 'cart', label: 'Profile', Icon: () => TAB_ICONS.profile },
 ]
 
 /** Plus-shaped menu centred on the page: Leaderboard top, Store left, Search middle, Market right, Checkout bottom. */
-export default function HomeRadialMenu({ onPick, onClose, bagCount = 0 }) {
+export default function HomeRadialMenu({ onPick, onClose, bagCount = 0, mode = 'home', current = 'home' }) {
+  cfg = CONFIGS[mode] || CONFIGS.home
+  const items = mode === 'tabs' ? tabItems(current) : ITEMS
   useEffect(() => {
     resetKnob()
     return resetKnob
@@ -115,12 +149,12 @@ export default function HomeRadialMenu({ onPick, onClose, bagCount = 0 }) {
           </g>
         </svg>
         <span className="home-radial-lens" aria-hidden="true" />
-        {ITEMS.map(({ id, label, Icon }) => (
+        {items.map(({ id, slot, label, Icon }) => (
           <button
             key={id}
             type="button"
             role="menuitem"
-            className={`home-radial-btn is-${id}`}
+            className={`home-radial-btn is-${slot}`}
             data-radial={id}
             aria-label={label}
             onClick={() => onPick?.(id)}
