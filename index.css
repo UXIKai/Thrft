@@ -163,7 +163,7 @@ html:root[data-bg-image='none'] body {
 /* A solid strip behind the status bar, like a native app: iOS then has one flat colour to blur instead of the page's gradient and header */
 body::before {
   content: '';
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   right: 0;
