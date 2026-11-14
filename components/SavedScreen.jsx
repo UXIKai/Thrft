@@ -359,7 +359,7 @@ export default function SavedScreen({
     Array.isArray(favoredBrands) ? [...favoredBrands] : [],
   )
   const [fabOpen, setFabOpen] = useState(false)
-  const [brandsOpen, setBrandsOpen] = useState(false)
+  const [brandsOpen, setBrandsOpen] = useState(true)
   const brandRowRef = useRef(null)
   const [brandPill, setBrandPill] = useState(null)
   const [pillActive, setPillActive] = useState(false)

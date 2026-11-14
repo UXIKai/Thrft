@@ -3040,3 +3040,6 @@ html body .saved-grid.is-products:not(#_):not(#_) {
   gap: 18px 14px !important;
 }
 html body .saved-grid.is-products .saved-item-name:not(#_) { font-size: 0.85rem !important; }
+
+/* Liked: keep room for the brands row up top */
+html body .saved-screen .saved-fav-brands:not(#_):not(#_) { min-height: 84px; }
