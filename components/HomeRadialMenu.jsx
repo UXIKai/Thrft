@@ -60,13 +60,11 @@ export function moveKnob(x, y) {
   if (!origin) origin = [x, y]
   const dx = x - origin[0]
   const dy = y - origin[1]
-  let id = 'search'
-  if (Math.hypot(dx, dy) > 6) {
-    const horizontal = Math.abs(dx) > Math.abs(dy)
-    const pick = horizontal ? (dx < 0 ? 'market' : 'store') : dy < 0 ? 'cart' : 'leaderboard'
-    const clear = Math.max(Math.abs(dx), Math.abs(dy)) > Math.min(Math.abs(dx), Math.abs(dy)) * 1.15
-    id = clear || selected === 'search' ? pick : selected
-  }
+  if (Math.hypot(dx, dy) < 14) return
+  // Direction only: the finger can be anywhere, and each fresh swipe restarts from where it is
+  const horizontal = Math.abs(dx) > Math.abs(dy)
+  const id = horizontal ? (dx < 0 ? 'market' : 'store') : dy < 0 ? 'cart' : 'leaderboard'
+  origin = [x, y]
   if (id !== selected) paint(id)
 }
 
