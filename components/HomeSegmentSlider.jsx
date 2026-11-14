@@ -39,6 +39,21 @@ const scrollsSideways = (el, stop) => {
   return false
 }
 
+// Mouse wheel: true when an inner scroller under the pointer can still move in this direction
+const canScrollInner = (el, stop, dy) => {
+  for (let n = el; n && n !== stop; n = n.parentElement) {
+    if (n.scrollHeight <= n.clientHeight) continue
+    const oy = getComputedStyle(n).overflowY
+    if (oy !== 'auto' && oy !== 'scroll') continue
+    if (dy < 0 ? n.scrollTop > 0 : n.scrollTop + n.clientHeight < n.scrollHeight - 1) return true
+  }
+  return false
+}
+
+const WHEEL_STEP_PX = 40
+const WHEEL_COOLDOWN_MS = 650
+const WHEEL_IDLE_MS = 160
+
 const scrolledDown = (el, stop) => {
   for (let n = el; n; n = n.parentElement) {
     if (n.scrollTop > 0) return true
@@ -290,7 +305,57 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false, o
     page.addEventListener('pointerdown', onMouseDown)
     page.addEventListener('pointermove', onMouseMove)
     page.addEventListener('pointerup', onMouseUp)
+
+    // Desktop wheel: sideways scroll swaps Store / Market; scrolling past the top or bottom of the page steps through Leaderboard, Store, Market.
+    let wheelAcc = 0
+    let wheelLockUntil = 0
+    let wheelLastAt = 0
+    let wheelArmed = true
+    const onWheel = (e) => {
+      if (e.ctrlKey || menuRef.current || d) return
+      const stage = page.closest('.stage')
+      if (stage && /\bis-(overlay|home-picker|home-search|member-globe|saved-room|chat-new)-open\b/.test(stage.className)) return
+      const now = e.timeStamp
+      // Trackpad momentum keeps firing after a step: wait for the wheel to go quiet
+      const quiet = now - wheelLastAt > WHEEL_IDLE_MS
+      wheelLastAt = now
+      if (quiet) {
+        wheelAcc = 0
+        wheelArmed = true
+      }
+      if (now < wheelLockUntil || !wheelArmed) return
+      const sideways = Math.abs(e.deltaX) > Math.abs(e.deltaY) || e.shiftKey
+      const delta = sideways ? e.deltaX || e.deltaY : e.deltaY
+      if (!delta) return
+      const dir = Math.sign(delta)
+      const { onLeaderboard: up, shopIndex: sx } = stateRef.current
+      let next = null
+      if (sideways) {
+        if (up || scrollsSideways(e.target, page)) return
+        const n = sx + dir
+        if (n >= 0 && n <= 1) next = { id: SHOPS[n], x: n, y: 0 }
+      } else {
+        if (canScrollInner(e.target, page, dir)) return
+        const atEdge = dir < 0 ? page.scrollTop <= 0 : page.scrollTop + page.clientHeight >= page.scrollHeight - 2
+        if (!atEdge) return
+        const slot = up ? 0 : 1 + sx
+        const n = slot + dir
+        if (n === 0) next = { id: 'leaderboard', x: sx, y: 1 }
+        else if (n === 1 || n === 2) next = { id: SHOPS[n - 1], x: n - 1, y: 0 }
+      }
+      if (!next) return
+      e.preventDefault()
+      wheelAcc += Math.abs(delta)
+      if (wheelAcc < WHEEL_STEP_PX) return
+      wheelAcc = 0
+      wheelLockUntil = now + WHEEL_COOLDOWN_MS
+      wheelArmed = false
+      paintRef.current(next.x, next.y)
+      chooseRef.current(next.id)
+    }
+    page.addEventListener('wheel', onWheel, { passive: false })
     return () => {
+      page.removeEventListener('wheel', onWheel)
       clearTimeout(holdRef.current)
       cancelAnimationFrame(frame)
       page.removeEventListener('touchstart', onTouchStart)
