@@ -36,18 +36,17 @@ const DIRS = { leaderboard: [0, -1], store: [-1, 0], market: [1, 0], cart: [0, 1
 let origin = null
 let selected = 'search'
 
-// The chosen button comes forward into the middle and the old middle button takes the chosen one's place
-function paint(id) {
+// The whole menu follows the finger; whichever button ends up nearest the middle is chosen
+function paint(id, ox = 0, oy = 0) {
   const wheel = document.querySelector('.home-radial')
   if (!wheel) return
   selected = id
   wheel.querySelectorAll('[data-radial]').forEach((el) => {
     const k = el.dataset.radial
-    const slotOf = k === 'search' ? id : k
+    const [ux, uy] = DIRS[k]
     const centre = k === id
-    const [ux, uy] = centre ? [0, 0] : DIRS[slotOf]
     el.style.transform = 'none'
-    el.style.translate = `calc(-50% + ${ux * SLOT}px) calc(-50% + ${uy * SLOT}px)`
+    el.style.translate = `calc(-50% + ${ux * SLOT + ox}px) calc(-50% + ${uy * SLOT + oy}px)`
     el.style.setProperty('--gs', centre ? '1' : '0.8')
     el.style.opacity = centre ? '1' : '0.8'
     el.classList.toggle('is-hot', centre && id !== 'search')
@@ -55,20 +54,20 @@ function paint(id) {
   wheel.dataset.sel = id
 }
 
-// Swiping a direction brings the button on the opposite side to the middle
+// Moving the finger slides the menu with it, so the button in the opposite direction comes to the middle
 export function moveKnob(x, y) {
   if (!origin) origin = [x, y]
-  const dx = x - origin[0]
-  const dy = y - origin[1]
-  let id = 'search'
-  if (Math.hypot(dx, dy) > 10) {
-    const horizontal = Math.abs(dx) > Math.abs(dy)
-    const pick = horizontal ? (dx < 0 ? 'market' : 'store') : dy < 0 ? 'cart' : 'leaderboard'
-    // Near a diagonal, keep the current button so it doesn't flicker between two
-    const clear = Math.max(Math.abs(dx), Math.abs(dy)) > Math.min(Math.abs(dx), Math.abs(dy)) * 1.3
-    id = clear || selected === 'search' ? pick : selected
+  let ox = x - origin[0]
+  let oy = y - origin[1]
+  const len = Math.hypot(ox, oy)
+  if (len > SLOT) { ox = ox / len * SLOT; oy = oy / len * SLOT }
+  let best = 'search'
+  let bestD = Infinity
+  for (const [k, [ux, uy]] of Object.entries(DIRS)) {
+    const d = Math.hypot(ux * SLOT + ox, uy * SLOT + oy) + (k === selected ? -10 : 0)
+    if (d < bestD) { bestD = d; best = k }
   }
-  if (id !== selected) paint(id)
+  paint(best, ox, oy)
 }
 
 export function radialAt() {

@@ -3061,3 +3061,8 @@ html body .cart-screen .cart-chevron:not(#_) {
   background: transparent;
   color: light-dark(#000, #fff);
 }
+
+/* Buttons track the finger closely */
+html body .stage .home-radial .home-radial-btn:not(#_):not(#_):not(#_) {
+  transition: translate 0.07s linear, scale 0.18s ease, opacity 0.18s !important;
+}
