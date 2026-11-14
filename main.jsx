@@ -160,10 +160,14 @@ createRoot(document.getElementById('root')).render(
   probe.hidden = true
   document.body.appendChild(probe)
   // Safari 26 tints its status bar from a full-width fixed element at the top edge (a real element, not a pseudo-element)
-  const tint = document.createElement('div')
-  tint.id = 'status-tint'
-  tint.setAttribute('aria-hidden', 'true')
-  document.body.appendChild(tint)
+  const tints = ['top', 'bottom'].map((edge) => {
+    const el = document.createElement('div')
+    el.className = `edge-tint is-${edge}`
+    el.setAttribute('aria-hidden', 'true')
+    document.body.appendChild(el)
+    return el
+  })
+  let lastTint = ''
   const syncThemeColor = () => {
     const meta = document.querySelector('meta[name="theme-color"]')
     if (!meta || root.dataset.bgPhoto) return
@@ -176,6 +180,13 @@ createRoot(document.getElementById('root')).render(
     const mixed = base.map((c) => Math.round(c * 0.8 * (1 - dim)))
     const color = `rgb(${mixed.join(', ')})`
     meta.setAttribute('content', color)
+    tints.forEach((el) => { el.style.backgroundColor = color })
+    // Safari 26 misses background changes on its own; touching theme-color makes it re-sample the edge strips
+    if (color !== lastTint) {
+      lastTint = color
+      meta.setAttribute('content', `${color}fe`)
+      requestAnimationFrame(() => meta.setAttribute('content', color))
+    }
     root.style.setProperty('--safari-top', color)
     // Safari fills the strip above the page from the html background
     if (root.style.backgroundColor !== color) root.style.backgroundColor = color

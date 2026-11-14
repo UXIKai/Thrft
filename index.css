@@ -138,7 +138,7 @@ button,
 /* The same wash as the stage, stretched over the whole viewport, so the areas Safari tints above and below the page continue it */
 html:root,
 html:root body {
-  background-color: var(--safari-top, #262626);
+  background-color: var(--safari-top, #050505);
 }
 /* Dark theme keeps its near-black page: the grey wash only continues in light mode */
 html:root[data-theme='light'],
@@ -160,15 +160,14 @@ html:root[data-bg-image='none'] body {
   background: transparent;
 }
 
-/* Status-bar tint for Safari 26: a solid, full-width, fixed strip at the very top edge (above the dim overlay, so it already carries the dimmed page colour) */
-#status-tint {
+/* Edge tint for Safari 26: solid full-width fixed strips at the top and bottom edges (above the dim overlay, so they carry the dimmed page colour). Safari colours its bars from these. */
+.edge-tint {
   display: none;
 }
 @media (hover: none) and (pointer: coarse) {
-  #status-tint {
+  .edge-tint {
     display: block;
     position: fixed;
-    top: 0;
     left: 0;
     right: 0;
     height: 12px;
@@ -176,7 +175,13 @@ html:root[data-bg-image='none'] body {
     background-color: var(--safari-top, #050505);
     pointer-events: none;
   }
-  html[data-bg-photo] #status-tint {
+  .edge-tint.is-top {
+    top: 0;
+  }
+  .edge-tint.is-bottom {
+    bottom: 0;
+  }
+  html[data-bg-photo] .edge-tint {
     display: none;
   }
 }
