@@ -1096,6 +1096,8 @@ export default function ProfileScreen({
     return () => cancelAnimationFrame(id)
   }, [musicSheet])
 
+  const settingsSwipe = useRef(null)
+
   function holdScroll(e) {
     // Avoid browser scrolling the focused control into view
     e.preventDefault()
@@ -1112,7 +1114,24 @@ export default function ProfileScreen({
       >
         <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
       </button>
-      <section className="profile-identity" aria-label="Account">
+      <section
+        className="profile-identity"
+        aria-label="Account"
+        style={{ touchAction: 'pan-y' }}
+        onPointerDown={(e) => {
+          if (e.isPrimary && e.pointerType !== 'mouse') settingsSwipe.current = { x: e.clientX, y: e.clientY }
+        }}
+        onPointerUp={(e) => {
+          const st = settingsSwipe.current
+          settingsSwipe.current = null
+          if (!st) return
+          const dx = e.clientX - st.x
+          const dy = e.clientY - st.y
+          // A deliberate sideways swipe over the top of the profile opens Settings
+          if (dx < -50 && Math.abs(dx) > Math.abs(dy) * 1.5) setSettingsOpen(true)
+        }}
+        onPointerCancel={() => { settingsSwipe.current = null }}
+      >
         <div className="pf-user-avatar-wrap">
           <button
             type="button"
