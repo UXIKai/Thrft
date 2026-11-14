@@ -2979,3 +2979,26 @@ html body .stage .home-radial[data-sel] .home-radial-btn:not(.is-hot):not(#_):no
   pointer-events: auto;
   z-index: -1;
 }
+
+/* Nav toggle on every page except Home (Home uses the picker button): the nav stays closed until it is pressed */
+.stage > .nav-toggle {
+  --nav-bottom: calc(max(4px, env(safe-area-inset-bottom, 0px) * 0.3) + 15px);
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--nav-bottom) + 72px);
+  translate: -50% 0;
+  scale: 1.25;
+  z-index: 20;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: light-dark(#000, #fff);
+  transition: bottom 0.25s ease;
+}
+.stage.is-nav-hidden > .nav-toggle {
+  bottom: calc(var(--nav-bottom) + 12px);
+}

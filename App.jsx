@@ -216,11 +216,9 @@ export default function App() {
     }
     el?.addEventListener('scroll', update, { passive: true })
     stage.addEventListener('pointerdown', onDown, { passive: true })
-    stage.addEventListener('click', show)
     return () => {
       el?.removeEventListener('scroll', update)
       stage.removeEventListener('pointerdown', onDown)
-      stage.removeEventListener('click', show)
     }
   }, [tab, homeSegment, homeOpen])
 
@@ -853,6 +851,17 @@ export default function App() {
       )}
       </div>
 
+      {signedIn && tab !== 'home' && !activeProduct && !(tab === 'chat' && chatThreadOpen) && (
+        <button
+          type="button"
+          className="nav-toggle is-bare"
+          aria-label={atBottom ? 'Show navigation' : 'Hide navigation'}
+          aria-expanded={!atBottom}
+          onClick={() => setAtBottom((hidden) => !hidden)}
+        >
+          <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transform: atBottom ? 'none' : 'rotate(180deg)' }}><path d="M6 15l6-6 6 6" /></svg>
+        </button>
+      )}
       {signedIn && showNav && <TabBar active={tab} onCreate={(segment) => {
         setCreateSegment(segment)
         setHomeBrand(null)
