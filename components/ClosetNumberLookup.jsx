@@ -95,7 +95,7 @@ export default function ClosetNumberLookup({ brands, initialBrand, onClose, onAd
   return (
     <StageSlot>
       <SwipeBackPage as="section" onDismiss={onClose} className="closet-number-page" role="dialog" aria-modal="true" aria-label="Add clothing by product number">
-        {!(page === 'brand' && !expanded) && <button type="button" className="closet-number-back is-bare" aria-label="Back" onClick={onClose} autoFocus>‹</button>}
+        {!(page === 'brand' && !expanded) && page !== 'numbers' && <button type="button" className="closet-number-back is-bare" aria-label="Back" onClick={onClose} autoFocus>‹</button>}
         <div className="closet-number-content">
           {page === 'brand' ? <>
             <h2>Choose a brand</h2>
@@ -124,8 +124,13 @@ export default function ClosetNumberLookup({ brands, initialBrand, onClose, onAd
             <form onSubmit={search}>
               <input aria-label="P/N Number" placeholder="P/N Number" value={partNumber} maxLength={120} disabled={busy} onChange={(event) => { setPartNumber(event.target.value); setProducts(null) }} />
               <input aria-label="O/N Number" placeholder="O/N Number" value={orderNumber} maxLength={120} disabled={busy} onChange={(event) => { setOrderNumber(event.target.value); setProducts(null) }} />
-              <button type="submit" disabled={busy}>Search</button>
+              <button type="submit" className="closet-number-lens is-bare" aria-label="Search" disabled={busy}>
+                <svg width="44" height="44" viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><circle cx="10.5" cy="10.5" r="6.5" /><path d="M15.5 15.5L21 21" /></svg>
+              </button>
             </form>
+            <button type="button" className="closet-number-back-below is-bare" aria-label="Back" onClick={onClose}>
+              <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 5l-7 7 7 7" /></svg>
+            </button>
             {busy && <p role="status">Searching or scanning clothing…</p>}
             {products?.length === 0 && <p role="status">No matching product found for this brand and number.</p>}
             {products?.map((product, index) => <div key={index} className="closet-number-result">

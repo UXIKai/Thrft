@@ -306,3 +306,26 @@ html body .closet-number-content .closet-brand-wheel .type-box.is-wheel:not(.is-
 }
 
 .closet-number-page { touch-action: pan-y; }
+
+/* Search is a bare magnifying glass with the back button underneath */
+html body .closet-number-content form button.closet-number-lens,
+html body .closet-number-content > button.closet-number-back-below {
+  width: 64px;
+  min-height: 64px;
+  align-self: center;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0 !important;
+  border-radius: 50%;
+  background: transparent !important;
+  box-shadow: none !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  color: inherit;
+}
+html body .closet-number-content > button.closet-number-back-below {
+  width: 48px;
+  min-height: 48px;
+  margin-top: -8px;
+}
