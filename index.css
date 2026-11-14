@@ -69,7 +69,7 @@ body::after {
   content: '';
   position: fixed;
   inset: 0;
-  z-index: 2147483647;
+  z-index: 2147483646;
   background: #000;
   opacity: var(--app-dim-opacity, 0);
   pointer-events: none;
@@ -158,4 +158,25 @@ html:root[data-bg-image='none'] body {
 }
 #root {
   background: transparent;
+}
+
+/* Status-bar tint for Safari 26: a solid, full-width, fixed strip at the very top edge (above the dim overlay, so it already carries the dimmed page colour) */
+#status-tint {
+  display: none;
+}
+@media (hover: none) and (pointer: coarse) {
+  #status-tint {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 12px;
+    z-index: 2147483647;
+    background-color: var(--safari-top, #050505);
+    pointer-events: none;
+  }
+  html[data-bg-photo] #status-tint {
+    display: none;
+  }
 }

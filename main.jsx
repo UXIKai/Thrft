@@ -159,6 +159,11 @@ createRoot(document.getElementById('root')).render(
   const probe = document.createElement('i')
   probe.hidden = true
   document.body.appendChild(probe)
+  // Safari 26 tints its status bar from a full-width fixed element at the top edge (a real element, not a pseudo-element)
+  const tint = document.createElement('div')
+  tint.id = 'status-tint'
+  tint.setAttribute('aria-hidden', 'true')
+  document.body.appendChild(tint)
   const syncThemeColor = () => {
     const meta = document.querySelector('meta[name="theme-color"]')
     if (!meta || root.dataset.bgPhoto) return
