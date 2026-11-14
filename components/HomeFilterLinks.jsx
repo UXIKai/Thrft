@@ -90,7 +90,13 @@ export default function HomeFilterLinks({
     document.addEventListener('keydown', onKey)
     const stage = document.querySelector('.stage')
     stage?.classList.add('is-home-search-open')
+    // React rewrites the stage's className on re-render; put the class back whenever it is dropped
+    const keep = stage && new MutationObserver(() => {
+      if (!stage.classList.contains('is-home-search-open')) stage.classList.add('is-home-search-open')
+    })
+    keep?.observe(stage, { attributes: true, attributeFilter: ['class'] })
     return () => {
+      keep?.disconnect()
       document.removeEventListener('keydown', onKey)
       stage?.classList.remove('is-home-search-open')
     }
