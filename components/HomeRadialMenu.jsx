@@ -30,6 +30,33 @@ const CartIcon = () => (
   </svg>
 )
 
+export function moveKnob(x, y) {
+  const wheel = document.querySelector('.home-radial')
+  const knob = wheel?.querySelector('.is-search')
+  if (!knob) return
+  const r = wheel.getBoundingClientRect()
+  let dx = x - (r.left + r.width / 2)
+  let dy = y - (r.top + r.height / 2)
+  const len = Math.hypot(dx, dy)
+  const max = 64
+  if (len > max) {
+    dx = (dx / len) * max
+    dy = (dy / len) * max
+  }
+  knob.style.setProperty('--kx', `${dx}px`)
+  knob.style.setProperty('--ky', `${dy}px`)
+}
+
+// The centre button follows the finger, so it is hit-tested by distance from the wheel centre instead
+export function radialAt(x, y) {
+  const wheel = document.querySelector('.home-radial')
+  if (!wheel) return null
+  const hit = document.elementFromPoint(x, y)?.closest('[data-radial]:not(.is-search)')
+  if (hit) return hit
+  const r = wheel.getBoundingClientRect()
+  return Math.hypot(x - (r.left + r.width / 2), y - (r.top + r.height / 2)) < 40 ? wheel.querySelector('.is-search') : null
+}
+
 const ITEMS = [
   { id: 'leaderboard', label: 'Leaderboard', Icon: LeaderboardIcon },
   { id: 'store', label: 'Store', Icon: StoreIcon },

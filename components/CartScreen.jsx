@@ -1,6 +1,6 @@
 import { createPortal } from 'react-dom'
 import { useEffect, useRef, useState } from 'react'
-import HomeRadialMenu from './HomeRadialMenu.jsx'
+import HomeRadialMenu, { moveKnob, radialAt } from './HomeRadialMenu.jsx'
 import { createCheckoutSession } from '../api.js'
 import { useBag } from '../BagContext.jsx'
 import './GlassOverlay.css'
@@ -138,7 +138,8 @@ export default function CartScreen({
           }
           e.preventDefault()
           const t = e.touches[0]
-          const hit = document.elementFromPoint(t.clientX, t.clientY)?.closest('[data-radial]')
+          moveKnob(t.clientX, t.clientY)
+          const hit = radialAt(t.clientX, t.clientY)
           document.querySelectorAll('.home-radial-btn.is-hot').forEach((el) => el !== hit && el.classList.remove('is-hot'))
           hit?.classList.add('is-hot')
         }}
@@ -146,7 +147,7 @@ export default function CartScreen({
           clearTimeout(holdRef.current)
           if (!menuOpen) return
           const t = e.changedTouches[0]
-          const hit = document.elementFromPoint(t.clientX, t.clientY)?.closest('[data-radial]')
+          const hit = radialAt(t.clientX, t.clientY)
           e.preventDefault()
           setMenuOpen(false)
           if (hit && hit.dataset.radial !== 'cart') onMenuPick?.(hit.dataset.radial)

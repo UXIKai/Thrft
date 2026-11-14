@@ -1,5 +1,5 @@
 import { startTransition, useEffect, useLayoutEffect, useRef, useState } from 'react'
-import HomeRadialMenu from './HomeRadialMenu.jsx'
+import HomeRadialMenu, { moveKnob, radialAt } from './HomeRadialMenu.jsx'
 import { MarketIcon, StoreIcon } from './SegmentIcons.jsx'
 
 const LeaderboardIcon = () => (
@@ -189,8 +189,8 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false, o
     }
 
     // Holding opens the wheel; letting go picks whatever is under the finger, or closes it.
-    const radialAt = (x, y) => document.elementFromPoint(x, y)?.closest('[data-radial]')
-    const markHot = (x, y) => {
+        const markHot = (x, y) => {
+      moveKnob(x, y)
       const hit = radialAt(x, y)
       document.querySelectorAll('.home-radial-btn.is-hot').forEach((el) => el !== hit && el.classList.remove('is-hot'))
       hit?.classList.add('is-hot')

@@ -2668,6 +2668,9 @@ html body .home-radial .home-radial-btn.is-search:not(#_) {
   background: radial-gradient(circle at 35% 30%, light-dark(#fff, #3a3a3a), light-dark(#d8d8d8, #0c0c0c)) !important;
   box-shadow: 0 8px 16px light-dark(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.7)), inset 0 1px 0 light-dark(#fff, rgba(255, 255, 255, 0.3)) !important;
   scale: 1.12;
+  translate: var(--kx, 0px) var(--ky, 0px);
+  transition: none;
+  pointer-events: none;
 }
 html body .home-radial .home-radial-btn.is-search.is-hot:not(#_) { scale: 1.2; }
 
