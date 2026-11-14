@@ -3081,3 +3081,11 @@ html body .nav-toggle:not(#_), html body .cart-chevron:not(#_) { position: absol
 .home-scroll:has(.home-segment-slider.is-dragging),
 .home-scroll:has(.home-radial-scrim) { user-select: none; -webkit-user-select: none; }
 
+
+/* Pressing the button sinks it a little; letting go springs it back */
+.home-segment-slider > .home-segment-track,
+.home-segment-slider > .wheel-arrow { transition-property: transform, opacity; }
+html body .home-segment-slider:not(#_) { transition: scale 0.18s cubic-bezier(0.3, 1.5, 0.5, 1); }
+html body .home-segment-slider.is-pressed:not(#_) { scale: 1.06; transition-duration: 0.09s; }
+html body .nav-toggle:not(#_), html body .cart-chevron:not(#_) { transition: scale 0.18s cubic-bezier(0.3, 1.5, 0.5, 1), bottom 0.25s ease; }
+html body .nav-toggle:active:not(#_), html body .cart-chevron:active:not(#_) { scale: 1.06; transition-duration: 0.09s, 0.25s; }

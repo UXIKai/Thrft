@@ -123,9 +123,11 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false, o
       const cy = r ? r.top + r.height / 2 : 0
       const onButton = Boolean(r) && Math.abs(x - cx) <= 44 && Math.abs(y - cy) <= 44
       if (onButton) {
+        rootRef.current?.classList.add('is-pressed')
         holdRef.current = setTimeout(() => {
           if (d && !d.axis) {
             d = null
+            rootRef.current?.classList.remove('is-pressed')
             actionsRef.current.onHold?.()
             setMenuOpen(true)
           }
@@ -140,6 +142,7 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false, o
       if (!d.axis) {
         if (Math.max(Math.abs(dx), Math.abs(dy)) < DRAG_START_PX) return
         clearTimeout(holdRef.current)
+        rootRef.current?.classList.remove('is-pressed')
         if (Math.abs(dx) > Math.abs(dy) * 1.5 && !d.up && !d.sideways) d.axis = 'x'
         else if (Math.abs(dy) > Math.abs(dx) * 1.5 && (d.up ? dy < 0 : dy > 0 ? d.atTop : d.atBottom)) d.axis = 'y'
         else {
@@ -166,6 +169,7 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false, o
     }
     const end = (id, t, flick) => {
       clearTimeout(holdRef.current)
+      rootRef.current?.classList.remove('is-pressed')
       if (!d || d.id !== id) return
       const s = d
       d = null
