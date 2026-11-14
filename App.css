@@ -3306,7 +3306,7 @@ html body .stage .home-radial .home-radial-btn:not(#_):not(#_):not(#_) {
 
 /*
  * Ninja star: with an icon in the middle (Home wheel) the arrows fly open from the centre;
- * with nothing in the middle (bottom nav button) four swept blades spin shut into a star.
+ * with nothing in the middle (bottom nav button) four blades fly in and lock into a star.
  */
 @keyframes arrow-open {
   from { translate: 0 0; scale: 0.3; rotate: -90deg; opacity: 0; }
@@ -3317,35 +3317,23 @@ html body .stage .home-radial .home-radial-btn:not(#_):not(#_):not(#_) {
 }
 
 .nav-toggle .ninja-star {
-  width: 34px;
-  height: 34px;
+  width: 52px;
+  height: 52px;
   display: block;
   overflow: visible;
   filter: drop-shadow(0 0 3px light-dark(rgba(0, 0, 0, 0.25), rgba(255, 255, 255, 0.35)));
-  animation: star-spin 0.6s cubic-bezier(0.3, 1.2, 0.5, 1) both;
 }
 .ninja-star .ns-hi { stop-color: light-dark(#6b6b70, #ffffff); }
 .ninja-star .ns-mid { stop-color: light-dark(#2a2a2e, #9a9aa0); }
 .ninja-star .ns-lo { stop-color: light-dark(#000, #3c3c40); }
 .ninja-star .ns-blade {
   stroke: light-dark(rgba(0, 0, 0, 0.6), rgba(255, 255, 255, 0.85));
-  stroke-width: 0.8;
+  stroke-width: 6;
   stroke-linejoin: round;
-  animation: star-blade-close 0.6s cubic-bezier(0.3, 1.2, 0.5, 1) both;
-}
-@keyframes star-spin {
-  from { rotate: -120deg; }
-  to { rotate: 0deg; }
-}
-@keyframes star-blade-close {
-  from { transform: translate(0, -14px) scale(0.7); opacity: 0.2; }
-  to { transform: none; opacity: 1; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .home-segment-slider .wheel-arrow,
-  .nav-toggle .ninja-star,
-  .ninja-star .ns-blade { animation-duration: 0.01s; }
+  .home-segment-slider .wheel-arrow { animation-duration: 0.01s; }
 }
 
 /* Market: 50 crawling rows of 20, alternating direction like the Store */
