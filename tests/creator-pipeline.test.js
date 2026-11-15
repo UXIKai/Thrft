@@ -25,7 +25,7 @@ const { handleCreatorApi, mockupFiles } = await import('../server/creatorApi.js'
 const { verifyStripeEvent, resolveCheckoutItems, fulfillPaidCheckout,
   getCheckoutSession } = await import('../stripeCheckout.js')
 const { creatorPricing, mapCreatorProduct } = await import('../creatorProducts.js')
-const { buildPersonalizedRows } = await import('../forYou.js')
+const { buildPersonalizedRows, fillEmptyStoreRows } = await import('../forYou.js')
 const { checkoutStore } = await import('../server/supabaseStore.js')
 const { fetchOrders } = await import('../server/orders.js')
 const { addToCart, readCart, clearCart } = await import('../cart.js')
@@ -218,6 +218,17 @@ test('Store rows show each listing once and respect the existing product limit',
   assert.equal(new Set(row.products.map((product) => product.id)).size, 40)
   const [short] = buildPersonalizedRows({ catalog: catalog.slice(0, 3), productsPerRow: 40 })
   assert.equal(short.products.length, 3)
+})
+
+test('empty Store displays fill remaining rows without inventing products', () => {
+  const listing = mapCreatorProduct({ id: productId, brand: 'Nike', title: 'Tee', price: 25 })
+  const rows = fillEmptyStoreRows(buildPersonalizedRows({ catalog: [listing] }), 40)
+  assert.equal(rows.length, 40)
+  assert.deepEqual(rows[0].products.map((item) => item.id), [productId])
+  assert.ok(rows.slice(1).every((row) => row.empty && row.products.length === 0))
+  assert.equal(new Set(rows.map((row) => row.id)).size, 40)
+  assert.equal(fillEmptyStoreRows([], 40).length, 40)
+  assert.equal(fillEmptyStoreRows(rows, 3).length, 3)
 })
 
 test('cart retains Printful sizes and mockups for the checkout snapshot', async () => {

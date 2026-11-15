@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { fetchSaved, fetchStoreProducts, saveSavedItems } from '../api.js'
 import {
   buildPersonalizedRows,
+  fillEmptyStoreRows,
   PERSONALIZED_PRODUCTS_PER_ROW,
   PERSONALIZED_ROW_COUNT,
 } from '../forYou.js'
@@ -207,7 +208,7 @@ function CrawlRow({ row, rowIndex, onOpenProduct, onHoldRow, market = false, lik
     <article
       ref={articleRef}
       className={`brand-row${market ? ' is-market' : ''}${visible ? '' : ' is-idle'}`}
-      aria-label={onHoldRow ? `${row.name} row. Hold to see all.` : row.name}
+      aria-label={row.empty ? 'Empty Store display' : onHoldRow ? `${row.name} row. Hold to see all.` : row.name}
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onPointerUp={cancelHold}
@@ -230,7 +231,10 @@ function CrawlRow({ row, rowIndex, onOpenProduct, onHoldRow, market = false, lik
             }}
           >
             <div className="brand-row-seq" ref={seqRef}>
-              {products.map((p, i) => renderCard(p, `${row.id}-${p.id}-${i}`))}
+              {row.empty
+                ? Array.from({ length: PERSONALIZED_PRODUCTS_PER_ROW }, (_, i) =>
+                  <span className="product-box" key={i} aria-hidden="true" />)
+                : products.map((p, i) => renderCard(p, `${row.id}-${p.id}-${i}`))}
             </div>
             {market && <div className="brand-row-seq" aria-hidden>
               {products.map((p, i) => renderCard(p, `${row.id}-${p.id}-${i}-b`))}
@@ -493,18 +497,20 @@ export default function ProductRows({
     )
   }
 
+  const hasFilter = Boolean(brandId || brandName || colorId || (clothingType && clothingType !== 'all'))
+  const displayRows = status === 'ready' && !hasFilter ? fillEmptyStoreRows(rows) : rows
   return (
     <section className="product-feed" id="home-product-panel" role="tabpanel" aria-labelledby={`home-${segment}-tab`}>
       {error && <p role="alert">{error}</p>}
       {savedError && <p role="alert">{savedError}</p>}
-      {!rows.length && status !== 'error' && <p role="status">No Store products found.</p>}
-      {rows.map((row, rowIndex) => (
+      {!rows.length && status !== 'error' && hasFilter && <p role="status">No Store products found.</p>}
+      {displayRows.map((row, rowIndex) => (
         <CrawlRow
           key={row.id}
           row={row}
           rowIndex={rowIndex}
           onOpenProduct={onOpenProduct}
-          onHoldRow={setOpenRow}
+          onHoldRow={row.empty ? undefined : setOpenRow}
         />
       ))}
     </section>

@@ -278,3 +278,12 @@ export function buildPersonalizedRows({
 
 export const PERSONALIZED_ROW_COUNT = ROW_COUNT
 export const PERSONALIZED_PRODUCTS_PER_ROW = PRODUCTS_PER_ROW
+
+/** Empty display slots contain no product data and cannot be purchased. */
+export function fillEmptyStoreRows(rows, rowCount = ROW_COUNT) {
+  const result = rows.slice(0, rowCount)
+  while (result.length < rowCount) {
+    result.push({ id: `empty-display-${result.length}`, name: 'Empty Store display', products: [], empty: true })
+  }
+  return result
+}
