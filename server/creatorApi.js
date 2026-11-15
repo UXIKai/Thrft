@@ -301,7 +301,7 @@ export async function handleCreatorApi(req, res) {
     if (error.code === '42501' && /[Vv]erify ownership|verified domain|Verification challenge/.test(error.message)) {
       send(res, 403, { message: error.message })
     } else if (['PGRST202', 'PGRST204', 'PGRST205', '42P01', '42703'].includes(error.code) &&
-        /sync_external_brand|external_brand|external_url|external_sizes|external_currency|brand_logo_url|external_synced_at|brand_domain|claim_brand_domain/.test(error.message)) {
+        /sync_external_brand|external_brand|external_url|external_sizes|external_variants|external_currency|brand_logo_url|external_synced_at|brand_domain|claim_brand_domain/.test(error.message)) {
       send(res, 503, { message: 'Run supabase/external-brands.sql to enable website imports.' })
     } else if (['PGRST205', '42P01'].includes(error.code) && /creator_order_items/.test(error.message)) {
       send(res, 503, { message: 'Run supabase/orders.sql to enable Orders.' })

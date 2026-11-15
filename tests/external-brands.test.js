@@ -65,8 +65,9 @@ test('Shopify catalogs import available variants, prices, sizes, images and dire
     return response({ products: [
       { title: 'Sweater', handle: 'sweater', options: [{ name: 'Color' }, { name: 'Size' }],
         images: [{ src: 'https://cdn.example/sweater.png' }],
-        variants: [{ price: '30.50', available: true, option2: 'M' },
-          { price: '35.00', available: true, option2: 'L' }, { price: '20', available: false, option2: 'S' }] },
+        variants: [{ id: 101, title: 'Black / M', price: '30.50', available: true, option1: 'Black', option2: 'M' },
+          { id: 102, title: 'Black / L', price: '35.00', available: true, option1: 'Black', option2: 'L' },
+          { id: 103, price: '20', available: false, option2: 'S' }] },
       { title: 'Sold out', handle: 'sold', variants: [{ price: '10', available: false }] },
     ] }, 200, url)
   }
@@ -74,6 +75,10 @@ test('Shopify catalogs import available variants, prices, sizes, images and dire
   assert.deepEqual(result, { origin: 'https://brand.example', complete: true, products: [{
     title: 'Sweater', price: 30.5, currency: 'CAD', photo_url: 'https://cdn.example/sweater.png',
     external_url: 'https://brand.example/products/sweater', sizes: ['M', 'L'],
+    variants: [
+      { id: '101', title: 'Black / M', size: 'M', options: [{ name: 'Color', value: 'Black' }, { name: 'Size', value: 'M' }], price: 30.5 },
+      { id: '102', title: 'Black / L', size: 'L', options: [{ name: 'Color', value: 'Black' }, { name: 'Size', value: 'L' }], price: 35 },
+    ],
   }] })
   assert.equal(calls.length, 2)
   await assert.rejects(collectExternalProducts('https://brand.example/', async (url) =>
@@ -93,6 +98,22 @@ test('a complete Shopify sync paginates without silently truncating the catalog'
   assert.equal(result.products.at(-1).external_url, 'https://brand.example/products/last')
 })
 
+test('Shopify variant snapshots never invent IDs or include unavailable options', async () => {
+  const get = async (url) => url.endsWith('/cart.js')
+    ? response({ currency: 'USD' }, 200, url)
+    : response({ products: [{ title: 'Hat', handle: 'hat', options: [{ name: 'Size' }],
+      variants: [
+        { id: '9007199254740993', price: '12', option1: 'M', available: true },
+        { id: 9007199254740992, price: '14', option1: 'L', available: true },
+        { id: 12, price: '9', option1: 'S', available: false },
+      ] }] }, 200, url)
+  const { products } = await collectExternalProducts('https://brand.example', get)
+  assert.deepEqual(products[0].variants.map(({ id, size, price }) => ({ id, size, price })), [
+    { id: '9007199254740993', size: 'M', price: 12 },
+    { id: null, size: 'L', price: 14 },
+  ])
+})
+
 test('Schema.org fallback imports product page metadata and does not claim a complete catalog', async () => {
   const html = `<script type="application/ld+json">${JSON.stringify({
     '@context': 'https://schema.org', '@graph': [{ '@type': 'Product', name: 'Hat',
@@ -102,7 +123,7 @@ test('Schema.org fallback imports product page metadata and does not claim a com
   const result = await collectExternalProducts('https://brand.example/product/hat', get)
   assert.equal(result.complete, false)
   assert.deepEqual(result.products[0], { title: 'Hat', price: 19.99, currency: 'USD',
-    photo_url: 'https://brand.example/hat.png', external_url: 'https://brand.example/product/hat', sizes: ['M'] })
+    photo_url: 'https://brand.example/hat.png', external_url: 'https://brand.example/product/hat', sizes: ['M'], variants: [] })
   assert.throws(() => parseProductPage(html.replace('"priceCurrency":"USD"', '"priceCurrency":""'),
     'https://brand.example/product/hat', 'https://brand.example'), /currency/)
   assert.throws(() => parseProductPage(html.replace('"name":"Hat"', '"name":"Hat","url":"https://other.example/x"'),

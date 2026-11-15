@@ -89,6 +89,10 @@ provide Schema.org Product JSON-LD on the entered product page, or on up to
 The importer reports unsupported or incomplete catalogs instead of guessing
 prices, currencies, or sizes.
 
+Shopify imports also save available variant IDs, options, sizes and prices as
+catalog snapshots. A missing or unsafe numeric variant ID is recorded as null;
+these snapshots are not live inventory and do not enable in-app checkout.
+
 `POST /api/brands/verify-challenge` accepts `{ "domain": "brand.com" }` (or an
 HTTPS URL) and returns a stable, random `thrft-verify-...` token, `metaTag`, and
 `dnsTxt`. `POST /api/brands/verify-domain` accepts the same domain and

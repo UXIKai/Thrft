@@ -53,6 +53,17 @@ function shopifyProduct(product, base, currency) {
   if (!available.length) return null
   const sizeOption = (product.options || []).findIndex((option) => /^size$/i.test(String(option.name || '').trim()))
   const sizes = sizeOption < 0 ? [] : sizesValue(available.map((variant) => variant[`option${sizeOption + 1}`]))
+  const variants = available.map((variant) => ({
+    id: typeof variant.id === 'string' && /^\d+$/.test(variant.id) ? variant.id :
+      Number.isSafeInteger(variant.id) && variant.id > 0 ? String(variant.id) : null,
+    title: typeof variant.title === 'string' ? variant.title.slice(0, 255) : '',
+    size: sizeOption < 0 ? '' : String(variant[`option${sizeOption + 1}`] || '').slice(0, 80),
+    options: (product.options || []).slice(0, 3).map((option, index) => ({
+      name: String(option.name || '').slice(0, 80),
+      value: String(variant[`option${index + 1}`] || '').slice(0, 80),
+    })),
+    price: priceValue(variant.price),
+  }))
   if (typeof product.handle !== 'string' || !/^[a-z0-9][a-z0-9_-]*$/i.test(product.handle)) {
     fail('A product has an invalid website handle')
   }
@@ -63,6 +74,7 @@ function shopifyProduct(product, base, currency) {
     photo_url: imageUrl(product.images?.[0]?.src || product.image?.src, base),
     external_url: productUrl(`/products/${product.handle}`, base),
     sizes,
+    variants,
   }
 }
 
@@ -118,6 +130,7 @@ export function parseProductPage(html, pageUrl, base) {
       photo_url: imageUrl(typeof first === 'object' ? first?.url : first, pageUrl),
       external_url: productUrl(product.url || offer.url || pageUrl, base),
       sizes: sizesValue([product.size, ...(Array.isArray(product.hasVariant) ? product.hasVariant.map((v) => v.size) : [])]),
+      variants: [],
     }
   }).filter(Boolean)
   return { products: mapped, links: [...links] }

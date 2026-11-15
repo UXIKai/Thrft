@@ -61,6 +61,7 @@ alter table public.brand_products
   add column if not exists external_brand_id uuid references public.external_brands(id),
   add column if not exists external_url text,
   add column if not exists external_sizes jsonb not null default '[]'::jsonb,
+  add column if not exists external_variants jsonb not null default '[]'::jsonb,
   add column if not exists external_currency text,
   add column if not exists brand_logo_url text,
   add column if not exists external_synced_at timestamptz;
@@ -99,16 +100,17 @@ begin
     end if;
     insert into public.brand_products (
       creator_id, creator_username, creator_name, brand, brand_logo_url, title, price,
-      photo_url, external_brand_id, external_url, external_currency, external_sizes, external_synced_at, status
+      photo_url, external_brand_id, external_url, external_currency, external_sizes, external_variants, external_synced_at, status
     ) values (
       p_creator_id, p_creator_username, p_creator_name, p_name, p_logo_url, item->>'title',
       (item->>'price')::numeric, item->>'photo_url', brand_id, item->>'external_url',
-      item->>'currency', item->'sizes', now(), 'active'
+      item->>'currency', item->'sizes', coalesce(item->'variants', '[]'::jsonb), now(), 'active'
     ) on conflict (external_brand_id, external_url) do update set
       creator_username = excluded.creator_username, creator_name = excluded.creator_name,
       brand = excluded.brand, brand_logo_url = excluded.brand_logo_url,
       title = excluded.title, price = excluded.price, photo_url = excluded.photo_url,
       external_currency = excluded.external_currency, external_sizes = excluded.external_sizes,
+      external_variants = excluded.external_variants,
       external_synced_at = excluded.external_synced_at,
       status = 'active';
   end loop;
