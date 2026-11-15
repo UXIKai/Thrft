@@ -513,6 +513,24 @@ html body .product-detail .glass-overlay-back {
 }
 .product-detail-size { min-width: 36px; height: 40px; color: light-dark(rgb(0, 0, 0), #fff); font-size: 1.15rem; font-weight: 700; }
 
+.product-store-size-grid.is-external-variants,
+.product-detail-sizes.is-external-variants {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 16px;
+  max-height: 45vh;
+  overflow-y: auto;
+}
+
+.is-external-variants .product-detail-size {
+  height: auto;
+  min-height: 44px;
+  padding: 6px;
+  font-size: 0.95rem;
+  white-space: normal;
+}
+
 @keyframes product-detail-sizes-open {
   from {
     grid-template-rows: 0fr;

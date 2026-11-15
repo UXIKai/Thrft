@@ -4,7 +4,7 @@ import { useBag } from '../BagContext.jsx'
 import { LETTER_SIZES } from '../sizeOptions.js'
 import { productSizeOptions } from '../productSizes.js'
 import { externalProductVariants, externalVariantLabel, isExternalProduct, storedPrintfulVariants } from '../creatorProducts.js'
-import { formatMoney } from '../cart.js'
+import { formatMoney, selectedExternalVariants } from '../cart.js'
 import ProductPhoto from './ProductPhoto.jsx'
 import './GlassOverlay.css'
 import './ProductDetail.css'
@@ -70,8 +70,9 @@ export default function ProductDetail({
   const isExternal = isExternalProduct(product)
   const isMarket = product?.detailVariant === 'market' && !isPrintful && !isExternal
   const externalVariants = externalProductVariants(product)
-  const [externalVariantIndex, setExternalVariantIndex] = useState('0')
-  const selectedExternalVariant = externalVariants[Number(externalVariantIndex)]
+  const selectedVariantIds = Array.isArray(bagItem?.selectedVariantIds) ? bagItem.selectedVariantIds :
+    Array.from({ length: inBag }, () => bagItem?.externalVariantId || '')
+  const [selectionError, setSelectionError] = useState('')
 
   useEffect(() => {
     setStageEl(document.querySelector('.stage'))
@@ -104,7 +105,7 @@ export default function ProductDetail({
     setShowInformation(false)
     setSizeMetric('EN')
     setSizeFormat(null)
-    setExternalVariantIndex('0')
+    setSelectionError('')
   }, [product?.id, openQuantity])
 
   useEffect(() => {
@@ -122,6 +123,13 @@ export default function ProductDetail({
       if (!added) addItem(product)
       return
     }
+    if (isExternal && inBag && !selectedExternalVariants({ ...bagItem,
+      externalVariants: product.externalVariants ?? product.external_variants,
+      externalCurrency: product.externalCurrency ?? product.external_currency })) {
+      setSelectionError('A selected variant is no longer available. Tap the quantity to change it or remove it.')
+      return
+    }
+    setSelectionError('')
     setShowInformation(false)
     setSizing(true)
   }
@@ -147,6 +155,13 @@ export default function ProductDetail({
     setSizing(false)
   }
 
+  function pickExternalVariant(variant) {
+    if (!product || !variant || inBag >= 10) return
+    addItem({ ...product, externalVariantId: variant.id })
+    setSelectionError('')
+    setSizing(false)
+  }
+
   function step(next) {
     if (!product) return
     if (next <= 0) {
@@ -156,7 +171,8 @@ export default function ProductDetail({
     replaceItems(
       items.map((row) =>
         row.id === product.id
-          ? { ...row, qty: Math.min(next, 10), selectedSizes: selectedSizes.slice(0, next) }
+          ? { ...row, qty: Math.min(next, 10), selectedSizes: selectedSizes.slice(0, next),
+              ...(isExternal ? { selectedVariantIds: selectedVariantIds.slice(0, next) } : {}) }
           : row,
       ),
     )
@@ -180,7 +196,7 @@ export default function ProductDetail({
   const originalSizeOptions = productSizeOptions(product)
   const availableSizes = [...new Set((variants.length ? variants.map((variant) => variant.size) :
     product.sizes?.length ? product.sizes : [product.size]).filter(Boolean))]
-  const numericSizes = !isPrintful && (sizeFormat || (originalSizeOptions.some((option) => /\d/.test(option.value)) ? 'numbers' : 'letters')) === 'numbers'
+  const numericSizes = !isExternal && !isPrintful && (sizeFormat || (originalSizeOptions.some((option) => /\d/.test(option.value)) ? 'numbers' : 'letters')) === 'numbers'
   const sizeOptions = isPrintful
     ? availableSizes.map((size) => ({ value: size, letter: size, en: size, eu: size }))
     : productSizeOptions(product, numericSizes ? 'numbers' : 'letters')
@@ -202,8 +218,12 @@ export default function ProductDetail({
             </section>
           ) : (
             <>
-              <div className="product-store-size-grid" role="group" aria-label={numericSizes ? `${sizeMetric} sizes` : 'Letter sizes'}>
-                {sizeOptions.map((option) => (
+              <div className={`product-store-size-grid${isExternal ? ' is-external-variants' : ''}`} role="group" aria-label={isExternal ? 'Available variants' : numericSizes ? `${sizeMetric} sizes` : 'Letter sizes'}>
+                {isExternal ? externalVariants.map((variant) => (
+                  <button type="button" className="product-detail-size is-bare" key={variant.id} onClick={() => pickExternalVariant(variant)}>
+                    {externalVariantLabel(variant)} · {formatMoney(variant.price)}
+                  </button>
+                )) : sizeOptions.map((option) => (
                   <button type="button" className="product-detail-size is-bare" key={option.value} onClick={() => pickSize(option.value)}>
                     {!numericSizes ? option.letter : sizeMetric === 'EU' ? option.eu : option.en}
                   </button>
@@ -216,19 +236,24 @@ export default function ProductDetail({
       </section>
   ) : null
 
-  if (!isExternal && editingSizeIndex !== null) {
+  if (editingSizeIndex !== null) {
     return createPortal(
       <div
         className="glass-overlay product-detail-size-page"
         role="dialog"
         aria-modal="true"
-        aria-label="Choose size"
+        aria-label={isExternal ? 'Choose variant' : 'Choose size'}
         onClick={(event) => {
           if (event.target === event.currentTarget) setEditingSizeIndex(null)
         }}
       >
-        <div className="product-detail-sizes" role="group" aria-label="Sizes">
-          {(isPrintful ? availableSizes : product.sizes?.length ? product.sizes : LETTER_SIZES).map((size) => (
+        <div className={`product-detail-sizes${isExternal ? ' is-external-variants' : ''}`} role="group" aria-label={isExternal ? 'Available variants' : 'Sizes'}>
+          {isExternal ? externalVariants.map((variant) => (
+            <button key={variant.id} type="button" className="product-detail-size is-bare"
+              aria-pressed={draftSize === variant.id} onClick={() => setDraftSize(variant.id)}>
+              {externalVariantLabel(variant)} · {formatMoney(variant.price)}
+            </button>
+          )) : (isPrintful ? availableSizes : product.sizes?.length ? product.sizes : LETTER_SIZES).map((size) => (
             <button
               key={size}
               type="button"
@@ -244,9 +269,19 @@ export default function ProductDetail({
         <button
           type="button"
           className="product-detail-done is-bare"
-          aria-label="Done choosing size"
+          aria-label={isExternal ? 'Done choosing variant' : 'Done choosing size'}
           onClick={() => {
-            if (draftSize && draftSize !== selectedSizes[editingSizeIndex]) {
+            if (isExternal && draftSize && externalVariants.some((variant) => variant.id === draftSize)) {
+              const nextIds = selectedVariantIds.map((id, index) => index === editingSizeIndex ? draftSize : id)
+              const nextSizes = nextIds.map((id, index) =>
+                externalVariants.find((variant) => variant.id === id)?.size || selectedSizes[index] || '')
+              replaceItems(items.map((row) => row.id === product.id ? {
+                ...row, externalVariants: product.externalVariants ?? product.external_variants,
+                externalCurrency: product.externalCurrency ?? product.external_currency,
+                selectedVariantIds: nextIds, selectedSizes: nextSizes, size: nextSizes[nextSizes.length - 1],
+              } : row))
+              setSelectionError('')
+            } else if (!isExternal && draftSize && draftSize !== selectedSizes[editingSizeIndex]) {
               const nextSizes = selectedSizes.map((selected, index) =>
                 index === editingSizeIndex ? draftSize : selected,
               )
@@ -264,7 +299,7 @@ export default function ProductDetail({
     )
   }
 
-  if (!isExternal && quantityOpen) {
+  if (quantityOpen && !isMarket) {
     return createPortal(
       <div className="glass-overlay product-detail product-detail-quantity-page" role="dialog" aria-modal="true" aria-label="Selected products">
         <header className="glass-overlay-top">
@@ -272,26 +307,29 @@ export default function ProductDetail({
         </header>
         <div className="glass-overlay-body">
           <ul className="product-detail-selected-list">
-            {selectedSizes.map((size, index) => (
+            {selectedSizes.map((size, index) => {
+              const externalVariant = isExternal && externalVariants.find((variant) => variant.id === selectedVariantIds[index])
+              const label = isExternal ? externalVariant ? `${externalVariantLabel(externalVariant)} · ${formatMoney(externalVariant.price)}` : 'Variant unavailable' : size ? `Size: ${size}` : 'Size not selected'
+              return (
               <li key={index}>
                 <button
                   type="button"
                   className="product-detail-selected-item is-bare"
-                  aria-label={`Change size for ${displayTitle || name}, item ${index + 1}, ${size || 'no size selected'}`}
+                  aria-label={`Change ${isExternal ? 'variant' : 'size'} for ${displayTitle || name}, item ${index + 1}, ${label}`}
                   onClick={() => {
-                    setDraftSize(size || '')
+                    setDraftSize(isExternal ? selectedVariantIds[index] || '' : size || '')
                     setEditingSizeIndex(index)
                   }}
                 >
-                {photo && <ProductPhoto src={photo} cutout={isPrintful} alt="" />}
+                {photo && <ProductPhoto src={photo} cutout={isPrintful || isExternal} alt="" />}
                 <div>
                   {brand && <p>{brand}</p>}
                   <h2>{displayTitle || name}</h2>
-                  <p>{size ? `Size: ${size}` : 'Size not selected'}</p>
+                  <p>{label}</p>
                 </div>
                 </button>
               </li>
-            ))}
+            )})}
           </ul>
         </div>
         <button
@@ -372,29 +410,11 @@ export default function ProductDetail({
           </div>
         )}
         {!isMarket && <p className="product-detail-price">{isExternal
-          ? selectedExternalVariant ? formatMoney(selectedExternalVariant.price) : 'Unavailable'
+          ? externalVariants.length ? `${externalVariants.length > 1 ? 'From ' : ''}${formatMoney(Math.min(...externalVariants.map((variant) => variant.price)))}` : 'Unavailable'
           : product.price}</p>}
-        {isExternal ? (
-          <>
-            {externalVariants.length > 0 ? <>
-              <label>
-                <span>Color / size </span>
-                <select className="product-detail-external-buy" aria-label="Color / size"
-                  value={externalVariantIndex} onChange={(event) => setExternalVariantIndex(event.target.value)}>
-                  {externalVariants.map((variant, index) => <option key={index} value={index}>
-                    {externalVariantLabel(variant)} — {formatMoney(variant.price)}
-                  </option>)}
-                </select>
-              </label>
-              <button type="button" className="product-detail-external-buy"
-                disabled={!selectedExternalVariant || inBag >= 10}
-                onClick={() => {
-                  if (selectedExternalVariant) addItem({ ...product, externalVariantId: selectedExternalVariant.id })
-                }}>Add to Cart</button>
-              {inBag > 0 && <p role="status">{inBag} in your bag. Adjust quantity in your bag.</p>}
-            </> : <p className="product-detail-external-unavailable">This product is not available for checkout. USD pricing and saved variants are required.</p>}
-          </>
-        ) : isMarket ? (
+        {isExternal && !externalVariants.length && <p className="product-detail-external-unavailable">This product is not available for checkout. USD pricing and saved variants are required.</p>}
+        {selectionError && <p role="alert">{selectionError}</p>}
+        {isMarket ? (
           <button
             type="button"
             className="is-bare"
@@ -412,6 +432,7 @@ export default function ProductDetail({
             className={`product-detail-add${sizing ? ' is-open' : ''}`}
             aria-label={sizing ? 'Close size selection' : 'Choose amount'}
             aria-expanded={sizing}
+            disabled={isExternal && !externalVariants.length}
             tabIndex={added && !sizing ? -1 : 0}
             onClick={() => sizing ? setSizing(false) : start()}
           >
@@ -443,7 +464,7 @@ export default function ProductDetail({
             type="button"
             className="product-detail-step product-detail-plus-btn is-bare"
             aria-label="Add one"
-            disabled={qty >= 10}
+            disabled={qty >= 10 || (isExternal && !externalVariants.length)}
             tabIndex={added && !sizing ? 0 : -1}
             onClick={start}
           >
@@ -461,7 +482,7 @@ export default function ProductDetail({
             </svg>
           </button>
         </div>}
-        {!isExternal && sizePanel}
+        {sizePanel}
       </div>
     </div>,
     stageEl,

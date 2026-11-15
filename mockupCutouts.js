@@ -1,7 +1,6 @@
-import { removeImageBackground } from './closet.js'
-import { cutoutWhiteBackground } from './whiteBackground.js'
+import { cutoutProductPhoto } from './productCutout.js'
 
-const CACHE_NAME = 'thrft-mockup-cutouts-v2'
+const CACHE_NAME = 'thrft-mockup-cutouts-v3'
 
 async function cacheRead(url) {
   if (!globalThis.caches) return null
@@ -21,8 +20,10 @@ async function processMockup(url) {
   if (!response.ok) throw new Error(`Could not load mockup (${response.status})`)
   const image = await response.blob()
   if (!image.type.startsWith('image/')) throw new Error('Mockup is not an image')
-  const cutout = await cutoutWhiteBackground(image)
-  return cutout || removeImageBackground(image, { model: 'small' })
+  return cutoutProductPhoto(image, async (photo) => {
+    const { segmentForeground } = await import('@imgly/background-removal')
+    return segmentForeground(photo, { model: 'medium', output: { format: 'image/png', quality: 1 } })
+  })
 }
 
 export function createCutoutLoader({ process, read, write }) {

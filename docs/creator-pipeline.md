@@ -55,9 +55,12 @@ choose only the listing's published sizes before adding to their bag. Visible
 Printful mockups are cut out on the device and cached locally, including older
 listings. The original image remains visible until processing completes, or if
 the cutout fails; the printable artwork and saved mockups are unchanged. The
-uniform white background is removed directly without a model download. Other
-backgrounds use the on-device model, which is downloaded on first use. White
-details enclosed inside the product are preserved by the direct cutout.
+background is separated with the higher-quality on-device silhouette model,
+downloaded on first use. Only the mask's alpha is applied to the original photo:
+white fabric, colored prints and texture retain their source colors. Soft edges
+use neighboring fabric colors to avoid white halos. Already-transparent images
+are not remasked. Updated cutouts use a new cache so older damaged previews are
+regenerated; source product photos are never overwritten.
 
 In **Create → Store → photo**, enable **Print on demand**. Upload the
 original artwork directly to Thrft Storage, choose a Printful blank, one color,
