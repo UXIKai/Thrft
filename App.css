@@ -1062,7 +1062,7 @@ html[data-bg-color='none'] .stage.is-bg-none .atmosphere {
   gap: 10px;
 }
 
-/* Empty displays and Market rows loop; populated Store rows move over their real overflow. */
+/* Empty displays and Market rows loop; populated Store rows move without repeating products. */
 @keyframes marquee-right {
   from {
     transform: translate3d(calc(-1 * var(--loop, 0px)), 0, 0);
@@ -1097,11 +1097,26 @@ html[data-bg-color='none'] .stage.is-bg-none .atmosphere {
   animation: marquee-right var(--crawl-duration, 40s) linear infinite alternate;
 }
 
+@keyframes store-fit {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(var(--loop, 0px), 0, 0); }
+}
+
+.brand-row-track.store-fits-right {
+  animation: store-fit var(--crawl-duration, 40s) linear infinite alternate;
+}
+
+.brand-row-track.store-fits-left {
+  animation: store-fit var(--crawl-duration, 40s) linear infinite alternate-reverse;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .brand-row-track.crawl-right,
   .brand-row-track.crawl-left,
   .brand-row-track.store-crawl-right,
-  .brand-row-track.store-crawl-left {
+  .brand-row-track.store-crawl-left,
+  .brand-row-track.store-fits-right,
+  .brand-row-track.store-fits-left {
     animation: none;
     transform: translate3d(0, 0, 0);
   }

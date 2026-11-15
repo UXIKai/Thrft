@@ -121,6 +121,7 @@ function CrawlRow({ row, rowIndex, onOpenProduct, onHoldRow, market = false, lik
   const seqRef = useRef(null)
   const holdRef = useRef({ timer: 0, x: 0, y: 0, fired: false })
   const [loopPx, setLoopPx] = useState(0)
+  const [fits, setFits] = useState(false)
   const [visible, setVisible] = useState(rowIndex < 6)
   const products = row.products || []
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -150,7 +151,8 @@ function CrawlRow({ row, rowIndex, onOpenProduct, onHoldRow, market = false, lik
       if (!seq.getBoundingClientRect().width) return
       const width = seq.getBoundingClientRect().width
       const gap = Number.parseFloat(getComputedStyle(seq.parentElement).columnGap || '0') || 0
-      setLoopPx(market || row.empty ? width + gap : Math.max(0, width - wrap.clientWidth))
+      setFits(width < wrap.clientWidth)
+      setLoopPx(market || row.empty ? width + gap : Math.abs(width - wrap.clientWidth))
     }
     measure()
     const ro = new ResizeObserver(measure)
@@ -224,7 +226,8 @@ function CrawlRow({ row, rowIndex, onOpenProduct, onHoldRow, market = false, lik
           <div
             className={`brand-row-track ${loopPx > 0 ? market || row.empty
               ? (goesRight ? 'crawl-right' : 'crawl-left')
-              : (goesRight ? 'store-crawl-right' : 'store-crawl-left') : ''}`}
+              : fits ? (goesRight ? 'store-fits-left' : 'store-fits-right')
+                : (goesRight ? 'store-crawl-right' : 'store-crawl-left') : ''}`}
             style={{
               '--loop': `${loop}px`,
               '--crawl-duration': `${durationSec}s`,
