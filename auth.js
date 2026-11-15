@@ -254,34 +254,38 @@ export async function signInWithOAuthProvider(provider) {
   }
 
   const supabase = getSupabase()
+  if (provider === 'apple') {
+    if (!supabase) throw new Error('Apple sign-in requires Supabase Auth')
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'apple',
+      options: { redirectTo: window.location.origin },
+    })
+    if (error) throw new Error(error.message || 'Unavailable')
+    return { redirecting: true, url: data?.url || '' }
+  }
   if (supabase) {
     // Always show the provider account / email picker — never silently
     // reuse the last signed-in identity.
-    const queryParams =
-      provider === 'google'
-        ? { prompt: 'select_account', access_type: 'online' }
-        : { prompt: 'login' }
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider,
       options: {
         redirectTo: `${window.location.origin}/`,
         skipBrowserRedirect: false,
-        queryParams,
+        queryParams: { prompt: 'select_account', access_type: 'online' },
       },
     })
     if (error) throw new Error(error.message || 'Unavailable')
     return { redirecting: true, url: data?.url || '' }
   }
 
-  const startPath =
-    provider === 'google' ? '/api/auth/google/start' : '/api/auth/apple/start'
+  const startPath = '/api/auth/google/start'
   const res = await fetch(startPath)
   const data = await res.json().catch(() => ({}))
   if (!res.ok || !data.url) {
     throw new Error(
       data.message ||
         data.error ||
-        `${provider === 'google' ? 'Google' : 'Apple'} sign-in is not configured`,
+        'Google sign-in is not configured',
     )
   }
   window.location.assign(data.url)

@@ -14,7 +14,7 @@ import {
   parseListingPrice,
 } from '../listings.js'
 import { isSupabaseConfigured } from '../supabase.js'
-import { hasPrintfulMockup } from '../mockupCutouts.js'
+import { hasProductCutout } from '../mockupCutouts.js'
 import ProductPhoto from './ProductPhoto.jsx'
 
 const MARKET_PRODUCTS_PER_ROW = 20
@@ -62,7 +62,7 @@ function MarketCard({ product, onOpen, liked, onToggleLike }) {
     <div className="market-card">
       <button type="button" className="market-card-open" onClick={() => onOpen?.(product)} aria-label={`${name} ${product.price || ''}`}>
         <span className="market-card-photo">
-          {photo ? <ProductPhoto src={photo} cutout={hasPrintfulMockup(product)}
+          {photo ? <ProductPhoto src={photo} cutout={hasProductCutout(product)}
             alt="" loading="lazy" draggable="false" /> : null}
         </span>
         <span className="market-card-name">{name}</span>
@@ -103,9 +103,10 @@ function ProductCard({ product, onOpen }) {
     >
       {photo && (
         <ProductPhoto className="product-box-photo" src={photo}
-          cutout={hasPrintfulMockup(product)}
+          cutout={hasProductCutout(product)}
           alt="" loading="lazy" draggable="false" />
       )}
+      {product.brandLogoUrl && <img className="product-box-brand-logo" src={product.brandLogoUrl} alt="" draggable="false" />}
     </button>
   )
 }
@@ -270,6 +271,7 @@ function StoreRowPage({ row, onBack, onOpenProduct }) {
           <svg viewBox="0 0 24 24" aria-hidden><path d="m15 5-7 7 7 7" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
         </button>
         <div className="store-row-page-title">
+          {products[0]?.brandLogoUrl && <img className="store-row-page-logo" src={products[0].brandLogoUrl} alt="" />}
           <h2>{row.name}</h2>
           {row.category ? <p>{row.category}</p> : null}
         </div>

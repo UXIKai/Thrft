@@ -6,7 +6,7 @@ import {
   getCustomBrands,
   getCustomCategories,
 } from '../customCatalog.js'
-import { createListingProduct } from '../api.js'
+import { createListingProduct, importBrandUrl } from '../api.js'
 import { isCreateStepFilled } from '../createWalkthrough.js'
 import { processCreatePhotos } from '../createPhotoProcessing.js'
 import { createListing } from '../listings.js'
@@ -246,6 +246,13 @@ export default function CreateListing({ onPosted, initialSegment = 'market' } = 
   const [marketPhotos, setMarketPhotos] = useState([])
   const [creatorMode, setCreatorMode] = useState(false)
   const [creatorArtwork, setCreatorArtwork] = useState(null)
+  const [websiteBrand, setWebsiteBrand] = useState('')
+  const [websiteUrl, setWebsiteUrl] = useState('')
+  const [websiteLogo, setWebsiteLogo] = useState(null)
+  const [uploadedLogoUrl, setUploadedLogoUrl] = useState('')
+  const [websiteBusy, setWebsiteBusy] = useState(false)
+  const [websiteError, setWebsiteError] = useState('')
+  const [websiteSuccess, setWebsiteSuccess] = useState(false)
 
   const isMarket = segment === 'market'
   const isStore = segment === 'store'
@@ -579,9 +586,40 @@ export default function CreateListing({ onPosted, initialSegment = 'market' } = 
     }
   }
 
+  async function submitWebsite(event) {
+    event.preventDefault()
+    if (websiteBusy) return
+    const brandName = websiteBrand.trim()
+    let url
+    try {
+      url = new URL(websiteUrl.trim())
+      if (url.protocol !== 'https:' || !url.hostname || url.username || url.password) throw new Error()
+    } catch {
+      setWebsiteError('Enter a valid public HTTPS website URL.')
+      return
+    }
+    if (!brandName || !websiteLogo) {
+      setWebsiteError('Add a brand name and logo.')
+      return
+    }
+    setWebsiteError('')
+    setWebsiteBusy(true)
+    try {
+      const logoUrl = uploadedLogoUrl || await uploadCreatorArtwork(websiteLogo)
+      setUploadedLogoUrl(logoUrl)
+      const result = await importBrandUrl({ brandName, logoUrl, websiteUrl: url.href })
+      setWebsiteSuccess(result)
+      onPosted?.(result)
+    } catch (error) {
+      setWebsiteError(String(error?.message || 'Could not import the website.'))
+    } finally {
+      setWebsiteBusy(false)
+    }
+  }
+
   return (
     <section
-      className={`create-listing is-walkthrough${isStore ? ' is-store-listing' : ''}${addSheetOpen ? ' is-adding' : ''}${isStore && creatorMode ? ' is-creator-product' : ''}${isStore && creatorMode && currentStep === 'photo' ? ' is-artwork-studio' : ''}`}
+      className={`create-listing is-walkthrough${isStore ? ' is-store-listing' : ''}${addSheetOpen ? ' is-adding' : ''}${isStore && creatorMode && currentStep !== 'website' ? ' is-creator-product' : ''}${isStore && creatorMode && currentStep === 'photo' ? ' is-artwork-studio' : ''}${currentStep === 'website' ? ' is-website-import' : ''}`}
       aria-label="Create listing"
       ref={walkthroughRef}
       tabIndex={-1}
@@ -594,7 +632,7 @@ export default function CreateListing({ onPosted, initialSegment = 'market' } = 
         navPeekTimer.current = window.setTimeout(() => stage.classList.remove('is-create-nav-peek'), 5000)
       }}
     >
-      {currentStep !== 'destination' && <header className={`listing-walkthrough-header${isStore && creatorMode ? ' creator-flow-header' : ''}`}>
+      {currentStep !== 'destination' && currentStep !== 'website' && <header className={`listing-walkthrough-header${isStore && creatorMode ? ' creator-flow-header' : ''}`}>
         {isStore && creatorMode ? <>
           <div className="creator-flow-meta"><span>Print on demand</span><span>{stepIndex + 1} / {steps.length}</span></div>
           <h2>Product studio</h2>
@@ -627,6 +665,57 @@ export default function CreateListing({ onPosted, initialSegment = 'market' } = 
       )}
       </div>}
 
+      {currentStep === 'website' && (
+        <form className="listing-website-form" onSubmit={submitWebsite}>
+          <h2>Connect Website</h2>
+          {websiteSuccess ? (
+            <p role="status">Imported {websiteSuccess.imported} products.
+              {!websiteSuccess.complete && ' This page import may not include the full catalog.'}</p>
+          ) : (
+            <>
+              <p>Import products from your brand’s public HTTPS website.</p>
+              <p>Only connect a website you are authorized to represent.</p>
+              <label>Brand name
+                <input className="listing-input" type="text" value={websiteBrand} required maxLength={80}
+                  disabled={websiteBusy} onChange={(event) => setWebsiteBrand(event.target.value)} />
+              </label>
+              <label>Brand logo <small>PNG or JPEG, up to 20 MB</small>
+                <input type="file" accept="image/png,image/jpeg" required disabled={websiteBusy}
+                  onChange={(event) => {
+                    setWebsiteLogo(event.target.files?.[0] || null)
+                    setUploadedLogoUrl('')
+                  }} />
+              </label>
+              <label>Website URL
+                <input className="listing-input" type="url" value={websiteUrl} required
+                  placeholder="https://example.com" disabled={websiteBusy}
+                  onChange={(event) => setWebsiteUrl(event.target.value)} />
+              </label>
+              {websiteError && <p role="alert">{websiteError}</p>}
+              <button className="listing-website-button" type="submit" disabled={websiteBusy}>
+                {websiteBusy ? 'Importing website…' : 'Import website'}
+              </button>
+              {websiteBusy && <span role="status">Uploading logo and importing products…</span>}
+            </>
+          )}
+          <button className="listing-website-back is-bare" type="button" disabled={websiteBusy} onClick={() => {
+            setStep('photo')
+            setWebsiteError('')
+            setWebsiteSuccess(false)
+            setWebsiteBrand('')
+            setWebsiteUrl('')
+            setWebsiteLogo(null)
+            setUploadedLogoUrl('')
+          }}>{websiteSuccess ? 'Done' : 'Back to Store listing'}</button>
+        </form>
+      )}
+
+      {currentStep === 'photo' && isStore && (
+        <button type="button" className="listing-website-entry" disabled={scanning || posting}
+          onClick={() => setStep('website')}>
+          <strong>Connect Website</strong><small>Import products from your brand website</small>
+        </button>
+      )}
       {currentStep === 'photo' && isStore && (
         <label className="creator-mode-toggle">
           <ShirtIcon className="creator-mode-icon" />
@@ -955,7 +1044,7 @@ export default function CreateListing({ onPosted, initialSegment = 'market' } = 
         </>
       )}
 
-      {currentStep !== 'destination' && (
+      {currentStep !== 'destination' && currentStep !== 'website' && (
       <nav className={`listing-walkthrough-actions${step === 'photo' ? ' is-photo' : ''}${stepFilled ? ' is-ready' : ''}`} aria-label="Create listing steps">
         <button type="button" className="is-bare listing-walkthrough-back" aria-label="Previous step" aria-hidden={step === 'photo' && !stepFilled} tabIndex={step === 'photo' && !stepFilled ? -1 : undefined} disabled={posting || scanning || (step === 'photo' && !stepFilled)} onClick={() => navigateStep(-1)}>
           <svg viewBox="0 0 24 24" aria-hidden><path d="m15 6-6 6 6 6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>

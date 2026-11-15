@@ -5,7 +5,7 @@ import { recordProductInterest, recordSearchHistory } from '../forYou.js'
 import { brandLogoUrl } from '../brandLogos.js'
 import { LISTING_BRANDS } from '../listingCatalog.js'
 import { SIZE_BRANDS } from '../sizeOptions.js'
-import { hasPrintfulMockup } from '../mockupCutouts.js'
+import { hasProductCutout } from '../mockupCutouts.js'
 import ProductPhoto from './ProductPhoto.jsx'
 import BrandGlobe from './BrandGlobe.jsx'
 import './GlassOverlay.css'
@@ -838,7 +838,7 @@ export default function SavedScreen({
                     aria-label={item.title || item.brandName || 'Saved item'}
                   >
                     <span className="market-card-photo" aria-hidden>
-                      {showPhoto ? <ProductPhoto src={photo} cutout={hasPrintfulMockup(item)}
+                      {showPhoto ? <ProductPhoto src={photo} cutout={hasProductCutout(item)}
                         alt="" loading="lazy" draggable="false" /> : null}
                     </span>
                     <span className="market-card-name">{item.brandName || item.title || item.code}</span>

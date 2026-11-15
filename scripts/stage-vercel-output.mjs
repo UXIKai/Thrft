@@ -29,7 +29,7 @@ await writeFile(
     {
       version: 3,
       routes: [
-        { src: '/api/(creator|printful|checkout|webhooks)(/.*)?', dest: '/creator-api' },
+        { src: '/api/(creator|printful|checkout|webhooks|brands)(/.*)?', dest: '/creator-api' },
         { src: '/brand-icons/(.*)', dest: 'https://www.google.com/$1' },
         { handle: 'filesystem' },
         { src: '/(.*)', dest: '/index.html' },

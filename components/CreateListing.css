@@ -1156,3 +1156,80 @@ html body .create-listing .listing-photo-choice .listing-photo-choice-btn:active
     padding: 0 20px;
   }
 }
+
+.listing-website-entry,
+.listing-website-button {
+  border: 1px solid var(--glass-border);
+  border-radius: 18px;
+  background: var(--glass-clear-tint);
+  box-shadow: var(--glass-clear-depth);
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.listing-website-entry {
+  display: grid;
+  gap: 4px;
+  width: 100%;
+  padding: 14px 18px;
+  text-align: left;
+}
+
+.listing-website-entry small {
+  opacity: 0.7;
+}
+
+.create-listing.is-walkthrough.is-website-import {
+  justify-content: flex-start;
+  overflow-y: auto;
+  touch-action: pan-y;
+  padding: calc(env(safe-area-inset-top, 0px) + 32px) 20px calc(env(safe-area-inset-bottom, 0px) + 120px);
+}
+
+.listing-website-form {
+  display: grid;
+  gap: 16px;
+  width: 100%;
+  margin: auto;
+}
+
+.listing-website-form h2,
+.listing-website-form p {
+  margin: 0;
+}
+
+.listing-website-form label {
+  display: grid;
+  gap: 8px;
+  font-size: 0.9rem;
+}
+
+.listing-website-form small {
+  opacity: 0.7;
+}
+
+.listing-website-form input[type='file'] {
+  max-width: 100%;
+  color: inherit;
+}
+
+.listing-website-form .listing-input::placeholder {
+  color: light-dark(rgba(11, 11, 13, 0.45), rgba(244, 244, 242, 0.45));
+}
+
+.listing-website-button,
+.listing-website-back {
+  min-height: 48px;
+  padding: 12px 18px;
+}
+
+.listing-website-button:disabled,
+.listing-website-back:disabled,
+.listing-website-entry:disabled {
+  opacity: 0.5;
+}
+
+.listing-website-back {
+  color: inherit;
+}

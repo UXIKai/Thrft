@@ -381,10 +381,21 @@ export async function fetchMyProducts({ status = '', segment = '' } = {}) {
   return Array.isArray(data.products) ? data.products : []
 }
 
-export async function fetchStoreProducts({ brand = '' } = {}) {
-  const data = await api(`/api/creator/products${brand ? `?${new URLSearchParams({ brand })}` : ''}`)
+export async function fetchStoreProducts({ brand = '', brandId = '' } = {}) {
+  const params = new URLSearchParams()
+  if (brand) params.set('brand', brand)
+  if (brandId.startsWith('external-')) params.set('externalBrandId', brandId.slice(9))
+  const suffix = params.toString()
+  const data = await api(`/api/creator/products${suffix ? `?${suffix}` : ''}`)
   if (!Array.isArray(data.products)) throw new Error('Invalid store products response')
   return data.products
+}
+
+export async function importBrandUrl({ brandName, logoUrl, websiteUrl }) {
+  return api('/api/brands/import-url', {
+    method: 'POST',
+    body: JSON.stringify({ brandName, logoUrl, websiteUrl }),
+  })
 }
 
 export async function createListingProduct(payload) {

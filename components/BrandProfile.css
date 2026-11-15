@@ -51,6 +51,13 @@
   color: light-dark(rgb(0, 0, 0), #fff);
 }
 
+.brand-profile-mark img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: inherit;
+}
+
 .brand-profile-empty {
   position: absolute;
   inset: 0;

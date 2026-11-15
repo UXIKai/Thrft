@@ -10,6 +10,8 @@ import { createCheckoutSession, estimateCheckout, getCheckoutSession, handleStri
 import { fetchPublicAccount, fetchSocialProfile, saveSocialProfile,
   fetchSocialSaved, saveSocialSaved, fetchLeaderboard } from './socialStore.js'
 import { fetchOrders } from './orders.js'
+import { collectExternalProducts } from './externalBrands.js'
+import { fetchPublicHttps } from './publicHttps.js'
 
 function fail(message, status = 400) {
   throw Object.assign(new Error(message), { status })
@@ -55,6 +57,21 @@ function creatorIdentity(user) {
     .toLowerCase().replace(/[^a-z0-9_]+/g, '').slice(0, 24), creator_name: name }
 }
 
+export async function importExternalBrand(user, body, db, collect = collectExternalProducts) {
+  const brandName = typeof body.brandName === 'string' ? body.brandName.trim() : ''
+  if (!brandName || brandName.length > 80) fail('Enter a brand name of up to 80 characters')
+  const logoUrl = requireArtworkUrl(body.logoUrl, user.id)
+  if (typeof body.websiteUrl !== 'string' || body.websiteUrl.length > 2048) fail('Enter a valid website URL')
+  const catalog = await collect(body.websiteUrl)
+  const identity = creatorIdentity(user)
+  const count = checked(await db.rpc('sync_external_brand', {
+    p_creator_id: user.id, p_creator_username: identity.creator_username, p_creator_name: identity.creator_name,
+    p_origin: catalog.origin, p_name: brandName, p_logo_url: logoUrl,
+    p_products: catalog.products, p_complete: catalog.complete,
+  }))
+  return { imported: count, complete: catalog.complete }
+}
+
 export function mockupFiles(layout, variantId, placement, artworkUrl, dimensions) {
   const variant = layout.variant_printfiles?.find((entry) => entry.variant_id === variantId)
   const printfile = layout.printfiles?.find((entry) => entry.printfile_id === variant?.placements?.[placement])
@@ -93,7 +110,8 @@ async function saveMockupImages(db, task, urls) {
 
 export function isCreatorApiPath(path) {
   return path.startsWith('/api/creator/') || path.startsWith('/api/printful/') ||
-    path.startsWith('/api/checkout/') || ['/api/webhooks/stripe', '/api/webhooks/printful'].includes(path)
+    path.startsWith('/api/checkout/') || path.startsWith('/api/brands/') ||
+    ['/api/webhooks/stripe', '/api/webhooks/printful'].includes(path)
 }
 
 export async function handleCreatorApi(req, res) {
@@ -113,9 +131,29 @@ export async function handleCreatorApi(req, res) {
       send(res, 200, getStripeCheckoutConfig())
       return true
     }
+    if (path === '/api/brands/image' && req.method === 'GET') {
+      const id = url.searchParams.get('id') || ''
+      if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) fail('Invalid product ID')
+      const product = checked(await getAdminSupabase().from('brand_products').select('photo_url,external_brand_id')
+        .eq('id', id).eq('status', 'active').maybeSingle())
+      if (!product?.external_brand_id || !product.photo_url) fail('Product image not found', 404)
+      const image = await fetchPublicHttps(product.photo_url, { maxBytes: 5 * 1024 * 1024 })
+      const type = String(image.headers['content-type'] || '').split(';')[0].toLowerCase()
+      if (image.status !== 200 || !['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/avif'].includes(type)) {
+        fail('Could not load product image', 502)
+      }
+      res.writeHead(200, { 'Content-Type': type, 'X-Content-Type-Options': 'nosniff',
+        'Cache-Control': 'public, max-age=3600' })
+      res.end(image.body)
+      return true
+    }
     if (path === '/api/creator/products' && req.method === 'GET') {
       let query = getAdminSupabase().from('brand_products').select('*').eq('status', 'active')
-      if (url.searchParams.get('brand')) query = query.eq('brand', url.searchParams.get('brand'))
+      const externalBrandId = url.searchParams.get('externalBrandId')
+      if (externalBrandId) {
+        if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(externalBrandId)) fail('Invalid brand ID')
+        query = query.eq('external_brand_id', externalBrandId)
+      } else if (url.searchParams.get('brand')) query = query.eq('brand', url.searchParams.get('brand'))
       send(res, 200, { products: checked(await query.order('created_at', { ascending: false }).limit(240))
         .map(mapCreatorProduct) })
       return true
@@ -131,7 +169,9 @@ export async function handleCreatorApi(req, res) {
     }
     const user = await requireCreator(req)
     const db = getAdminSupabase()
-    if (path === '/api/creator/me/orders' && req.method === 'GET') {
+    if (path === '/api/brands/import-url' && req.method === 'POST') {
+      send(res, 200, await importExternalBrand(user, await readBody(req), db))
+    } else if (path === '/api/creator/me/orders' && req.method === 'GET') {
       send(res, 200, { items: await fetchOrders(user.id, url.searchParams.get('kind')) })
     } else if (path === '/api/creator/me/profile' && req.method === 'GET') {
       send(res, 200, await fetchSocialProfile(user))
@@ -245,7 +285,10 @@ export async function handleCreatorApi(req, res) {
     }
   } catch (error) {
     console.error('[creator-api]', error.message)
-    if (['PGRST205', '42P01'].includes(error.code) && /creator_order_items/.test(error.message)) {
+    if (['PGRST202', 'PGRST204', 'PGRST205', '42P01', '42703'].includes(error.code) &&
+        /sync_external_brand|external_brand|external_url|external_sizes|external_currency|brand_logo_url|external_synced_at/.test(error.message)) {
+      send(res, 503, { message: 'Run supabase/external-brands.sql to enable website imports.' })
+    } else if (['PGRST205', '42P01'].includes(error.code) && /creator_order_items/.test(error.message)) {
       send(res, 503, { message: 'Run supabase/orders.sql to enable Orders.' })
     } else if (['PGRST205', '42P01'].includes(error.code) && /creator_(profiles|public_profiles|profile_preferences|saved_products|leaderboard)/.test(error.message)) {
       send(res, 503, { message: 'Run supabase/social.sql to enable profiles, Saved, and the Leaderboard.' })

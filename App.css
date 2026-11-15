@@ -1162,6 +1162,17 @@ html[data-bg-color='none'] .stage.is-bg-none .atmosphere {
   object-fit: contain;
 }
 
+.product-box-brand-logo {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: contain;
+  pointer-events: none;
+}
+
 .brand-row {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -1213,6 +1224,13 @@ html[data-bg-color='none'] .stage.is-bg-none .atmosphere {
   font-weight: 700;
   font-size: 1.15rem;
   color: var(--ink);
+}
+
+.store-row-page-logo {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  border-radius: 50%;
 }
 
 .store-row-page-title p {

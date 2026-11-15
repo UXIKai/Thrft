@@ -84,3 +84,7 @@ export function hasPrintfulMockup(product) {
   return Boolean(product?.printfulVariantId || product?.printful_variant_id ||
     product?.printfulVariants?.length || product?.printful_variants?.length)
 }
+
+export function hasProductCutout(product) {
+  return hasPrintfulMockup(product) || Boolean(product?.externalUrl || product?.external_url)
+}

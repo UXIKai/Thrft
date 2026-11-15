@@ -56,22 +56,31 @@ export const formatCreatorPrice = (price) => usdPrice.format(price)
 
 export function mapCreatorProduct(row) {
   const variants = storedPrintfulVariants(row)
+  const external = Boolean(row.external_brand_id && row.external_url)
   const brand = STORE_BRAND_ROWS.find((entry) =>
     entry.name.toLowerCase() === String(row.brand || '').trim().toLowerCase())
+  const photo = external && row.photo_url ? `/api/brands/image?id=${encodeURIComponent(row.id)}&v=${encodeURIComponent(row.external_synced_at || '')}` :
+    row.mockup_urls?.[0] || row.photo_url || ''
+  const price = external
+    ? new Intl.NumberFormat('en-US', { style: 'currency', currency: row.external_currency }).format(Number(row.price))
+    : usdPrice.format(Number(row.price))
   return {
     ...row,
     accountId: row.creator_id,
     creatorId: row.creator_id,
     brandName: row.brand,
-    brandId: brand?.id || String(row.brand || '').toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+    brandId: external ? `external-${row.external_brand_id}` :
+      brand?.id || String(row.brand || '').toLowerCase().replace(/[^a-z0-9]+/g, '-'),
     clothingType: String(row.category || '').toLowerCase(),
     priceRaw: row.price,
-    price: usdPrice.format(Number(row.price)),
-    photoUrl: row.mockup_urls?.[0] || row.photo_url || '',
-    image_url: row.mockup_urls?.[0] || row.photo_url || '',
+    price,
+    photoUrl: photo,
+    image_url: photo,
+    externalUrl: external ? row.external_url : '',
+    brandLogoUrl: external ? row.brand_logo_url : '',
     printfulVariantId: row.printful_variant_id,
     printfulVariants: variants,
-    sizes: variants.length ? variants.map((variant) => variant.size) : undefined,
+    sizes: external ? row.external_sizes : variants.length ? variants.map((variant) => variant.size) : undefined,
     size: variants.length === 1 ? variants[0].size : '',
     artworkUrl: row.artwork_url,
     mockupUrls: row.mockup_urls || [],

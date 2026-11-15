@@ -44,7 +44,7 @@ export default function BrandProfile({ brandId, brandName, onClose, onOpenProduc
       setStatus('error')
       return undefined
     }
-    fetchStoreProducts({ brand: resolvedName })
+    fetchStoreProducts({ brand: resolvedName, brandId })
       .then((rows) => {
         if (!alive) return
         setProducts(rows)
@@ -78,7 +78,7 @@ export default function BrandProfile({ brandId, brandName, onClose, onOpenProduc
             <BackIcon />
           </button>
           <span className="brand-profile-mark" aria-hidden>
-            {name.slice(0, 1)}
+            {products[0]?.brandLogoUrl ? <img src={products[0].brandLogoUrl} alt="" /> : name.slice(0, 1)}
           </span>
           <h1 className="brand-profile-cat">{name}</h1>
         </div>

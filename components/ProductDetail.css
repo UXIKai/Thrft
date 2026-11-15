@@ -703,3 +703,35 @@ html body .product-detail-photo img {
   min-width: 100%;
   scroll-snap-align: start;
 }
+
+button.product-detail-brand:has(.product-detail-brand-logo) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.product-detail-brand-logo {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: contain;
+}
+
+.product-detail-external-sizes,
+.product-detail-external-unavailable {
+  margin: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.product-detail-external-buy {
+  padding: 12px 20px;
+  border: 1px solid var(--glass-border);
+  border-radius: 18px;
+  background: var(--glass-clear-tint);
+  box-shadow: var(--glass-clear-depth);
+  color: inherit;
+  font-weight: 700;
+  text-decoration: none;
+}

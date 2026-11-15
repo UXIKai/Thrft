@@ -74,6 +74,28 @@ or non-USD catalog costs are reported as unavailable, not assumed to be zero.
 Ordinary Store product photos still work and are now uploaded to
 Storage instead of storing data URLs.
 
+### Connect a website
+
+Apply `supabase/external-brands.sql` after `supabase/creator-pipeline.sql`.
+In **Create → Store → Connect Website**, upload a brand logo and enter its name
+and public HTTPS website. Repeat the import to refresh the catalog; it is not
+scheduled automatically. Shopify-compatible `/products.json` catalogs use
+the store currency from `/cart.js`, import up to 1,000 available products, and
+archive previously imported products no longer available. Other sites can
+provide Schema.org Product JSON-LD on the entered product page, or on up to
+12 linked product pages. This partial import does not archive other products.
+The importer reports unsupported or incomplete catalogs instead of guessing
+prices, currencies, or sizes.
+
+Website ownership is not verified by this flow: only import a site you are
+authorized to represent. Product links stay on the supplied website origin.
+Public HTTPS requests, including redirects and product image downloads, reject
+private/reserved addresses and pin the resolved address for each connection.
+Imported photos are fetched through a bounded image proxy and use the same
+on-device cutout as Printful mockups; if processing fails the original remains
+visible. External items link to the brand website and cannot enter Stripe
+checkout. Prices and availability are snapshots until the next import.
+
 Products are saved in `brand_products`, with the authenticated `creator_id`,
 `printful_product_id`, `printful_variants`, `artwork_url`, `mockup_urls`, size,
 color, and price. Publication uses an owned, completed server-side mockup task;

@@ -51,6 +51,7 @@ export async function resolveCheckoutItems(body, store = checkoutStore) {
     if (!Number.isInteger(quantity) || quantity < 1 || quantity > 10) fail('Quantity must be 1 to 10')
     const product = await store.getProduct(id)
     if (!product || product.status !== 'active') fail('A cart product is no longer available', 409)
+    if (product.external_url || product.external_brand_id) fail('Buy external products on the brand website', 409)
     if (product.checkout_source === 'market' && quantity !== 1) fail('Market listings are limited to one item')
     const unitAmount = Math.round(Number(product.price) * 100)
     if (!Number.isSafeInteger(unitAmount) || unitAmount < 50) fail('Product price is invalid', 409)

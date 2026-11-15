@@ -199,6 +199,17 @@ test('Store and brand feeds expose only active Supabase listings with mockups an
   assert.deepEqual(brand.body.products[0].sizes, ['M', 'L'])
 })
 
+test('website imports require authentication and a creator-owned logo before network access', async () => {
+  fixture()
+  const body = { brandName: 'Test', websiteUrl: 'https://127.0.0.1/', logoUrl: artwork }
+  assert.equal((await request('/api/brands/import-url', { method: 'POST', body, token: null })).status, 401)
+  const foreign = await request('/api/brands/import-url', { method: 'POST', body: { ...body, logoUrl: artwork.replace(creatorId, productId) } })
+  assert.equal(foreign.status, 400)
+  const local = await request('/api/brands/import-url', { method: 'POST', body })
+  assert.equal(local.status, 400)
+  assert.match(local.body.message, /public HTTPS/)
+})
+
 test('Store rows preserve real listing IDs and never synthesize missing brands or empty products', () => {
   const first = mapCreatorProduct({ id: productId, brand: 'Independent Studio', price: 25 })
   const second = mapCreatorProduct({ id: 'nike-product', brand: 'Nike', price: 30 })

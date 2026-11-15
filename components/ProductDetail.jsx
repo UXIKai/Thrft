@@ -39,6 +39,16 @@ function productPhotos(product) {
     typeof photo === 'string' && photo && !/^placeholder$/i.test(photo)))]
 }
 
+function safeExternalUrl(value) {
+  if (typeof value !== 'string' || !value.trim()) return ''
+  try {
+    const url = new URL(value)
+    return url.protocol === 'https:' && url.hostname && !url.username && !url.password ? url.href : ''
+  } catch {
+    return ''
+  }
+}
+
 /** Product page with a size picker and bag controls. */
 function DoneCheckIcon() {
   return (
@@ -67,6 +77,8 @@ export default function ProductDetail({
     storedPrintfulVariants(product || {})
   const isPrintful = Boolean(variants.length || product?.printfulVariantId)
   const isMarket = product?.detailVariant === 'market' && !isPrintful
+  const isExternal = Boolean(product?.externalUrl || product?.external_url)
+  const externalUrl = safeExternalUrl(product?.externalUrl) || safeExternalUrl(product?.external_url)
 
   useEffect(() => {
     setStageEl(document.querySelector('.stage'))
@@ -210,7 +222,7 @@ export default function ProductDetail({
       </section>
   ) : null
 
-  if (editingSizeIndex !== null) {
+  if (!isExternal && editingSizeIndex !== null) {
     return createPortal(
       <div
         className="glass-overlay product-detail-size-page"
@@ -258,7 +270,7 @@ export default function ProductDetail({
     )
   }
 
-  if (quantityOpen) {
+  if (!isExternal && quantityOpen) {
     return createPortal(
       <div className="glass-overlay product-detail product-detail-quantity-page" role="dialog" aria-modal="true" aria-label="Selected products">
         <header className="glass-overlay-top">
@@ -308,7 +320,7 @@ export default function ProductDetail({
       aria-modal="true"
       aria-label={name}
     >
-      {sizing && !isMarket && !isPrintful && (!numericSizes || canShowLetters) && (
+      {!isExternal && sizing && !isMarket && !isPrintful && (!numericSizes || canShowLetters) && (
         <button
           type="button"
           className="product-detail-format-toggle is-bare"
@@ -338,6 +350,7 @@ export default function ProductDetail({
             onClick={() => onOpenBrand?.(product.brandId || '', brand)}
             aria-label={`View ${brand} brand page`}
           >
+            {isExternal && product.brandLogoUrl && <img className="product-detail-brand-logo" src={product.brandLogoUrl} alt="" />}
             {brand}
           </button>
         )}
@@ -346,7 +359,7 @@ export default function ProductDetail({
           aria-label={photos.length > 1 ? 'Product mockups; swipe to see more' : undefined}
           tabIndex={photos.length > 1 ? 0 : undefined}>
           {photos.length ? (
-            photos.map((url, index) => <ProductPhoto key={url} src={url} cutout={isPrintful}
+            photos.map((url, index) => <ProductPhoto key={url} src={url} cutout={isPrintful || isExternal}
               alt={`${name}, preview ${index + 1} of ${photos.length}`} />)
           ) : (
             <span className="product-detail-photo-empty" aria-hidden />
@@ -356,7 +369,7 @@ export default function ProductDetail({
         {isMarket && (
           <div className="product-detail-market-info">
             <div className="product-detail-market-meta">
-              {brand && <button type="button" className="product-detail-brand is-bare" onClick={() => onOpenBrand?.(product.brandId || '', brand)} aria-label={`View ${brand} brand page`}>{brand}</button>}
+              {brand && <button type="button" className="product-detail-brand is-bare" onClick={() => onOpenBrand?.(product.brandId || '', brand)} aria-label={`View ${brand} brand page`}>{isExternal && product.brandLogoUrl && <img className="product-detail-brand-logo" src={product.brandLogoUrl} alt="" />}{brand}</button>}
               {product.category && <span>{product.category}</span>}
             </div>
             <p className="product-detail-price">{product.price}</p>
@@ -365,7 +378,18 @@ export default function ProductDetail({
           </div>
         )}
         {!isMarket && <p className="product-detail-price">{product.price}</p>}
-        {isMarket ? (
+        {isExternal ? (
+          <>
+            {Array.isArray(product.sizes) && product.sizes.length > 0 && (
+              <p className="product-detail-external-sizes">Available sizes: {product.sizes.filter(Boolean).join(', ')}</p>
+            )}
+            {externalUrl ? (
+              <a className="product-detail-external-buy" href={externalUrl} target="_blank" rel="noopener noreferrer">
+                Buy on {brand || 'brand website'}
+              </a>
+            ) : <p className="product-detail-external-unavailable">This product’s website link is unavailable.</p>}
+          </>
+        ) : isMarket ? (
           <button
             type="button"
             className="is-bare"
@@ -432,7 +456,7 @@ export default function ProductDetail({
             </svg>
           </button>
         </div>}
-        {sizePanel}
+        {!isExternal && sizePanel}
       </div>
     </div>,
     stageEl,
