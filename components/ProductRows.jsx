@@ -88,6 +88,7 @@ const BOX_W = 118
 const BOX_GAP = 10
 
 function ProductCard({ product, onOpen }) {
+  const photo = product.photoUrl || product.image_url
   const label =
     [product?.brandName, product?.title, product?.price]
       .filter(Boolean)
@@ -95,13 +96,13 @@ function ProductCard({ product, onOpen }) {
   return (
     <button
       type="button"
-      className={`product-box tone-${product.tone || '1'}`}
+      className={`product-box tone-${product.tone || '1'}${photo ? ' has-product-photo' : ''}`}
       aria-label={label}
       title={label}
       onClick={() => onOpen?.(product)}
     >
-      {(product.photoUrl || product.image_url) && (
-        <ProductPhoto className="product-box-photo" src={product.photoUrl || product.image_url}
+      {photo && (
+        <ProductPhoto className="product-box-photo" src={photo}
           cutout={hasPrintfulMockup(product)}
           alt="" loading="lazy" draggable="false" />
       )}

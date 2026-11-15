@@ -3277,6 +3277,19 @@ html body .product-box:not(#_) {
   backdrop-filter: none !important;
 }
 
+html body .product-box.has-product-photo:not(#_) {
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+html body .product-box.has-product-photo:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
 /* Liked page containers match the Store's translucent tiles */
 html body .saved-screen .saved-item-media:not(#_):not(#_) {
   background: light-dark(rgba(235, 235, 235, 0.22), rgba(120, 120, 120, 0.2)) !important;

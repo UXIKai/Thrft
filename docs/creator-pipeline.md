@@ -48,7 +48,8 @@ Store feeds and brand pages load active `brand_products` through
 remain visible as non-interactive glass tiles, not demo listings. Each populated
 brand row displays only its real products. Empty rows continuously rotate in
 alternating directions; populated rows move back and forth without repeating
-products, even when they contain only one. Store tiles display the first mockup;
+products, even when they contain only one. Product photos float without a
+visible container; empty displays keep their glass frames. Store tiles display the first mockup;
 the Product Detail sheet lets buyers swipe through all generated mockups and
 choose only the listing's published sizes before adding to their bag. Visible
 Printful mockups are cut out on the device and cached locally, including older
