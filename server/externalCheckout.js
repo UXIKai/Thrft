@@ -48,7 +48,7 @@ export async function resolveExternalItems(product, input, quantity, store, cata
     const variant = variants.find((entry) => entry.id === id)
     const available = liveProduct.variants.find((entry) =>
       (typeof entry.id === 'string' || Number.isSafeInteger(entry.id)) && String(entry.id) === id)
-    if (!variant || !available || available.available !== true) fail(`The selected ${product.title} variant is sold out or unavailable`)
+    if (!variant || variant.available === false || !available || available.available !== true) fail(`The selected ${product.title} variant is sold out or unavailable`)
     const amount = Math.round(Number(variant.price) * 100)
     if (!Number.isSafeInteger(amount) || amount < 50 || amount > 9999999900) fail('Saved variant price is invalid')
     const group = grouped.get(id) || { variant, amount, quantity: 0 }

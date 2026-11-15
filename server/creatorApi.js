@@ -60,6 +60,13 @@ function creatorIdentity(user) {
 }
 
 export async function importExternalBrand(user, body, db, collect = collectExternalProducts) {
+  if (body.brandId !== undefined) {
+    if (typeof body.brandId !== 'string' || !/^[0-9a-f-]{36}$/i.test(body.brandId)) fail('Invalid brand ID')
+    const brand = checked(await db.from('external_brands').select('name,logo_url,site_origin')
+      .eq('id', body.brandId).eq('creator_id', user.id).maybeSingle())
+    if (!brand) fail('Brand not found', 404)
+    body = { brandName: brand.name, logoUrl: brand.logo_url, websiteUrl: brand.site_origin }
+  }
   const brandName = typeof body.brandName === 'string' ? body.brandName.trim() : ''
   if (!brandName || brandName.length > 80) fail('Enter a brand name of up to 80 characters')
   const logoUrl = requireArtworkUrl(body.logoUrl, user.id)

@@ -1,6 +1,8 @@
 import { createPortal } from 'react-dom'
 import { useEffect, useState } from 'react'
-import { fetchStoreProducts } from '../api.js'
+import { fetchStoreProducts, fetchExternalBrandSettings } from '../api.js'
+import { getAuthSession } from '../auth.js'
+import BrandCatalogSync from './BrandCatalogSync.jsx'
 import { findBrandById } from '../brandsCatalog.js'
 import './GlassOverlay.css'
 import './BrandProfile.css'
@@ -25,6 +27,21 @@ export default function BrandProfile({ brandId, brandName, onClose, onOpenProduc
   const [products, setProducts] = useState([])
   const [loadError, setLoadError] = useState('')
   const [status, setStatus] = useState('loading') // loading | ready | empty | error
+  const [ownedBrandId, setOwnedBrandId] = useState('')
+  const [ownerError, setOwnerError] = useState('')
+
+  useEffect(() => {
+    let active = true
+    setOwnedBrandId('')
+    setOwnerError('')
+    if (!brandId?.startsWith('external-')) return undefined
+    getAuthSession().then(async (session) => {
+      if (!session) return
+      const brands = await fetchExternalBrandSettings()
+      if (active && brands.some((brand) => `external-${brand.id}` === brandId)) setOwnedBrandId(brandId.slice(9))
+    }).catch((error) => { if (active) setOwnerError(error.message || 'Could not load brand management.') })
+    return () => { active = false }
+  }, [brandId])
 
   useEffect(() => {
     setStageEl(document.querySelector('.stage'))
@@ -82,6 +99,13 @@ export default function BrandProfile({ brandId, brandName, onClose, onOpenProduc
           </span>
           <h1 className="brand-profile-cat">{name}</h1>
         </div>
+        {ownerError && <p role="alert">{ownerError}</p>}
+        {ownedBrandId && <BrandCatalogSync brandId={ownedBrandId} onSynced={async () => {
+          const rows = await fetchStoreProducts({ brand: brandName || name, brandId })
+          setProducts(rows)
+          setStatus(rows.length ? 'ready' : 'empty')
+          setLoadError('')
+        }} />}
         {status === 'loading' && (
           <p className="brand-profile-empty" role="status">
             Loading…

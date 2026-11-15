@@ -114,7 +114,7 @@ begin
   if not found then
     raise exception 'Verify ownership of this website domain before importing products' using errcode = '42501';
   end if;
-  if jsonb_typeof(p_products) <> 'array' or jsonb_array_length(p_products) = 0 then
+  if jsonb_typeof(p_products) <> 'array' or (jsonb_array_length(p_products) = 0 and not p_complete) then
     raise exception 'Cannot sync an empty catalog';
   end if;
   insert into public.external_brands (creator_id, site_origin, name, logo_url)
@@ -134,7 +134,8 @@ begin
     ) values (
       p_creator_id, p_creator_username, p_creator_name, p_name, p_logo_url, item->>'title',
       (item->>'price')::numeric, item->>'photo_url', brand_id, item->>'external_url',
-      item->>'currency', item->'sizes', coalesce(item->'variants', '[]'::jsonb), now(), 'active'
+      item->>'currency', item->'sizes', coalesce(item->'variants', '[]'::jsonb), now(),
+      case when item->>'available' = 'false' then 'archived' else 'active' end
     ) on conflict (external_brand_id, external_url) do update set
       creator_username = excluded.creator_username, creator_name = excluded.creator_name,
       brand = excluded.brand, brand_logo_url = excluded.brand_logo_url,
@@ -142,7 +143,7 @@ begin
       external_currency = excluded.external_currency, external_sizes = excluded.external_sizes,
       external_variants = excluded.external_variants,
       external_synced_at = excluded.external_synced_at,
-      status = 'active';
+      status = excluded.status;
   end loop;
   if p_complete then
     update public.brand_products set status = 'archived'

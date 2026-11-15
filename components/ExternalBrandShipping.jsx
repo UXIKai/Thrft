@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { fetchExternalBrandSettings, saveBrandShopify, saveExternalBrandShipping } from '../api.js'
 import './GlassOverlay.css'
 import './ExternalBrandShipping.css'
+import BrandCatalogSync from './BrandCatalogSync.jsx'
 
 function ShippingBrand({ brand }) {
   const [amount, setAmount] = useState((brand.flatShippingCents / 100).toFixed(2))
@@ -53,6 +54,7 @@ function ShippingBrand({ brand }) {
   return <section className="external-shipping-brand">
     <h2>{brand.name}</h2>
     <p>{brand.domain}</p>
+    <BrandCatalogSync brandId={brand.id} disabled={busy} />
     <form onSubmit={save}>
       <label>Flat shipping rate (USD)
         <input type="text" inputMode="decimal" value={amount} disabled={busy}

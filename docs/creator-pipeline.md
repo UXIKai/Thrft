@@ -82,14 +82,25 @@ and public HTTPS website. Request verification instructions, publish the meta ta
 in the homepage `<head>` or the DNS TXT record, then verify before importing.
 Repeat the import to refresh the catalog; it is not
 scheduled automatically. Shopify-compatible `/products.json` catalogs use
-the store currency from `/cart.js`, import up to 1,000 available products, and
+the store currency from `/cart.js`, import up to 1,000 products, and
 archive previously imported products no longer available. Other sites can
 provide Schema.org Product JSON-LD on the entered product page, or on up to
 12 linked product pages. This partial import does not archive other products.
 The importer reports unsupported or incomplete catalogs instead of guessing
 prices, currencies, or sizes.
 
-Shopify imports also save available variant IDs, options, sizes and prices as
+Owners can also use **Sync / Re-import catalog** in **Settings → Brand shipping**
+or their brand profile management view. It posts `{brandId}` to
+`POST /api/brands/import-url`; the server reloads the owned brand's saved name,
+logo and verified domain. Products are upserted by brand and external URL,
+preserving listing IDs, shipping settings and Shopify connections. Variant
+snapshots include stock flags and current prices; sold-out products are archived
+and reactivated on restock. A complete empty catalog archives previous imports.
+Partial imports never archive unrelated products. USD stores retain USD pricing;
+other currencies are not silently converted and remain ineligible for checkout.
+Rerun the updated `supabase/external-brands.sql` to apply stock-aware upserts.
+
+Shopify imports also save variant IDs, options, stock flags, sizes and prices as
 catalog snapshots. A missing or unsafe numeric variant ID is recorded as null;
 these snapshots are not live inventory. Verified USD Shopify products with saved
 variants now use in-app Add to Cart and Stripe Checkout. Reimport older products

@@ -67,6 +67,7 @@ export function externalProductVariants(product) {
   const variants = product?.externalVariants ?? product?.external_variants
   if (!Array.isArray(variants)) return []
   return variants.filter((variant) => variant &&
+    variant.available !== false &&
     typeof variant.id === 'string' && variant.id.trim() &&
     typeof variant.price === 'number' && Number.isFinite(variant.price) &&
     Math.round(variant.price * 100) >= 50 && Math.round(variant.price * 100) <= 9999999900 &&

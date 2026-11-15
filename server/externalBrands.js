@@ -50,10 +50,9 @@ function sizesValue(values) {
 function shopifyProduct(product, base, currency) {
   if (!product || !Array.isArray(product.variants) || !product.variants.length) fail('Invalid product in website catalog')
   const available = product.variants.filter((variant) => variant.available !== false)
-  if (!available.length) return null
   const sizeOption = (product.options || []).findIndex((option) => /^size$/i.test(String(option.name || '').trim()))
   const sizes = sizeOption < 0 ? [] : sizesValue(available.map((variant) => variant[`option${sizeOption + 1}`]))
-  const variants = available.map((variant) => ({
+  const variants = product.variants.map((variant) => ({
     id: typeof variant.id === 'string' && /^\d+$/.test(variant.id) ? variant.id :
       Number.isSafeInteger(variant.id) && variant.id > 0 ? String(variant.id) : null,
     title: typeof variant.title === 'string' ? variant.title.slice(0, 255) : '',
@@ -63,18 +62,20 @@ function shopifyProduct(product, base, currency) {
       value: String(variant[`option${index + 1}`] || '').slice(0, 80),
     })),
     price: priceValue(variant.price),
+    available: variant.available !== false,
   }))
   if (typeof product.handle !== 'string' || !/^[a-z0-9][a-z0-9_-]*$/i.test(product.handle)) {
     fail('A product has an invalid website handle')
   }
   return {
     title: titleValue(product.title),
-    price: Math.min(...available.map((variant) => priceValue(variant.price))),
+    price: Math.min(...(available.length ? available : product.variants).map((variant) => priceValue(variant.price))),
     currency,
     photo_url: imageUrl(product.images?.[0]?.src || product.image?.src, base),
     external_url: productUrl(`/products/${product.handle}`, base),
     sizes,
     variants,
+    available: available.length > 0,
   }
 }
 
@@ -157,7 +158,6 @@ export async function collectExternalProducts(websiteUrl, get = fetchPublicHttps
       if (index >= 4 && next.products.length) fail('Catalog exceeds the 1,000-product import limit')
       page = next.products
     }
-    if (!products.length) fail('No available products were found')
     if (new Set(products.map((product) => product.external_url)).size !== products.length) fail('Catalog contains duplicate product URLs')
     return { products, complete: true, origin: base }
   }

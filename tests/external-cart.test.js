@@ -14,7 +14,10 @@ test('external cart persists each selected variant, totals its saved price, and 
     const product = mapCreatorProduct({ id: 'product', title: 'Shirt', price: 20, status: 'active',
       external_brand_id: 'brand', external_currency: 'USD', external_url: 'https://brand.com/products/shirt',
       external_variants: [{ id: '10', title: 'Blue / M', size: 'M', price: 20 },
-        { id: '20', title: 'Red / L', size: 'L', price: 29.99 }] })
+        { id: '20', title: 'Red / L', size: 'L', price: 29.99 },
+        { id: '30', title: 'Sold out', size: 'S', price: 10, available: false }] })
+    addToCart({ ...product, externalVariantId: '30' })
+    assert.deepEqual(readCart(), [])
     addToCart({ ...product, externalVariantId: '10' })
     addToCart({ ...product, externalVariantId: '20' })
     const [row] = readCart()

@@ -391,10 +391,10 @@ export async function fetchStoreProducts({ brand = '', brandId = '' } = {}) {
   return data.products
 }
 
-export async function importBrandUrl({ brandName, logoUrl, websiteUrl }) {
+export async function importBrandUrl({ brandId, brandName, logoUrl, websiteUrl }) {
   return api('/api/brands/import-url', {
     method: 'POST',
-    body: JSON.stringify({ brandName, logoUrl, websiteUrl }),
+    body: JSON.stringify({ brandId, brandName, logoUrl, websiteUrl }),
   })
 }
 

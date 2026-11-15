@@ -75,11 +75,14 @@ test('Shopify catalogs import available variants, prices, sizes, images and dire
   assert.deepEqual(result, { origin: 'https://brand.example', complete: true, products: [{
     title: 'Sweater', price: 30.5, currency: 'CAD', photo_url: 'https://cdn.example/sweater.png',
     external_url: 'https://brand.example/products/sweater', sizes: ['M', 'L'],
-    variants: [
-      { id: '101', title: 'Black / M', size: 'M', options: [{ name: 'Color', value: 'Black' }, { name: 'Size', value: 'M' }], price: 30.5 },
-      { id: '102', title: 'Black / L', size: 'L', options: [{ name: 'Color', value: 'Black' }, { name: 'Size', value: 'L' }], price: 35 },
+    available: true, variants: [
+      { id: '101', title: 'Black / M', size: 'M', options: [{ name: 'Color', value: 'Black' }, { name: 'Size', value: 'M' }], price: 30.5, available: true },
+      { id: '102', title: 'Black / L', size: 'L', options: [{ name: 'Color', value: 'Black' }, { name: 'Size', value: 'L' }], price: 35, available: true },
+      { id: '103', title: '', size: 'S', options: [{ name: 'Color', value: '' }, { name: 'Size', value: 'S' }], price: 20, available: false },
     ],
-  }] })
+  }, { title: 'Sold out', price: 10, currency: 'CAD', photo_url: '',
+    external_url: 'https://brand.example/products/sold', sizes: [], available: false,
+    variants: [{ id: null, title: '', size: '', options: [], price: 10, available: false }] }] })
   assert.equal(calls.length, 2)
   await assert.rejects(collectExternalProducts('https://brand.example/', async (url) =>
     url.endsWith('/cart.js') ? response({}) : get(url)), /currency/)
@@ -98,7 +101,7 @@ test('a complete Shopify sync paginates without silently truncating the catalog'
   assert.equal(result.products.at(-1).external_url, 'https://brand.example/products/last')
 })
 
-test('Shopify variant snapshots never invent IDs or include unavailable options', async () => {
+test('Shopify variant snapshots never invent IDs and retain unavailable variants with stock flags', async () => {
   const get = async (url) => url.endsWith('/cart.js')
     ? response({ currency: 'USD' }, 200, url)
     : response({ products: [{ title: 'Hat', handle: 'hat', options: [{ name: 'Size' }],
@@ -111,7 +114,10 @@ test('Shopify variant snapshots never invent IDs or include unavailable options'
   assert.deepEqual(products[0].variants.map(({ id, size, price }) => ({ id, size, price })), [
     { id: '9007199254740993', size: 'M', price: 12 },
     { id: null, size: 'L', price: 14 },
+    { id: '12', size: 'S', price: 9 },
   ])
+  assert.deepEqual(products[0].variants.map((variant) => variant.available), [true, true, false])
+  assert.deepEqual(products[0].sizes, ['M', 'L'])
 })
 
 test('Schema.org fallback imports product page metadata and does not claim a complete catalog', async () => {
@@ -186,6 +192,41 @@ test('an import uses the authenticated owner, owned logo, and atomic sync only a
     await assert.rejects(importExternalBrand(user, body, db, async () => { throw new Error('Website failed') }),
       /Website failed/)
     assert.equal(calls.length, 1)
+  } finally {
+    if (previous === undefined) delete process.env.SUPABASE_URL
+    else process.env.SUPABASE_URL = previous
+  }
+})
+
+test('brand-ID reimport reloads trusted settings and refuses foreign or unverified brands before catalog access', async () => {
+  const previous = process.env.SUPABASE_URL
+  process.env.SUPABASE_URL = 'https://storage.example'
+  try {
+    const user = { id: 'owner' }
+    const brandId = '11111111-1111-4111-8111-111111111111'
+    let brand = { name: 'Saved brand', logo_url: 'https://storage.example/storage/v1/object/public/Thrft/owner/logo.png',
+      site_origin: 'https://brand.example' }
+    let claim = { creator_id: 'owner', status: 'verified' }
+    const calls = []
+    let fetches = 0
+    const db = { from(table) {
+      return { select() { return this }, eq(key, value) { calls.push([table, key, value]); return this },
+        async maybeSingle() { return { data: table === 'external_brands' ? brand : claim } } }
+    }, async rpc(name, args) { calls.push([name, args]); return { data: args.p_products.length } } }
+    const collect = async (url) => {
+      fetches++
+      assert.equal(url, 'https://brand.example/')
+      return { origin: 'https://brand.example', complete: true, products: [] }
+    }
+    assert.deepEqual(await importExternalBrand(user, { brandId, websiteUrl: 'https://evil.example', brandName: 'Fake' },
+      db, collect), { imported: 0, complete: true })
+    assert.ok(calls.some(([table, key, value]) => table === 'external_brands' && key === 'creator_id' && value === 'owner'))
+    assert.equal(calls.at(-1)[1].p_name, 'Saved brand')
+    claim = { creator_id: 'other', status: 'verified' }
+    await assert.rejects(importExternalBrand(user, { brandId }, db, collect), { status: 403 })
+    brand = null
+    await assert.rejects(importExternalBrand(user, { brandId }, db, collect), { status: 404 })
+    assert.equal(fetches, 1)
   } finally {
     if (previous === undefined) delete process.env.SUPABASE_URL
     else process.env.SUPABASE_URL = previous
