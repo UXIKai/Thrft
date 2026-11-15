@@ -28,10 +28,11 @@ IDs. Favorites and saved products survive logout and work across devices.
 Supabase errors are surfaced rather than disguised as successful local saves.
 
 `creator_leaderboard` ranks the top ten creators by estimated gross product
-margin on verified paid USD orders: retail revenue minus known Printful base
-costs, before shipping, taxes, and payment fees. New order snapshots preserve the
+sales score on verified paid USD orders: external-brand item revenue plus retail
+revenue minus known Printful base costs, before shipping, taxes, and payment fees.
+This mixed score is not seller net profit. New order snapshots preserve the
 creator and base cost; older orders use the listing's stored variant cost.
-Orders without known costs do not contribute an invented profit. No demo
+Non-external orders without known costs do not contribute an invented profit. No demo
 accounts or empty rank slots are generated. Existing circular placement,
 avatars, glass styling, and spacing are retained; a rank opens its member page.
 
@@ -40,6 +41,6 @@ avatars, glass styling, and spacing are retained; a rank opens its member page.
 | GET | `/api/creator/accounts/:username` | Public identity, follow counts, active Store products |
 | GET / PUT | `/api/creator/me/profile` | Authenticated private preferences |
 | GET / PUT | `/api/creator/me/saved` | Authenticated saved products; PUT accepts `{ items: [{ id }] }` |
-| GET | `/api/creator/leaderboard` | Real ranked identities and estimated margins |
+| GET | `/api/creator/leaderboard` | Real ranked identities and sales scores |
 
 Run `node --test tests/creator-pipeline.test.js` and `npm run build`.

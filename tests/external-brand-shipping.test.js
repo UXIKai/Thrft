@@ -17,7 +17,9 @@ test('settings expose only the account’s verified brands and preserve free shi
     { domain: 'foreign.com', creator_id: 'other', status: 'verified' },
   ]
   const db = { from(table) {
-    let rows = table === 'external_brands' ? brands : claims
+    let rows = table === 'external_brands' ? brands : table === 'brand_domain_claims' ? claims : [
+      { brand_id: id, creator_id: 'owner', shop: 'brand.myshopify.com', encrypted_token: 'NEVER_EXPOSE' },
+    ]
     return {
       select() { return this },
       eq(key, value) { rows = rows.filter((row) => row[key] === value); return this },
@@ -26,7 +28,8 @@ test('settings expose only the account’s verified brands and preserve free shi
     }
   } }
   assert.deepEqual(await fetchExternalBrandSettings(owner, db), [
-    { id, name: 'Verified', domain: 'brand.com', flatShippingCents: 0 },
+    { id, name: 'Verified', domain: 'brand.com', flatShippingCents: 0,
+      shopifyConnected: true, shopifyShop: 'brand.myshopify.com' },
   ])
 })
 

@@ -28,8 +28,29 @@ export async function fetchOrders(userId, kind, { db = getAdminSupabase(), fetch
       return [id, null]
     }
   })))
+  const externalIds = [...new Set(rows.filter((row) => row.item.externalBrandId).map((row) => row.order_id))]
+  const payouts = new Map()
+  const syncs = new Map()
+  const recipients = new Map()
+  if (kind === 'sales' && externalIds.length) {
+    const results = await Promise.all([
+      db.from('external_brand_payouts').select('*').eq('creator_id', userId).in('order_id', externalIds),
+      db.from('external_shopify_orders').select('order_id,brand_id,status,error').in('order_id', externalIds),
+      db.from('creator_checkout_orders').select('id,recipient').in('id', externalIds),
+    ])
+    for (const result of results) if (result.error) throw result.error
+    for (const row of results[0].data) payouts.set(`${row.order_id}:${row.brand_id}`, row)
+    for (const row of results[1].data) syncs.set(`${row.order_id}:${row.brand_id}`, row)
+    for (const row of results[2].data) recipients.set(row.id, row.recipient)
+  }
+  const shownPayouts = new Set()
   return rows.map((row) => {
     const item = row.item
+    const key = `${row.order_id}:${item.externalBrandId}`
+    const payout = payouts.get(key)
+    const showPayout = payout && !shownPayouts.has(key)
+    if (showPayout) shownPayouts.add(key)
+    const sync = syncs.get(key)
     const printable = row.source === 'store' && item.printfulVariantId
     const tracking = printable ? (row.shipments?.length ? row.shipments : [{
       tracking_number: row.tracking_number, tracking_url: row.tracking_url,
@@ -47,6 +68,14 @@ export async function fetchOrders(userId, kind, { db = getAdminSupabase(), fetch
       tracking,
       margin: kind === 'sales' && printable && Number.isInteger(item.baseAmount)
         ? (item.unitAmount - item.baseAmount) * item.quantity : null,
+      ...(kind === 'sales' && item.externalBrandId ? {
+        externalOrderId: row.order_id,
+        recipient: recipients.get(row.order_id),
+        payout: showPayout ? { net: Number(payout.net_payout), status: payout.status,
+          shipping: Number(payout.shipping_amount), platformFee: Number(payout.platform_fee),
+          processingFee: Number(payout.stripe_processing_fee) } : null,
+        shopifySync: sync ? { status: sync.status, error: sync.error } : null,
+      } : {}),
     }
   })
 }

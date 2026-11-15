@@ -1,4 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
+import { requireVerifiedDomain } from './brandVerification.js'
+import { fetchLiveCatalog } from './externalCheckout.js'
 
 let client
 export function getAdminSupabase() {
@@ -38,6 +40,15 @@ export function requireArtworkUrl(value, creatorId) {
 }
 
 export const checkoutStore = {
+  async getExternalBrand(id, creatorId) {
+    const db = getAdminSupabase()
+    const brand = checked(await db.from('external_brands').select('id,creator_id,site_origin,name,flat_shipping_cents')
+      .eq('id', id).eq('creator_id', creatorId).maybeSingle())
+    if (!brand) return null
+    await requireVerifiedDomain(db, creatorId, new URL(brand.site_origin).hostname)
+    return brand
+  },
+  getLiveExternalCatalog: fetchLiveCatalog,
   async getProduct(id) {
     const db = getAdminSupabase()
     const product = checked(await db.from('brand_products').select('*').eq('id', id).maybeSingle())

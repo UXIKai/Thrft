@@ -30,6 +30,16 @@
   gap: 6px;
 }
 
+.external-shipping-brand form {
+  display: grid;
+  gap: 10px;
+}
+
+.external-shipping-brand h3 {
+  margin: 8px 0 0;
+  font-size: 1rem;
+}
+
 .external-shipping-brand input,
 .external-shipping-brand button {
   min-height: 44px;

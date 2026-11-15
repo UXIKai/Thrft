@@ -55,6 +55,12 @@ export default function OrdersScreen({ onBack }) {
             <p>{item.size ? `Size ${item.size} · ` : ''}{item.quantity} × {money(item.unitAmount)}</p>
             <p>{item.source === 'store' ? 'Store' : item.source === 'market' ? 'Market' : 'Order'} · {item.status.replaceAll('_', ' ')}</p>
             {item.margin !== null && <p>Estimated product margin: {money(item.margin)}</p>}
+            {item.externalOrderId && <p>Order {item.externalOrderId}</p>}
+            {item.payout && <p>Brand order payout: {money(item.payout.net)} ({item.payout.status}) · Shipping {money(item.payout.shipping)} · Thrft fee {money(item.payout.platformFee)} · Processing {money(item.payout.processingFee)}</p>}
+            {item.shopifySync && <p>Shopify: {item.shopifySync.status.replaceAll('_', ' ')}{item.shopifySync.error ? ` · ${item.shopifySync.error}` : ''}</p>}
+            {item.recipient && <p>Ship to: {[item.recipient.name, item.recipient.address1, item.recipient.address2,
+              item.recipient.city, item.recipient.state_code, item.recipient.zip, item.recipient.country_code]
+              .filter(Boolean).join(', ')}</p>}
             {item.tracking.map((tracking) => <p key={tracking.number}>
               {tracking.url ? <a href={tracking.url} target="_blank" rel="noopener noreferrer">
                 {tracking.carrier || 'Tracking'}: {tracking.number}

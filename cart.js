@@ -1,3 +1,5 @@
+import { externalProductVariants, isExternalProduct } from './creatorProducts.js'
+
 /** Local marketplace bag — listings only (not subscriptions). */
 
 const CART_KEY = 'thrft-cart-v1'
@@ -46,17 +48,73 @@ export function cartCount(items = readCart()) {
 
 export function cartTotal(items = readCart()) {
   return items.reduce(
-    (sum, row) => sum + parsePrice(row.price) * (row.qty || 1),
+    (sum, row) => sum + cartLineTotal(row),
     0,
   )
+}
+
+export function selectedExternalVariants(row) {
+  const variants = externalProductVariants(row)
+  const qty = row.qty || 1
+  const ids = Array.isArray(row.selectedVariantIds) ? row.selectedVariantIds :
+    Object.hasOwn(row, 'externalVariantId') ? Array(qty).fill(row.externalVariantId) : []
+  if (ids.length !== qty) return null
+  const selected = ids.map((id) => variants.find((variant) => variant.id === id))
+  return selected.every(Boolean) ? selected : null
+}
+
+export function cartLineTotal(row) {
+  if (isExternalProduct(row)) {
+    const variants = selectedExternalVariants(row)
+    return variants ? variants.reduce((sum, variant) => sum + Math.round(variant.price * 100), 0) / 100 : 0
+  }
+  return parsePrice(row.price) * (row.qty || 1)
+}
+
+export function resizeCartItem(row, qty) {
+  const next = {
+    ...row, qty,
+    selectedSizes: Array.from({ length: qty }, (_, index) =>
+      row.selectedSizes?.[index] || row.size || ''),
+  }
+  if (isExternalProduct(row)) {
+    const selected = selectedExternalVariants(row)
+    if (!selected?.length) return {
+      ...next,
+      ...(Array.isArray(row.selectedVariantIds) ? { selectedVariantIds: row.selectedVariantIds.slice(0, qty) } : {}),
+    }
+    next.selectedVariantIds = Array.from({ length: qty }, (_, index) =>
+      (selected[index] || selected[selected.length - 1]).id)
+    next.selectedSizes = Array.from({ length: qty }, (_, index) =>
+      (selected[index] || selected[selected.length - 1]).size || '')
+  }
+  return next
 }
 
 export function addToCart(product) {
   if (!product?.id) return readCart()
   const cur = readCart()
+  const external = isExternalProduct(product)
+  const variant = external ? externalProductVariants(product)
+    .find((entry) => entry.id === product.externalVariantId) : null
+  if (external && !variant) return cur
   const idx = cur.findIndex((row) => row.id === product.id)
   if (idx >= 0) {
     const row = cur[idx]
+    if (external) {
+      const selected = selectedExternalVariants({ ...row,
+        externalVariants: product.externalVariants ?? product.external_variants,
+        externalCurrency: product.externalCurrency ?? product.external_currency })
+      if (!selected || (row.qty || 1) >= 10) return cur
+      cur[idx] = { ...row,
+        externalVariants: product.externalVariants ?? product.external_variants,
+        externalCurrency: product.externalCurrency ?? product.external_currency,
+        qty: (row.qty || 1) + 1,
+        selectedVariantIds: [...selected.map((entry) => entry.id), variant.id],
+        selectedSizes: [...selected.map((entry) => entry.size || ''), variant.size || ''],
+      }
+      return writeCart(cur)
+    }
     const sizes = Array.from({ length: row.qty || 1 }, (_, index) =>
       row.selectedSizes?.[index] || row.size || '',
     )
@@ -87,6 +145,18 @@ export function addToCart(product) {
       placements: product.placements || null,
       size: product.size || '',
       selectedSizes: [product.size || ''],
+      ...(external ? {
+        externalUrl: product.externalUrl || product.external_url || '',
+        externalBrandId: product.externalBrandId || product.external_brand_id || '',
+        externalCurrency: product.externalCurrency ?? product.external_currency,
+        externalVariants: product.externalVariants ?? product.external_variants,
+        externalVariantId: variant.id,
+        selectedVariantIds: [variant.id],
+        status: product.status,
+        price: variant.price,
+        size: variant.size || '',
+        selectedSizes: [variant.size || ''],
+      } : {}),
       qty: 1,
     })
   }

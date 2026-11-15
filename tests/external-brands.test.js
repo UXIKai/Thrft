@@ -144,7 +144,7 @@ test('fallback discovers linked product pages and follows a canonical website re
   assert.equal(result.products[0].external_url, 'https://www.brand.example/products/cap')
 })
 
-test('external products keep their own identity, use proxied images and cannot enter Stripe checkout', async () => {
+test('external products keep their identity and require variant snapshots for checkout', async () => {
   const id = 'c0d0e0f0-1234-4321-8765-123456789abc'
   const row = { id, creator_id: 'owner', brand: 'Brand', title: 'Hat', price: 20,
     external_brand_id: '1234', external_url: 'https://brand.example/products/hat',
@@ -157,7 +157,7 @@ test('external products keep their own identity, use proxied images and cannot e
   assert.equal(product.externalUrl, row.external_url)
   assert.equal(product.brandLogoUrl, row.brand_logo_url)
   await assert.rejects(resolveCheckoutItems({ items: [{ id, qty: 1 }] },
-    { getProduct: async () => row }), /brand website/)
+    { getProduct: async () => row }), /Reimport/)
 })
 
 test('an import uses the authenticated owner, owned logo, and atomic sync only after collection succeeds', async () => {

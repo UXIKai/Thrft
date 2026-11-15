@@ -186,3 +186,132 @@ create trigger require_external_product_domain before insert or update on public
   for each row execute function public.require_external_product_domain();
 revoke all on function public.require_external_product_domain() from public, anon, authenticated;
 grant execute on function public.require_external_product_domain() to service_role;
+
+-- Checkout snapshots and manual payout accounting. All amounts are USD cents.
+alter table public.creator_checkout_orders
+  add column if not exists external_shipping jsonb not null default '[]'::jsonb;
+
+create table if not exists public.external_brand_shopify (
+  brand_id uuid primary key references public.external_brands(id),
+  creator_id uuid not null references auth.users(id),
+  shop text not null,
+  encrypted_token text not null,
+  created_at timestamptz not null default now()
+);
+create table if not exists public.external_shopify_orders (
+  order_id uuid not null references public.creator_checkout_orders(id),
+  brand_id uuid not null references public.external_brands(id),
+  shop text not null,
+  status text not null check (status in ('sending', 'synced', 'failed', 'needs_review')),
+  shopify_order_id text,
+  error text,
+  created_at timestamptz not null default now(),
+  primary key (order_id, brand_id)
+);
+create table if not exists public.external_brand_payouts (
+  id uuid primary key default gen_random_uuid(),
+  order_id uuid not null references public.creator_checkout_orders(id),
+  brand_id uuid not null references public.external_brands(id),
+  creator_id uuid not null references auth.users(id),
+  item_subtotal bigint not null check (item_subtotal >= 0),
+  shipping_amount bigint not null check (shipping_amount >= 0),
+  platform_fee bigint not null check (platform_fee >= 0),
+  stripe_processing_fee bigint not null check (stripe_processing_fee >= 0),
+  net_payout bigint not null check (net_payout >= 0),
+  currency text not null default 'usd' check (currency = 'usd'),
+  status text not null default 'owed' check (status in ('owed', 'held', 'paid')),
+  payout_reference text,
+  created_at timestamptz not null default now(),
+  unique (order_id, brand_id)
+);
+create index if not exists external_brand_payouts_seller on public.external_brand_payouts(creator_id, created_at desc);
+alter table public.external_brand_shopify enable row level security;
+alter table public.external_shopify_orders enable row level security;
+alter table public.external_brand_payouts enable row level security;
+revoke all on public.external_brand_shopify, public.external_shopify_orders, public.external_brand_payouts
+  from public, anon, authenticated;
+grant all on public.external_brand_shopify, public.external_shopify_orders, public.external_brand_payouts to service_role;
+
+create or replace function public.record_external_brand_payouts()
+returns trigger language plpgsql security invoker set search_path = public
+as $$
+declare
+  sale record;
+  subtotal bigint;
+  shipping bigint;
+  fee bigint;
+  platform bigint;
+  cumulative bigint := 0;
+  processing bigint;
+begin
+  if new.payment_status <> 'paid' then return new; end if;
+  if not exists (select 1 from jsonb_array_elements(new.items) item where item->>'externalBrandId' is not null) then
+    return new;
+  end if;
+  if new.currency <> 'usd' or new.amount_total <= 0 then raise exception 'External payouts require a paid USD order'; end if;
+  processing := round(new.amount_total::numeric * 0.029 + 30);
+  for sale in
+    select item->>'externalBrandId' as brand_id, item->>'creatorId' as creator_id,
+      sum((item->>'unitAmount')::bigint * (item->>'quantity')::bigint)::bigint as subtotal
+    from jsonb_array_elements(new.items) item where item->>'externalBrandId' is not null
+    group by item->>'externalBrandId', item->>'creatorId' order by item->>'externalBrandId'
+  loop
+    if not exists (select 1 from public.external_brands b
+      where b.id::text = sale.brand_id and b.creator_id::text = sale.creator_id) then
+      raise exception 'Payout seller does not own the snapshotted brand';
+    end if;
+    subtotal := sale.subtotal;
+    select coalesce((entry->>'amount')::bigint, 0) into shipping
+      from jsonb_array_elements(new.external_shipping) entry where entry->>'brandId' = sale.brand_id;
+    shipping := coalesce(shipping, 0);
+    if subtotal < 0 or shipping < 0 or cumulative + subtotal + shipping > new.amount_total then
+      raise exception 'External payout snapshot does not match order total';
+    end if;
+    -- Allocate the single checkout processing fee proportionally, conserving cents.
+    fee := round(processing::numeric * (cumulative + subtotal + shipping) / new.amount_total)
+      - round(processing::numeric * cumulative / new.amount_total);
+    cumulative := cumulative + subtotal + shipping;
+    platform := round(subtotal::numeric * 0.10);
+    insert into public.external_brand_payouts (
+      order_id, brand_id, creator_id, item_subtotal, shipping_amount, platform_fee, stripe_processing_fee, net_payout
+    ) values (
+      new.id, sale.brand_id::uuid, sale.creator_id::uuid, subtotal, shipping, platform, fee,
+      greatest(0, subtotal - platform + shipping - fee)
+    ) on conflict (order_id, brand_id) do nothing;
+  end loop;
+  return new;
+end;
+$$;
+drop trigger if exists record_external_brand_payouts on public.creator_checkout_orders;
+create trigger record_external_brand_payouts after insert or update of payment_status on public.creator_checkout_orders
+  for each row execute function public.record_external_brand_payouts();
+revoke all on function public.record_external_brand_payouts() from public, anon, authenticated;
+grant execute on function public.record_external_brand_payouts() to service_role;
+
+-- Existing installations may already have the social migration applied.
+do $$
+begin
+  if to_regclass('public.creator_profiles') is not null then
+    execute $view$
+      create or replace view public.creator_leaderboard as
+      with margins as (
+        select coalesce((item->>'creatorId')::uuid, p.creator_id) as creator_id,
+          (case when item->>'externalBrandId' is not null then (item->>'unitAmount')::numeric
+            else (item->>'unitAmount')::numeric - coalesce((item->>'baseAmount')::numeric,
+              (select (v->>'base_price')::numeric * 100 from jsonb_array_elements(p.printful_variants) v
+                where (v->>'variant_id')::integer = (item->>'printfulVariantId')::integer
+                  and v->>'currency' = 'USD' limit 1)) end) * (item->>'quantity')::integer as margin
+        from public.creator_checkout_orders o
+        cross join lateral jsonb_array_elements(o.items) item
+        left join public.brand_products p on p.id = (item->>'productId')::uuid
+        where o.payment_status = 'paid' and o.currency = 'usd'
+      ), totals as (
+        select creator_id, sum(margin) / 100 as profit from margins
+        where margin is not null group by creator_id
+      )
+      select p.id, p.username, p.display_name, p.avatar_url, t.profit
+      from totals t join public.creator_profiles p on p.id = t.creator_id
+    $view$;
+  end if;
+end;
+$$;

@@ -418,6 +418,16 @@ export async function saveExternalBrandShipping(brandId, flatShippingCents) {
   })
 }
 
+export async function saveBrandShopify(brandId, { shop, token, disconnect } = {}) {
+  const body = disconnect ? { disconnect: true } : {
+    shop: String(shop || '').trim(),
+    ...(typeof token === 'string' && token.trim() ? { token: token.trim() } : {}),
+  }
+  return api(`/api/brands/settings/${encodeURIComponent(brandId)}/shopify`, {
+    method: 'PUT', body: JSON.stringify(body),
+  })
+}
+
 export async function createListingProduct(payload) {
   const data = await api(`/api/${isSupabaseConfigured() ? 'creator/' : ''}products`, {
     method: 'POST',

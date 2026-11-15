@@ -13,6 +13,7 @@ import { fetchOrders } from './orders.js'
 import { collectExternalProducts } from './externalBrands.js'
 import { fetchPublicHttps, publicHttpsUrl } from './publicHttps.js'
 import { websiteDomain, requireVerifiedDomain, createVerificationChallenge, verifyDomain } from './brandVerification.js'
+import { saveShopifyConnection } from './shopifySync.js'
 
 function fail(message, status = 400) {
   throw Object.assign(new Error(message), { status })
@@ -80,15 +81,18 @@ export async function importExternalBrand(user, body, db, collect = collectExter
 }
 
 export async function fetchExternalBrandSettings(user, db) {
-  const [brands, claims] = await Promise.all([
+  const [brands, claims, connections] = await Promise.all([
     db.from('external_brands').select('id,name,site_origin,flat_shipping_cents')
       .eq('creator_id', user.id).order('name'),
     db.from('brand_domain_claims').select('domain').eq('creator_id', user.id).eq('status', 'verified'),
+    db.from('external_brand_shopify').select('brand_id,shop').eq('creator_id', user.id),
   ])
   const verified = new Set(checked(claims).map((claim) => `https://${claim.domain}`))
+  const shops = new Map(checked(connections).map((connection) => [connection.brand_id, connection.shop]))
   return checked(brands).filter((brand) => verified.has(brand.site_origin)).map((brand) => ({
     id: brand.id, name: brand.name, domain: new URL(brand.site_origin).hostname,
     flatShippingCents: brand.flat_shipping_cents,
+    shopifyConnected: shops.has(brand.id), shopifyShop: shops.get(brand.id) || '',
   }))
 }
 
@@ -202,6 +206,8 @@ export async function handleCreatorApi(req, res) {
     const db = getAdminSupabase()
     if (path === '/api/brands/settings' && req.method === 'GET') {
       send(res, 200, { brands: await fetchExternalBrandSettings(user, db) })
+    } else if (/^\/api\/brands\/settings\/[^/]+\/shopify$/.test(path) && req.method === 'PUT') {
+      send(res, 200, await saveShopifyConnection(db, user, path.split('/').at(-2), await readBody(req)))
     } else if (/^\/api\/brands\/settings\/[^/]+$/.test(path) && req.method === 'PUT') {
       const body = await readBody(req)
       send(res, 200, await saveExternalBrandShipping(user, path.split('/').at(-1), body.flatShippingCents, db))
@@ -330,7 +336,7 @@ export async function handleCreatorApi(req, res) {
     if (error.code === '42501' && /[Vv]erify ownership|verified domain|Verification challenge/.test(error.message)) {
       send(res, 403, { message: error.message })
     } else if (['PGRST202', 'PGRST204', 'PGRST205', '42P01', '42703'].includes(error.code) &&
-        /sync_external_brand|external_brand|flat_shipping_cents|external_url|external_sizes|external_variants|external_currency|brand_logo_url|external_synced_at|brand_domain|claim_brand_domain/.test(error.message)) {
+        /sync_external_brand|external_brand|external_shopify|external_shipping|flat_shipping_cents|external_url|external_sizes|external_variants|external_currency|brand_logo_url|external_synced_at|brand_domain|claim_brand_domain/.test(error.message)) {
       send(res, 503, { message: 'Run supabase/external-brands.sql to enable website imports.' })
     } else if (['PGRST205', '42P01'].includes(error.code) && /creator_order_items/.test(error.message)) {
       send(res, 503, { message: 'Run supabase/orders.sql to enable Orders.' })

@@ -3,6 +3,8 @@ import { useEffect, useRef, useState } from 'react'
 import HomeRadialMenu, { moveKnob, radialAt } from './HomeRadialMenu.jsx'
 import { createCheckoutSession, estimateCheckout } from '../api.js'
 import { useBag } from '../BagContext.jsx'
+import { cartLineTotal, cartTotal, resizeCartItem, selectedExternalVariants } from '../cart.js'
+import { externalVariantLabel, isExternalProduct } from '../creatorProducts.js'
 import './GlassOverlay.css'
 import './CartScreen.css'
 import NavButtonGlyph from './NavButtonGlyph.jsx'
@@ -52,7 +54,9 @@ export default function CartScreen({
   const [quote, setQuote] = useState(null)
   const [shippingRateId, setShippingRateId] = useState('')
   const shippingForm = useRef(null)
-  const printable = items.some((item) => item.printfulVariants?.length || item.printfulVariantId)
+  const requiresShippingQuote = items.some((item) =>
+    item.printfulVariants?.length || item.printfulVariantId || isExternalProduct(item))
+  const invalidExternal = items.some((item) => isExternalProduct(item) && !selectedExternalVariants(item))
   const quoteKey = JSON.stringify({ items, recipient })
   const currentQuote = quote?.key === quoteKey ? quote : null
   const selectedRate = currentQuote?.shippingRates.find((rate) => rate.id === shippingRateId)
@@ -64,18 +68,12 @@ export default function CartScreen({
     return () => stage?.classList.remove('is-overlay-open')
   }, [])
 
-  const total = (currentQuote ? currentQuote.subtotal / 100 : bag.total) + (selectedRate?.amount || 0) / 100
+  const total = (currentQuote ? currentQuote.subtotal / 100 : cartTotal(items)) + (selectedRate?.amount || 0) / 100
   const totalLabel = bag.formatMoney(total)
 
   function setQty(item, qty) {
     bag.replaceItems(
-      items.map((it) => (it.id === item.id ? {
-        ...it,
-        qty,
-        selectedSizes: Array.from({ length: qty }, (_, index) =>
-          it.selectedSizes?.[index] || it.size || '',
-        ),
-      } : it)),
+      items.map((it) => (it.id === item.id ? resizeCartItem(it, qty) : it)),
     )
   }
 
@@ -85,15 +83,19 @@ export default function CartScreen({
 
   async function pay() {
     if (!items.length || busy) return
-    if (printable && !shippingOpen) {
+    if (invalidExternal) {
+      setError('An imported item is unavailable. Remove it and select an available USD variant again.')
+      return
+    }
+    if (requiresShippingQuote && !shippingOpen) {
       setShippingOpen(true)
       return
     }
-    if (printable && !shippingForm.current?.reportValidity()) return
+    if (requiresShippingQuote && !shippingForm.current?.reportValidity()) return
     setBusy(true)
     setError('')
     try {
-      if (printable && !currentQuote) {
+      if (requiresShippingQuote && (!currentQuote || !selectedRate)) {
         const result = await estimateCheckout({ items, address: recipient })
         if (!result.shippingRates?.length) throw new Error('No shipping service is available for this address')
         setQuote({ ...result, key: quoteKey })
@@ -102,7 +104,7 @@ export default function CartScreen({
       }
       const session = await createCheckoutSession({
         items,
-        address: printable ? recipient : shippingAddress || undefined,
+        address: requiresShippingQuote ? recipient : shippingAddress || undefined,
         shippingRateId: selectedRate?.id,
         shippingAmount: selectedRate?.amount,
       })
@@ -221,7 +223,7 @@ export default function CartScreen({
       <div className="glass-overlay-body cart-body">
         {items.length === 0 ? (
           <p className="cart-empty">Your bag is empty</p>
-        ) : shippingOpen && printable ? (
+        ) : shippingOpen && requiresShippingQuote ? (
           <form className="cart-shipping-form" ref={shippingForm}
             onSubmit={(event) => { event.preventDefault(); pay() }}>
             <h2>Shipping address</h2>
@@ -279,17 +281,22 @@ export default function CartScreen({
                   {item.photoUrl ? <img src={item.photoUrl} alt="" /> : null}
                 </button>
                 <span className="cart-line-price">
-                  {typeof item.price === 'number'
+                  {isExternalProduct(item) ? selectedExternalVariants(item)
+                    ? bag.formatMoney(cartLineTotal(item)) : 'Unavailable'
+                    : typeof item.price === 'number'
                     ? bag.formatMoney(item.price)
                     : item.price}
                 </span>
+                {isExternalProduct(item) && <p className="cart-line-price">
+                  {selectedExternalVariants(item)?.map((variant) => externalVariantLabel(variant)).join(', ')}
+                </p>}
                 {true ? (
                   <div className="cart-line-qty">
                     <button type="button" className="cart-line-act is-bare" aria-label="Fewer" onClick={() => (item.qty <= 1 ? remove(item.id) : setQty(item, item.qty - 1))}>
                       <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden><path fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" d="M6 12h12" /></svg>
                     </button>
                     <button type="button" className="cart-line-count cart-line-act is-bare" aria-label={`View ${item.qty} selected ${item.title || 'products'}`} onClick={() => onOpenProduct?.(item, { quantity: true })}>{item.qty}</button>
-                    <button type="button" className="cart-line-act is-bare" aria-label="More" disabled={item.qty >= 10 || item.detailVariant === 'market'} onClick={() => setQty(item, item.qty + 1)}>
+                    <button type="button" className="cart-line-act is-bare" aria-label="More" disabled={item.qty >= 10 || (isExternalProduct(item) ? !selectedExternalVariants(item) : item.detailVariant === 'market')} onClick={() => setQty(item, item.qty + 1)}>
                       <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden><path fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" d="M12 5v14M5 12h14" /></svg>
                     </button>
                   </div>
@@ -328,11 +335,11 @@ export default function CartScreen({
               <button
                 type="button"
                 className="cart-pay"
-                aria-label={shippingOpen && printable && !currentQuote ? 'Get shipping rates' : 'Pay'}
+                aria-label={shippingOpen && requiresShippingQuote && !currentQuote ? 'Get shipping rates' : 'Pay'}
                 disabled={busy}
                 onClick={pay}
               >
-                {busy ? '…' : shippingOpen && printable && !currentQuote ? 'Get rates' : <BagIcon />}
+                {busy ? '…' : shippingOpen && requiresShippingQuote && !currentQuote ? 'Get rates' : <BagIcon />}
               </button>
             </div>
           </div>

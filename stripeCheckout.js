@@ -6,6 +6,8 @@ import { createHmac, timingSafeEqual } from 'node:crypto'
 import { checkoutStore } from './server/supabaseStore.js'
 import { createOrder, getOrder, getShippingRates } from './printful.js'
 import { storedPrintfulVariants } from './creatorProducts.js'
+import { resolveExternalItems, externalShipping } from './server/externalCheckout.js'
+import { syncExternalShopifyOrders } from './server/shopifySync.js'
 
 const STRIPE_SECRET = process.env.STRIPE_SECRET_KEY || ''
 const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET || ''
@@ -42,6 +44,7 @@ export async function resolveCheckoutItems(body, store = checkoutStore) {
   if (!Array.isArray(input) || !input.length || input.length > 50) fail('Choose 1 to 50 cart items')
   const items = []
   const seen = new Set()
+  const catalogs = new Map()
   for (const item of input) {
     const id = item?.id || item?.productId
     if (typeof id !== 'string' || !/^[0-9a-f-]{36}$/i.test(id)) fail('Invalid product ID')
@@ -51,7 +54,10 @@ export async function resolveCheckoutItems(body, store = checkoutStore) {
     if (!Number.isInteger(quantity) || quantity < 1 || quantity > 10) fail('Quantity must be 1 to 10')
     const product = await store.getProduct(id)
     if (!product || product.status !== 'active') fail('A cart product is no longer available', 409)
-    if (product.external_url || product.external_brand_id) fail('Buy external products on the brand website', 409)
+    if (product.external_url || product.external_brand_id) {
+      items.push(...await resolveExternalItems(product, item, quantity, store, catalogs))
+      continue
+    }
     if (product.checkout_source === 'market' && quantity !== 1) fail('Market listings are limited to one item')
     const unitAmount = Math.round(Number(product.price) * 100)
     if (!Number.isSafeInteger(unitAmount) || unitAmount < 50) fail('Product price is invalid', 409)
@@ -102,8 +108,9 @@ export async function createCheckoutSession(body = {}, { accountKey, store = che
   if (!accountKey) fail('Sign in before checkout', 401)
   const items = await resolveCheckoutItems(body, store)
   const printable = items.filter((item) => item.printfulVariantId)
-  const recipient = printable.length ? checkoutRecipient(body.address || body.shippingAddress) : null
-  const rates = printable.length ? await shippingRates(items, recipient) : []
+  const brandShipping = externalShipping(items)
+  const recipient = printable.length || brandShipping.length ? checkoutRecipient(body.address || body.shippingAddress) : null
+  const rates = await combinedShippingRates(items, recipient)
   const shipping = rates.length ? (body.shippingRateId
     ? rates.find((rate) => rate.id === body.shippingRateId) : rates[0]) : null
   if (rates.length && !shipping) fail('Choose an available shipping service')
@@ -148,13 +155,26 @@ export async function createCheckoutSession(body = {}, { accountKey, store = che
     params.set(`${prefix}[price_data][unit_amount]`, String(shipping.amount))
     params.set(`${prefix}[price_data][product_data][name]`, `Shipping - ${shipping.name}`)
   }
+  const total = items.reduce((sum, item) => sum + item.unitAmount * item.quantity, 0) + (shipping?.amount || 0)
+  if (!Number.isSafeInteger(total) || total > 99999999) fail('Checkout total exceeds the supported Stripe amount')
   const session = await stripe('checkout/sessions', params)
   await store.saveOrder({
     stripe_session_id: session.id, creator_customer_id: accountKey, items,
-    amount_total: items.reduce((sum, item) => sum + item.unitAmount * item.quantity, 0) + (shipping?.amount || 0),
+    amount_total: total,
+    ...(brandShipping.length ? { external_shipping: brandShipping } : {}),
     currency: 'usd', ...(recipient ? { recipient, shipping_rate: shipping } : {}),
   })
   return { id: session.id, url: session.url, status: session.status, mode: 'live' }
+}
+
+async function combinedShippingRates(items, recipient) {
+  const brands = externalShipping(items)
+  const flat = brands.reduce((sum, brand) => sum + brand.amount, 0)
+  const printable = items.some((item) => item.printfulVariantId)
+  const rates = printable ? await shippingRates(items, recipient) :
+    brands.length ? [{ id: 'EXTERNAL_FLAT', name: 'Brand shipping', amount: 0, currency: 'usd' }] : []
+  return rates.map((rate) => ({ ...rate, amount: rate.amount + flat,
+    name: brands.length && printable ? `${rate.name} + brand shipping` : rate.name }))
 }
 
 function checkoutRecipient(address) {
@@ -198,8 +218,8 @@ async function shippingRates(items, recipient) {
 
 export async function estimateCheckout(body, { store = checkoutStore } = {}) {
   const items = await resolveCheckoutItems(body, store)
-  const printable = items.some((item) => item.printfulVariantId)
-  const rates = printable ? await shippingRates(items, checkoutRecipient(body.address || body.shippingAddress)) : []
+  const needsAddress = items.some((item) => item.printfulVariantId || item.externalBrandId)
+  const rates = await combinedShippingRates(items, needsAddress ? checkoutRecipient(body.address || body.shippingAddress) : null)
   return { subtotal: items.reduce((sum, item) => sum + item.unitAmount * item.quantity, 0),
     currency: 'usd', shippingRates: rates }
 }
@@ -233,7 +253,7 @@ function recipientFromSession(session) {
 }
 
 export async function fulfillPaidCheckout(session, {
-  store = checkoutStore, printful = { createOrder, getOrder },
+  store = checkoutStore, printful = { createOrder, getOrder }, shopifySync = syncExternalShopifyOrders,
 } = {}) {
   if (session.payment_status !== 'paid') return { fulfilled: false, paymentStatus: session.payment_status }
   const saved = await store.getOrder(session.id)
@@ -241,6 +261,23 @@ export async function fulfillPaidCheckout(session, {
   if (session.amount_total !== saved.amount_total || session.currency !== saved.currency ||
       session.metadata?.customerId !== saved.creator_customer_id) {
     fail('Paid checkout does not match its saved order', 409)
+  }
+  if (saved.items.some((item) => item.externalBrandId)) {
+    // Recording payment triggers the atomic, unique per-brand payout ledger.
+    const paid = await store.updateOrder(session.id, {
+      payment_status: 'paid',
+      recipient: { ...(saved.recipient || recipientFromSession(session)), email: session.customer_details?.email || '' },
+    })
+    try {
+      const result = await shopifySync(paid)
+      for (const sync of result?.results || []) {
+        if (['failed', 'needs_review'].includes(sync.status)) {
+          console.error('[shopify-sync]', paid.id, sync.brandId, sync.status, sync.error)
+        }
+      }
+    } catch {
+      console.error('[shopify-sync]', paid.id, 'Could not persist optional sync status; review this paid order in Sales')
+    }
   }
   if (['draft', 'partially_shipped', 'shipped', 'not_required'].includes(saved.fulfillment_status)) return saved
   const order = await store.claimOrder(session.id)
@@ -250,7 +287,7 @@ export async function fulfillPaidCheckout(session, {
     if (!printable.length) {
       return await store.updateOrder(session.id, {
         payment_status: 'paid', fulfillment_status: 'not_required', claim_until: null,
-        recipient: recipientFromSession(session),
+        recipient: order.recipient || recipientFromSession(session),
       })
     }
     const externalId = order.id.replaceAll('-', '')

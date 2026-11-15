@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { fetchExternalBrandSettings, saveExternalBrandShipping } from '../api.js'
+import { fetchExternalBrandSettings, saveBrandShopify, saveExternalBrandShipping } from '../api.js'
 import './GlassOverlay.css'
 import './ExternalBrandShipping.css'
 
@@ -8,6 +8,25 @@ function ShippingBrand({ brand }) {
   const [busy, setBusy] = useState(false)
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
+  const [shop, setShop] = useState(brand.shopifyShop || '')
+  const [token, setToken] = useState('')
+  const [connected, setConnected] = useState(Boolean(brand.shopifyConnected))
+
+  async function saveShopify(disconnect = false) {
+    if (busy) return
+    setBusy(true)
+    setError('')
+    setMessage('')
+    try {
+      const saved = await saveBrandShopify(brand.id, disconnect ? { disconnect: true } : { shop, token })
+      setToken('')
+      setConnected(Boolean(saved.shopifyConnected))
+      setShop(saved.shopifyShop || '')
+      setMessage(disconnect ? 'Shopify sync disabled.' : 'Shopify settings saved.')
+    } catch (err) {
+      setError(err.message || 'Could not save Shopify settings.')
+    } finally { setBusy(false) }
+  }
 
   async function save(event) {
     event.preventDefault()
@@ -31,17 +50,35 @@ function ShippingBrand({ brand }) {
     } finally { setBusy(false) }
   }
 
-  return <form className="external-shipping-brand" onSubmit={save}>
+  return <section className="external-shipping-brand">
     <h2>{brand.name}</h2>
     <p>{brand.domain}</p>
-    <label>Flat shipping rate (USD)
-      <input type="text" inputMode="decimal" value={amount} disabled={busy}
-        onChange={(event) => { setAmount(event.target.value); setMessage(''); setError('') }} />
-    </label>
-    <button type="submit" disabled={busy}>{busy ? 'Saving…' : 'Save rate'}</button>
+    <form onSubmit={save}>
+      <label>Flat shipping rate (USD)
+        <input type="text" inputMode="decimal" value={amount} disabled={busy}
+          onChange={(event) => { setAmount(event.target.value); setMessage(''); setError('') }} />
+      </label>
+      <button type="submit" disabled={busy}>{busy ? 'Saving…' : 'Save rate'}</button>
+    </form>
+    <form onSubmit={(event) => { event.preventDefault(); saveShopify() }}>
+      <h3>Shopify sync (optional)</h3>
+      <p>{connected ? 'Connected. Leave the token blank to keep your current connection.' : 'Not connected.'}</p>
+      <label>Shop domain
+        <input type="text" value={shop} placeholder="your-store.myshopify.com" disabled={busy}
+          autoCapitalize="none" autoCorrect="off" spellCheck={false}
+          onChange={(event) => setShop(event.target.value)} />
+      </label>
+      <label>Admin API access token
+        <input type="password" value={token} disabled={busy} autoComplete="new-password"
+          placeholder={connected ? 'Leave blank to keep existing token' : 'Access token'}
+          onChange={(event) => setToken(event.target.value)} />
+      </label>
+      <button type="submit" disabled={busy || !shop.trim()}>Save Shopify settings</button>
+      {connected && <button type="button" disabled={busy} onClick={() => saveShopify(true)}>Disable Shopify sync</button>}
+    </form>
     {message && <p role="status">{message}</p>}
     {error && <p role="alert">{error}</p>}
-  </form>
+  </section>
 }
 
 export default function ExternalBrandShipping({ onBack }) {
@@ -71,7 +108,7 @@ export default function ExternalBrandShipping({ onBack }) {
       <span aria-hidden="true" />
     </header>
     <div className="glass-overlay-body external-shipping-body">
-      <p>One flat rate per brand. $0 means free shipping. External-brand checkout is not yet available.</p>
+      <p>One flat shipping rate per brand; $0 means free shipping. Thrft charges a 10% item fee, with no monthly fee. Your payout = item sales × 90% + shipping − processing (2.9% of the total charged + $0.30), with a $0 minimum. Shared checkouts split the processing fee proportionally. Payouts are manual.</p>
       {loading && <p role="status">Loading brands…</p>}
       {error && <p role="alert">{error}</p>}
       {!loading && !error && !brands.length && <p>No verified imported brands yet.</p>}

@@ -110,14 +110,15 @@ $$;
 revoke all on function public.replace_creator_saved_products(uuid, jsonb) from public, anon, authenticated;
 grant execute on function public.replace_creator_saved_products(uuid, jsonb) to service_role;
 
--- Estimated gross product margin from verified paid orders; shipping and fees are excluded.
+-- External paid item revenue plus known Printful margins; shipping and fees excluded.
 create or replace view public.creator_leaderboard as
 with margins as (
   select coalesce((item->>'creatorId')::uuid, p.creator_id) as creator_id,
-    ((item->>'unitAmount')::numeric - coalesce((item->>'baseAmount')::numeric,
+    (case when item->>'externalBrandId' is not null then (item->>'unitAmount')::numeric
+      else (item->>'unitAmount')::numeric - coalesce((item->>'baseAmount')::numeric,
       (select (v->>'base_price')::numeric * 100 from jsonb_array_elements(p.printful_variants) v
         where (v->>'variant_id')::integer = (item->>'printfulVariantId')::integer
-          and v->>'currency' = 'USD' limit 1))) * (item->>'quantity')::integer as margin
+          and v->>'currency' = 'USD' limit 1)) end) * (item->>'quantity')::integer as margin
   from public.creator_checkout_orders o
   cross join lateral jsonb_array_elements(o.items) item
   left join public.brand_products p on p.id = (item->>'productId')::uuid

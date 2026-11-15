@@ -91,10 +91,12 @@ prices, currencies, or sizes.
 
 Shopify imports also save available variant IDs, options, sizes and prices as
 catalog snapshots. A missing or unsafe numeric variant ID is recorded as null;
-these snapshots are not live inventory and do not enable in-app checkout.
+these snapshots are not live inventory. Verified USD Shopify products with saved
+variants now use in-app Add to Cart and Stripe Checkout. Reimport older products
+to load variants. JSON-LD products without supported variants cannot use in-app checkout.
 Verified imported brands can set a flat USD shipping rate in **Settings →
-Brand shipping**. The default is $0. This setting is stored for future checkout;
-external products continue to link to the brand website and do not yet use it.
+Brand shipping**. The default is $0, charged once per brand per checkout, including
+mixed Printful carts. A delivery address and reviewed quote are required.
 
 `POST /api/brands/verify-challenge` accepts `{ "domain": "brand.com" }` (or an
 HTTPS URL) and returns a stable, random `thrft-verify-...` token, `metaTag`, and
@@ -115,8 +117,47 @@ Public HTTPS requests, including redirects and product image downloads, reject
 private/reserved addresses and pin the resolved address for each connection.
 Imported photos are fetched through a bounded image proxy and use the same
 on-device cutout as Printful mockups; if processing fails the original remains
-visible. External items link to the brand website and cannot enter Stripe
-checkout. Prices and availability are snapshots until the next import.
+visible. Checkout reloads saved variant USD prices and verified ownership, then
+fetches the exact verified origin's live `/products.json` (bounded pagination).
+Selected variants must explicitly report `available: true`; missing, sold-out or
+unreachable inventory blocks payment. This check is not an inventory reservation:
+stock can change between checkout and payment.
+
+### External payments, manual payouts, and optional Shopify sync
+
+Rerun `supabase/external-brands.sql` before deploying checkout. It adds server-only
+Shopify credentials, sync jobs, shipping snapshots and `external_brand_payouts`.
+Verified paid orders are recorded in `creator_checkout_orders`; an atomic trigger
+creates one payout ledger entry per order/brand. Only Stripe-retrieved, paid sessions
+whose buyer, currency and total match the server snapshot are accepted.
+External paid item revenue (excluding shipping) contributes to the Leaderboard;
+Settings → Orders → Sales shows orders, delivery addresses, payout breakdowns and sync status.
+
+There is **no monthly seller fee**. The Thrft fee is 10% of item subtotal.
+Processing is the requested formula, `round(0.029 * total_charged + $0.30)`,
+not a reconciliation of Stripe's actual balance-transaction fees.
+Amounts are rounded to the nearest cent; payout is
+`max(0, item_subtotal - round(10% * item_subtotal) + shipping - processing)`.
+For mixed/multi-brand carts, allocate the single session processing fee by each
+brand's items plus shipping as a share of the total charged, in brand-ID order
+using differences of rounded cumulative shares so cents are conserved. The
+non-external remainder bears its share. Ledger status starts `owed`; this is
+**manual accounting, not an automatic bank payout**. Operators must reconcile
+refunds, disputes and actual fees and set entries `held` or adjust before paying;
+refund/dispute automation is not provided.
+
+To enable optional Shopify sync, configure server-only
+`SHOPIFY_TOKEN_ENCRYPTION_KEY` as base64 of 32 random bytes (AES-256-GCM; keep a
+secure backup and don't rotate without reencrypting saved tokens). In Settings →
+Brand shipping, save the shop's `*.myshopify.com` hostname and Admin token with
+`read_orders` and `write_orders`. The server validates the shop's primary domain
+against the owned website; credentials are encrypted and never returned to the browser.
+`PUT /api/brands/settings/:id/shopify` accepts `{shop, token}` or `{disconnect:true}`.
+Paid external orders are sent to `/admin/api/2026-01/orders.json` as already paid;
+no second payment is initiated. Shopify failures are logged and shown in Sales
+without rejecting Stripe's webhook. A durable per-brand claim prevents replayed
+POSTs; interrupted/ambiguous submissions require manual review, never blind retry.
+Orders without a token remain visible for manual fulfillment.
 
 Products are saved in `brand_products`, with the authenticated `creator_id`,
 `printful_product_id`, `printful_variants`, `artwork_url`, `mockup_urls`, size,
@@ -127,7 +168,8 @@ Store tab, brand pages, and storefront feeds load these records.
 ## Checkout and fulfillment
 
 Checkout reloads each cart product and its price from Supabase. Browser-supplied
-prices, variant IDs, and artwork URLs are not fulfillment inputs. For Printful
+prices and artwork URLs are not fulfillment inputs; requested variant IDs must
+match trusted saved variants. For Printful
 items, buyers enter a structured delivery address in the bag before payment.
 `POST /api/checkout/estimate` retrieves Printful `/shipping/rates` using that
 address and server-resolved variant quantities, then shows shipping services and
@@ -141,7 +183,8 @@ alongside the selected rate and total (including shipping). Stripe collects
 billing details, not a different delivery address, so the shipping quote cannot
 be invalidated after payment. Fulfillment uses the saved address and shipping
 service. Ordinary, non-Printful items retain their existing checkout behavior;
-mixed carts quote Printful shipping only for printable items.
+mixed carts quote Printful shipping only for printable items, plus each external
+brand's flat shipping rate.
 
 Only a verified **paid** Stripe session creates a Printful order with
 `confirm=false`. It remains a **draft**: no automatic Printful confirmation or

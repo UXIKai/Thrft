@@ -3,7 +3,8 @@ import { useEffect, useState } from 'react'
 import { useBag } from '../BagContext.jsx'
 import { LETTER_SIZES } from '../sizeOptions.js'
 import { productSizeOptions } from '../productSizes.js'
-import { storedPrintfulVariants } from '../creatorProducts.js'
+import { externalProductVariants, externalVariantLabel, isExternalProduct, storedPrintfulVariants } from '../creatorProducts.js'
+import { formatMoney } from '../cart.js'
 import ProductPhoto from './ProductPhoto.jsx'
 import './GlassOverlay.css'
 import './ProductDetail.css'
@@ -39,16 +40,6 @@ function productPhotos(product) {
     typeof photo === 'string' && photo && !/^placeholder$/i.test(photo)))]
 }
 
-function safeExternalUrl(value) {
-  if (typeof value !== 'string' || !value.trim()) return ''
-  try {
-    const url = new URL(value)
-    return url.protocol === 'https:' && url.hostname && !url.username && !url.password ? url.href : ''
-  } catch {
-    return ''
-  }
-}
-
 /** Product page with a size picker and bag controls. */
 function DoneCheckIcon() {
   return (
@@ -76,9 +67,11 @@ export default function ProductDetail({
   const variants = product?.printfulVariants?.length ? product.printfulVariants :
     storedPrintfulVariants(product || {})
   const isPrintful = Boolean(variants.length || product?.printfulVariantId)
-  const isMarket = product?.detailVariant === 'market' && !isPrintful
-  const isExternal = Boolean(product?.externalUrl || product?.external_url)
-  const externalUrl = safeExternalUrl(product?.externalUrl) || safeExternalUrl(product?.external_url)
+  const isExternal = isExternalProduct(product)
+  const isMarket = product?.detailVariant === 'market' && !isPrintful && !isExternal
+  const externalVariants = externalProductVariants(product)
+  const [externalVariantIndex, setExternalVariantIndex] = useState('0')
+  const selectedExternalVariant = externalVariants[Number(externalVariantIndex)]
 
   useEffect(() => {
     setStageEl(document.querySelector('.stage'))
@@ -111,6 +104,7 @@ export default function ProductDetail({
     setShowInformation(false)
     setSizeMetric('EN')
     setSizeFormat(null)
+    setExternalVariantIndex('0')
   }, [product?.id, openQuantity])
 
   useEffect(() => {
@@ -377,17 +371,28 @@ export default function ProductDetail({
             {product.description && <p className="product-detail-description">{product.description}</p>}
           </div>
         )}
-        {!isMarket && <p className="product-detail-price">{product.price}</p>}
+        {!isMarket && <p className="product-detail-price">{isExternal
+          ? selectedExternalVariant ? formatMoney(selectedExternalVariant.price) : 'Unavailable'
+          : product.price}</p>}
         {isExternal ? (
           <>
-            {Array.isArray(product.sizes) && product.sizes.length > 0 && (
-              <p className="product-detail-external-sizes">Available sizes: {product.sizes.filter(Boolean).join(', ')}</p>
-            )}
-            {externalUrl ? (
-              <a className="product-detail-external-buy" href={externalUrl} target="_blank" rel="noopener noreferrer">
-                Buy on {brand || 'brand website'}
-              </a>
-            ) : <p className="product-detail-external-unavailable">This product’s website link is unavailable.</p>}
+            {externalVariants.length > 0 ? <>
+              <label>
+                <span>Color / size </span>
+                <select className="product-detail-external-buy" aria-label="Color / size"
+                  value={externalVariantIndex} onChange={(event) => setExternalVariantIndex(event.target.value)}>
+                  {externalVariants.map((variant, index) => <option key={index} value={index}>
+                    {externalVariantLabel(variant)} — {formatMoney(variant.price)}
+                  </option>)}
+                </select>
+              </label>
+              <button type="button" className="product-detail-external-buy"
+                disabled={!selectedExternalVariant || inBag >= 10}
+                onClick={() => {
+                  if (selectedExternalVariant) addItem({ ...product, externalVariantId: selectedExternalVariant.id })
+                }}>Add to Cart</button>
+              {inBag > 0 && <p role="status">{inBag} in your bag. Adjust quantity in your bag.</p>}
+            </> : <p className="product-detail-external-unavailable">This product is not available for checkout. USD pricing and saved variants are required.</p>}
           </>
         ) : isMarket ? (
           <button

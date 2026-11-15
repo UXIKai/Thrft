@@ -532,7 +532,7 @@ test('failed fulfillment is retryable and recovers a previously created draft', 
 test('unpaid, mismatched, or concurrently processing checkouts never submit', async () => {
   let claimed = 0
   const store = { getOrder: async () => ({ amount_total: 2500, currency: 'usd',
-    creator_customer_id: creatorId }), claimOrder: async () => { claimed++; return null } }
+    creator_customer_id: creatorId, items: [] }), claimOrder: async () => { claimed++; return null } }
   const session = { id: 'cs_locked', payment_status: 'unpaid', amount_total: 2500,
     currency: 'usd', metadata: { customerId: creatorId } }
   await fulfillPaidCheckout(session, { store })

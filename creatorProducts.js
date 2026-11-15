@@ -54,16 +54,48 @@ export function creatorPricing(variants, retailPrice) {
 
 export const formatCreatorPrice = (price) => usdPrice.format(price)
 
+export function isExternalProduct(product) {
+  return Boolean(product?.externalBrandId || product?.external_brand_id ||
+    product?.externalUrl || product?.external_url)
+}
+
+export function externalProductVariants(product) {
+  if (!(product?.externalBrandId || product?.external_brand_id) ||
+      !(product?.externalUrl || product?.external_url) ||
+      (product?.externalCurrency ?? product?.external_currency) !== 'USD' ||
+      (product?.status && product.status !== 'active')) return []
+  const variants = product?.externalVariants ?? product?.external_variants
+  if (!Array.isArray(variants)) return []
+  return variants.filter((variant) => variant &&
+    typeof variant.id === 'string' && variant.id.trim() &&
+    typeof variant.price === 'number' && Number.isFinite(variant.price) &&
+    Math.round(variant.price * 100) >= 50 && Math.round(variant.price * 100) <= 9999999900 &&
+    variants.filter((entry) => entry?.id === variant.id).length === 1)
+}
+
+export function externalVariantLabel(variant) {
+  const options = Array.isArray(variant.options) ? variant.options :
+    variant.options && typeof variant.options === 'object' ? Object.values(variant.options) : []
+  const label = options.map((option) => typeof option === 'object' && option !== null
+    ? option.value || option.name || '' : option).filter(Boolean).join(' / ')
+  const title = String(variant.title || label || '').trim()
+  return [title, variant.size && !title.split(/\s*[/,|]\s*/).includes(variant.size) ? variant.size : '']
+    .filter(Boolean).join(' / ') || 'Default'
+}
+
 export function mapCreatorProduct(row) {
   const variants = storedPrintfulVariants(row)
-  const external = Boolean(row.external_brand_id && row.external_url)
+  const external = isExternalProduct(row)
   const brand = STORE_BRAND_ROWS.find((entry) =>
     entry.name.toLowerCase() === String(row.brand || '').trim().toLowerCase())
   const photo = external && row.photo_url ? `/api/brands/image?id=${encodeURIComponent(row.id)}&v=${encodeURIComponent(row.external_synced_at || '')}` :
     row.mockup_urls?.[0] || row.photo_url || ''
-  const price = external
-    ? new Intl.NumberFormat('en-US', { style: 'currency', currency: row.external_currency }).format(Number(row.price))
-    : usdPrice.format(Number(row.price))
+  let price = usdPrice.format(Number(row.price))
+  if (external) {
+    try {
+      price = new Intl.NumberFormat('en-US', { style: 'currency', currency: row.external_currency }).format(Number(row.price))
+    } catch { price = 'Price unavailable' }
+  }
   return {
     ...row,
     accountId: row.creator_id,
@@ -77,6 +109,9 @@ export function mapCreatorProduct(row) {
     photoUrl: photo,
     image_url: photo,
     externalUrl: external ? row.external_url : '',
+    externalVariants: external && Array.isArray(row.external_variants) ? row.external_variants : [],
+    externalCurrency: external ? row.external_currency : '',
+    externalBrandId: external ? row.external_brand_id : '',
     brandLogoUrl: external ? row.brand_logo_url : '',
     printfulVariantId: row.printful_variant_id,
     printfulVariants: variants,
