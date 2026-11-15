@@ -190,18 +190,6 @@ function labelForType(typeId) {
     .replace(/\b\w/g, (c) => c.toUpperCase())
 }
 
-function padProducts(list, count, pool) {
-  if (!count) return []
-  const source = list.length ? list : pool
-  if (!source.length) return []
-  const out = []
-  for (let i = 0; i < count; i += 1) {
-    const base = source[i % source.length]
-    out.push(base)
-  }
-  return out
-}
-
 function pickForTheme(catalog, theme, ctx, count) {
   const scored = catalog
     .map((product) => ({
@@ -213,13 +201,11 @@ function pickForTheme(catalog, theme, ctx, count) {
     }))
     .sort((a, b) => b.score - a.score)
 
-  const picked = scored.map((s) => s.product)
-  return padProducts(picked.slice(0, count), count, catalog)
+  return [...new Map(scored.map(({ product }) => [product.id, product])).values()].slice(0, count)
 }
 
 /**
- * Build up to `rowCount` brand marquees from live products, ranked by affinity.
- * Repeated tiles retain the listing ID used by the bag and checkout.
+ * Build up to `rowCount` brand rows from live products, ranked by affinity.
  */
 export function buildPersonalizedRows({
   catalog = [],

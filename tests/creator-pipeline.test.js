@@ -205,9 +205,19 @@ test('Store rows preserve real listing IDs and never synthesize missing brands o
   const rows = buildPersonalizedRows({ catalog: [first, second], favoredBrands: ['lv', 'nike'],
     rowCount: 40, productsPerRow: 40 })
   assert.deepEqual(rows.map((row) => row.name), ['Nike', 'Independent Studio'])
-  assert.ok(rows[0].products.every((product) => product.id === second.id))
-  assert.ok(rows[1].products.every((product) => product.id === first.id))
+  assert.deepEqual(rows[0].products.map((product) => product.id), [second.id])
+  assert.deepEqual(rows[1].products.map((product) => product.id), [first.id])
   assert.deepEqual(buildPersonalizedRows({ catalog: [], favoredBrands: ['lv'] }), [])
+})
+
+test('Store rows show each listing once and respect the existing product limit', () => {
+  const catalog = Array.from({ length: 42 }, (_, index) =>
+    mapCreatorProduct({ id: `item-${index}`, brand: 'Independent Studio', price: 25 }))
+  const [row] = buildPersonalizedRows({ catalog: [...catalog, catalog[0]], productsPerRow: 40 })
+  assert.equal(row.products.length, 40)
+  assert.equal(new Set(row.products.map((product) => product.id)).size, 40)
+  const [short] = buildPersonalizedRows({ catalog: catalog.slice(0, 3), productsPerRow: 40 })
+  assert.equal(short.products.length, 3)
 })
 
 test('cart retains Printful sizes and mockups for the checkout snapshot', async () => {

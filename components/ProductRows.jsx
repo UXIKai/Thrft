@@ -143,17 +143,16 @@ function CrawlRow({ row, rowIndex, onOpenProduct, onHoldRow, market = false, lik
 
     const measure = () => {
       if (!seq.getBoundingClientRect().width) return
-      const styles = getComputedStyle(seq.parentElement)
-      const gap = Number.parseFloat(styles.columnGap || styles.gap || '0') || 0
       const width = seq.getBoundingClientRect().width
-      setLoopPx(width + gap)
+      const gap = Number.parseFloat(getComputedStyle(seq.parentElement).columnGap || '0') || 0
+      setLoopPx(market ? width + gap : Math.max(0, width - wrap.clientWidth))
     }
     measure()
     const ro = new ResizeObserver(measure)
     ro.observe(wrap)
     ro.observe(seq)
     return () => ro.disconnect()
-  }, [products, visible])
+  }, [products, visible, market])
 
   useEffect(() => () => window.clearTimeout(holdRef.current.timer), [])
 
@@ -214,9 +213,11 @@ function CrawlRow({ row, rowIndex, onOpenProduct, onHoldRow, market = false, lik
       onContextMenu={(e) => e.preventDefault()}
     >
       {visible && (
-        <div ref={wrapRef} className="brand-row-track-wrap">
+        <div ref={wrapRef} className={`brand-row-track-wrap${market ? '' : ' is-store-row'}`}>
           <div
-            className={`brand-row-track ${loopPx > 0 ? (goesRight ? 'crawl-right' : 'crawl-left') : ''}`}
+            className={`brand-row-track ${loopPx > 0 ? market
+              ? (goesRight ? 'crawl-right' : 'crawl-left')
+              : (goesRight ? 'store-crawl-right' : 'store-crawl-left') : ''}`}
             style={{
               '--loop': `${loop}px`,
               '--crawl-duration': `${durationSec}s`,
@@ -227,9 +228,9 @@ function CrawlRow({ row, rowIndex, onOpenProduct, onHoldRow, market = false, lik
             <div className="brand-row-seq" ref={seqRef}>
               {products.map((p, i) => renderCard(p, `${row.id}-${p.id}-${i}`))}
             </div>
-            <div className="brand-row-seq" aria-hidden>
+            {market && <div className="brand-row-seq" aria-hidden>
               {products.map((p, i) => renderCard(p, `${row.id}-${p.id}-${i}-b`))}
-            </div>
+            </div>}
           </div>
         </div>
       )}
