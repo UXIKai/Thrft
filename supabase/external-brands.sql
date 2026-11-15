@@ -57,6 +57,36 @@ alter table public.external_brands enable row level security;
 revoke all on public.external_brands from anon, authenticated;
 grant all on public.external_brands to service_role;
 
+alter table public.external_brands
+  add column if not exists flat_shipping_cents integer not null default 0
+    check (flat_shipping_cents between 0 and 10000000);
+
+create or replace function public.set_external_brand_shipping(
+  p_brand_id uuid, p_creator_id uuid, p_amount_cents integer
+) returns public.external_brands
+language plpgsql security invoker set search_path = public
+as $$
+declare
+  brand public.external_brands;
+begin
+  if p_amount_cents is null or p_amount_cents < 0 or p_amount_cents > 10000000 then
+    raise exception 'Invalid flat shipping amount' using errcode = '22023';
+  end if;
+  update public.external_brands b set flat_shipping_cents = p_amount_cents
+    where b.id = p_brand_id and b.creator_id = p_creator_id
+      and exists (select 1 from public.brand_domain_claims c
+        where b.site_origin = 'https://' || c.domain
+          and c.creator_id = p_creator_id and c.status = 'verified')
+    returning b.* into brand;
+  if not found then
+    raise exception 'Verified brand not found' using errcode = '42501';
+  end if;
+  return brand;
+end;
+$$;
+revoke all on function public.set_external_brand_shipping(uuid, uuid, integer) from public, anon, authenticated;
+grant execute on function public.set_external_brand_shipping(uuid, uuid, integer) to service_role;
+
 alter table public.brand_products
   add column if not exists external_brand_id uuid references public.external_brands(id),
   add column if not exists external_url text,

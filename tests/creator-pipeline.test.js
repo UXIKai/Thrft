@@ -201,6 +201,10 @@ test('Store and brand feeds expose only active Supabase listings with mockups an
 
 test('website imports require authentication and a creator-owned logo before network access', async () => {
   fixture()
+  assert.equal((await request('/api/brands/settings', { token: null })).status, 401)
+  assert.equal((await request(`/api/brands/settings/${productId}`, {
+    method: 'PUT', body: { flatShippingCents: 0 }, token: null,
+  })).status, 401)
   for (const path of ['/api/brands/verify-challenge', '/api/brands/verify-domain']) {
     assert.equal((await request(path, { method: 'POST', body: { domain: 'brand.com' }, token: null })).status, 401)
   }

@@ -406,6 +406,18 @@ export async function verifyBrandDomain(domain, method) {
   return api('/api/brands/verify-domain', { method: 'POST', body: JSON.stringify({ domain, method }) })
 }
 
+export async function fetchExternalBrandSettings() {
+  const result = await api('/api/brands/settings')
+  if (!Array.isArray(result.brands)) throw new Error('Invalid brand settings response')
+  return result.brands
+}
+
+export async function saveExternalBrandShipping(brandId, flatShippingCents) {
+  return api(`/api/brands/settings/${encodeURIComponent(brandId)}`, {
+    method: 'PUT', body: JSON.stringify({ flatShippingCents }),
+  })
+}
+
 export async function createListingProduct(payload) {
   const data = await api(`/api/${isSupabaseConfigured() ? 'creator/' : ''}products`, {
     method: 'POST',

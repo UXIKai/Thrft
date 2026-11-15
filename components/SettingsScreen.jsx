@@ -40,6 +40,7 @@ import {
 } from '../api.js'
 import OrbitCarousel from './OrbitCarousel.jsx'
 import StageSlot from './StageSlot.jsx'
+import ExternalBrandShipping from './ExternalBrandShipping.jsx'
 import { LISTING_BRANDS } from '../listingCatalog.js'
 import {
   SIZE_GARMENTS,
@@ -799,6 +800,7 @@ export default function SettingsScreen({
     readBarTransparency(),
   )
   const [sheet, setSheet] = useState(null)
+  const [brandShippingOpen, setBrandShippingOpen] = useState(false)
   const [sheetDraft, setSheetDraft] = useState({})
   const [helpPage, setHelpPage] = useState(null)
   const [assistantDraft, setAssistantDraft] = useState('')
@@ -1874,6 +1876,11 @@ export default function SettingsScreen({
           />
         </Section>
 
+        <Section label="Brand shipping">
+          <Row title="External brand shipping" subtitle="Set a flat rate for each verified brand"
+            onClick={() => setBrandShippingOpen(true)} />
+        </Section>
+
         <Section label="ID Verification">
           <Row
             icon={<ShieldIcon />}
@@ -2756,6 +2763,7 @@ export default function SettingsScreen({
         </div>
       )}
 
+      {brandShippingOpen && <ExternalBrandShipping onBack={() => setBrandShippingOpen(false)} />}
       {helpPage === 'help' && (
         <div
           className="glass-overlay settings-help-page is-assistant is-started"

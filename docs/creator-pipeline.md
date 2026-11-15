@@ -92,6 +92,9 @@ prices, currencies, or sizes.
 Shopify imports also save available variant IDs, options, sizes and prices as
 catalog snapshots. A missing or unsafe numeric variant ID is recorded as null;
 these snapshots are not live inventory and do not enable in-app checkout.
+Verified imported brands can set a flat USD shipping rate in **Settings →
+Brand shipping**. The default is $0. This setting is stored for future checkout;
+external products continue to link to the brand website and do not yet use it.
 
 `POST /api/brands/verify-challenge` accepts `{ "domain": "brand.com" }` (or an
 HTTPS URL) and returns a stable, random `thrft-verify-...` token, `metaTag`, and

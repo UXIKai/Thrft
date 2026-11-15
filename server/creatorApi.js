@@ -79,6 +79,30 @@ export async function importExternalBrand(user, body, db, collect = collectExter
   return { imported: count, complete: catalog.complete }
 }
 
+export async function fetchExternalBrandSettings(user, db) {
+  const [brands, claims] = await Promise.all([
+    db.from('external_brands').select('id,name,site_origin,flat_shipping_cents')
+      .eq('creator_id', user.id).order('name'),
+    db.from('brand_domain_claims').select('domain').eq('creator_id', user.id).eq('status', 'verified'),
+  ])
+  const verified = new Set(checked(claims).map((claim) => `https://${claim.domain}`))
+  return checked(brands).filter((brand) => verified.has(brand.site_origin)).map((brand) => ({
+    id: brand.id, name: brand.name, domain: new URL(brand.site_origin).hostname,
+    flatShippingCents: brand.flat_shipping_cents,
+  }))
+}
+
+export async function saveExternalBrandShipping(user, brandId, amount, db) {
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(brandId)) fail('Invalid brand ID')
+  if (!Number.isInteger(amount) || amount < 0 || amount > 10000000) fail('Enter a valid shipping amount')
+  const result = await db.rpc('set_external_brand_shipping', {
+    p_brand_id: brandId, p_creator_id: user.id, p_amount_cents: amount,
+  })
+  if (result.error?.code === '42501') fail('Verified brand not found', 404)
+  checked(result)
+  return { flatShippingCents: amount }
+}
+
 export function mockupFiles(layout, variantId, placement, artworkUrl, dimensions) {
   const variant = layout.variant_printfiles?.find((entry) => entry.variant_id === variantId)
   const printfile = layout.printfiles?.find((entry) => entry.printfile_id === variant?.placements?.[placement])
@@ -176,7 +200,12 @@ export async function handleCreatorApi(req, res) {
     }
     const user = await requireCreator(req)
     const db = getAdminSupabase()
-    if (path === '/api/brands/verify-challenge' && req.method === 'POST') {
+    if (path === '/api/brands/settings' && req.method === 'GET') {
+      send(res, 200, { brands: await fetchExternalBrandSettings(user, db) })
+    } else if (/^\/api\/brands\/settings\/[^/]+$/.test(path) && req.method === 'PUT') {
+      const body = await readBody(req)
+      send(res, 200, await saveExternalBrandShipping(user, path.split('/').at(-1), body.flatShippingCents, db))
+    } else if (path === '/api/brands/verify-challenge' && req.method === 'POST') {
       const body = await readBody(req)
       send(res, 200, await createVerificationChallenge(db, user.id, body.domain))
     } else if (path === '/api/brands/verify-domain' && req.method === 'POST') {
@@ -301,7 +330,7 @@ export async function handleCreatorApi(req, res) {
     if (error.code === '42501' && /[Vv]erify ownership|verified domain|Verification challenge/.test(error.message)) {
       send(res, 403, { message: error.message })
     } else if (['PGRST202', 'PGRST204', 'PGRST205', '42P01', '42703'].includes(error.code) &&
-        /sync_external_brand|external_brand|external_url|external_sizes|external_variants|external_currency|brand_logo_url|external_synced_at|brand_domain|claim_brand_domain/.test(error.message)) {
+        /sync_external_brand|external_brand|flat_shipping_cents|external_url|external_sizes|external_variants|external_currency|brand_logo_url|external_synced_at|brand_domain|claim_brand_domain/.test(error.message)) {
       send(res, 503, { message: 'Run supabase/external-brands.sql to enable website imports.' })
     } else if (['PGRST205', '42P01'].includes(error.code) && /creator_order_items/.test(error.message)) {
       send(res, 503, { message: 'Run supabase/orders.sql to enable Orders.' })

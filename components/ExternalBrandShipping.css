@@ -1,0 +1,42 @@
+.external-shipping {
+  z-index: 80;
+  background: var(--page-bg);
+}
+
+.external-shipping-body {
+  display: grid;
+  align-content: start;
+  gap: 16px;
+  padding: 18px;
+}
+
+.external-shipping-brand {
+  display: grid;
+  gap: 10px;
+  padding: 16px;
+  border: 1px solid var(--glass-border);
+  border-radius: 18px;
+  background: var(--glass-clear-tint);
+}
+
+.external-shipping-brand h2,
+.external-shipping-brand p {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.external-shipping-brand label {
+  display: grid;
+  gap: 6px;
+}
+
+.external-shipping-brand input,
+.external-shipping-brand button {
+  min-height: 44px;
+  padding: 10px;
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  color: inherit;
+  background: var(--glass-clear-tint);
+  font: inherit;
+}
