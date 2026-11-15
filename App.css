@@ -1062,7 +1062,7 @@ html[data-bg-color='none'] .stage.is-bg-none .atmosphere {
   gap: 10px;
 }
 
-/* Market rows loop; Store rows move only across their real overflow. */
+/* Empty displays and Market rows loop; populated Store rows move over their real overflow. */
 @keyframes marquee-right {
   from {
     transform: translate3d(calc(-1 * var(--loop, 0px)), 0, 0);

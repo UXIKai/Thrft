@@ -144,20 +144,20 @@ function CrawlRow({ row, rowIndex, onOpenProduct, onHoldRow, market = false, lik
   useLayoutEffect(() => {
     const wrap = wrapRef.current
     const seq = seqRef.current
-    if (!visible || !wrap || !seq || !products.length) return undefined
+    if (!visible || !wrap || !seq || (!products.length && !row.empty)) return undefined
 
     const measure = () => {
       if (!seq.getBoundingClientRect().width) return
       const width = seq.getBoundingClientRect().width
       const gap = Number.parseFloat(getComputedStyle(seq.parentElement).columnGap || '0') || 0
-      setLoopPx(market ? width + gap : Math.max(0, width - wrap.clientWidth))
+      setLoopPx(market || row.empty ? width + gap : Math.max(0, width - wrap.clientWidth))
     }
     measure()
     const ro = new ResizeObserver(measure)
     ro.observe(wrap)
     ro.observe(seq)
     return () => ro.disconnect()
-  }, [products, visible, market])
+  }, [products, visible, market, row.empty])
 
   useEffect(() => () => window.clearTimeout(holdRef.current.timer), [])
 
@@ -203,6 +203,8 @@ function CrawlRow({ row, rowIndex, onOpenProduct, onHoldRow, market = false, lik
     ) : (
       <ProductCard key={key} product={p} onOpen={open} />
     )
+  const emptyTiles = () => Array.from({ length: PERSONALIZED_PRODUCTS_PER_ROW }, (_, i) =>
+    <span className="product-box" key={i} aria-hidden="true" />)
 
   return (
     <article
@@ -220,7 +222,7 @@ function CrawlRow({ row, rowIndex, onOpenProduct, onHoldRow, market = false, lik
       {visible && (
         <div ref={wrapRef} className={`brand-row-track-wrap${market ? '' : ' is-store-row'}`}>
           <div
-            className={`brand-row-track ${loopPx > 0 ? market
+            className={`brand-row-track ${loopPx > 0 ? market || row.empty
               ? (goesRight ? 'crawl-right' : 'crawl-left')
               : (goesRight ? 'store-crawl-right' : 'store-crawl-left') : ''}`}
             style={{
@@ -232,12 +234,11 @@ function CrawlRow({ row, rowIndex, onOpenProduct, onHoldRow, market = false, lik
           >
             <div className="brand-row-seq" ref={seqRef}>
               {row.empty
-                ? Array.from({ length: PERSONALIZED_PRODUCTS_PER_ROW }, (_, i) =>
-                  <span className="product-box" key={i} aria-hidden="true" />)
+                ? emptyTiles()
                 : products.map((p, i) => renderCard(p, `${row.id}-${p.id}-${i}`))}
             </div>
-            {market && <div className="brand-row-seq" aria-hidden>
-              {products.map((p, i) => renderCard(p, `${row.id}-${p.id}-${i}-b`))}
+            {(market || row.empty) && <div className="brand-row-seq" aria-hidden>
+              {row.empty ? emptyTiles() : products.map((p, i) => renderCard(p, `${row.id}-${p.id}-${i}-b`))}
             </div>}
           </div>
         </div>

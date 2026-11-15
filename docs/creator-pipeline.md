@@ -46,7 +46,8 @@ Leaderboard, also apply `supabase/social.sql`; see [social data](social-data.md)
 Store feeds and brand pages load active `brand_products` through
 `GET /api/creator/products` (optionally filtered by brand). Empty display slots
 remain visible as non-interactive glass tiles, not demo listings. Each populated
-brand row displays only its real products. Store tiles display the first mockup;
+brand row displays only its real products. Empty rows continuously rotate in
+alternating directions; populated rows do not repeat products. Store tiles display the first mockup;
 the Product Detail sheet lets buyers swipe through all generated mockups and
 choose only the listing's published sizes before adding to their bag. Visible
 Printful mockups are cut out on the device and cached locally, including older
