@@ -13,6 +13,8 @@ import {
   parseListingPrice,
 } from '../listings.js'
 import { isSupabaseConfigured } from '../supabase.js'
+import { hasPrintfulMockup } from '../mockupCutouts.js'
+import ProductPhoto from './ProductPhoto.jsx'
 
 const MARKET_PRODUCTS_PER_ROW = 20
 
@@ -59,7 +61,8 @@ function MarketCard({ product, onOpen, liked, onToggleLike }) {
     <div className="market-card">
       <button type="button" className="market-card-open" onClick={() => onOpen?.(product)} aria-label={`${name} ${product.price || ''}`}>
         <span className="market-card-photo">
-          {photo ? <img src={photo} alt="" loading="lazy" draggable="false" /> : null}
+          {photo ? <ProductPhoto src={photo} cutout={hasPrintfulMockup(product)}
+            alt="" loading="lazy" draggable="false" /> : null}
         </span>
         <span className="market-card-name">{name}</span>
         {product.price ? <span className="market-card-price">{product.price}</span> : null}
@@ -97,7 +100,8 @@ function ProductCard({ product, onOpen }) {
       onClick={() => onOpen?.(product)}
     >
       {(product.photoUrl || product.image_url) && (
-        <img className="product-box-photo" src={product.photoUrl || product.image_url}
+        <ProductPhoto className="product-box-photo" src={product.photoUrl || product.image_url}
+          cutout={hasPrintfulMockup(product)}
           alt="" loading="lazy" draggable="false" />
       )}
     </button>

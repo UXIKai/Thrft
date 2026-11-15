@@ -597,6 +597,10 @@ html body .product-detail .glass-overlay-back {
   border-radius: 10px;
 }
 
+.product-detail-selected-item img.is-product-cutout {
+  object-fit: contain;
+}
+
 .product-detail-selected-item h2 {
   margin: 4px 0;
   font-size: 1rem;

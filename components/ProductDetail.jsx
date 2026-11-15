@@ -4,6 +4,7 @@ import { useBag } from '../BagContext.jsx'
 import { LETTER_SIZES } from '../sizeOptions.js'
 import { productSizeOptions } from '../productSizes.js'
 import { storedPrintfulVariants } from '../creatorProducts.js'
+import ProductPhoto from './ProductPhoto.jsx'
 import './GlassOverlay.css'
 import './ProductDetail.css'
 
@@ -276,7 +277,7 @@ export default function ProductDetail({
                     setEditingSizeIndex(index)
                   }}
                 >
-                {photo && <img src={photo} alt="" />}
+                {photo && <ProductPhoto src={photo} cutout={isPrintful} alt="" />}
                 <div>
                   {brand && <p>{brand}</p>}
                   <h2>{displayTitle || name}</h2>
@@ -345,7 +346,7 @@ export default function ProductDetail({
           aria-label={photos.length > 1 ? 'Product mockups; swipe to see more' : undefined}
           tabIndex={photos.length > 1 ? 0 : undefined}>
           {photos.length ? (
-            photos.map((url, index) => <img key={url} src={url}
+            photos.map((url, index) => <ProductPhoto key={url} src={url} cutout={isPrintful}
               alt={`${name}, preview ${index + 1} of ${photos.length}`} />)
           ) : (
             <span className="product-detail-photo-empty" aria-hidden />

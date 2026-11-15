@@ -2657,6 +2657,10 @@ html body .market-card .market-card-open {
   display: block;
 }
 
+.market-card-photo img.is-product-cutout {
+  object-fit: contain;
+}
+
 html body .market-card .market-card-like {
   position: absolute;
   top: 6px;

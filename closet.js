@@ -201,11 +201,11 @@ async function orientedPhoto(file) {
 }
 
 /** Cuts clothing out with the AI model; failures are reported to the scanner. */
-export async function removeImageBackground(file) {
+export async function removeImageBackground(file, options) {
   if (!file) throw new Error('No image')
   try {
     const { removeBackground } = await import('@imgly/background-removal')
-    const blob = await removeBackground(await orientedPhoto(file))
+    const blob = await removeBackground(await orientedPhoto(file), options)
     return await cropToItem(blob)
   } catch (error) {
     throw new Error(`Could not remove the background. Check your connection and try a clear photo. ${error?.message || ''}`, { cause: error })

@@ -47,7 +47,13 @@ Store feeds and brand pages load active `brand_products` through
 `GET /api/creator/products` (optionally filtered by brand). Empty catalogs show an
 empty state rather than demo listings. Store tiles display the first mockup;
 the Product Detail sheet lets buyers swipe through all generated mockups and
-choose only the listing's published sizes before adding to their bag.
+choose only the listing's published sizes before adding to their bag. Visible
+Printful mockups are cut out on the device and cached locally, including older
+listings. The original image remains visible until processing completes, or if
+the cutout fails; the printable artwork and saved mockups are unchanged. The
+uniform white background is removed directly without a model download. Other
+backgrounds use the on-device model, which is downloaded on first use. White
+details enclosed inside the product are preserved by the direct cutout.
 
 In **Create → Store → photo**, enable **Print on demand**. Upload the
 original artwork directly to Thrft Storage, choose a Printful blank, one color,

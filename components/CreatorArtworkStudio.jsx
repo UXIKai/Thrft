@@ -4,6 +4,7 @@ import { fetchPrintfulProducts, fetchPrintfulProduct,
   startPrintfulMockups, fetchPrintfulMockups } from '../api.js'
 import './CreatorArtworkStudio.css'
 import { isAvailablePrintfulVariant } from '../creatorProducts.js'
+import ProductPhoto from './ProductPhoto.jsx'
 
 export default function CreatorArtworkStudio({ initialArtwork, onReady, onBusy }) {
   const [products, setProducts] = useState([])
@@ -186,7 +187,7 @@ export default function CreatorArtworkStudio({ initialArtwork, onReady, onBusy }
       {mockups.length > 0 && <>
         <div className="creator-section-heading"><span>Your previews</span><small>{selected.length} sizes</small></div>
         <div className="creator-mockup-previews">
-          {mockups.map((url) => <img key={url} src={url} alt="Printful product mockup" />)}
+          {mockups.map((url) => <ProductPhoto key={url} src={url} cutout alt="Printful product mockup" />)}
         </div>
       </>}
       {error && <p className="creator-studio-error" role="alert">{error}</p>}
