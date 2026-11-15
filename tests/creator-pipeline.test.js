@@ -201,6 +201,9 @@ test('Store and brand feeds expose only active Supabase listings with mockups an
 
 test('website imports require authentication and a creator-owned logo before network access', async () => {
   fixture()
+  for (const path of ['/api/brands/verify-challenge', '/api/brands/verify-domain']) {
+    assert.equal((await request(path, { method: 'POST', body: { domain: 'brand.com' }, token: null })).status, 401)
+  }
   const body = { brandName: 'Test', websiteUrl: 'https://127.0.0.1/', logoUrl: artwork }
   assert.equal((await request('/api/brands/import-url', { method: 'POST', body, token: null })).status, 401)
   const foreign = await request('/api/brands/import-url', { method: 'POST', body: { ...body, logoUrl: artwork.replace(creatorId, productId) } })

@@ -398,6 +398,14 @@ export async function importBrandUrl({ brandName, logoUrl, websiteUrl }) {
   })
 }
 
+export async function createBrandVerificationChallenge(domain) {
+  return api('/api/brands/verify-challenge', { method: 'POST', body: JSON.stringify({ domain }) })
+}
+
+export async function verifyBrandDomain(domain, method) {
+  return api('/api/brands/verify-domain', { method: 'POST', body: JSON.stringify({ domain, method }) })
+}
+
 export async function createListingProduct(payload) {
   const data = await api(`/api/${isSupabaseConfigured() ? 'creator/' : ''}products`, {
     method: 'POST',

@@ -1233,3 +1233,16 @@ html body .create-listing .listing-photo-choice .listing-photo-choice-btn:active
 .listing-website-back {
   color: inherit;
 }
+
+.listing-website-verification {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+}
+
+.listing-website-verification code {
+  display: block;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  user-select: text;
+}

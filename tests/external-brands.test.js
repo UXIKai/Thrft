@@ -40,8 +40,9 @@ test('network requests pin verified DNS and reject private DNS answers and redir
     const req = new EventEmitter()
     req.end = () => {
       const res = Readable.from([Buffer.from('ok')])
-      res.statusCode = url.pathname === '/redirect' ? 302 : 200
-      res.headers = url.pathname === '/redirect' ? { location: 'https://127.0.0.1/private' } : {}
+      res.statusCode = ['/redirect', '/cross-domain'].includes(url.pathname) ? 302 : 200
+      res.headers = url.pathname === '/redirect' ? { location: 'https://127.0.0.1/private' }
+        : url.pathname === '/cross-domain' ? { location: 'https://other.example/catalog' } : {}
       callback(res)
     }
     req.destroy = (error) => req.emit('error', error)
@@ -50,7 +51,10 @@ test('network requests pin verified DNS and reject private DNS answers and redir
   assert.equal((await fetchPublicHttps('https://brand.example/', { lookupFn, requestFn })).body.toString(), 'ok')
   await assert.rejects(fetchPublicHttps('https://mixed.example/', { lookupFn, requestFn }), /non-public/)
   await assert.rejects(fetchPublicHttps('https://brand.example/redirect', { lookupFn, requestFn }), /public HTTPS/)
-  assert.equal(requests, 2)
+  await assert.rejects(fetchPublicHttps('https://brand.example/cross-domain', {
+    lookupFn, requestFn, allowedHostname: 'brand.example',
+  }), /verified domain/)
+  assert.equal(requests, 3)
 })
 
 test('Shopify catalogs import available variants, prices, sizes, images and direct links', async () => {
@@ -142,9 +146,14 @@ test('an import uses the authenticated owner, owned logo, and atomic sync only a
     const user = { id: 'owner', email: 'creator@example.com', user_metadata: { username: 'creator' } }
     const logoUrl = 'https://storage.example/storage/v1/object/public/Thrft/owner/logo.png'
     const body = { brandName: '  Studio  ', logoUrl, websiteUrl: 'https://brand.example' }
-    const catalog = { origin: 'https://brand.example', complete: true, products: [{ title: 'Hat' }] }
+    const catalog = { origin: 'https://brand.example', complete: true,
+      products: [{ title: 'Hat', external_url: 'https://brand.example/products/hat' }] }
     const calls = []
-    const db = { rpc: async (name, args) => { calls.push({ name, args }); return { data: 1, error: null } } }
+    const db = {
+      from() { return { select() { return this }, eq() { return this },
+        async maybeSingle() { return { data: { creator_id: 'owner', status: 'verified' }, error: null } } } },
+      rpc: async (name, args) => { calls.push({ name, args }); return { data: 1, error: null } },
+    }
     assert.deepEqual(await importExternalBrand(user, body, db, async () => catalog), { imported: 1, complete: true })
     assert.equal(calls[0].name, 'sync_external_brand')
     assert.equal(calls[0].args.p_creator_id, 'owner')

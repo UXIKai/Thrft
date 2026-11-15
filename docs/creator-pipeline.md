@@ -78,7 +78,9 @@ Storage instead of storing data URLs.
 
 Apply `supabase/external-brands.sql` after `supabase/creator-pipeline.sql`.
 In **Create → Store → Connect Website**, upload a brand logo and enter its name
-and public HTTPS website. Repeat the import to refresh the catalog; it is not
+and public HTTPS website. Request verification instructions, publish the meta tag
+in the homepage `<head>` or the DNS TXT record, then verify before importing.
+Repeat the import to refresh the catalog; it is not
 scheduled automatically. Shopify-compatible `/products.json` catalogs use
 the store currency from `/cart.js`, import up to 1,000 available products, and
 archive previously imported products no longer available. Other sites can
@@ -87,8 +89,21 @@ provide Schema.org Product JSON-LD on the entered product page, or on up to
 The importer reports unsupported or incomplete catalogs instead of guessing
 prices, currencies, or sizes.
 
-Website ownership is not verified by this flow: only import a site you are
-authorized to represent. Product links stay on the supplied website origin.
+`POST /api/brands/verify-challenge` accepts `{ "domain": "brand.com" }` (or an
+HTTPS URL) and returns a stable, random `thrft-verify-...` token, `metaTag`, and
+`dnsTxt`. `POST /api/brands/verify-domain` accepts the same domain and
+`"method": "html"` or `"dns"`. Both endpoints require sign-in. Challenges are
+private and account-scoped; pending challenges do not reserve a domain. The first
+successful proof atomically claims that exact hostname for one account.
+Subdomains, including `www`, must be verified separately. HTML verification and
+catalog requests cannot redirect to a different hostname or custom port.
+
+The importer checks the verified owner before any catalog request and the SQL
+sync checks again before writing. Publication is also guarded by a database
+trigger. Rerun the updated `supabase/external-brands.sql` even if it was previously
+applied: existing unverified imports are archived until ownership is verified
+and the catalog is reimported. No existing import is automatically granted ownership.
+Product links stay on the verified website origin.
 Public HTTPS requests, including redirects and product image downloads, reject
 private/reserved addresses and pin the resolved address for each connection.
 Imported photos are fetched through a bounded image proxy and use the same

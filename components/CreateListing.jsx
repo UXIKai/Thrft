@@ -6,7 +6,7 @@ import {
   getCustomBrands,
   getCustomCategories,
 } from '../customCatalog.js'
-import { createListingProduct, importBrandUrl } from '../api.js'
+import { createListingProduct, importBrandUrl, createBrandVerificationChallenge, verifyBrandDomain } from '../api.js'
 import { isCreateStepFilled } from '../createWalkthrough.js'
 import { processCreatePhotos } from '../createPhotoProcessing.js'
 import { createListing } from '../listings.js'
@@ -253,6 +253,8 @@ export default function CreateListing({ onPosted, initialSegment = 'market' } = 
   const [websiteBusy, setWebsiteBusy] = useState(false)
   const [websiteError, setWebsiteError] = useState('')
   const [websiteSuccess, setWebsiteSuccess] = useState(false)
+  const [websiteChallenge, setWebsiteChallenge] = useState(null)
+  const [websiteVerified, setWebsiteVerified] = useState(false)
 
   const isMarket = segment === 'market'
   const isStore = segment === 'store'
@@ -586,9 +588,31 @@ export default function CreateListing({ onPosted, initialSegment = 'market' } = 
     }
   }
 
+  async function checkWebsiteOwnership(method) {
+    if (websiteBusy) return
+    setWebsiteError('')
+    setWebsiteBusy(true)
+    try {
+      if (method) {
+        await verifyBrandDomain(websiteChallenge.domain, method)
+        setWebsiteVerified(true)
+      } else {
+        const challenge = await createBrandVerificationChallenge(websiteUrl.trim())
+        setWebsiteChallenge(challenge)
+        setWebsiteVerified(challenge.status === 'verified')
+      }
+    } catch (error) {
+      setWebsiteError(error.message || 'Could not verify website ownership.')
+    } finally { setWebsiteBusy(false) }
+  }
+
   async function submitWebsite(event) {
     event.preventDefault()
     if (websiteBusy) return
+    if (!websiteVerified) {
+      setWebsiteError('Verify website ownership before importing products.')
+      return
+    }
     const brandName = websiteBrand.trim()
     let url
     try {
@@ -674,7 +698,7 @@ export default function CreateListing({ onPosted, initialSegment = 'market' } = 
           ) : (
             <>
               <p>Import products from your brand’s public HTTPS website.</p>
-              <p>Only connect a website you are authorized to represent.</p>
+              <p>Verify ownership with a website meta tag or DNS TXT record before importing.</p>
               <label>Brand name
                 <input className="listing-input" type="text" value={websiteBrand} required maxLength={80}
                   disabled={websiteBusy} onChange={(event) => setWebsiteBrand(event.target.value)} />
@@ -689,13 +713,32 @@ export default function CreateListing({ onPosted, initialSegment = 'market' } = 
               <label>Website URL
                 <input className="listing-input" type="url" value={websiteUrl} required
                   placeholder="https://example.com" disabled={websiteBusy}
-                  onChange={(event) => setWebsiteUrl(event.target.value)} />
+                  onChange={(event) => {
+                    setWebsiteUrl(event.target.value)
+                    setWebsiteChallenge(null)
+                    setWebsiteVerified(false)
+                  }} />
               </label>
+              {!websiteVerified && <button className="listing-website-button" type="button"
+                disabled={websiteBusy || !websiteUrl.trim()} onClick={() => checkWebsiteOwnership()}>
+                Get verification instructions
+              </button>}
+              {websiteChallenge && !websiteVerified && <div className="listing-website-verification">
+                <p>Add this tag to the homepage head of {websiteChallenge.domain}:</p>
+                <code>{websiteChallenge.metaTag}</code>
+                <p>Or add a DNS TXT record at {websiteChallenge.domain} with this value:</p>
+                <code>{websiteChallenge.dnsTxt}</code>
+                <button className="listing-website-button" type="button" disabled={websiteBusy}
+                  onClick={() => checkWebsiteOwnership('html')}>Verify meta tag</button>
+                <button className="listing-website-button" type="button" disabled={websiteBusy}
+                  onClick={() => checkWebsiteOwnership('dns')}>Verify DNS TXT</button>
+              </div>}
+              {websiteVerified && <p role="status">Domain ownership verified.</p>}
               {websiteError && <p role="alert">{websiteError}</p>}
-              <button className="listing-website-button" type="submit" disabled={websiteBusy}>
+              <button className="listing-website-button" type="submit" disabled={websiteBusy || !websiteVerified}>
                 {websiteBusy ? 'Importing website…' : 'Import website'}
               </button>
-              {websiteBusy && <span role="status">Uploading logo and importing products…</span>}
+              {websiteBusy && <span role="status">Connecting website…</span>}
             </>
           )}
           <button className="listing-website-back is-bare" type="button" disabled={websiteBusy} onClick={() => {
@@ -706,6 +749,8 @@ export default function CreateListing({ onPosted, initialSegment = 'market' } = 
             setWebsiteUrl('')
             setWebsiteLogo(null)
             setUploadedLogoUrl('')
+            setWebsiteChallenge(null)
+            setWebsiteVerified(false)
           }}>{websiteSuccess ? 'Done' : 'Back to Store listing'}</button>
         </form>
       )}

@@ -75,10 +75,13 @@ async function fetchOnce(url, maxBytes, lookupFn, requestFn) {
 }
 
 export async function fetchPublicHttps(value, {
-  maxBytes = 4 * 1024 * 1024, lookupFn = lookup, requestFn = request,
+  maxBytes = 4 * 1024 * 1024, lookupFn = lookup, requestFn = request, allowedHostname,
 } = {}) {
   let url = publicHttpsUrl(value)
   for (let redirects = 0; redirects <= 3; redirects++) {
+    if (allowedHostname && (url.hostname.toLowerCase().replace(/\.$/, '') !== allowedHostname || url.port)) {
+      fail('Website requests cannot leave the verified domain', 403)
+    }
     const response = await fetchOnce(url, maxBytes, lookupFn, requestFn)
     if (![301, 302, 303, 307, 308].includes(response.status)) return { ...response, url: url.href }
     if (!response.headers.location || redirects === 3) fail('Too many website redirects', 422)

@@ -11,7 +11,8 @@ import { fetchPublicAccount, fetchSocialProfile, saveSocialProfile,
   fetchSocialSaved, saveSocialSaved, fetchLeaderboard } from './socialStore.js'
 import { fetchOrders } from './orders.js'
 import { collectExternalProducts } from './externalBrands.js'
-import { fetchPublicHttps } from './publicHttps.js'
+import { fetchPublicHttps, publicHttpsUrl } from './publicHttps.js'
+import { websiteDomain, requireVerifiedDomain, createVerificationChallenge, verifyDomain } from './brandVerification.js'
 
 function fail(message, status = 400) {
   throw Object.assign(new Error(message), { status })
@@ -62,7 +63,13 @@ export async function importExternalBrand(user, body, db, collect = collectExter
   if (!brandName || brandName.length > 80) fail('Enter a brand name of up to 80 characters')
   const logoUrl = requireArtworkUrl(body.logoUrl, user.id)
   if (typeof body.websiteUrl !== 'string' || body.websiteUrl.length > 2048) fail('Enter a valid website URL')
-  const catalog = await collect(body.websiteUrl)
+  const websiteUrl = publicHttpsUrl(body.websiteUrl)
+  const domain = websiteDomain(websiteUrl.href)
+  await requireVerifiedDomain(db, user.id, domain)
+  websiteUrl.hostname = domain
+  const catalog = await collect(websiteUrl.href, (url) => fetchPublicHttps(url, { allowedHostname: domain }))
+  if (catalog.origin !== `https://${domain}` || catalog.products.some((product) =>
+    websiteDomain(product.external_url) !== domain)) fail('Catalog must belong to the verified domain', 403)
   const identity = creatorIdentity(user)
   const count = checked(await db.rpc('sync_external_brand', {
     p_creator_id: user.id, p_creator_username: identity.creator_username, p_creator_name: identity.creator_name,
@@ -169,7 +176,13 @@ export async function handleCreatorApi(req, res) {
     }
     const user = await requireCreator(req)
     const db = getAdminSupabase()
-    if (path === '/api/brands/import-url' && req.method === 'POST') {
+    if (path === '/api/brands/verify-challenge' && req.method === 'POST') {
+      const body = await readBody(req)
+      send(res, 200, await createVerificationChallenge(db, user.id, body.domain))
+    } else if (path === '/api/brands/verify-domain' && req.method === 'POST') {
+      const body = await readBody(req)
+      send(res, 200, await verifyDomain(db, user.id, body.domain, body.method))
+    } else if (path === '/api/brands/import-url' && req.method === 'POST') {
       send(res, 200, await importExternalBrand(user, await readBody(req), db))
     } else if (path === '/api/creator/me/orders' && req.method === 'GET') {
       send(res, 200, { items: await fetchOrders(user.id, url.searchParams.get('kind')) })
@@ -285,8 +298,10 @@ export async function handleCreatorApi(req, res) {
     }
   } catch (error) {
     console.error('[creator-api]', error.message)
-    if (['PGRST202', 'PGRST204', 'PGRST205', '42P01', '42703'].includes(error.code) &&
-        /sync_external_brand|external_brand|external_url|external_sizes|external_currency|brand_logo_url|external_synced_at/.test(error.message)) {
+    if (error.code === '42501' && /[Vv]erify ownership|verified domain|Verification challenge/.test(error.message)) {
+      send(res, 403, { message: error.message })
+    } else if (['PGRST202', 'PGRST204', 'PGRST205', '42P01', '42703'].includes(error.code) &&
+        /sync_external_brand|external_brand|external_url|external_sizes|external_currency|brand_logo_url|external_synced_at|brand_domain|claim_brand_domain/.test(error.message)) {
       send(res, 503, { message: 'Run supabase/external-brands.sql to enable website imports.' })
     } else if (['PGRST205', '42P01'].includes(error.code) && /creator_order_items/.test(error.message)) {
       send(res, 503, { message: 'Run supabase/orders.sql to enable Orders.' })
