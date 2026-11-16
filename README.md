@@ -70,7 +70,7 @@ Profile Store and Market listings use a borderless three-column product image gr
 
 Store product details have a top-right heart that saves or removes the product from Liked. Saving uses the existing account-scoped saved-products API and refreshes saved-product preferences.
 
-The default atmosphere is a slowly flowing dark surface with a curved warm-gold edge light. Appearance background colors still tint the flow; turning the effect off or choosing a photo hides it. Reduced-motion preferences keep the curve still.
+The default atmosphere is a continuously bending dark wave with warm-gold light traveling along its edge, rather than a static wallpaper drifting across the screen. Appearance background colors still tint the flow; turning the effect off or choosing a photo hides it. Reduced-motion preferences pause both the wave geometry and light.
 
 Create uses borderless fields and a transparent product studio rather than nested cards. Store opens directly in print-on-demand mode without a toggle or the resale camera/gallery box; Connect Website remains available. Market retains its personal resale photo flow. Printful base costs, estimated margins, and payment-fee notes are available in the collapsed INFORMATION disclosure on the price step.
 
