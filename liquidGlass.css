@@ -1876,7 +1876,7 @@ html body *:not(#_)::after {
   -webkit-backdrop-filter: none !important;
 }
 
-/* Settings: air around the edges and the app's thin hairline outline instead of heavy white borders */
+/* Settings: roomy, borderless containers in every appearance mode. */
 html body .settings-screen {
   --st-pad: 28px;
 }
@@ -1886,7 +1886,7 @@ html[data-app-color='none'][data-moonlight='on'] body .settings-block:not(#_),
 html[data-app-color='none'][data-moonlight='on'] body .settings-theme-toggle:not(#_),
 html[data-app-color='none'][data-moonlight='on'] body .settings-account-active:not(#_),
 html[data-app-color='none'][data-moonlight='on'] body .settings-icon-tile:not(#_) {
-  border-color: light-dark(rgba(0, 0, 0, 0.16), rgba(255, 255, 255, 0.16)) !important;
+  border-color: transparent !important;
   border-width: 1px !important;
 }
 

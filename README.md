@@ -96,6 +96,7 @@ Name, username, and profile photo edits are saved to Supabase user metadata when
 While signed in, browser back preserves the current app page, rather than revisiting the sign-in screen. Edge touch swipes are canceled on both sides during event capture, before page controls handle them, including on Create. Browser/OS gestures that cannot be canceled remain platform-controlled. Explicit sign-out and expired sessions still require authentication.
 
 ### Profile settings
+- Settings containers have no visible outlines. An 85%-opaque, page-toned surface keeps controls readable while the animated app background remains visible, independently of the container transparency slider.
 - Settings has a centered title with the back button at the far left of its header. The Profile control sits below at its original width, with the moon toggle on its right.
 - Choosing a black or near-black Background swatch/custom color turns off the dark-mode toggle and saves that preference. The chosen background stays black, with automatic white text for contrast; Home search colors do not change the saved theme.
 - A Dim–Bright slider below Short–Tall controls app brightness live and persists on this device. Bright preserves the normal appearance; Dim adds a screen-wide dark overlay without changing the theme or device brightness.
