@@ -3242,8 +3242,9 @@ html body .stage .home-radial[data-sel] .home-radial-btn:not(.is-hot):not(#_):no
 
 /* Picker button a bit larger */
 .home-scroll:not(.is-home-idle) .wordmark-wrap > .home-segment-slider {
+  --slot: 44px;
   scale: 1.25;
-  transform-origin: 50% 100%;
+  transform-origin: 50% 50%;
 }
 
 /* Invisible shield so nothing behind the picker button can be pressed */
@@ -3361,15 +3362,15 @@ html body .cart-screen .cart-chevron:not(#_) {
 html body .nav-toggle:not(#_), html body .cart-chevron:not(#_) { position: absolute; }
 .nav-toggle .nav-button-ico, .cart-chevron .nav-button-ico { display: grid; place-items: center; }
 .nav-toggle .nav-button-ico svg, .cart-chevron .nav-button-ico svg { width: 22px; height: 22px; }
-.nav-toggle .wheel-arrow.is-up { top: 5px; }
+.nav-toggle .wheel-arrow.is-up { top: 1px; }
 .cart-chevron .wheel-arrow.is-up { top: 1px; }
-.nav-toggle .wheel-arrow.is-down { top: auto; bottom: 5px; }
+.nav-toggle .wheel-arrow.is-down { top: auto; bottom: 1px; }
 .cart-chevron .wheel-arrow.is-down { top: auto; bottom: 1px; }
 .nav-toggle .wheel-arrow.is-left, .nav-toggle .wheel-arrow.is-right,
 .cart-chevron .wheel-arrow.is-left, .cart-chevron .wheel-arrow.is-right { top: 50%; margin-top: -4px; }
-.nav-toggle .wheel-arrow.is-left { left: calc(50% - 13px); transform: rotate(-90deg); }
+.nav-toggle .wheel-arrow.is-left { left: calc(50% - 17px); transform: rotate(-90deg); }
 .cart-chevron .wheel-arrow.is-left { left: calc(50% - 17px); transform: rotate(-90deg); }
-.nav-toggle .wheel-arrow.is-right { left: calc(50% + 13px); transform: rotate(90deg); }
+.nav-toggle .wheel-arrow.is-right { left: calc(50% + 17px); transform: rotate(90deg); }
 .cart-chevron .wheel-arrow.is-right { left: calc(50% + 17px); transform: rotate(90deg); }
 
 /* Mouse drags on the picker must not select text or drag images */
@@ -3426,11 +3427,15 @@ html body .stage .home-radial .home-radial-btn:not(#_):not(#_):not(#_) {
 /* Desktop: bigger nav bar, smaller toggle above it, Settings in the window's corner */
 @media (min-width: 900px) {
   html body .stage > .tab-bar.tab-bar:not(#_) { scale: 1.5; transform-origin: 0 100%; }
-  html body .stage > .nav-toggle:not(#_) {
+  html body .stage > .nav-toggle:not(#_),
+  html body .home-scroll:not(.is-home-idle) .wordmark-wrap > .home-segment-slider:not(#_) {
     scale: 1;
     bottom: calc(var(--nav-bottom) + 108px);
   }
-  html body .stage.is-nav-hidden > .nav-toggle:not(#_) { bottom: calc(var(--nav-bottom) - 4px); }
+  html body .stage.is-nav-hidden > .nav-toggle:not(#_),
+  html body .stage.is-nav-hidden .home-scroll:not(.is-home-idle) .wordmark-wrap > .home-segment-slider:not(#_) {
+    bottom: calc(var(--nav-bottom) - 4px);
+  }
   html body .stage > .nav-toggle:active:not(#_) { scale: 0.88; }
   .app-column.is-profile-wide { width: 100%; }
   .app-column.is-profile-wide .profile-screen { --pf-pad-x: max(18px, calc((100% - 560px) / 2 + 18px)); }
@@ -3464,6 +3469,10 @@ html body .stage .home-radial .home-radial-btn:not(#_):not(#_):not(#_) {
 }
 
 .home-segment-closed-star .ninja-star {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
   width: 52px;
   height: 52px;
   overflow: visible;
