@@ -1447,6 +1447,7 @@ html[data-bg-color='none'] .stage.is-bg-none .atmosphere {
 }
 
 .tab-pill {
+  display: none;
   position: absolute;
   z-index: 0;
   top: 0;
