@@ -22,7 +22,7 @@ import ClosetNumberLookup from './ClosetNumberLookup.jsx'
 import CreatorArtworkStudio from './CreatorArtworkStudio.jsx'
 import { uploadCreatorArtwork } from '../artworkStorage.js'
 import { creatorPricing, formatCreatorPrice } from '../creatorProducts.js'
-import { ClosetIcon, MarketIcon, ShirtIcon, StoreIcon } from './SegmentIcons.jsx'
+import { ClosetIcon, MarketIcon, StoreIcon } from './SegmentIcons.jsx'
 import './CreateListing.css'
 
 function CameraIcon() {
@@ -244,7 +244,6 @@ export default function CreateListing({ onPosted, initialSegment = 'market' } = 
   const photoGalleryRef = useRef(null)
   const [photoChoice, setPhotoChoice] = useState(false)
   const [marketPhotos, setMarketPhotos] = useState([])
-  const [creatorMode, setCreatorMode] = useState(false)
   const [creatorArtwork, setCreatorArtwork] = useState(null)
   const [websiteBrand, setWebsiteBrand] = useState('')
   const [websiteUrl, setWebsiteUrl] = useState('')
@@ -258,6 +257,7 @@ export default function CreateListing({ onPosted, initialSegment = 'market' } = 
 
   const isMarket = segment === 'market'
   const isStore = segment === 'store'
+  const creatorMode = isStore
   const isCloset = segment === 'closet'
   const pricing = creatorPricing(creatorArtwork?.variants, price)
   const priceRange = (min, max) => min === max ? formatCreatorPrice(min)
@@ -322,7 +322,6 @@ export default function CreateListing({ onPosted, initialSegment = 'market' } = 
     setDateY(now.getFullYear())
     setMarketPhotos([])
     setCreatorArtwork(null)
-    setCreatorMode(false)
     setScanPreview('')
     setScanImage('')
     setScanZoom(1)
@@ -761,28 +760,13 @@ export default function CreateListing({ onPosted, initialSegment = 'market' } = 
           <strong>Connect Website</strong><small>Import products from your brand website</small>
         </button>
       )}
-      {currentStep === 'photo' && isStore && (
-        <label className="creator-mode-toggle">
-          <ShirtIcon className="creator-mode-icon" />
-          <span className="creator-mode-copy"><strong>Print on demand</strong><small>Your artwork, made to order</small></span>
-          <input type="checkbox" aria-label="Create a Printful product"
-            checked={creatorMode} disabled={scanning || posting}
-            onChange={(event) => {
-              setCreatorMode(event.target.checked)
-              setCreatorArtwork(null)
-              setMarketPhotos([])
-              setPostError('')
-            }} />
-          <span className="creator-mode-switch" aria-hidden="true" />
-        </label>
-      )}
       {currentStep === 'photo' && isStore && creatorMode && (
         <CreatorArtworkStudio initialArtwork={creatorArtwork} onBusy={setScanning} onReady={(artwork) => {
           setCreatorArtwork(artwork)
           setMarketPhotos(artwork?.mockupUrls || [])
         }} />
       )}
-      {currentStep === 'photo' && (isMarket || isStore) && !(isStore && creatorMode) && (
+      {currentStep === 'photo' && isMarket && (
         <div className={`listing-photo-drop${marketPhotos.length ? ' has-preview' : ''}${photoChoice ? ' is-choosing' : ''}`} role="group" aria-label="Add photos">
           <input ref={photoCameraRef} type="file" accept="image/*" capture="environment" className="listing-scan-input" aria-hidden tabIndex={-1} onChange={onMarketPhoto} />
           <input ref={photoGalleryRef} type="file" accept="image/*" multiple className="listing-scan-input" aria-hidden tabIndex={-1} onChange={onMarketPhoto} />

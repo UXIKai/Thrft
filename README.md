@@ -68,7 +68,7 @@ Store and Market product photos sit directly on the page without card background
 
 Profile Store and Market listings use a borderless three-column product image grid, with names and prices below each photo. Images fit without cropping and use the shared background-removal pipeline for Printful and external products. Tapping a product still opens its details; Active and Sold filters are unchanged.
 
-Create uses borderless fields and a transparent product studio rather than nested cards. Printful base costs, estimated margins, and payment-fee notes are available in the collapsed INFORMATION disclosure on the price step.
+Create uses borderless fields and a transparent product studio rather than nested cards. Store opens directly in print-on-demand mode without a toggle or the resale camera/gallery box; Connect Website remains available. Market retains its personal resale photo flow. Printful base costs, estimated margins, and payment-fee notes are available in the collapsed INFORMATION disclosure on the price step.
 
 The navigation's outer track uses a clear vertical sheen, 8px blur with brightness/contrast enhancement, asymmetric white rim highlights, and a soft drop shadow. The active bubble uses the quieter clear finish with a faint neutral edge and light blur. Mobile bubble spacing remains unchanged.
 
