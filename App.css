@@ -2309,25 +2309,14 @@ html body .store-row-strip .product-box {
 
 .atmosphere-flow {
   position: absolute;
-  inset: -10%;
-  width: 120%;
-  height: 120%;
-  animation: atmosphere-flow 24s ease-in-out infinite alternate;
-  transform-origin: center;
-}
-
-@keyframes atmosphere-flow {
-  from { transform: translate3d(-2%, 3%, 0) rotate(-4deg) scale(1.02); }
-  to { transform: translate3d(2%, -3%, 0) rotate(4deg) scale(1.08); }
+  inset: 0;
+  width: 100%;
+  height: 100%;
 }
 
 .stage.is-bg-none .atmosphere-flow,
 html[data-bg-photo] .atmosphere-flow {
   display: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .atmosphere-flow { animation: none; }
 }
 
 /* Instagram-style selection: solid soft-gray pill centered on its icon; tabs are inset so edge pills fit inside the bar */
