@@ -190,7 +190,7 @@
   position: absolute;
   left: 0;
   right: 0;
-  bottom: calc(6px + env(safe-area-inset-bottom, 0px));
+  bottom: calc(var(--cart-nav-bottom) + 70px);
   z-index: 3;
   display: flex;
   flex-direction: column;
@@ -233,10 +233,6 @@
 }
 
 .cart-total {
-  position: absolute;
-  left: 0;
-  bottom: calc(var(--cart-nav-bottom) + 94px);
-  z-index: 3;
   display: flex;
   justify-content: center;
   align-items: baseline;

@@ -3,26 +3,11 @@ import { useEffect, useRef, useState } from 'react'
 import HomeRadialMenu, { moveKnob, radialAt } from './HomeRadialMenu.jsx'
 import { createCheckoutSession, estimateCheckout } from '../api.js'
 import { useBag } from '../BagContext.jsx'
-import { cartLineTotal, cartTotal, resizeCartItem, selectedExternalVariants } from '../cart.js'
+import { cartCount, cartLineTotal, cartTotal, resizeCartItem, selectedExternalVariants } from '../cart.js'
 import { externalVariantLabel, isExternalProduct } from '../creatorProducts.js'
 import './GlassOverlay.css'
 import './CartScreen.css'
 import NavButtonGlyph from './NavButtonGlyph.jsx'
-
-function BagIcon() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden>
-      <path
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M5 8h14l-1 12H6L5 8zM9 8V6.5a3 3 0 0 1 6 0V8"
-      />
-    </svg>
-  )
-}
 
 /**
  * Marketplace bag — glass overlay, no nested cards.
@@ -325,14 +310,12 @@ export default function CartScreen({
         )}
       </div>
 
-      {items.length > 0 && (
-        <p className="cart-total">
-          <strong>{totalLabel}</strong>
-        </p>
-      )}
       {items.length > 0 ? (
         <div className="cart-pay-dock">
           <div className="cart-pay-block">
+            <p className="cart-total">
+              <strong>{totalLabel}</strong>
+            </p>
             <div className="cart-pay-actions">
               <button
                 type="button"
@@ -341,7 +324,7 @@ export default function CartScreen({
                 disabled={busy}
                 onClick={pay}
               >
-                {busy ? '…' : shippingOpen && requiresShippingQuote && !currentQuote ? 'Get rates' : <BagIcon />}
+                {busy ? '…' : shippingOpen && requiresShippingQuote && !currentQuote ? 'Get rates' : cartCount(items)}
               </button>
             </div>
           </div>
