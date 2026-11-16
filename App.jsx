@@ -626,7 +626,6 @@ export default function App() {
               forYouRefresh={forYouRefresh}
               feedRefresh={feedRefresh}
               favoredBrands={userProfile?.favoredBrands || []}
-              savedRefresh={forYouRefresh}
               clothingSizes={userProfile?.clothingSizes || {}}
               brandSizes={userProfile?.brandSizes || {}}
               savedProductIds={userProfile?.savedProductIds || []}
@@ -668,6 +667,7 @@ export default function App() {
               await handleSaveProfile({ favoredBrands: next })
             }}
             onForYouRefresh={() => setForYouRefresh((n) => n + 1)}
+            savedRefresh={forYouRefresh}
           />
         )}
 
