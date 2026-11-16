@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
+import AtmosphereFlow from './AtmosphereFlow.jsx'
 import {
   connectProvider,
   fetchMyProducts,
@@ -2192,10 +2193,7 @@ export default function ProfileScreen({
         createPortal(
           <SwipeBackPage className={`settings-slide${settingsClosing ? ' is-closing' : ''}`} onDismiss={() => { setSettingsOpen(false); setSettingsClosing(false) }}>
           <div className="atmosphere" aria-hidden>
-            <span className="atmosphere-bloom atmosphere-bloom-a" />
-            <span className="atmosphere-bloom atmosphere-bloom-b" />
-            <span className="atmosphere-bloom atmosphere-bloom-c" />
-            <span className="atmosphere-bloom atmosphere-bloom-d" />
+            <AtmosphereFlow />
           </div>
           <SettingsScreen
             onBack={closeSettings}

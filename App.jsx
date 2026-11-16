@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import AccountPage from './components/AccountPage.jsx'
+import AtmosphereFlow from './components/AtmosphereFlow.jsx'
 import AuthScreen from './components/AuthScreen.jsx'
 import BrandProfile from './components/BrandProfile.jsx'
 import Bubble from './components/Bubble.jsx'
@@ -530,10 +531,7 @@ export default function App() {
       <LiquidGlassDefs />
       {checkoutError && <p className="checkout-return-error" role="alert">{checkoutError}</p>}
       <div className="atmosphere" aria-hidden>
-        <span className="atmosphere-bloom atmosphere-bloom-a" />
-        <span className="atmosphere-bloom atmosphere-bloom-b" />
-        <span className="atmosphere-bloom atmosphere-bloom-c" />
-        <span className="atmosphere-bloom atmosphere-bloom-d" />
+        <AtmosphereFlow />
       </div>
 
       <div

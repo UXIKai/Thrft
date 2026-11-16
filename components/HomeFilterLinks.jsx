@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import OrbitCarousel from './OrbitCarousel.jsx'
+import AtmosphereFlow from './AtmosphereFlow.jsx'
 import { COLOR_FAMILIES, colorHex } from '../colorsCatalog.js'
 import { applySearchBackground, clearSearchBackground } from '../appAppearance.js'
 import './HomeFilterLinks.css'
@@ -134,10 +135,7 @@ export default function HomeFilterLinks({
             {false && effectOn && (
               <div className="home-search-blur" aria-hidden>
                 <div className="atmosphere" aria-hidden>
-                  <span className="atmosphere-bloom atmosphere-bloom-a" />
-                  <span className="atmosphere-bloom atmosphere-bloom-b" />
-                  <span className="atmosphere-bloom atmosphere-bloom-c" />
-                  <span className="atmosphere-bloom atmosphere-bloom-d" />
+                  <AtmosphereFlow />
                 </div>
               </div>
             )}

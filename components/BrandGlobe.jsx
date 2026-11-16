@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import StageSlot from './StageSlot.jsx'
+import AtmosphereFlow from './AtmosphereFlow.jsx'
 import { colorHex } from '../colorsCatalog.js'
 import { colorSchemeForHex } from '../appAppearance.js'
 import BrandLogo from './BrandLogo.jsx'
@@ -1573,10 +1574,7 @@ function BrandGlobeView({
       />
       {previewColors && (
         <div className="brand-globe-color-atmosphere atmosphere" aria-hidden>
-          <span className="atmosphere-bloom atmosphere-bloom-a" />
-          <span className="atmosphere-bloom atmosphere-bloom-b" />
-          <span className="atmosphere-bloom atmosphere-bloom-c" />
-          <span className="atmosphere-bloom atmosphere-bloom-d" />
+          <AtmosphereFlow />
         </div>
       )}
       <div

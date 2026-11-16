@@ -4,7 +4,7 @@
  *
  * Top swatch row → Containers: nav bar, pinned boxes, chat rows, fields, chips,
  *   sheets — anything clickable or any box that holds information.
- * Bottom swatch row → Background: the flowing atmosphere wash (default B/W/gray,
+ * Bottom swatch row → Background: the flowing atmosphere wash (default warm gold,
  *   but freely tinted by the same color variety as Containers).
  */
 
@@ -63,8 +63,8 @@ export const DEFAULT_BAR_TRANSPARENCY = 20
 export const DEFAULT_APP_COLOR = 'none'
 export const DEFAULT_BG_COLOR = 'none'
 export const DEFAULT_BG_IMAGE = 'atmosphere'
-/** Soft grayscale defaults — same feel as the original B/W wash until changed. */
-export const DEFAULT_BG_EFFECTS = ['#c8c8c8', '#9a9a9a', '#6e6e6e']
+/** Warm edge light on the default dark flowing surface. */
+export const DEFAULT_BG_EFFECTS = ['#ffe2a3', '#d6a467', '#856344']
 export const BG_EFFECT_COUNT = 3
 
 /** Editable swatch palettes: 1 none + 11 replaceable colors each, one set for Containers and one for Background. */
@@ -566,7 +566,7 @@ export function applyGlassTokens() {
 
 /**
  * Bottom Appearance row — flowing atmosphere behind the app.
- * Default is B/W/gray; any swatch/custom hue tints that wash.
+ * Default is warm gold; any swatch/custom hue tints that wash.
  * Never writes glass / container tokens — those stay on Containers.
  */
 export function applyBgAtmosphereTokens() {
@@ -943,7 +943,7 @@ export function setBgEffectColor(index, hex) {
   return applyBgEffectColors(next)
 }
 
-/** Restore the default grayscale atmosphere flow colors. */
+/** Restore the default gold atmosphere flow colors. */
 export function resetBgEffectColors() {
   return applyBgEffectColors([...DEFAULT_BG_EFFECTS])
 }
