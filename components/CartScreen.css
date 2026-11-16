@@ -235,7 +235,7 @@
 .cart-total {
   position: absolute;
   left: 0;
-  bottom: calc(var(--cart-nav-bottom) + 70px);
+  bottom: calc(var(--cart-nav-bottom) + 94px);
   z-index: 3;
   display: flex;
   justify-content: center;
