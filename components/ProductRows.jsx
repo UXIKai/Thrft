@@ -13,7 +13,6 @@ import {
   filterListingsByClothingType,
   parseListingPrice,
 } from '../listings.js'
-import { isSupabaseConfigured } from '../supabase.js'
 import { hasProductCutout } from '../mockupCutouts.js'
 import ProductPhoto from './ProductPhoto.jsx'
 
@@ -346,14 +345,8 @@ export default function ProductRows({
     setStatus('loading')
     setError('')
     setOpenRow(null)
-    const request = segment === 'market' && isSupabaseConfigured()
-      ? Promise.allSettled([fetchAvailableListings({ limit: 240 }), fetchStoreProducts()])
-        .then((results) => {
-          const failed = results.filter((result) => result.status === 'rejected')
-          if (failed.length === results.length) throw failed[0].reason
-          if (alive && failed.length) setError(failed.map((result) => result.reason.message).join('; '))
-          return results.flatMap((result) => result.status === 'fulfilled' ? result.value : [])
-        })
+    const request = segment === 'market'
+      ? fetchAvailableListings({ limit: 240 })
       : fetchStoreProducts()
     request
       .then((rows) => {
