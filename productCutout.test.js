@@ -32,11 +32,46 @@ test('removes white edge contamination using adjacent fabric color without chang
   mask.data[7] = 128
   const result = applyProductMask(source, mask)
   assert.deepEqual([...result.slice(4, 7)], [140, 20, 60])
-  assert.equal(result[7], 128)
+  assert.equal(result[7], 153)
   assert.deepEqual([...result.slice(8, 12)], [140, 20, 60, 255])
 })
 
 test('rejects mismatched masks instead of generating corrupted clothing', () => {
   assert.throws(() => applyProductMask(image(2, 1, [0, 0, 0, 255]),
     image(1, 1, [255, 255, 255, 255])), /dimensions/)
+})
+
+test('uncertain interior fabric stays opaque and mask holes cannot turn prints into the page color', () => {
+  const source = image(9, 9, [255, 255, 255, 255])
+  const mask = image(9, 9, [255, 255, 255, 0])
+  for (let y = 1; y < 8; y++) {
+    for (let x = 1; x < 8; x++) {
+      const i = (y * 9 + x) * 4
+      source.data.set([30 + x, 60 + y, 120, 255], i)
+      mask.data[i + 3] = 140
+    }
+  }
+  const center = (4 * 9 + 4) * 4
+  mask.data[center + 3] = 0
+  const result = applyProductMask(source, mask)
+  assert.deepEqual([...result.slice(center, center + 4)], [...source.data.slice(center, center + 4)])
+  const interior = (3 * 9 + 3) * 4
+  assert.deepEqual([...result.slice(interior, interior + 4)], [...source.data.slice(interior, interior + 4)])
+  assert.equal(result[3], 0)
+})
+
+test('removes white background openings inside handles without removing enclosed fabric texture', () => {
+  const source = image(10, 10, [255, 255, 255, 255])
+  const mask = image(10, 10, [255, 255, 255, 0])
+  for (let y = 1; y < 9; y++) {
+    for (let x = 1; x < 9; x++) {
+      if (x >= 3 && x <= 6 && y >= 3 && y <= 6) continue
+      const i = (y * 10 + x) * 4
+      source.data.set([25, 30, 45, 255], i)
+      mask.data[i + 3] = 255
+    }
+  }
+  const result = applyProductMask(source, mask)
+  assert.equal(result[(4 * 10 + 4) * 4 + 3], 0)
+  assert.equal(result[(2 * 10 + 2) * 4 + 3], 255)
 })

@@ -1,6 +1,41 @@
-import { cutoutProductPhoto } from './productCutout.js'
+const CACHE_NAME = 'thrft-mockup-cutouts-v4'
+let worker
+let idleTimer
 
-const CACHE_NAME = 'thrft-mockup-cutouts-v3'
+function processInWorker(image) {
+  if (typeof Worker === 'undefined' || typeof OffscreenCanvas === 'undefined') {
+    return Promise.reject(new Error('Background removal needs browser worker and canvas support; showing original photo'))
+  }
+  clearTimeout(idleTimer)
+  worker ||= new Worker(new URL('./productCutout.worker.js', import.meta.url), { type: 'module' })
+  return new Promise((resolve, reject) => {
+    const current = worker
+    const timeout = setTimeout(() => fail(new Error('Product background removal timed out')), 120000)
+    function finish() {
+      clearTimeout(timeout)
+      current.onmessage = null
+      current.onerror = null
+      idleTimer = setTimeout(() => { current.terminate(); if (worker === current) worker = null }, 30000)
+    }
+    function fail(error) {
+      finish()
+      current.terminate()
+      if (worker === current) worker = null
+      reject(error)
+    }
+    current.onerror = () => fail(new Error('Product image worker failed; showing original photo'))
+    current.onmessage = ({ data }) => {
+      if (data.error) { fail(new Error(data.error)); return }
+      if (!(data.image instanceof Blob)) { fail(new Error('Product image worker returned an invalid image')); return }
+      finish()
+      const reader = new FileReader()
+      reader.onload = () => resolve(reader.result)
+      reader.onerror = () => reject(new Error('Could not read product cutout'))
+      reader.readAsDataURL(data.image)
+    }
+    current.postMessage({ image })
+  })
+}
 
 async function cacheRead(url) {
   if (!globalThis.caches) return null
@@ -16,14 +51,11 @@ async function cacheWrite(url, image) {
 }
 
 async function processMockup(url) {
-  const response = await fetch(url, { mode: 'cors' })
+  const response = await fetch(url, { mode: 'cors', signal: AbortSignal.timeout(20000) })
   if (!response.ok) throw new Error(`Could not load mockup (${response.status})`)
   const image = await response.blob()
   if (!image.type.startsWith('image/')) throw new Error('Mockup is not an image')
-  return cutoutProductPhoto(image, async (photo) => {
-    const { segmentForeground } = await import('@imgly/background-removal')
-    return segmentForeground(photo, { model: 'medium', output: { format: 'image/png', quality: 1 } })
-  })
+  return processInWorker(image)
 }
 
 export function createCutoutLoader({ process, read, write }) {
@@ -34,7 +66,7 @@ export function createCutoutLoader({ process, read, write }) {
   function remember(url, image) {
     memory.delete(url)
     memory.set(url, image)
-    if (memory.size > 24) memory.delete(memory.keys().next().value)
+    if (memory.size > 12) memory.delete(memory.keys().next().value)
   }
 
   return function acquire(url) {
@@ -46,7 +78,7 @@ export function createCutoutLoader({ process, read, write }) {
     let task = pending.get(url)
     if (!task) {
       task = { users: 0 }
-      task.promise = queue.then(async () => {
+      task.promise = Promise.resolve().then(async () => {
         if (!task.users) return null
         let image
         try {
@@ -54,18 +86,23 @@ export function createCutoutLoader({ process, read, write }) {
         } catch (error) {
           console.warn('Could not read cached product cutout:', error)
         }
-        if (!image && task.users) {
-          image = await process(url)
-          try {
-            await write(url, image)
-          } catch (error) {
-            console.warn('Could not cache product cutout:', error)
-          }
+        if (!image) {
+          const processTask = queue.then(async () => {
+            if (!task.users) return null
+            const result = await process(url)
+            try {
+              await write(url, result)
+            } catch (error) {
+              console.warn('Could not cache product cutout:', error)
+            }
+            return result
+          })
+          queue = processTask.catch(() => {})
+          image = await processTask
         }
         if (image) remember(url, image)
         return image || null
       })
-      queue = task.promise.catch(() => {})
       pending.set(url, task)
       task.promise.then(() => pending.delete(url), () => pending.delete(url))
     }

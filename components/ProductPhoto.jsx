@@ -9,20 +9,30 @@ export default function ProductPhoto({ src, cutout = false, ...props }) {
     if (!src || !cutout || !ref.current) return undefined
     let active = true
     let request
+    let failed = false
     function start() {
-      if (request) return
-      request = acquireMockupCutout(src)
-      request.promise.then((image) => {
-        if (active && image) setResult({ src, image })
+      if (request || failed) return
+      const currentRequest = acquireMockupCutout(src)
+      request = currentRequest
+      currentRequest.promise.then((image) => {
+        if (active && request === currentRequest && image) {
+          setResult({ src, image })
+          observer?.disconnect()
+          currentRequest.release()
+        }
       }).catch((error) => {
+        if (!active || request !== currentRequest) return
         console.error('Could not remove product photo background:', error)
-        if (active) setResult({ src, error: true })
+        failed = true
+        setResult({ src, error: true })
       })
     }
     const observer = typeof IntersectionObserver === 'undefined' ? null : new IntersectionObserver((entries) => {
       if (entries.some((entry) => entry.isIntersecting)) {
-        observer.disconnect()
         start()
+      } else {
+        request?.release()
+        request = null
       }
     })
     if (observer) observer.observe(ref.current)

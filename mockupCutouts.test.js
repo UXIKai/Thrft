@@ -61,3 +61,18 @@ test('only Printful mockups are selected for automatic background removal', () =
   assert.equal(hasPrintfulMockup({ printful_variant_id: 1 }), true)
   assert.equal(hasPrintfulMockup({ detailVariant: 'market', photoUrl: 'photo.jpg' }), false)
 })
+
+test('cached images render immediately while another image is still processing', async () => {
+  let unblock
+  const loader = createCutoutLoader({
+    read: async (url) => url === 'cached' ? 'cached-image' : null,
+    write: async () => {},
+    process: async () => new Promise((resolve) => { unblock = resolve }),
+  })
+  const slow = loader('slow')
+  await new Promise((resolve) => setTimeout(resolve, 0))
+  assert.equal(await loader('cached').promise, 'cached-image')
+  unblock('processed-image')
+  assert.equal(await slow.promise, 'processed-image')
+  slow.release()
+})

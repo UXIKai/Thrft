@@ -57,10 +57,16 @@ listings. The original image remains visible until processing completes, or if
 the cutout fails; the printable artwork and saved mockups are unchanged. The
 background is separated with the higher-quality on-device silhouette model,
 downloaded on first use. Only the mask's alpha is applied to the original photo:
-white fabric, colored prints and texture retain their source colors. Soft edges
-use neighboring fabric colors to avoid white halos. Already-transparent images
+white fabric, colored prints and texture retain their source colors. Interiors
+are opaque, including uncertain enclosed fabric, rather than allowing dark page
+colors to show through. Clearly identified white openings inside handles remain
+transparent. Soft edges use neighboring fabric colors to avoid white halos. Already-transparent images
 are not remasked. Updated cutouts use a new cache so older damaged previews are
-regenerated; source product photos are never overwritten.
+regenerated; source product photos are never overwritten. Processing and PNG
+encoding run in one dedicated worker at up to 1024 pixels, not on the interface
+thread. Offscreen queued work is skipped, cached previews do not wait for model
+inference, and the worker is released after 30 seconds idle. Unsupported browsers
+show the original photo with a background-removal error rather than blocking UI.
 
 In **Create → Store → photo**, enable **Print on demand**. Upload the
 original artwork directly to Thrft Storage, choose a Printful blank, one color,
