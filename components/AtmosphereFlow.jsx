@@ -1,10 +1,7 @@
 import { useEffect, useId, useRef } from 'react'
 
-const WAVE_POINTS = [
-  [120, 610, 440, 620, 720, 490, 1180, 400],
-  [150, 635, 460, 640, 745, 505, 1200, 425],
-  [90, 600, 420, 600, 695, 475, 1160, 380],
-]
+const WAVE_POINTS = [120, 610, 440, 620, 720, 490, 1180, 400]
+const FLOW_PERIOD_MS = 18000
 
 const BROAD_GLOW = Float32Array.from({ length: 1801 }, (_, distance) =>
   .82 * Math.exp(-((distance / 145) ** 2)) + .16 * Math.exp(-((distance / 20) ** 2)))
@@ -55,11 +52,12 @@ export default function AtmosphereFlow() {
     }
     const paint = (elapsed) => {
       if (!image) return
-      const phase = (elapsed / 24000 % 1) * WAVE_POINTS.length
-      const index = Math.floor(phase)
-      const blend = (1 - Math.cos((phase - index) * Math.PI)) / 2
-      const points = WAVE_POINTS[index].map((value, i) =>
-        value + (WAVE_POINTS[(index + 1) % WAVE_POINTS.length][i] - value) * blend)
+      const phase = elapsed / FLOW_PERIOD_MS % 1
+      const points = WAVE_POINTS.map((value, i) => {
+        const along = WAVE_POINTS[i - i % 2] / 1440
+        const ripple = Math.sin((along - phase) * Math.PI * 2)
+        return value + ripple * (i % 2 === 0 ? 48 : 20)
+      })
       const edgePoints = portrait
         ? points.map((_, i) => points[i % 2 === 0 ? i + 1 : i - 1])
         : points
@@ -86,15 +84,15 @@ export default function AtmosphereFlow() {
         }
         rows[x] = cubic(...ys, (low + high) / 2) / 900 * breadth
       }
-      const shift = Math.sin(elapsed / 10000 * Math.PI * 2) * .18
+      const shift = phase
       lightRef.current.setAttribute('gradientTransform', portrait
         ? `translate(0 ${shift * 1440})`
         : `translate(${shift * 1440} 0)`)
       const highlight = colors.a.map((channel) => channel + (255 - channel) * .2)
       const tail = colors.a.map((channel, i) => channel * .75 + colors.c[i] * .25)
-      const stops = [[0, colors.a], [.28, highlight], [.52, colors.b], [.84, highlight], [1, tail]]
+      const stops = [[0, tail], [.28, highlight], [.52, colors.b], [.84, highlight], [1, tail]]
       for (let x = 0; x < length; x += 1) {
-        const position = Math.max(0, Math.min(1, (x + .5) / length - shift))
+        const position = ((x + .5) / length - shift + 1) % 1
         let stop = 0
         while (stop < stops.length - 2 && position > stops[stop + 1][0]) stop += 1
         const amount = (position - stops[stop][0]) / (stops[stop + 1][0] - stops[stop][0])
@@ -190,8 +188,8 @@ export default function AtmosphereFlow() {
       <canvas ref={canvasRef} className="atmosphere-flow-glow" />
       <svg className="atmosphere-flow-edge" viewBox="0 0 1440 900" preserveAspectRatio="none">
         <defs>
-          <linearGradient ref={lightRef} id={`${id}-edge-light`} gradientUnits="userSpaceOnUse" x2="1440">
-            <stop stopColor="var(--atmosphere-effect-a, #ffe2a3)" />
+          <linearGradient ref={lightRef} id={`${id}-edge-light`} gradientUnits="userSpaceOnUse" x2="1440" spreadMethod="repeat">
+            <stop stopColor="color-mix(in srgb, var(--atmosphere-effect-a, #ffe2a3) 75%, var(--atmosphere-effect-c, #856344))" />
             <stop offset=".28" stopColor="color-mix(in srgb, var(--atmosphere-effect-a, #ffe2a3) 80%, white)" />
             <stop offset=".52" stopColor="var(--atmosphere-effect-b, #d6a467)" />
             <stop offset=".84" stopColor="color-mix(in srgb, var(--atmosphere-effect-a, #ffe2a3) 80%, white)" />
