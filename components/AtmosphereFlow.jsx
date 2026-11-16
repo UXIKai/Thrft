@@ -1,9 +1,9 @@
 import { useEffect, useId, useRef } from 'react'
 
 const WAVE_POINTS = [
-  [210, 350, 350, 390, 720, 485, 1450, 590],
-  [80, 630, 500, 170, 850, 420, 1370, 720],
-  [300, 140, 400, 650, 690, 520, 1550, 220],
+  [120, 610, 440, 620, 720, 490, 1180, 400],
+  [150, 635, 460, 640, 745, 505, 1200, 425],
+  [90, 600, 420, 600, 695, 475, 1160, 380],
 ]
 
 const UPPER_GLOW = Float32Array.from({ length: 1801 }, (_, distance) =>
@@ -36,6 +36,7 @@ export default function AtmosphereFlow() {
     let visible = false
     let colors
     let image
+    let portrait = false
 
     const readColors = () => {
       const style = getComputedStyle(canvas)
@@ -54,21 +55,28 @@ export default function AtmosphereFlow() {
     }
     const paint = (elapsed) => {
       if (!image) return
-      const phase = (elapsed / 14000 % 1) * WAVE_POINTS.length
+      const phase = (elapsed / 24000 % 1) * WAVE_POINTS.length
       const index = Math.floor(phase)
       const blend = (1 - Math.cos((phase - index) * Math.PI)) / 2
       const points = WAVE_POINTS[index].map((value, i) =>
         value + (WAVE_POINTS[(index + 1) % WAVE_POINTS.length][i] - value) * blend)
-      edgeRef.current.setAttribute('d', `M-180 930C${points.slice(0, 6).join(' ')}S${points.slice(6).join(' ')} 1480-160`)
+      const edgePoints = portrait
+        ? points.map((_, i) => points[i % 2 === 0 ? i + 1 : i - 1])
+        : points
+      edgeRef.current.setAttribute('d', portrait
+        ? `M-600 -180C${edgePoints.slice(0, 6).join(' ')}S${edgePoints.slice(6).join(' ')} 1020 1620`
+        : `M-180 -600C${edgePoints.slice(0, 6).join(' ')}S${edgePoints.slice(6).join(' ')} 1620 1020`)
       const { width, height, data } = image
-      const rows = new Float32Array(width)
-      for (let x = 0; x < width; x += 1) {
-        const target = (x + .5) / width * 1440
+      const length = portrait ? height : width
+      const breadth = portrait ? width : height
+      const rows = new Float32Array(length)
+      for (let x = 0; x < length; x += 1) {
+        const target = (x + .5) / length * 1440
         const left = target < points[4]
         const xs = left ? [-180, points[0], points[2], points[4]]
-          : [points[4], 2 * points[4] - points[2], points[6], 1480]
-        const ys = left ? [930, points[1], points[3], points[5]]
-          : [points[5], 2 * points[5] - points[3], points[7], -160]
+          : [points[4], 2 * points[4] - points[2], points[6], 1620]
+        const ys = left ? [-600, points[1], points[3], points[5]]
+          : [points[5], 2 * points[5] - points[3], points[7], 1020]
         let low = 0
         let high = 1
         for (let step = 0; step < 14; step += 1) {
@@ -76,28 +84,30 @@ export default function AtmosphereFlow() {
           if (cubic(...xs, t) < target) low = t
           else high = t
         }
-        rows[x] = cubic(...ys, (low + high) / 2) / 900 * height
+        rows[x] = cubic(...ys, (low + high) / 2) / 900 * breadth
       }
       const shift = Math.sin(elapsed / 10000 * Math.PI * 2) * .18
-      lightRef.current.setAttribute('gradientTransform', `translate(${shift * 1440} 0)`)
+      lightRef.current.setAttribute('gradientTransform', portrait
+        ? `translate(0 ${shift * 1440})`
+        : `translate(${shift * 1440} 0)`)
       const stops = [[0, colors.b], [.28, colors.a], [.52, colors.b], [.84, colors.a], [1, colors.c]]
-      for (let x = 0; x < width; x += 1) {
-        const position = Math.max(0, Math.min(1, (x + .5) / width - shift))
+      for (let x = 0; x < length; x += 1) {
+        const position = Math.max(0, Math.min(1, (x + .5) / length - shift))
         let stop = 0
         while (stop < stops.length - 2 && position > stops[stop + 1][0]) stop += 1
         const amount = (position - stops[stop][0]) / (stops[stop + 1][0] - stops[stop][0])
         const light = stops[stop][1].map((value, channel) =>
           value + (stops[stop + 1][1][channel] - value) * amount)
-        const slope = (rows[Math.min(width - 1, x + 1)] - rows[Math.max(0, x - 1)]) / 2
-        const normal = 900 / height / Math.sqrt(1 + slope * slope)
-        for (let y = 0; y < height; y += 1) {
+        const slope = (rows[Math.min(length - 1, x + 1)] - rows[Math.max(0, x - 1)]) / 2
+        const normal = 900 / breadth / Math.sqrt(1 + slope * slope)
+        for (let y = 0; y < breadth; y += 1) {
           const distance = y + .5 - rows[x]
           const offset = Math.min(1800, Math.round(Math.abs(distance) * normal))
           const glow = distance < 0 ? UPPER_GLOW[offset] : LOWER_GLOW[offset]
           const shade = distance < 0
-            ? .18 * Math.min(1, -distance * normal / 12) * Math.max(0, 1 - (x / width + y / height) * .7)
+            ? .18 * Math.min(1, -distance * normal / 12) * Math.max(0, 1 - (x / length + y / breadth) * .7)
             : 0
-          const pixel = (y * width + x) * 4
+          const pixel = (portrait ? x * width + y : y * width + x) * 4
           for (let channel = 0; channel < 3; channel += 1) {
             const base = colors.base[channel] + (128 - colors.base[channel]) * shade
             data[pixel + channel] = base + (light[channel] - base) * glow
@@ -128,6 +138,10 @@ export default function AtmosphereFlow() {
     const resize = () => {
       const { width, height } = canvas.getBoundingClientRect()
       if (!width || !height) return
+      portrait = height > width
+      edgeRef.current.ownerSVGElement.setAttribute('viewBox', portrait ? '0 0 900 1440' : '0 0 1440 900')
+      lightRef.current.setAttribute('x2', portrait ? '0' : '1440')
+      lightRef.current.setAttribute('y2', portrait ? '1440' : '0')
       // Only the soft glow is low resolution; the separate vector edge stays sharp.
       const scale = Math.min(1, 180 / width, 360 / height)
       canvas.width = Math.max(1, Math.round(width * scale))
