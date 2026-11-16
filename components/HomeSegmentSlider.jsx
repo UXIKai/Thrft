@@ -50,20 +50,22 @@ const scrolledDown = (el, stop) => {
 
 // Store and Market sit side by side (swipe left / right); the Leaderboard sits above them:
 // pull down at the very top of the page to reach it, swipe up to come back. Swiping up at the bottom opens checkout.
-export default function HomeSegmentSlider({ value, onChange, fireSame = false, onSearch, onCart, onTap, onHold, bagCount = 0 }) {
+export default function HomeSegmentSlider({ value, onChange, fireSame = false, onSearch, onCart, onTap, onHold, bagCount = 0, navHidden = false }) {
   const rootRef = useRef(null)
   const [menuOpen, setMenuOpen] = useState(false)
-  const [phase, setPhase] = useState('closed')
-  const pressedRef = useRef(false)
+  const [phase, setPhase] = useState(navHidden ? 'opening' : 'closed')
   const settleTimer = useRef(0)
   const finishOpening = () => {
-    if (!pressedRef.current) return
     setPhase('settle')
     settleTimer.current = window.setTimeout(() => {
-      if (pressedRef.current) setPhase('done')
+      setPhase('done')
     }, 80)
   }
   useEffect(() => () => window.clearTimeout(settleTimer.current), [])
+  useEffect(() => {
+    window.clearTimeout(settleTimer.current)
+    setPhase(navHidden ? 'opening' : 'closed')
+  }, [navHidden])
   const menuRef = useRef(false)
   menuRef.current = menuOpen
   const actionsRef = useRef({})
@@ -125,11 +127,6 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false, o
       frame = 0
       paintRef.current(pending[0], pending[1])
     }
-    const closeStar = () => {
-      pressedRef.current = false
-      window.clearTimeout(settleTimer.current)
-      setPhase('closed')
-    }
     const begin = (id, x, y, target) => {
       const { onLeaderboard: up, shopIndex: sx } = stateRef.current
       // Pulling down to the Leaderboard only works from the very top of the page.
@@ -140,8 +137,6 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false, o
       const cy = r ? r.top + r.height / 2 : 0
       const onButton = Boolean(r) && Math.abs(x - cx) <= 44 && Math.abs(y - cy) <= 44
       if (onButton) {
-        pressedRef.current = true
-        setPhase('opening')
         rootRef.current?.classList.add('is-pressed')
         holdRef.current = setTimeout(() => {
           if (d && !d.axis) {
@@ -165,7 +160,6 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false, o
         if (Math.abs(dx) > Math.abs(dy) * 1.5 && !d.up && !d.sideways) d.axis = 'x'
         else if (Math.abs(dy) > Math.abs(dx) * 1.5 && (d.up ? dy < 0 : dy > 0 ? d.atTop : d.atBottom)) d.axis = 'y'
         else {
-          closeStar()
           d = null
           return
         }
@@ -189,7 +183,6 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false, o
     }
     const end = (id, t, flick) => {
       clearTimeout(holdRef.current)
-      closeStar()
       rootRef.current?.classList.remove('is-pressed')
       if (!d || d.id !== id) return
       const s = d
@@ -229,7 +222,6 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false, o
       moveKnob(x, y)
     }
     const releaseAt = (x, y) => {
-      closeStar()
       const hit = radialAt()
       if (hit) pickRef.current(hit.dataset.radial)
       else setMenuOpen(false)
@@ -238,7 +230,6 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false, o
     const onTouchStart = (e) => {
       if (e.touches.length !== 1) {
         clearTimeout(holdRef.current)
-        closeStar()
         d = null
         return
       }
@@ -265,7 +256,6 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false, o
       if (t) end(t.identifier, e.timeStamp, true)
     }
     const onTouchCancel = (e) => {
-      closeStar()
       setMenuOpen(false)
       clearTimeout(holdRef.current)
       const t = touchById(e)
@@ -312,7 +302,6 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false, o
     const onWindowMouseUp = winMouse((e) => releaseAt(e.clientX, e.clientY))
     const cancelInteraction = () => {
       clearTimeout(holdRef.current)
-      closeStar()
       setMenuOpen(false)
       d = null
       rootRef.current?.classList.remove('is-pressed', 'is-dragging')
@@ -357,7 +346,7 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false, o
 
   // Arrows at a dead end are dimmed; the Leaderboard has no left/right neighbours.
   const side = onLeaderboard ? ' is-end' : ''
-  // The arrows start as a closed star that opens up whenever the picker appears (Home, or back from a row page).
+  // The star opens into swipe arrows while the navigation bar is hidden.
   const openFinal = [
     onLeaderboard ? 0 : 1,
     onLeaderboard || shopIndex === 1 ? 0 : 1,

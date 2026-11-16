@@ -569,6 +569,7 @@ export default function App() {
               />
               {!rowPageOpen && <HomeSegmentSlider
                 value={homeSegment}
+                navHidden={atBottom}
                 fireSame={!homeOpen}
                 bagCount={bagCount}
                 onSearch={() => setSearchSignal((n) => n + 1)}
@@ -854,7 +855,7 @@ export default function App() {
           aria-expanded={!atBottom}
           onClick={() => setAtBottom((hidden) => !hidden)}
         >
-          <NavButtonGlyph star />
+          <NavButtonGlyph key={atBottom ? 'hidden' : 'visible'} star={!atBottom} />
         </button>
       )}
       {signedIn && showNav && <TabBar active={tab} onCreate={(segment) => {
