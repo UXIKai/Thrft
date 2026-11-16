@@ -651,7 +651,6 @@ export default function SavedScreen({
     <section className="saved-screen" aria-label="Liked">
       <header className="saved-page-header">
         <span className="saved-header-spacer" aria-hidden />
-        <h1 className="saved-list-title" aria-label="Liked"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden fill="currentColor"><path d="M12 20.8l-1.3-1.2C5.6 15 2.5 12.200 2.500 8.700 2.500 5.900 4.700 3.800 7.400 3.800c1.900 0 3.700.9 4.600 2.400.9-1.500 2.700-2.400 4.600-2.400 2.700 0 4.900 2.100 4.900 4.900 0 3.500-3.100 6.300-8.200 10.900z"/></svg></h1>
 <div className={`saved-fab${fabOpen ? ' is-open' : ''}${selectMode ? ' is-selecting' : ''}`}>
         <button
           type="button"
