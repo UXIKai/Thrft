@@ -6,10 +6,10 @@ const WAVE_POINTS = [
   [90, 600, 420, 600, 695, 475, 1160, 380],
 ]
 
-const UPPER_GLOW = Float32Array.from({ length: 1801 }, (_, distance) =>
-  .65 * Math.exp(-((distance / 65) ** 2)))
-const LOWER_GLOW = Float32Array.from({ length: 1801 }, (_, distance) =>
-  .65 * Math.exp(-((distance / 22) ** 2)))
+const BROAD_GLOW = Float32Array.from({ length: 1801 }, (_, distance) =>
+  .82 * Math.exp(-((distance / 145) ** 2)) + .16 * Math.exp(-((distance / 20) ** 2)))
+const RIM_GLOW = Float32Array.from({ length: 1801 }, (_, distance) =>
+  .24 * Math.exp(-((distance / 22) ** 2)) + .74 * Math.exp(-((distance / 7) ** 2)))
 
 function cubic(start, first, second, end, t) {
   const u = 1 - t
@@ -90,7 +90,9 @@ export default function AtmosphereFlow() {
       lightRef.current.setAttribute('gradientTransform', portrait
         ? `translate(0 ${shift * 1440})`
         : `translate(${shift * 1440} 0)`)
-      const stops = [[0, colors.b], [.28, colors.a], [.52, colors.b], [.84, colors.a], [1, colors.c]]
+      const highlight = colors.a.map((channel) => channel + (255 - channel) * .2)
+      const tail = colors.a.map((channel, i) => channel * .75 + colors.c[i] * .25)
+      const stops = [[0, colors.a], [.28, highlight], [.52, colors.b], [.84, highlight], [1, tail]]
       for (let x = 0; x < length; x += 1) {
         const position = Math.max(0, Math.min(1, (x + .5) / length - shift))
         let stop = 0
@@ -98,19 +100,24 @@ export default function AtmosphereFlow() {
         const amount = (position - stops[stop][0]) / (stops[stop + 1][0] - stops[stop][0])
         const light = stops[stop][1].map((value, channel) =>
           value + (stops[stop + 1][1][channel] - value) * amount)
+        const reflected = light.map((value, channel) => value * .35 + colors.b[channel] * .65)
         const slope = (rows[Math.min(length - 1, x + 1)] - rows[Math.max(0, x - 1)]) / 2
         const normal = 900 / breadth / Math.sqrt(1 + slope * slope)
+        const progress = (x + .5) / length
+        const transition = Math.max(0, Math.min(1, (progress - .35) / .3))
+        const litSide = transition * transition * (3 - 2 * transition)
+        const spread = .35 + .65 * Math.abs(Math.cos(progress * Math.PI))
         for (let y = 0; y < breadth; y += 1) {
           const distance = y + .5 - rows[x]
           const offset = Math.min(1800, Math.round(Math.abs(distance) * normal))
-          const glow = distance < 0 ? UPPER_GLOW[offset] : LOWER_GLOW[offset]
-          const shade = distance < 0
-            ? .18 * Math.min(1, -distance * normal / 12) * Math.max(0, 1 - (x / length + y / breadth) * .7)
-            : 0
+          const surfaceSide = distance < 0 ? 1 - litSide : litSide
+          const rim = RIM_GLOW[offset]
+          const diffuse = (BROAD_GLOW[offset] - rim) * surfaceSide * spread
+          const shade = .18 * surfaceSide * Math.min(1, Math.abs(distance) * normal / 24)
           const pixel = (portrait ? x * width + y : y * width + x) * 4
           for (let channel = 0; channel < 3; channel += 1) {
             const base = colors.base[channel] + (128 - colors.base[channel]) * shade
-            data[pixel + channel] = base + (light[channel] - base) * glow
+            data[pixel + channel] = base + (light[channel] - base) * rim + (reflected[channel] - base) * diffuse
           }
           data[pixel + 3] = 255
         }
@@ -184,15 +191,15 @@ export default function AtmosphereFlow() {
       <svg className="atmosphere-flow-edge" viewBox="0 0 1440 900" preserveAspectRatio="none">
         <defs>
           <linearGradient ref={lightRef} id={`${id}-edge-light`} gradientUnits="userSpaceOnUse" x2="1440">
-            <stop stopColor="var(--atmosphere-effect-b, #d6a467)" />
-            <stop offset=".28" stopColor="var(--atmosphere-effect-a, #ffe2a3)" />
+            <stop stopColor="var(--atmosphere-effect-a, #ffe2a3)" />
+            <stop offset=".28" stopColor="color-mix(in srgb, var(--atmosphere-effect-a, #ffe2a3) 80%, white)" />
             <stop offset=".52" stopColor="var(--atmosphere-effect-b, #d6a467)" />
-            <stop offset=".84" stopColor="var(--atmosphere-effect-a, #ffe2a3)" />
-            <stop offset="1" stopColor="var(--atmosphere-effect-c, #856344)" />
+            <stop offset=".84" stopColor="color-mix(in srgb, var(--atmosphere-effect-a, #ffe2a3) 80%, white)" />
+            <stop offset="1" stopColor="color-mix(in srgb, var(--atmosphere-effect-a, #ffe2a3) 75%, var(--atmosphere-effect-c, #856344))" />
           </linearGradient>
         </defs>
         <path ref={edgeRef} fill="none" stroke={`url(#${id}-edge-light)`} strokeWidth="1"
-          strokeOpacity=".8" vectorEffect="non-scaling-stroke" />
+          strokeOpacity="1" vectorEffect="non-scaling-stroke" />
       </svg>
     </div>
   )
