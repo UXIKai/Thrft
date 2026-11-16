@@ -3444,6 +3444,25 @@ html body .stage .home-radial .home-radial-btn:not(#_):not(#_):not(#_) {
 /* The picker's arrows are hidden while the star opens, then take over with no fade */
 .home-segment-slider.is-opening .wheel-arrow { opacity: 0 !important; transition: none; }
 .home-segment-slider.is-settling .wheel-arrow { transition: none; }
+
+.home-segment-slider.is-closed > .wheel-arrow,
+.home-segment-slider.is-closed > .home-segment-track {
+  opacity: 0 !important;
+  pointer-events: none;
+}
+
+.home-segment-closed-star {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+
+.home-segment-closed-star .ninja-star {
+  width: 52px;
+  height: 52px;
+}
 .home-segment-slider .opening-star {
   position: absolute;
   left: 50%;

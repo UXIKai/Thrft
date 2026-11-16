@@ -1494,11 +1494,6 @@ html[data-app-color='none'][data-moonlight='on'] body .settings-account-active .
   box-shadow: none;
 }
 
-/* Product image container: always a white outline on the black moonlight page */
-html[data-moonlight='on'][data-app-color='none'] body .product-detail-photo {
-  border-color: #fff !important;
-}
-
 /* Profile screen avatar initials follow the moon look: black circle, white initials */
 html[data-moonlight='on'][data-app-color='none'] body :is(.pf-user-avatar, .profile-photo-view-avatar):not(.has-photo) {
   background: #000 !important;
@@ -1553,9 +1548,6 @@ html[data-theme='light'][data-app-color='none'][data-moonlight='on'] body .setti
   background: #fff !important;
   color: #000 !important;
   box-shadow: none;
-}
-html[data-theme='light'][data-moonlight='on'][data-app-color='none'] body .product-detail-photo {
-  border-color: #000 !important;
 }
 html[data-theme='light'][data-moonlight='on'][data-app-color='none'] body :is(.pf-user-avatar, .profile-photo-view-avatar):not(.has-photo) {
   background: #fff !important;

@@ -1,7 +1,7 @@
 import { startTransition, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import HomeRadialMenu, { moveKnob, radialAt } from './HomeRadialMenu.jsx'
 import { MarketIcon, StoreIcon } from './SegmentIcons.jsx'
-import { arrow, OpeningStar } from './NavButtonGlyph.jsx'
+import NavButtonGlyph, { arrow, OpeningStar } from './NavButtonGlyph.jsx'
 
 const LeaderboardIcon = () => (
   <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -53,11 +53,15 @@ const scrolledDown = (el, stop) => {
 export default function HomeSegmentSlider({ value, onChange, fireSame = false, onSearch, onCart, onTap, onHold, bagCount = 0 }) {
   const rootRef = useRef(null)
   const [menuOpen, setMenuOpen] = useState(false)
-  const [phase, setPhase] = useState('opening')
+  const [phase, setPhase] = useState('closed')
+  const pressedRef = useRef(false)
   const settleTimer = useRef(0)
   const finishOpening = () => {
+    if (!pressedRef.current) return
     setPhase('settle')
-    settleTimer.current = window.setTimeout(() => setPhase('done'), 80)
+    settleTimer.current = window.setTimeout(() => {
+      if (pressedRef.current) setPhase('done')
+    }, 80)
   }
   useEffect(() => () => window.clearTimeout(settleTimer.current), [])
   const menuRef = useRef(false)
@@ -121,6 +125,11 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false, o
       frame = 0
       paintRef.current(pending[0], pending[1])
     }
+    const closeStar = () => {
+      pressedRef.current = false
+      window.clearTimeout(settleTimer.current)
+      setPhase('closed')
+    }
     const begin = (id, x, y, target) => {
       const { onLeaderboard: up, shopIndex: sx } = stateRef.current
       // Pulling down to the Leaderboard only works from the very top of the page.
@@ -131,6 +140,8 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false, o
       const cy = r ? r.top + r.height / 2 : 0
       const onButton = Boolean(r) && Math.abs(x - cx) <= 44 && Math.abs(y - cy) <= 44
       if (onButton) {
+        pressedRef.current = true
+        setPhase('opening')
         rootRef.current?.classList.add('is-pressed')
         holdRef.current = setTimeout(() => {
           if (d && !d.axis) {
@@ -154,6 +165,7 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false, o
         if (Math.abs(dx) > Math.abs(dy) * 1.5 && !d.up && !d.sideways) d.axis = 'x'
         else if (Math.abs(dy) > Math.abs(dx) * 1.5 && (d.up ? dy < 0 : dy > 0 ? d.atTop : d.atBottom)) d.axis = 'y'
         else {
+          closeStar()
           d = null
           return
         }
@@ -177,6 +189,7 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false, o
     }
     const end = (id, t, flick) => {
       clearTimeout(holdRef.current)
+      closeStar()
       rootRef.current?.classList.remove('is-pressed')
       if (!d || d.id !== id) return
       const s = d
@@ -216,6 +229,7 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false, o
       moveKnob(x, y)
     }
     const releaseAt = (x, y) => {
+      closeStar()
       const hit = radialAt()
       if (hit) pickRef.current(hit.dataset.radial)
       else setMenuOpen(false)
@@ -223,6 +237,8 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false, o
 
     const onTouchStart = (e) => {
       if (e.touches.length !== 1) {
+        clearTimeout(holdRef.current)
+        closeStar()
         d = null
         return
       }
@@ -249,6 +265,9 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false, o
       if (t) end(t.identifier, e.timeStamp, true)
     }
     const onTouchCancel = (e) => {
+      closeStar()
+      setMenuOpen(false)
+      clearTimeout(holdRef.current)
       const t = touchById(e)
       if (t) end(t.identifier, e.timeStamp, false)
     }
@@ -291,6 +310,21 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false, o
     }
     const onWindowMouseMove = winMouse((e) => markHot(e.clientX, e.clientY))
     const onWindowMouseUp = winMouse((e) => releaseAt(e.clientX, e.clientY))
+    const cancelInteraction = () => {
+      clearTimeout(holdRef.current)
+      closeStar()
+      setMenuOpen(false)
+      d = null
+      rootRef.current?.classList.remove('is-pressed', 'is-dragging')
+    }
+    const releaseOutside = (e) => {
+      if (e.pointerType === 'mouse' && !page.contains(e.target) && !menuRef.current) {
+        end(e.pointerId, e.timeStamp, true)
+      }
+    }
+    window.addEventListener('blur', cancelInteraction)
+    window.addEventListener('pointercancel', cancelInteraction)
+    window.addEventListener('pointerup', releaseOutside)
     window.addEventListener('pointermove', onWindowMouseMove)
     window.addEventListener('pointerup', onWindowMouseUp)
     window.addEventListener('touchmove', onWindowTouchMove, { passive: false })
@@ -301,6 +335,9 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false, o
 
     return () => {
       clearTimeout(holdRef.current)
+      window.removeEventListener('blur', cancelInteraction)
+      window.removeEventListener('pointercancel', cancelInteraction)
+      window.removeEventListener('pointerup', releaseOutside)
       cancelAnimationFrame(frame)
       page.removeEventListener('touchstart', onTouchStart)
       page.removeEventListener('touchmove', onTouchMove)
@@ -331,10 +368,11 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false, o
   return (
     <div
       ref={rootRef}
-      className={`home-segment-slider${phase === 'opening' ? ' is-opening' : phase === 'settle' ? ' is-settling' : ''}`}
+      className={`home-segment-slider${phase === 'closed' ? ' is-closed' : phase === 'opening' ? ' is-opening' : phase === 'settle' ? ' is-settling' : ''}`}
       role="status"
       aria-label={`${SEGMENTS.find((s) => s.id === value)?.label}. Swipe left or right for Store and Market; pull down at the top for the Leaderboard, swipe up at the bottom for checkout; hold for the menu.`}
     >
+      {phase === 'closed' && <span className="home-segment-closed-star" aria-hidden="true"><NavButtonGlyph star /></span>}
       {phase === 'opening' && <OpeningStar final={openFinal} onDone={finishOpening} />}
       <span className={`wheel-arrow is-left${shopIndex === 0 ? ' is-end' : side}`} aria-hidden="true">{arrow}</span>
       <span className={`wheel-arrow is-right${shopIndex === 1 ? ' is-end' : side}`} aria-hidden="true">{arrow}</span>
