@@ -341,6 +341,7 @@ export default function SavedScreen({
   favoredBrands = [],
   onFavoredBrandsChange,
   onForYouRefresh,
+  savedRefresh = 0,
 }) {
   const [items, setItems] = useState([])
   const [savedLoading, setSavedLoading] = useState(true)
@@ -470,7 +471,7 @@ export default function SavedScreen({
     return () => {
       alive = false
     }
-  }, [])
+  }, [savedRefresh])
 
   useEffect(() => {
     if (Array.isArray(favoredBrands)) setFavoriteBrands([...favoredBrands])

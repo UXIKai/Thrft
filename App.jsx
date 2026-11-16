@@ -626,6 +626,7 @@ export default function App() {
               forYouRefresh={forYouRefresh}
               feedRefresh={feedRefresh}
               favoredBrands={userProfile?.favoredBrands || []}
+              savedRefresh={forYouRefresh}
               clothingSizes={userProfile?.clothingSizes || {}}
               brandSizes={userProfile?.brandSizes || {}}
               savedProductIds={userProfile?.savedProductIds || []}
@@ -704,6 +705,7 @@ export default function App() {
       {activeProduct && (
         <ProductDetail
           product={activeProduct}
+          onSavedChange={() => setForYouRefresh((n) => n + 1)}
           openQuantity={Boolean(productReturnRef.current?.quantity)}
           onClose={() => {
             setActiveProduct(null)

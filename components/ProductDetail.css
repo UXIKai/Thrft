@@ -431,6 +431,21 @@ html body .product-detail .glass-overlay-back {
   -webkit-backdrop-filter: none !important;
 }
 
+.product-detail-like {
+  position: absolute;
+  top: calc(env(safe-area-inset-top, 0px) + 16px);
+  right: 16px;
+  z-index: 4;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+}
+
 /* Back button at the bottom, everything else centered in the remaining space */
 .product-detail .glass-overlay-top {
   order: 2;

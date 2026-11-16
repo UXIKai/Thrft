@@ -6,6 +6,7 @@ import { productSizeOptions } from '../productSizes.js'
 import { externalProductVariants, externalVariantLabel, isExternalProduct, storedPrintfulVariants } from '../creatorProducts.js'
 import { formatMoney, selectedExternalVariants } from '../cart.js'
 import ProductPhoto from './ProductPhoto.jsx'
+import { fetchSaved, saveSavedItems } from '../api.js'
 import './GlassOverlay.css'
 import './ProductDetail.css'
 
@@ -54,6 +55,7 @@ export default function ProductDetail({
   onClose,
   onOpenBrand,
   openQuantity = false,
+  onSavedChange,
 }) {
   const [stageEl, setStageEl] = useState(null)
   const { items, addItem, replaceItems, removeItem } = useBag()
@@ -73,6 +75,41 @@ export default function ProductDetail({
   const selectedVariantIds = Array.isArray(bagItem?.selectedVariantIds) ? bagItem.selectedVariantIds :
     Array.from({ length: inBag }, () => bagItem?.externalVariantId || '')
   const [selectionError, setSelectionError] = useState('')
+  const [savedProducts, setSavedProducts] = useState(null)
+  const [savingLike, setSavingLike] = useState(false)
+  const [likeError, setLikeError] = useState('')
+  const liked = savedProducts?.some((item) => String(item.id) === String(product?.id)) || false
+
+  useEffect(() => {
+    if (isMarket) return undefined
+    let active = true
+    setSavedProducts(null)
+    setLikeError('')
+    fetchSaved().then((rows) => {
+      if (active) setSavedProducts(rows)
+    }).catch((error) => {
+      if (active) setLikeError(error.message || 'Could not load liked products')
+    })
+    return () => { active = false }
+  }, [product?.id, isMarket])
+
+  async function toggleLike() {
+    if (!savedProducts || savingLike) return
+    setSavingLike(true)
+    setLikeError('')
+    try {
+      const next = liked
+        ? savedProducts.filter((item) => String(item.id) !== String(product.id))
+        : [...savedProducts, product]
+      const result = await saveSavedItems(next)
+      setSavedProducts(result.items)
+      onSavedChange?.()
+    } catch (error) {
+      setLikeError(error.message || 'Could not update liked products')
+    } finally {
+      setSavingLike(false)
+    }
+  }
 
   useEffect(() => {
     setStageEl(document.querySelector('.stage'))
@@ -352,6 +389,17 @@ export default function ProductDetail({
       aria-modal="true"
       aria-label={name}
     >
+      {!isMarket && (
+        <button type="button" className="product-detail-like is-bare"
+          aria-label={liked ? 'Remove from Liked' : 'Add to Liked'}
+          aria-pressed={liked} disabled={!savedProducts || savingLike}
+          onClick={toggleLike}>
+          <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+            <path d="M12 20.5s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.5 2.7c0 5.6-7.5 10.2-7.5 10.2Z"
+              fill={liked ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+          </svg>
+        </button>
+      )}
       {!isExternal && sizing && !isMarket && !isPrintful && (!numericSizes || canShowLetters) && (
         <button
           type="button"
@@ -375,6 +423,7 @@ export default function ProductDetail({
         <span className="glass-overlay-spacer" aria-hidden />
       </header>
       <div className="glass-overlay-body product-detail-body">
+        {likeError && <p role="alert">{likeError}</p>}
         {!isMarket && brand && (
           <button
             type="button"
