@@ -1495,6 +1495,25 @@ html[data-bg-color='none'] .stage.is-bg-none .atmosphere {
   display: none;
 }
 
+.tab-text {
+  display: block;
+  white-space: nowrap;
+  font-family: var(--font-sans);
+  font-size: clamp(10px, 2.8vw, 13px);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  text-shadow: none;
+  opacity: 0.55;
+}
+
+.tab-item.is-active .tab-text,
+.tab-bar.is-create-open .tab-item.is-create .tab-text {
+  font-weight: 700;
+  opacity: 1;
+}
+
 .ctrl {
   position: relative;
   overflow: hidden;

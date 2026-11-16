@@ -8,67 +8,11 @@ export const MAP_Y = "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A//www.w
 
 
 const TABS = [
-  {
-    id: 'home',
-    label: 'Home',
-    icon: (
-      <svg viewBox="0 0 24 24" aria-hidden className="tab-icon">
-        <path
-          fill="currentColor"
-          d="M12 3.2 3.5 10.2V21h6.2v-6.4h4.6V21h6.2V10.2L12 3.2z"
-        />
-      </svg>
-    ),
-  },
-  {
-    id: 'chat',
-    label: 'Chat',
-    icon: (
-      <svg viewBox="0 0 24 24" aria-hidden className="tab-icon">
-        <path
-          fill="currentColor"
-          d="M4 4.8h16A1.2 1.2 0 0 1 21.2 6v9.2a1.2 1.2 0 0 1-1.2 1.2H9.4L4.8 20.4V16.4H4A1.2 1.2 0 0 1 2.8 15.2V6A1.2 1.2 0 0 1 4 4.8z"
-        />
-      </svg>
-    ),
-  },
-  {
-    id: 'design',
-    label: 'Create',
-    icon: (
-      <svg viewBox="0 0 24 24" aria-hidden className="tab-icon tab-icon-plus">
-        <path
-          fill="currentColor"
-          d="M11 5h2v6h6v2h-6v6h-2v-6H5v-2h6V5z"
-        />
-      </svg>
-    ),
-  },
-  {
-    id: 'saved',
-    label: 'Saved',
-    icon: (
-      <svg viewBox="0 0 24 24" aria-hidden className="tab-icon">
-        <path
-          fill="currentColor"
-          d="M12 20.4S3.6 15.1 3.6 9.7A4.1 4.1 0 0 1 12 7.2a4.1 4.1 0 0 1 8.4 2.5c0 5.4-8.4 10.7-8.4 10.7z"
-        />
-      </svg>
-    ),
-  },
-  {
-    id: 'profile',
-    label: 'Profile',
-    icon: (
-      <svg viewBox="0 0 24 24" aria-hidden className="tab-icon">
-        <circle cx="12" cy="8" r="3.4" fill="currentColor" />
-        <path
-          fill="currentColor"
-          d="M5.2 19.6c.6-3.4 3.3-5.2 6.8-5.2s6.2 1.8 6.8 5.2H5.2z"
-        />
-      </svg>
-    ),
-  },
+  { id: 'home', label: 'Home' },
+  { id: 'chat', label: 'Chat' },
+  { id: 'design', label: 'Create' },
+  { id: 'saved', label: 'Liked' },
+  { id: 'profile', label: 'Profile' },
 ]
 
 // Closet, Create (the Store flow) and Market side by side in the middle of the screen (positions live in App.css).
@@ -106,7 +50,7 @@ export default function TabBar({ active = 'home', onChange, onCreate, quickCreat
   useLayoutEffect(() => {
     const nav = navRef.current
     const bubble = nav.querySelector('.tab-pill')
-    const icons = [...nav.querySelectorAll('.tab-item .tab-icon')]
+    const labels = [...nav.querySelectorAll('.tab-item .tab-text')]
     const motion = motionRef.current
     const released = motion.releaseCount !== releaseCount
     const changed = motion.activeIdx !== activeIdx
@@ -126,8 +70,8 @@ export default function TabBar({ active = 'home', onChange, onCreate, quickCreat
     const paint = () => {
       nav.style.setProperty('--tab-i', motion.position.value)
       bubble.style.transform = `scale(${motion.x.value}, ${motion.y.value})`
-      icons.forEach((icon, index) => {
-        icon.style.transform = `scale(${index === activeIdx ? motion.icon.value : 1})`
+      labels.forEach((label, index) => {
+        label.style.transform = `scale(${index === activeIdx ? motion.icon.value : 1})`
       })
     }
     const finish = () => {
@@ -210,7 +154,7 @@ export default function TabBar({ active = 'home', onChange, onCreate, quickCreat
       nav.style.setProperty('--bar-h', `${nav.offsetHeight}px`)
       const stage = nav.closest('.stage')
       if (stage && pageRef.current) {
-        // How far below the screen's middle the × sits; the options fly out of it.
+        // The options fly out of the collapsed navigation control.
         const s = stage.getBoundingClientRect()
         const n = nav.getBoundingClientRect()
         pageRef.current.style.setProperty('--plus-dy', `${n.top + n.height / 2 - (s.top + s.height / 2)}px`)
@@ -218,7 +162,7 @@ export default function TabBar({ active = 'home', onChange, onCreate, quickCreat
     }
     setCreateOpen(true)
   }
-  // Leaving the menu without choosing an option (×, tap away, Escape) lands on Home.
+  // Leaving the menu without choosing an option lands on Home.
   const dismissCreate = () => {
     setCreateOpen(false)
     if (active !== 'home') onChange?.('home')
@@ -255,7 +199,7 @@ export default function TabBar({ active = 'home', onChange, onCreate, quickCreat
 
   const onPointerDown = (e) => {
     if (e.button !== undefined && e.button !== 0) return
-    // While the menu is open the bar is only the ×, so any press on it just closes the menu.
+    // Any press on the collapsed bar closes the menu.
     dragRef.current = { moved: false, startX: e.clientX, closeOnly: createOpen }
     navRef.current.setPointerCapture?.(e.pointerId)
     setPressed(true)
@@ -326,7 +270,7 @@ export default function TabBar({ active = 'home', onChange, onCreate, quickCreat
         <span className="tab-lens-inner">
           {TABS.map((tab) => (
             <span key={tab.id} className="tab-lens-item">
-              {tab.icon}
+              <span className="tab-text">{tab.id === 'design' && createOpen ? 'Close' : tab.label}</span>
             </span>
           ))}
         </span>
@@ -341,7 +285,7 @@ export default function TabBar({ active = 'home', onChange, onCreate, quickCreat
             className={`tab-item ${selected ? 'is-active' : ''}${tab.id === 'design' ? ' is-create' : ''}`}
             style={{ '--tab-n': index - 2 }}
             aria-current={selected ? 'page' : undefined}
-            aria-label={tab.label}
+            aria-label={tab.id === 'design' && createOpen ? 'Close create menu' : tab.label}
             onClick={(e) => {
               if (e.detail !== 0) return
               setReleaseCount((count) => count + 1)
@@ -353,7 +297,7 @@ export default function TabBar({ active = 'home', onChange, onCreate, quickCreat
               onChange?.(tab.id)
             }}
           >
-            {tab.icon}
+            <span className="tab-text">{tab.id === 'design' && createOpen ? 'Close' : tab.label}</span>
           </button>
         )
       })}
