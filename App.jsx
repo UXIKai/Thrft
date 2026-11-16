@@ -861,7 +861,7 @@ export default function App() {
           <NavButtonGlyph key={tab} star={!atBottom} />
         </button>
       )}
-      {signedIn && showNav && <TabBar active={tab} onCreate={(segment) => {
+      {signedIn && showNav && <TabBar active={tab} quickCreateSegment={tab === 'home' && homeSegment === 'market' ? 'market' : null} onCreate={(segment) => {
         setCreateSegment(segment)
         setHomeBrand(null)
         closeHomePicker()

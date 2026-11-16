@@ -78,7 +78,7 @@ const CREATE_OPTIONS = [
   { id: 'market', label: 'Market', note: 'List a piece', Icon: StallIcon },
 ]
 
-export default function TabBar({ active = 'home', onChange, onCreate }) {
+export default function TabBar({ active = 'home', onChange, onCreate, quickCreateSegment = null }) {
   const [createOpen, setCreateOpen] = useState(false)
   const [createClosing, setCreateClosing] = useState(false)
   const [stageEl, setStageEl] = useState(null)
@@ -200,6 +200,10 @@ export default function TabBar({ active = 'home', onChange, onCreate }) {
   }, [createOpen, stageEl])
 
   const openCreate = () => {
+    if (quickCreateSegment) {
+      onCreate?.(quickCreateSegment)
+      return
+    }
     const nav = navRef.current
     if (nav) {
       nav.style.setProperty('--bar-w', `${nav.offsetWidth}px`)

@@ -70,6 +70,8 @@ Profile Store and Market listings use a borderless three-column product image gr
 
 Create uses borderless fields and a transparent product studio rather than nested cards. Store opens directly in print-on-demand mode without a toggle or the resale camera/gallery box; Connect Website remains available. Market retains its personal resale photo flow. Printful base costs, estimated margins, and payment-fee notes are available in the collapsed INFORMATION disclosure on the price step.
 
+The navigation + opens Market creation directly while browsing Home's Market section. Other sections retain the creation destination menu.
+
 The navigation's outer track uses a clear vertical sheen, 8px blur with brightness/contrast enhancement, asymmetric white rim highlights, and a soft drop shadow. The active bubble uses the quieter clear finish with a faint neutral edge and light blur. Mobile bubble spacing remains unchanged.
 
 Tab changes use a physical spring (stiffness 420, damping 26, mass 0.9), with a 0.92 press squish, a 1.12-by-0.94 release stretch, and a synchronized 1.15 icon pop. Dragging follows the finger directly before springing into the selected slot; reduced-motion mode disables these animations.
