@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useId, useRef } from 'react'
 
 const WAVE_POINTS = [
   [210, 350, 350, 390, 720, 485, 1450, 590],
@@ -7,9 +7,9 @@ const WAVE_POINTS = [
 ]
 
 const UPPER_GLOW = Float32Array.from({ length: 1801 }, (_, distance) =>
-  .7 * Math.exp(-((distance / 65) ** 2)) + .3 * Math.exp(-((distance / 3) ** 2)))
+  .65 * Math.exp(-((distance / 65) ** 2)))
 const LOWER_GLOW = Float32Array.from({ length: 1801 }, (_, distance) =>
-  .12 * Math.exp(-((distance / 55) ** 2)) + .6 * Math.exp(-((distance / 3) ** 2)))
+  .65 * Math.exp(-((distance / 22) ** 2)))
 
 function cubic(start, first, second, end, t) {
   const u = 1 - t
@@ -17,7 +17,10 @@ function cubic(start, first, second, end, t) {
 }
 
 export default function AtmosphereFlow() {
+  const id = useId()
   const canvasRef = useRef(null)
+  const edgeRef = useRef(null)
+  const lightRef = useRef(null)
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -56,10 +59,11 @@ export default function AtmosphereFlow() {
       const blend = (1 - Math.cos((phase - index) * Math.PI)) / 2
       const points = WAVE_POINTS[index].map((value, i) =>
         value + (WAVE_POINTS[(index + 1) % WAVE_POINTS.length][i] - value) * blend)
+      edgeRef.current.setAttribute('d', `M-180 930C${points.slice(0, 6).join(' ')}S${points.slice(6).join(' ')} 1480-160`)
       const { width, height, data } = image
       const rows = new Float32Array(width)
       for (let x = 0; x < width; x += 1) {
-        const target = x / width * 1440
+        const target = (x + .5) / width * 1440
         const left = target < points[4]
         const xs = left ? [-180, points[0], points[2], points[4]]
           : [points[4], 2 * points[4] - points[2], points[6], 1480]
@@ -75,9 +79,10 @@ export default function AtmosphereFlow() {
         rows[x] = cubic(...ys, (low + high) / 2) / 900 * height
       }
       const shift = Math.sin(elapsed / 10000 * Math.PI * 2) * .18
+      lightRef.current.setAttribute('gradientTransform', `translate(${shift * 1440} 0)`)
       const stops = [[0, colors.b], [.28, colors.a], [.52, colors.b], [.84, colors.a], [1, colors.c]]
       for (let x = 0; x < width; x += 1) {
-        const position = Math.max(0, Math.min(1, x / width - shift))
+        const position = Math.max(0, Math.min(1, (x + .5) / width - shift))
         let stop = 0
         while (stop < stops.length - 2 && position > stops[stop + 1][0]) stop += 1
         const amount = (position - stops[stop][0]) / (stops[stop + 1][0] - stops[stop][0])
@@ -86,10 +91,12 @@ export default function AtmosphereFlow() {
         const slope = (rows[Math.min(width - 1, x + 1)] - rows[Math.max(0, x - 1)]) / 2
         const normal = 900 / height / Math.sqrt(1 + slope * slope)
         for (let y = 0; y < height; y += 1) {
-          const distance = y - rows[x]
+          const distance = y + .5 - rows[x]
           const offset = Math.min(1800, Math.round(Math.abs(distance) * normal))
           const glow = distance < 0 ? UPPER_GLOW[offset] : LOWER_GLOW[offset]
-          const shade = distance < 0 ? .18 * Math.max(0, 1 - (x / width + y / height) * .7) : 0
+          const shade = distance < 0
+            ? .18 * Math.min(1, -distance * normal / 12) * Math.max(0, 1 - (x / width + y / height) * .7)
+            : 0
           const pixel = (y * width + x) * 4
           for (let channel = 0; channel < 3; channel += 1) {
             const base = colors.base[channel] + (128 - colors.base[channel]) * shade
@@ -121,7 +128,7 @@ export default function AtmosphereFlow() {
     const resize = () => {
       const { width, height } = canvas.getBoundingClientRect()
       if (!width || !height) return
-      // The soft glow does not need a device-pixel-resolution drawing surface.
+      // Only the soft glow is low resolution; the separate vector edge stays sharp.
       const scale = Math.min(1, 180 / width, 360 / height)
       canvas.width = Math.max(1, Math.round(width * scale))
       canvas.height = Math.max(1, Math.round(height * scale))
@@ -157,5 +164,22 @@ export default function AtmosphereFlow() {
     }
   }, [])
 
-  return <canvas ref={canvasRef} className="atmosphere-flow" aria-hidden="true" />
+  return (
+    <div className="atmosphere-flow" aria-hidden="true">
+      <canvas ref={canvasRef} className="atmosphere-flow-glow" />
+      <svg className="atmosphere-flow-edge" viewBox="0 0 1440 900" preserveAspectRatio="none">
+        <defs>
+          <linearGradient ref={lightRef} id={`${id}-edge-light`} gradientUnits="userSpaceOnUse" x2="1440">
+            <stop stopColor="var(--atmosphere-effect-b, #d6a467)" />
+            <stop offset=".28" stopColor="var(--atmosphere-effect-a, #ffe2a3)" />
+            <stop offset=".52" stopColor="var(--atmosphere-effect-b, #d6a467)" />
+            <stop offset=".84" stopColor="var(--atmosphere-effect-a, #ffe2a3)" />
+            <stop offset="1" stopColor="var(--atmosphere-effect-c, #856344)" />
+          </linearGradient>
+        </defs>
+        <path ref={edgeRef} fill="none" stroke={`url(#${id}-edge-light)`} strokeWidth="1"
+          strokeOpacity=".8" vectorEffect="non-scaling-stroke" />
+      </svg>
+    </div>
+  )
 }

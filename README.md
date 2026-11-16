@@ -71,7 +71,7 @@ Profile Store and Market listings use a borderless three-column product image gr
 Store product details have a top-right heart that saves or removes the product from Liked. Saving uses the existing account-scoped saved-products API and refreshes saved-product preferences.
 
 The default atmosphere is a continuously bending dark wave with warm-gold light traveling along its edge, rather than a static wallpaper drifting across the screen. Appearance background colors still tint the flow; turning the effect off or choosing a photo hides it. Reduced-motion preferences pause both the wave geometry and light.
-The wave renders on a small canvas (at most 180 × 360 pixels) with precomputed soft-light falloff instead of repainting full-resolution blur filters. It updates at most 24 times per second and stops updating when hidden, offscreen, or in a background tab.
+The soft glow renders on a small canvas (at most 180 × 360 pixels) with precomputed light falloff instead of full-resolution blur filters. A separate antialiased vector edge stays sharp on high-density mobile screens, and the glow has no low-resolution hard boundary. Both layers move together at most 24 times per second and stop updating when hidden, offscreen, or in a background tab.
 
 Create uses borderless fields and a transparent product studio rather than nested cards. Store opens directly in print-on-demand mode without a toggle or the resale camera/gallery box; Connect Website remains available. Market retains its personal resale photo flow. Printful base costs, estimated margins, and payment-fee notes are available in the collapsed INFORMATION disclosure on the price step.
 
