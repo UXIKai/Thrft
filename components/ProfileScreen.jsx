@@ -23,6 +23,8 @@ import OrdersScreen from './OrdersScreen.jsx'
 import SectionSwiper from './SectionSwiper.jsx'
 import SettingsScreen from './SettingsScreen.jsx'
 import SwipeBackPage from './SwipeBackPage.jsx'
+import ProductPhoto from './ProductPhoto.jsx'
+import { hasProductCutout } from '../mockupCutouts.js'
 import './GlassOverlay.css'
 import './ProfileScreen.css'
 
@@ -1232,7 +1234,7 @@ export default function ProfileScreen({
                     <li key={p.id}>
                       <button
                         type="button"
-                        className="profile-product-row"
+                        className="profile-product-row is-bare"
                         onClick={() =>
                           onOpenProduct?.({
                             ...p,
@@ -1247,8 +1249,19 @@ export default function ProfileScreen({
                           })
                         }
                       >
-                        <span>{p.title}</span>
-                        <span>{p.price || '—'}</span>
+                        <span className="profile-product-photo">
+                          {(p.photoUrl || p.image_url || p.photo_url || p.mockup_urls?.[0]) && (
+                            <ProductPhoto
+                              src={p.photoUrl || p.image_url || p.photo_url || p.mockup_urls?.[0]}
+                              cutout={hasProductCutout(p)}
+                              alt={p.title}
+                              loading="lazy"
+                              draggable="false"
+                            />
+                          )}
+                        </span>
+                        <span className="profile-product-name">{p.title}</span>
+                        <span className="profile-product-price">{p.price || '—'}</span>
                       </button>
                     </li>
                   ))}

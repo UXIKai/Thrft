@@ -338,24 +338,48 @@
   list-style: none;
   margin: 0;
   padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px 12px;
+}
+
+.profile-product-list > li {
+  min-width: 0;
 }
 
 .profile-product-row {
   width: 100%;
   display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 14px;
-  border-radius: 14px;
-  border: 1px solid var(--glass-border, light-dark(rgba(87, 87, 87, 0.18), rgba(168, 168, 168, 0.18)));
-  background: var(--glass-clear-tint, light-dark(rgba(219, 219, 219, 0.04), rgba(36, 36, 36, 0.04)));
+  flex-direction: column;
+  gap: 4px;
+  padding: 0;
+  border-radius: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
   color: light-dark(rgb(0, 0, 0), #fff);
   text-align: left;
   font-size: 0.88rem;
   cursor: pointer;
+}
+
+.profile-product-photo {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+}
+
+.profile-product-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.profile-product-name,
+.profile-product-price {
+  max-width: 100%;
+  overflow-wrap: anywhere;
 }
 
 .profile-joined {
