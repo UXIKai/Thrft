@@ -325,12 +325,14 @@ export default function CartScreen({
         )}
       </div>
 
+      {items.length > 0 && (
+        <p className="cart-total">
+          <strong>{totalLabel}</strong>
+        </p>
+      )}
       {items.length > 0 ? (
         <div className="cart-pay-dock">
           <div className="cart-pay-block">
-            <p className="cart-total">
-              <strong>{totalLabel}</strong>
-            </p>
             <div className="cart-pay-actions">
               <button
                 type="button"
