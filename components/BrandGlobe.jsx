@@ -2,7 +2,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import StageSlot from './StageSlot.jsx'
 import AtmosphereFlow from './AtmosphereFlow.jsx'
 import { colorHex } from '../colorsCatalog.js'
-import { colorSchemeForHex } from '../appAppearance.js'
+import { backgroundEffectStyle, colorSchemeForHex } from '../appAppearance.js'
 import BrandLogo from './BrandLogo.jsx'
 import { BRAND_LOGO_TILE_PX, brandLogoBackground, packBrandLogoLanes } from '../brandLogos.js'
 import './BrandGlobe.css'
@@ -1501,27 +1501,8 @@ function BrandGlobeView({
     onSelect?.(brand.id)
   }
 
-  const initialColorRef = useRef(activeId || '')
-  const effectOn = typeof document !== 'undefined' && document.documentElement.dataset.bgImage !== 'none'
-  // Stay black (no tint) until the effect is on and a different color is scrolled onto.
-  const scrolledColor = focusBrand && focusBrand.id !== initialColorRef.current ? colorHex(focusBrand.id) : null
-  const seatTint = previewColors && effectOn ? scrolledColor : null
-  const seatRgb = seatTint?.match(/[a-f0-9]{2}/gi)?.map((part) => parseInt(part, 16)).join(', ')
+  const seatTint = previewColors && focusBrand?.id ? colorHex(focusBrand.id) : null
   const previewScheme = seatTint ? colorSchemeForHex(seatTint) : null
-  useEffect(() => {
-    if (!seatTint) return undefined
-    const root = document.documentElement
-    const themeMeta = document.querySelector('meta[name="theme-color"]')
-    const previousThemeColor = themeMeta?.getAttribute('content')
-    root.style.setProperty('--orbital-preview-color', seatTint)
-    themeMeta?.setAttribute('content', seatTint)
-    return () => {
-      root.style.removeProperty('--orbital-preview-color')
-      if (themeMeta && previousThemeColor !== null) {
-        themeMeta.setAttribute('content', previousThemeColor)
-      }
-    }
-  }, [seatTint])
   const originStyle = {
     '--brand-center-background': showBrandLogos && !failedCenterLogos.has(focusBrand?.label)
       ? logoBackgrounds[focusBrand?.label] ?? brandLogoBackground(focusBrand?.label) : '#ffffff',
@@ -1529,14 +1510,9 @@ function BrandGlobeView({
       ? { '--globe-dx': `${origin.dx}px`, '--globe-dy': `${origin.dy}px` }
       : null),
     ...(seatTint ? {
-      colorScheme: previewScheme,
       '--globe-seat-background': previewScheme === 'light' ? '#000000' : '#ffffff',
       '--globe-tint': seatTint,
-      '--atmosphere-base': seatTint,
-      '--atmosphere-base-rgb': seatRgb,
-      '--atmosphere-effect-a-rgb': seatRgb.split(', ').map((part) => Math.round(Number(part) * 0.6)).join(', '),
-      '--atmosphere-effect-b-rgb': seatRgb,
-      '--atmosphere-effect-c-rgb': seatRgb.split(', ').map((part) => Math.round(Number(part) * 0.35)).join(', '),
+      ...backgroundEffectStyle(seatTint),
     } : null),
   }
 

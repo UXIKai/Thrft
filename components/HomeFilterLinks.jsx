@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import OrbitCarousel from './OrbitCarousel.jsx'
 import AtmosphereFlow from './AtmosphereFlow.jsx'
 import { COLOR_FAMILIES, colorHex } from '../colorsCatalog.js'
-import { applySearchBackground, clearSearchBackground } from '../appAppearance.js'
+import { applySearchBackground, backgroundEffectStyle, clearSearchBackground } from '../appAppearance.js'
 import './HomeFilterLinks.css'
 
 /**
@@ -103,23 +103,13 @@ export default function HomeFilterLinks({
     }
   }, [open, brandId, categoryId, colorId])
 
-  const effectOn = document.documentElement.dataset.bgImage !== 'none'
-  // The page uses the app's own effect, buttons and text colours; the picked colour does not tint it.
-  const tintCard = !!draftColor
-  const searchColor = (draftColor && colorHex(draftColor)) || '#ffffff'
-  const searchRgb = searchColor.match(/[a-f0-9]{2}/gi)?.map((part) => parseInt(part, 16)) || [255, 255, 255]
-  const luminance = (0.299 * searchRgb[0] + 0.587 * searchRgb[1] + 0.114 * searchRgb[2]) / 255
-  // Starts as the page's own background; picking a colour paints the page that colour.
-  const cardStyle = tintCard ? {
-    '--tint-ink': luminance < 0.5 ? '#ffffff' : '#000000',
-    '--search-tint': searchColor,
-  } : {}
+  const cardStyle = draftColor ? backgroundEffectStyle(colorHex(draftColor)) : {}
 
   return (
     <div className="home-search">
       {open && (
         <div
-          className={`home-search-backdrop${tintCard ? ' is-tinted' : ''}`}
+          className="home-search-backdrop"
           style={cardStyle}
           onPointerDown={(e) => {
             if (e.target === e.currentTarget) cancel()
@@ -132,13 +122,9 @@ export default function HomeFilterLinks({
             aria-label="Search"
             style={cardStyle}
           >
-            {false && effectOn && (
-              <div className="home-search-blur" aria-hidden>
-                <div className="atmosphere" aria-hidden>
-                  <AtmosphereFlow />
-                </div>
-              </div>
-            )}
+            <div className="home-search-preview" aria-hidden="true">
+              <AtmosphereFlow />
+            </div>
             <div className="home-search-wheel">
               <p className="home-search-label">Brand</p>
               <OrbitCarousel

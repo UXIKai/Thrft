@@ -701,7 +701,7 @@ html .brand-globe .brand-globe-stage.is-choosing .brand-globe-center-hole {
 
 
 .brand-globe.has-tint .brand-globe-scrim {
-  background: color-mix(in srgb, var(--globe-tint) 75%, #000);
+  background: var(--page-base);
 }
 
 html .brand-globe.is-color-picker .brand-globe-center-hole,
@@ -867,18 +867,25 @@ html .brand-globe.is-brand-picker .brand-globe-center-hole {
   background: transparent;
 }
 
-/* Color picker starts dark: black scrim, white words, until a color tints it */
-.brand-globe.is-color-picker:not(.has-tint) {
-  color-scheme: dark;
-  background: #000;
-  color: #fff;
+/* Color selection previews the wave without changing the page surface. */
+.brand-globe.is-color-picker {
+  background: var(--page-base);
+  color: var(--ink);
 }
 
-.brand-globe.is-color-picker:not(.has-tint) .brand-globe-scrim,
-.brand-globe.is-color-picker:not(.has-tint) .brand-globe-panel {
-  background: #000;
+.brand-globe.is-color-picker .brand-globe-scrim {
+  background: var(--page-base);
 }
 
-.brand-globe.is-color-picker:not(.has-tint) > .brand-globe-color-atmosphere {
-  display: none;
+.brand-globe.is-color-picker .brand-globe-panel {
+  background: transparent;
+}
+
+html body .brand-globe.is-color-picker > .brand-globe-color-atmosphere {
+  display: block;
+  background: var(--page-base);
+}
+
+html body .stage .brand-globe.is-color-picker .atmosphere-flow {
+  display: block;
 }

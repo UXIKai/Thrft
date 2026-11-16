@@ -92,7 +92,7 @@ export default function AtmosphereFlow() {
           const shade = distance < 0 ? .18 * Math.max(0, 1 - (x / width + y / height) * .7) : 0
           const pixel = (y * width + x) * 4
           for (let channel = 0; channel < 3; channel += 1) {
-            const base = colors.base[channel] + (colors.c[channel] - colors.base[channel]) * shade
+            const base = colors.base[channel] + (128 - colors.base[channel]) * shade
             data[pixel + channel] = base + (light[channel] - base) * glow
           }
           data[pixel + 3] = 255
@@ -140,7 +140,9 @@ export default function AtmosphereFlow() {
       readColors()
       if (motion.matches) paint(0)
     })
-    colorObserver.observe(document.documentElement, { attributes: true })
+    for (let ancestor = canvas.parentElement; ancestor; ancestor = ancestor.parentElement) {
+      colorObserver.observe(ancestor, { attributes: true })
+    }
     resize()
     syncMotion()
     motion.addEventListener('change', syncMotion)

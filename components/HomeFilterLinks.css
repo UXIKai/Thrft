@@ -405,15 +405,22 @@ html body .stage.is-home-search-open > .tab-bar:not(#_) {
   visibility: visible;
 }
 
-/* Same look as the page background until a colour is picked */
+/* Show only the flowing background and filter controls while choosing. */
 html body .home-search-backdrop:not(#_):not(#_) {
-  background: transparent;
+  background: var(--page-bg);
 }
-html body .home-search-backdrop.is-tinted:not(#_):not(#_) {
-  background: var(--search-tint);
+
+html body .home-search-modal > .home-search-preview {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: var(--page-base);
+  filter: brightness(.8);
 }
-html body .home-search-backdrop.is-tinted .home-search-modal:not(#_) {
-  --card-ink: var(--tint-ink);
+
+html body .stage .home-search-preview .atmosphere-flow {
+  display: block;
 }
 
 /* Nothing behind the filter page can be pressed */

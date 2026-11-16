@@ -640,6 +640,11 @@ export function applyBgAtmosphereTokens() {
     })
   }
 
+  if (searchEffectColor) {
+    Object.entries(backgroundEffectStyle(searchEffectColor)).forEach(([key, value]) => {
+      root.style.setProperty(key, value)
+    })
+  }
   return currentBgColorId
 }
 
@@ -764,6 +769,23 @@ export function applyCustomBgColor(hex, { matchColor = false } = {}) {
 }
 
 let searchBackgroundSnapshot = null
+let searchEffectColor = null
+
+export function backgroundEffectStyle(hex) {
+  const rgb = hexToRgb(hex)
+  if (!rgb) throw new Error('Background effect requires a six-digit hex color.')
+  return Object.fromEntries([
+    liftRgb(rgb, .45),
+    rgb,
+    rgb.map((channel) => Math.round(channel * .5)),
+  ].flatMap((color, index) => {
+    const key = String.fromCharCode(97 + index)
+    return [
+      [`--atmosphere-effect-${key}`, `rgb(${color.join(', ')})`],
+      [`--atmosphere-effect-${key}-rgb`, color.join(', ')],
+    ]
+  }))
+}
 
 export function readMoonlight() {
   // Moon mode is retired: ink and outlines follow the page shade instead
@@ -819,6 +841,7 @@ export function clearSearchBackground({ restoreDefault = false } = {}) {
   }
   const saved = searchBackgroundSnapshot
   searchBackgroundSnapshot = null
+  searchEffectColor = null
   currentBgColorId = saved.color
   ensureCustomBgColor(saved.custom)
   currentBgEffects = saved.effects
@@ -837,6 +860,7 @@ export function clearSearchBackground({ restoreDefault = false } = {}) {
 }
 
 export function applySearchBackground(hex) {
+  backgroundEffectStyle(hex)
   if (!searchBackgroundSnapshot) {
     searchBackgroundSnapshot = {
       color: currentBgColorId,
@@ -847,7 +871,8 @@ export function applySearchBackground(hex) {
       image: currentBg,
     }
   }
-  applyCustomBgColor(hex, { matchColor: true })
+  searchEffectColor = hex
+  applyBgAtmosphereTokens()
   applyBackgroundPhoto(null)
   applyBackgroundImage('atmosphere')
 }
