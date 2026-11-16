@@ -494,7 +494,7 @@ const ASSISTANT_FAQ = [
   {
     keys: ['settings', 'gear', 'color', 'size', 'shipping'],
     answer:
-      'Open the gear on Profile for Settings—app color, glass clarity, clothing sizes, shop email, shipping, and Store API.',
+      'Open the gear on Profile for Settings—app color, glass clarity, clothing sizes, shop email, and shipping.',
   },
   {
     keys: ['sign out', 'logout', 'log out'],
@@ -1865,15 +1865,6 @@ export default function SettingsScreen({
             </span>
             <span className="settings-pill is-active">Active</span>
           </div>
-        </Section>
-
-        <Section label="Store API">
-          <Row
-            title="Store API"
-            subtitle="Connect your store catalog key"
-            meta={userProfile?.storeApiKey ? 'Connected' : 'Not set'}
-            onClick={() => openSheet('storeApi')}
-          />
         </Section>
 
         <Section label="Brand shipping">
