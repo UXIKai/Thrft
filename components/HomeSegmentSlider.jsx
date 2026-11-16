@@ -53,7 +53,8 @@ const scrolledDown = (el, stop) => {
 export default function HomeSegmentSlider({ value, onChange, fireSame = false, onSearch, onCart, onTap, onHold, bagCount = 0, navHidden = false }) {
   const rootRef = useRef(null)
   const [menuOpen, setMenuOpen] = useState(false)
-  const [phase, setPhase] = useState(navHidden ? 'opening' : 'closed')
+  const [phase, setPhase] = useState(navHidden ? 'done' : 'closed')
+  const previousNavHidden = useRef(navHidden)
   const settleTimer = useRef(0)
   const finishOpening = () => {
     setPhase('settle')
@@ -63,8 +64,10 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false, o
   }
   useEffect(() => () => window.clearTimeout(settleTimer.current), [])
   useEffect(() => {
+    if (previousNavHidden.current === navHidden) return
+    previousNavHidden.current = navHidden
     window.clearTimeout(settleTimer.current)
-    setPhase(navHidden ? 'opening' : 'closed')
+    setPhase(navHidden ? 'opening' : 'closing')
   }, [navHidden])
   const menuRef = useRef(false)
   menuRef.current = menuOpen
@@ -346,6 +349,7 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false, o
 
   // Arrows at a dead end are dimmed; the Leaderboard has no left/right neighbours.
   const side = onLeaderboard ? ' is-end' : ''
+  const closed = phase === 'closed' || phase === 'closing'
   // The star opens into swipe arrows while the navigation bar is hidden.
   const openFinal = [
     onLeaderboard ? 0 : 1,
@@ -357,11 +361,11 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false, o
   return (
     <div
       ref={rootRef}
-      className={`home-segment-slider${phase === 'closed' ? ' is-closed' : phase === 'opening' ? ' is-opening' : phase === 'settle' ? ' is-settling' : ''}`}
+      className={`home-segment-slider${closed ? ' is-closed' : phase === 'opening' ? ' is-opening' : phase === 'settle' ? ' is-settling' : ''}`}
       role="status"
       aria-label={`${SEGMENTS.find((s) => s.id === value)?.label}. Swipe left or right for Store and Market; pull down at the top for the Leaderboard, swipe up at the bottom for checkout; hold for the menu.`}
     >
-      {phase === 'closed' && <span className="home-segment-closed-star" aria-hidden="true"><NavButtonGlyph star /></span>}
+      {closed && <span className="home-segment-closed-star" aria-hidden="true"><NavButtonGlyph star animate={phase === 'closing'} /></span>}
       {phase === 'opening' && <OpeningStar final={openFinal} onDone={finishOpening} />}
       <span className={`wheel-arrow is-left${shopIndex === 0 ? ' is-end' : side}`} aria-hidden="true">{arrow}</span>
       <span className={`wheel-arrow is-right${shopIndex === 1 ? ' is-end' : side}`} aria-hidden="true">{arrow}</span>

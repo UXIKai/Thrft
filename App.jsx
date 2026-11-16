@@ -192,9 +192,12 @@ export default function App() {
 
   // The nav bar shows on every page and stays until the bottom button is tapped to hide it.
   const [atBottom, setAtBottom] = useState(false)
-  useEffect(() => {
+  const [navTab, setNavTab] = useState(tab)
+  // Reset before mounting the next page, not as an animated visibility change afterward.
+  if (navTab !== tab) {
+    setNavTab(tab)
     setAtBottom(false)
-  }, [tab])
+  }
   useEffect(() => {
     const stage = stageRef.current
     const el = scrollRef.current
@@ -855,7 +858,7 @@ export default function App() {
           aria-expanded={!atBottom}
           onClick={() => setAtBottom((hidden) => !hidden)}
         >
-          <NavButtonGlyph key={atBottom ? 'hidden' : 'visible'} star={!atBottom} />
+          <NavButtonGlyph key={tab} star={!atBottom} />
         </button>
       )}
       {signedIn && showNav && <TabBar active={tab} onCreate={(segment) => {

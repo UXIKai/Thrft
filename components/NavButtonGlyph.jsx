@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef } from 'react'
+import { useLayoutEffect, useRef, useState } from 'react'
 
 // The open ninja star's top blade; the other arrows are 90-degree turns of it (set in CSS).
 export const arrow = (
@@ -32,7 +32,7 @@ const blendList = (list, p) => {
 const blendFrames = (p) => blendList(FRAME_NUMS, p)
 
 /** The empty-middle state: four blades that twist shut like a camera shutter into a ninja star. */
-function NinjaStar() {
+function NinjaStar({ animate }) {
   const groupRef = useRef(null)
   const bladeRefs = useRef([])
 
@@ -41,7 +41,7 @@ function NinjaStar() {
       bladeRefs.current.forEach((el) => el?.setAttribute('points', shape))
       groupRef.current?.setAttribute('transform', `rotate(${spin.toFixed(2)} 400 400)`)
     }
-    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
+    if (!animate || window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
       apply(blendFrames(1), 0)
       return undefined
     }
@@ -56,7 +56,7 @@ function NinjaStar() {
     apply(blendFrames(0), 0)
     raf = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(raf)
-  }, [])
+  }, [animate])
 
   return (
     <svg className="ninja-star" viewBox="0 0 800 800" aria-hidden="true">
@@ -155,8 +155,14 @@ export function OpeningStar({ final = [1, 1, 1, 1], onDone }) {
  * The Home picker's button. With an icon in the middle the four arrows stay open around it;
  * with `star` (nothing in the middle) they close into a ninja star.
  */
-export default function NavButtonGlyph({ icon = null, star = false }) {
-  if (star && !icon) return <NinjaStar />
+export default function NavButtonGlyph({ icon = null, star = false, animate }) {
+  const previousStar = useRef(star)
+  const [animateStar, setAnimateStar] = useState(false)
+  useLayoutEffect(() => {
+    setAnimateStar(star && !previousStar.current)
+    previousStar.current = star
+  }, [star])
+  if (star && !icon) return <NinjaStar animate={animate ?? animateStar} />
   return (
     <>
       <span className="wheel-arrow is-up" aria-hidden="true">{arrow}</span>
