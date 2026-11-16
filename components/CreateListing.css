@@ -1159,10 +1159,10 @@ html body .create-listing .listing-photo-choice .listing-photo-choice-btn:active
 
 .listing-website-entry,
 .listing-website-button {
-  border: 1px solid var(--glass-border);
-  border-radius: 18px;
-  background: var(--glass-clear-tint);
-  box-shadow: var(--glass-clear-depth);
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
   color: inherit;
   font: inherit;
   cursor: pointer;
@@ -1245,4 +1245,13 @@ html body .create-listing .listing-photo-choice .listing-photo-choice-btn:active
   white-space: pre-wrap;
   overflow-wrap: anywhere;
   user-select: text;
+}
+
+html body .create-listing :is(.listing-box, .listing-wheels, .listing-input, .listing-website-entry, .listing-website-button):not(#_) {
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }

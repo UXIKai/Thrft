@@ -756,7 +756,7 @@ export default function CreateListing({ onPosted, initialSegment = 'market' } = 
       )}
 
       {currentStep === 'photo' && isStore && (
-        <button type="button" className="listing-website-entry" disabled={scanning || posting}
+        <button type="button" className="listing-website-entry is-bare" disabled={scanning || posting}
           onClick={() => setStep('website')}>
           <strong>Connect Website</strong><small>Import products from your brand website</small>
         </button>
@@ -1002,14 +1002,17 @@ export default function CreateListing({ onPosted, initialSegment = 'market' } = 
           />
         </span>
       </label>
-      {isStore && creatorMode && <div className="creator-price-summary" aria-live="polite">
+      {isStore && creatorMode && <details className="creator-price-summary">
+        <summary>INFORMATION</summary>
+        <div aria-live="polite">
         <p>Printful base cost: <strong>{pricing
           ? priceRange(pricing.baseMin, pricing.baseMax) : 'Unavailable from Printful'}</strong></p>
         {pricing && pricing.marginMin !== null && (
           <p>Estimated margin: <strong>{priceRange(pricing.marginMin, pricing.marginMax)}</strong></p>
         )}
         <small>Per item, before shipping, taxes, and payment fees. Base costs can vary by size.</small>
-      </div>}
+        </div>
+      </details>}
       </>}
 
       {isCloset && (
