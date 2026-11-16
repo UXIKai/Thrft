@@ -611,7 +611,7 @@ html body .product-detail .glass-overlay-back {
 .product-detail-selected-item img {
   width: 72px;
   height: 88px;
-  object-fit: cover;
+  object-fit: contain;
   border-radius: 10px;
 }
 

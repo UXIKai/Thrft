@@ -9,7 +9,7 @@ export function applyProductMask(source, mask) {
   const visited = new Uint8Array(count)
   const queue = new Uint32Array(count)
   for (let pixel = 0; pixel < count; pixel++) {
-    silhouette[pixel] = mask.data[pixel * 4 + 3] >= 96 ? 1 : 0
+    silhouette[pixel] = mask.data[pixel * 4 + 3] > 32 ? 1 : 0
   }
   const corners = [0, width - 1, count - width, count - 1]
   const whiteBackdrop = corners.every((pixel) => {
@@ -124,6 +124,44 @@ function pngBlob(canvas) {
     (blob) => blob ? resolve(blob) : reject(new Error('Could not encode product photo')), 'image/png'))
 }
 
+export function productFrame({ data, width, height }) {
+  let left = width
+  let top = height
+  let right = -1
+  let bottom = -1
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      if (!data[(y * width + x) * 4 + 3]) continue
+      left = Math.min(left, x)
+      top = Math.min(top, y)
+      right = Math.max(right, x)
+      bottom = Math.max(bottom, y)
+    }
+  }
+  if (right < left) throw new Error('Product image has no visible pixels')
+  const cropWidth = right - left + 1
+  const cropHeight = bottom - top + 1
+  const padding = Math.max(2, Math.ceil(Math.max(cropWidth, cropHeight) * 0.06))
+  return { left, top, width: cropWidth, height: cropHeight, padding }
+}
+
+function framedPng(canvas, pixels) {
+  const frame = productFrame(pixels)
+  const width = frame.width + frame.padding * 2
+  const height = frame.height + frame.padding * 2
+  const scale = Math.min(1, 1024 / Math.max(width, height))
+  const output = typeof OffscreenCanvas !== 'undefined'
+    ? new OffscreenCanvas(Math.ceil(width * scale), Math.ceil(height * scale))
+    : Object.assign(document.createElement('canvas'), {
+      width: Math.ceil(width * scale), height: Math.ceil(height * scale),
+    })
+  const ctx = output.getContext('2d')
+  ctx.imageSmoothingQuality = 'high'
+  ctx.drawImage(canvas, frame.left, frame.top, frame.width, frame.height,
+    frame.padding * scale, frame.padding * scale, frame.width * scale, frame.height * scale)
+  return pngBlob(output)
+}
+
 export async function cutoutProductPhoto(blob, segment) {
   const canvas = await canvasFromBlob(blob)
   const ctx = canvas.getContext('2d')
@@ -131,7 +169,7 @@ export async function cutoutProductPhoto(blob, segment) {
   let transparent = 0
   for (let i = 3; i < source.data.length; i += 4) if (source.data[i] === 0) transparent++
   // Do not remask existing transparent product artwork.
-  if (transparent / (canvas.width * canvas.height) > 0.03) return pngBlob(canvas)
+  if (transparent / (canvas.width * canvas.height) > 0.03) return framedPng(canvas, source)
   const normalized = await pngBlob(canvas)
   const maskCanvas = await canvasFromBlob(await segment(normalized))
   if (maskCanvas.width !== canvas.width || maskCanvas.height !== canvas.height) {
@@ -145,5 +183,5 @@ export async function cutoutProductPhoto(blob, segment) {
     throw new Error('Could not separate the product from its background')
   }
   ctx.putImageData(source, 0, 0)
-  return pngBlob(canvas)
+  return framedPng(canvas, source)
 }

@@ -102,7 +102,7 @@ export const getPrintfileLayout = (productId) =>
 export const createMockupTask = (productId, { variantIds, files }) =>
   printful(`/mockup-generator/create-task/${encodeURIComponent(productId)}`, {
     method: 'POST',
-    body: { variant_ids: variantIds, format: 'jpg', files },
+    body: { variant_ids: variantIds, format: 'png', files },
   })
 
 export const getMockupTask = (taskKey) =>

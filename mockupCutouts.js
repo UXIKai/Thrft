@@ -1,4 +1,4 @@
-const CACHE_NAME = 'thrft-mockup-cutouts-v4'
+const CACHE_NAME = 'thrft-mockup-cutouts-v5'
 let worker
 let idleTimer
 

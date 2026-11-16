@@ -403,6 +403,7 @@ test('owned artwork → mockups → published product → trusted checkout → o
   assert.equal(task.status, 202)
   const createTask = f.calls.find((call) => call.url.pathname.includes('create-task'))
   assert.deepEqual(createTask.body.variant_ids, [4011])
+  assert.equal(createTask.body.format, 'png')
   assert.equal(createTask.body.files[0].image_url, artwork)
   assert.equal((await request('/api/printful/mockups/task-1', { token: 'other-token' })).status, 404)
   const completed = await request('/api/printful/mockups/task-1')
