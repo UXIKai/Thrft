@@ -191,7 +191,7 @@ export default function App() {
   const [rowPageOpen, setRowPageOpen] = useState(false)
   const showNav = !(tab === 'chat' && chatThreadOpen) && !rowPageOpen
 
-  // Holds and page gestures can hide navigation; tapping the shuriken restores it.
+  // The center shuriken toggles navigation without moving out of reach.
   const [atBottom, setAtBottom] = useState(false)
   const tabBarRef = useRef(null)
   const shurikenTapTimer = useRef(0)
@@ -214,7 +214,7 @@ export default function App() {
     }
     shurikenTapTimer.current = window.setTimeout(() => {
       shurikenTapTimer.current = 0
-      setAtBottom(false)
+      setAtBottom((hidden) => homeIdle ? false : !hidden)
       if (tab === 'home') setHomeOpen(true)
     }, 300)
   }

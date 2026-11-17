@@ -2465,7 +2465,13 @@ html body .stage > .tab-bar.tab-bar.tab-bar.is-collapsed:not(#_) {
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
 }
-.tab-bar.is-collapsed :is(.tab-pill, .tab-item:not(.is-create)),
+.tab-bar.is-collapsed :is(.tab-pill, .tab-item:not(.is-create)) {
+  opacity: 0;
+  pointer-events: none;
+}
+.tab-bar.is-collapsed .tab-item:not(.is-create) {
+  transform: translateX(calc(var(--tab-n) * -100%)) scale(0.2) !important;
+}
 .tab-bar.is-collapsed::before,
 .tab-bar.is-collapsed::after { visibility: hidden; }
 .tab-bar.is-collapsed .tab-item.is-create { pointer-events: auto; }

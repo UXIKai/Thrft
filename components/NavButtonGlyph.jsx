@@ -32,32 +32,40 @@ const blendList = (list, p) => {
 const blendFrames = (p) => blendList(FRAME_NUMS, p)
 
 /** The empty-middle state: four blades that twist shut like a camera shutter into a ninja star. */
-function NinjaStar({ animate }) {
+function NinjaStar({ animate, open = false }) {
   const gradientId = useId()
   const groupRef = useRef(null)
   const bladeRefs = useRef([])
+  const progressRef = useRef(open || animate ? 0 : 1)
+  const previousOpen = useRef(open)
 
   useLayoutEffect(() => {
-    const apply = (shape, spin) => {
-      bladeRefs.current.forEach((el) => el?.setAttribute('points', shape))
-      groupRef.current?.setAttribute('transform', `rotate(${spin.toFixed(2)} 400 400)`)
+    const target = open ? 0 : 1
+    const changed = previousOpen.current !== open
+    previousOpen.current = open
+    const apply = (progress) => {
+      progressRef.current = progress
+      bladeRefs.current.forEach((el) => el?.setAttribute('points', blendFrames(progress)))
+      groupRef.current?.setAttribute('transform', `rotate(${(90 * easeOutBack(progress)).toFixed(2)} 400 400)`)
     }
-    if (!animate || window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
-      apply(blendFrames(1), 0)
+    if ((!animate && !changed) || window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
+      apply(target)
       return undefined
     }
+    const from = animate && !changed && !open ? 0 : progressRef.current
+    const duration = STAR_MS * Math.abs(target - from)
     let raf = 0
     let start = 0
     const tick = (now) => {
       if (!start) start = now
-      const t = Math.min((now - start) / STAR_MS, 1)
-      apply(blendFrames(easeInOutCubic(t)), 90 * easeOutBack(t))
+      const t = duration ? Math.min((now - start) / duration, 1) : 1
+      apply(from + (target - from) * easeInOutCubic(t))
       if (t < 1) raf = requestAnimationFrame(tick)
     }
-    apply(blendFrames(0), 0)
+    apply(from)
     raf = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(raf)
-  }, [animate])
+  }, [animate, open])
 
   return (
     <svg className="ninja-star" viewBox="0 0 800 800" aria-hidden="true">
@@ -156,14 +164,14 @@ export function OpeningStar({ final = [1, 1, 1, 1], onDone }) {
  * The Home picker's button. With an icon in the middle the four arrows stay open around it;
  * with `star` (nothing in the middle) they close into a ninja star.
  */
-export default function NavButtonGlyph({ icon = null, star = false, animate }) {
+export default function NavButtonGlyph({ icon = null, star = false, animate, open = false }) {
   const previousStar = useRef(star)
   const [animateStar, setAnimateStar] = useState(false)
   useLayoutEffect(() => {
     setAnimateStar(star && !previousStar.current)
     previousStar.current = star
   }, [star])
-  if (star && !icon) return <NinjaStar animate={animate ?? animateStar} />
+  if (star && !icon) return <NinjaStar animate={animate ?? animateStar} open={open} />
   return (
     <>
       <span className="wheel-arrow is-up" aria-hidden="true">{arrow}</span>

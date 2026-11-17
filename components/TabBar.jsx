@@ -16,11 +16,11 @@ const TABS = [
   { id: 'profile', label: 'Profile' },
 ]
 
-function TabContent({ tab }) {
+function TabContent({ tab, collapsed = false }) {
   return (
     <span className="tab-text">
       {tab.id === 'design' ? (
-        <span className="tab-icon tab-icon-shuriken"><NavButtonGlyph star /></span>
+        <span className="tab-icon tab-icon-shuriken"><NavButtonGlyph star open={collapsed} /></span>
       ) : tab.label}
     </span>
   )
@@ -301,7 +301,7 @@ export default function TabBar({ ref, active = 'home', onChange, onCreate, onShu
         <span className="tab-lens-inner">
           {TABS.map((tab) => (
             <span key={tab.id} className={`tab-lens-item${tab.id === 'design' ? ' is-create' : ''}`}>
-              <TabContent tab={tab} />
+              <TabContent tab={tab} collapsed={collapsed} />
             </span>
           ))}
         </span>
@@ -317,6 +317,7 @@ export default function TabBar({ ref, active = 'home', onChange, onCreate, onShu
             style={{ '--tab-n': index - 2 }}
             aria-current={selected ? 'page' : undefined}
             disabled={collapsed && tab.id !== 'design'}
+            aria-hidden={collapsed && tab.id !== 'design' ? true : undefined}
             aria-expanded={tab.id === 'design' ? !collapsed : undefined}
             aria-label={tab.id === 'design' ? createOpen ? 'Close create menu' : 'Shuriken: navigation, double-tap to create, hold for menu' : tab.label}
             onClick={(e) => {
@@ -331,7 +332,7 @@ export default function TabBar({ ref, active = 'home', onChange, onCreate, onShu
               onChange?.(tab.id)
             }}
           >
-            <TabContent tab={tab} />
+            <TabContent tab={tab} collapsed={collapsed} />
           </button>
         )
       })}
