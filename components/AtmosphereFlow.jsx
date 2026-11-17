@@ -21,6 +21,8 @@ export default function AtmosphereFlow() {
 
   useEffect(() => {
     const canvas = canvasRef.current
+    const edge = edgeRef.current
+    const light = lightRef.current
     const context = canvas.getContext('2d', { willReadFrequently: true })
     if (!context) {
       console.error('The animated atmosphere requires a 2D canvas context.')
@@ -61,7 +63,7 @@ export default function AtmosphereFlow() {
       const edgePoints = portrait
         ? points.map((_, i) => points[i % 2 === 0 ? i + 1 : i - 1])
         : points
-      edgeRef.current.setAttribute('d', portrait
+      edge.setAttribute('d', portrait
         ? `M-600 -180C${edgePoints.slice(0, 6).join(' ')}S${edgePoints.slice(6).join(' ')} 1020 1620`
         : `M-180 -600C${edgePoints.slice(0, 6).join(' ')}S${edgePoints.slice(6).join(' ')} 1620 1020`)
       const { width, height, data } = image
@@ -85,7 +87,7 @@ export default function AtmosphereFlow() {
         rows[x] = cubic(...ys, (low + high) / 2) / 900 * breadth
       }
       const shift = phase
-      lightRef.current.setAttribute('gradientTransform', portrait
+      light.setAttribute('gradientTransform', portrait
         ? `translate(0 ${shift * 1440})`
         : `translate(${shift * 1440} 0)`)
       const highlight = colors.a.map((channel) => channel + (255 - channel) * .2)
@@ -144,9 +146,9 @@ export default function AtmosphereFlow() {
       const { width, height } = canvas.getBoundingClientRect()
       if (!width || !height) return
       portrait = height > width
-      edgeRef.current.ownerSVGElement.setAttribute('viewBox', portrait ? '0 0 900 1440' : '0 0 1440 900')
-      lightRef.current.setAttribute('x2', portrait ? '0' : '1440')
-      lightRef.current.setAttribute('y2', portrait ? '1440' : '0')
+      edge.ownerSVGElement.setAttribute('viewBox', portrait ? '0 0 900 1440' : '0 0 1440 900')
+      light.setAttribute('x2', portrait ? '0' : '1440')
+      light.setAttribute('y2', portrait ? '1440' : '0')
       // Only the soft glow is low resolution; the separate vector edge stays sharp.
       const scale = Math.min(1, 180 / width, 360 / height)
       canvas.width = Math.max(1, Math.round(width * scale))

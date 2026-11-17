@@ -3,6 +3,7 @@ import { createPortal, flushSync } from 'react-dom'
 import { fetchSaved, searchAccounts } from '../api.js'
 import BrandGlobe from './BrandGlobe.jsx'
 import StageSlot from './StageSlot.jsx'
+import AtmosphereFlow from './AtmosphereFlow.jsx'
 import './ChatScreen.css'
 
 const CHATS_KEY = 'thrft-chats-v1'
@@ -3138,6 +3139,11 @@ export default function ChatScreen({
       {!isDesktop && !imagesOnly && !requestsView && !composer && onlinePanel}
 
       <div className="chat-main-page">
+      {!isDesktop && (
+        <div className="atmosphere chat-page-atmosphere" aria-hidden="true">
+          <AtmosphereFlow />
+        </div>
+      )}
       {!isDesktop && (
         <div className="chat-main-header">
           <button
