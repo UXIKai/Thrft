@@ -72,7 +72,7 @@ Store product details have a top-right heart that saves or removes the product f
 
 The bottom navigation uses compact uppercase HOME, CHAT, CREATE, LIKED, and PROFILE labels in place of icons. The selected word is brighter and bolder inside a moving clear-glass button with a transparent center and subtle rim; the outer container and touch navigation are unchanged. CREATE reads CLOSE while its destination menu is open.
 
-On mobile Chat, revealing Chats or Online moves a full-screen-width outlined page aside. Only the edge beside the revealed panel is visible; the opposite edge stays offscreen throughout the swipe.
+On mobile Chat, revealing Chats or Online slides the entire main page, its controls, and bottom navigation as one full-width rounded screen over a stationary side panel. The page has a subtle rim; its opposite edge stays offscreen throughout the swipe. Tapping the displaced page closes the panel.
 
 The default atmosphere is a continuously bending dark wave with warm-gold light traveling along its edge, rather than a static wallpaper drifting across the screen. Appearance background colors still tint the flow; turning the effect off or choosing a photo hides it. Reduced-motion preferences pause both the wave geometry and light.
 The soft glow renders on a small canvas (at most 180 × 360 pixels) with precomputed light falloff instead of full-resolution blur filters. A separate antialiased vector edge stays sharp on high-density mobile screens, and the glow has no low-resolution hard boundary. Both layers move together at most 24 times per second and stop updating when hidden, offscreen, or in a background tab.

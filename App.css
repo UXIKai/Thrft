@@ -3308,7 +3308,7 @@ html body .stage .home-radial[data-sel] .home-radial-btn:not(.is-hot):not(#_):no
   position: absolute;
   left: 50%;
   bottom: calc(var(--nav-bottom) + 82px);
-  translate: -50% 0;
+  translate: calc(-50% + var(--nav-shift, 0px)) 0;
   scale: 1.25;
   z-index: 20;
   width: 44px;
@@ -3446,7 +3446,16 @@ html body .stage > .tab-bar.tab-bar.is-create-closing:not(.is-create-open):not(#
 }
 html body .stage > .nav-toggle:not(#_),
 html body .home-scroll .wordmark-wrap > .home-segment-slider:not(#_) {
-  transition: bottom 0.38s cubic-bezier(0.22, 0.9, 0.3, 1), scale 0.18s cubic-bezier(0.3, 1.5, 0.5, 1) !important;
+  transition: bottom 0.38s cubic-bezier(0.22, 0.9, 0.3, 1), scale 0.18s cubic-bezier(0.3, 1.5, 0.5, 1), translate 0.28s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+}
+
+html body .stage:has(.chat-screen) > .tab-bar.tab-bar:not(.is-create-open, .is-create-closing):not(#_) {
+  transition: translate 0.28s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.2s ease !important;
+}
+
+html body .stage.is-chat-panel-dragging > .tab-bar.tab-bar:not(#_):not(#_),
+html body .stage.is-chat-panel-dragging > .nav-toggle:not(#_) {
+  transition: none !important;
 }
 
 .home-radial-scrim { touch-action: none; }

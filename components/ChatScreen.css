@@ -5379,23 +5379,106 @@ html body .chat-thread-scroll > .chat-thread-body {
   -webkit-backdrop-filter: none !important;
 }
 
-/* Keep the page full-width as it moves aside; its opposite edge stays offscreen. */
+.chat-main-page {
+  display: contents;
+}
+
+/* A full-width foreground screen reveals stationary panels underneath. */
 @media (max-width: 719px), (max-height: 499px) {
-  html body .chat-mobile-nav-scrim::before,
-  html body .chat-mobile-nav-scrim.is-online::before {
-    width: 100vw;
-    box-sizing: border-box;
-    border-style: solid;
-    border-width: 1.5px;
-    border-color: light-dark(rgba(0, 0, 0, 0.45), rgba(255, 255, 255, 0.4));
+  html body .chat-screen .chat-main-page {
+    position: absolute;
+    inset: 0;
+    z-index: 62;
+    display: flex;
+    flex-direction: column;
+    padding: calc(max(8px, env(safe-area-inset-top, 0px)) + 16px) 16px 0;
+    overflow: hidden;
+    transform: translateX(calc(min(80vw, 340px) * (var(--nav-p, 0) - var(--online-p, 0))));
+    transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  html body .chat-screen:is(.is-mobile-nav-open, .is-online-open) .chat-main-page {
+    background: var(--page-bg);
     border-radius: 44px;
   }
-  html body .chat-mobile-nav-scrim::before {
-    left: 44px;
-    right: auto;
+  html body .chat-screen:is(.is-mobile-nav-open, .is-online-open) .chat-main-page::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    border: 1px solid light-dark(rgba(0, 0, 0, 0.18), rgba(255, 255, 255, 0.18));
+    border-radius: inherit;
+    pointer-events: none;
   }
-  html body .chat-mobile-nav-scrim.is-online::before {
-    left: auto;
-    right: 44px;
+  html body .chat-screen.is-nav-dragging .chat-main-page {
+    transition: none;
+  }
+  html body .chat-screen .chat-main-page > .chat-desktop-thread {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 0 0 calc(96px + env(safe-area-inset-bottom, 0px));
+    -webkit-overflow-scrolling: touch;
+  }
+  .chat-main-header {
+    position: relative;
+    flex: 0 0 36px;
+    margin-bottom: 6px;
+  }
+  html body .chat-main-header .chat-page-menu {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 36px;
+    height: 36px;
+  }
+  html body .chat-screen .chat-main-header .chat-friends-find.is-in-header {
+    display: block;
+  }
+  html body .chat-screen .chat-friends-tabs[aria-label='Friends'] {
+    position: static;
+  }
+  html body .chat-main-page .chat-friends-active-head,
+  html body .chat-main-page .chat-friends-active-head:not(.is-collapsed) {
+    position: absolute;
+    top: calc(max(8px, env(safe-area-inset-top, 0px)) + 16px);
+    right: 16px;
+    transform: none;
+  }
+  html body .chat-screen.is-mobile-nav-open .chat-friends-active-head {
+    display: block;
+  }
+  html body .chat-screen .chat-list-section {
+    transform: none !important;
+    transition: visibility 0.28s;
+  }
+  html body .chat-screen.is-mobile-nav-open .chat-sidebar-title,
+  html body .chat-screen.is-mobile-nav-open .chat-sidebar-control[aria-label='Search conversations'] {
+    transform: none;
+  }
+  html body .chat-screen > .chat-friends-active:not([hidden]) {
+    position: absolute;
+    inset: 0 0 0 auto;
+    z-index: 60;
+    display: block;
+    width: min(80vw, 340px);
+    padding: calc(max(8px, env(safe-area-inset-top, 0px)) + 16px) 16px 24px;
+    overflow-y: auto;
+    border: 0 !important;
+    background: var(--page-bg);
+  }
+  html body .chat-screen .chat-main-page .chat-page-dismiss {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    padding: 0;
+    border: 0 !important;
+    border-radius: inherit;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+  html body .chat-screen .chat-main-page .chat-page-dismiss::before,
+  html body .chat-screen .chat-main-page .chat-page-dismiss::after {
+    content: none;
   }
 }

@@ -830,8 +830,7 @@ export default function ChatScreen({
     if (isDesktop || !stage) return undefined
     const navP = navDragP ?? (mobileNavOpen ? 1 : 0)
     const onlineP = onlineDragP ?? (activeNowOpen ? 1 : 0)
-    const w = Math.min(window.innerWidth * 0.8, 340)
-    root.style.setProperty('--nav-shift', `${w * (navP - onlineP)}px`)
+    root.style.setProperty('--nav-shift', `calc(min(80vw, 340px) * ${navP - onlineP})`)
     stage.classList.toggle('is-chat-panel-dragging', navDragP !== null || onlineDragP !== null)
     return undefined
   }, [isDesktop, mobileNavOpen, activeNowOpen, navDragP, onlineDragP])
@@ -2832,6 +2831,13 @@ export default function ChatScreen({
 
   if (activeChat && !isDesktop) return renderThread()
 
+  const onlinePanel = (
+    <aside className={`chat-friends-active${activeNowOpen ? '' : ' is-collapsed'}`} aria-label="Online" hidden={!activeNowOpen && onlineDragP === null}>
+      {(activeNowOpen || onlineDragP !== null) && <h3 className="chat-friends-active-aside-title">Online</h3>}
+      {(activeNowOpen || onlineDragP !== null) && <p className="chat-friends-active-empty">It's quiet for now…</p>}
+    </aside>
+  )
+
   return (
     <div
       className={`chat-screen${composer?.mode === 'create' ? ' is-new-chat' : ''}${isDesktop ? ' is-desktop' : ''}${isDesktop && sidebarCollapsed ? ' is-sidebar-collapsed' : ''}${!isDesktop && (mobileNavOpen || (navDragP ?? 0) > 0.01) ? ' is-mobile-nav-open' : ''}${navDragP !== null || onlineDragP !== null ? ' is-nav-dragging' : ''}${!isDesktop && (activeNowOpen || onlineDragP !== null) ? ' is-online-open' : ''}`}
@@ -2914,28 +2920,7 @@ export default function ChatScreen({
         aria-label="Chat controls"
       >
         <div className="chat-sidebar-header">
-          {!isDesktop && <button
-            type="button"
-            className="chat-sidebar-control is-bare chat-sidebar-back"
-            aria-label={isDesktop ? 'Back to Home' : mobileNavOpen ? 'Close chats' : 'Open chats'}
-            aria-expanded={isDesktop ? undefined : mobileNavOpen}
-            onClick={isDesktop ? backToChats : () => { setActiveNowOpen(false); setMobileNavOpen((open) => !open) }}
-          >
-            <ToggleIcon />
-          </button>}
           <h1 className="chat-sidebar-title">Chats</h1>
-          {!isDesktop && !imagesOnly && !requestsView && !activeChat && !composer && (
-            <input
-              type="search"
-              className="chat-friends-find is-in-header"
-              aria-label="Search people"
-              placeholder="Search people"
-              autoComplete="off"
-              spellCheck={false}
-              value={friendsQuery}
-              onChange={(e) => setFriendsQuery(e.target.value)}
-            />
-          )}
           <button
             type="button"
             className="chat-sidebar-control is-bare"
@@ -2998,9 +2983,6 @@ export default function ChatScreen({
         )}
       </section>
 
-      {!isDesktop && (mobileNavOpen || navDragP !== null) && (
-        <button type="button" className="chat-mobile-nav-scrim" aria-label="Close chats" onClick={() => setMobileNavOpen(false)} />
-      )}
       <section
         className="chat-section chat-list-section"
         aria-label="Chats"
@@ -3153,6 +3135,34 @@ export default function ChatScreen({
         </ul>
       </section>
 
+      {!isDesktop && !imagesOnly && !requestsView && !composer && onlinePanel}
+
+      <div className="chat-main-page">
+      {!isDesktop && (
+        <div className="chat-main-header">
+          <button
+            type="button"
+            className="chat-sidebar-control is-bare chat-page-menu"
+            aria-label={mobileNavOpen ? 'Close chats' : 'Open chats'}
+            aria-expanded={mobileNavOpen}
+            onClick={() => { setActiveNowOpen(false); setMobileNavOpen((open) => !open) }}
+          >
+            <ToggleIcon />
+          </button>
+          {!imagesOnly && !requestsView && !composer && (
+            <input
+              type="search"
+              className="chat-friends-find is-in-header"
+              aria-label="Search people"
+              placeholder="Search people"
+              autoComplete="off"
+              spellCheck={false}
+              value={friendsQuery}
+              onChange={(e) => setFriendsQuery(e.target.value)}
+            />
+          )}
+        </div>
+      )}
       {(
         <section
           className="chat-desktop-thread"
@@ -3318,18 +3328,21 @@ export default function ChatScreen({
                   </ul>
                 )}
               </div>
-              {!isDesktop && (activeNowOpen || onlineDragP !== null) && (
-                <button type="button" className="chat-mobile-nav-scrim is-online" aria-label="Close Online" onClick={() => setActiveNowOpen(false)} />
-              )}
-              <aside className={`chat-friends-active${activeNowOpen ? '' : ' is-collapsed'}`} aria-label="Online" hidden={!activeNowOpen && onlineDragP === null}>
-                {(activeNowOpen || onlineDragP !== null) && <h3 className="chat-friends-active-aside-title">Online</h3>}
-                {(activeNowOpen || onlineDragP !== null) && <p className="chat-friends-active-empty">It's quiet for now…</p>}
-              </aside>
+              {isDesktop && onlinePanel}
               </div>
             </div>
           )}
         </section>
       )}
+      {!isDesktop && (mobileNavOpen || navDragP !== null || activeNowOpen || onlineDragP !== null) && (
+        <button
+          type="button"
+          className="chat-page-dismiss is-bare"
+          aria-label={mobileNavOpen || navDragP !== null ? 'Close chats panel' : 'Close Online panel'}
+          onClick={() => { setMobileNavOpen(false); setActiveNowOpen(false) }}
+        />
+      )}
+      </div>
 
       {!composer && searchOpen && isDesktop && (
         <div className="chat-search-modal-overlay">
