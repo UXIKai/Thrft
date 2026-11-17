@@ -31,7 +31,13 @@ test('opposing sides cross the center and exchange places without a jump', () =>
     const before = waveFrame(time - 1)
     const after = waveFrame(time + 1)
     assert.ok((before.points[1] - 450) * (after.points[1] - 450) < 0)
-    assert.ok(Math.abs(before.points[1] - after.points[1]) < .2)
-    assert.ok(Math.abs(before.fold - after.fold) < .001)
+    assert.ok(Math.abs(before.points[1] - after.points[1]) < .5)
+    assert.ok(Math.abs(before.fold - after.fold) < .003)
   }
+})
+
+test('the S spends almost no time edge-on, so it never lingers as a straight line', () => {
+  let flat = 0
+  for (let time = 0; time < 18000; time += 10) if (Math.abs(waveFrame(time).fold) < .2) flat += 10
+  assert.ok(flat < 700)
 })

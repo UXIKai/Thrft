@@ -1,9 +1,11 @@
 const WAVE_POINTS = [120, 610, 440, 620, 720, 490, 1180, 400]
 const FLOW_PERIOD_MS = 18000
+const EDGE_ON_SPEED = 4
 
 export function waveFrame(elapsed) {
   const angle = (elapsed % FLOW_PERIOD_MS) / FLOW_PERIOD_MS * Math.PI * 2
-  const fold = Math.cos(angle)
+  // Turning on a pole: the S dwells face-on, mirrored, and only sweeps through edge-on very briefly
+  const fold = Math.tanh(EDGE_ON_SPEED * Math.cos(angle)) / Math.tanh(EDGE_ON_SPEED)
   const across = (value) => 450 + (value - 450) * fold
   return {
     fold,
