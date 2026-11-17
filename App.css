@@ -2434,7 +2434,7 @@ html body .tab-bar .tab-lens-inner { top: -7.5%; bottom: -7.5%; }
 }
 .tab-bar .tab-item { transition: transform 0.26s cubic-bezier(0.5, 0, 0.75, 0), opacity 0.14s ease 0.14s; }
 .tab-bar .tab-pill { transition: opacity 0.2s ease; }
-.tab-bar .tab-item.is-create .tab-icon { transition: transform 0.3s ease; }
+html body .tab-bar :is(.tab-item, .tab-lens-item).is-create .tab-icon { transition: transform 0.3s ease; }
 
 /* The other tabs are sucked into the plus and the bar shrinks around it */
 .tab-bar.is-create-open .tab-item:not(.is-create) {
@@ -2443,10 +2443,13 @@ html body .tab-bar .tab-lens-inner { top: -7.5%; bottom: -7.5%; }
   pointer-events: none;
 }
 .tab-bar.is-create-open .tab-pill { opacity: 0; }
-.tab-bar.is-create-open .tab-item.is-create .tab-icon {
+.tab-bar.is-create-open .is-create .tab-icon {
   transform: rotate(45deg) !important;
   width: 30px;
   height: 30px;
+}
+@media (prefers-reduced-motion: reduce) {
+  html body .tab-bar :is(.tab-item, .tab-lens-item).is-create .tab-icon { transition: none; }
 }
 /* The lone × never wears the browser's keyboard focus circle */
 .tab-bar.is-create-open .tab-item.is-create:focus-visible { outline: none; }

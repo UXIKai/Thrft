@@ -15,6 +15,18 @@ const TABS = [
   { id: 'profile', label: 'Profile' },
 ]
 
+function TabContent({ tab }) {
+  return (
+    <span className="tab-text">
+      {tab.id === 'design' ? (
+        <svg viewBox="0 0 24 24" aria-hidden="true" className="tab-icon tab-icon-plus">
+          <path fill="currentColor" d="M11 5h2v6h6v2h-6v6h-2v-6H5v-2h6V5z" />
+        </svg>
+      ) : tab.label}
+    </span>
+  )
+}
+
 // Closet, Create (the Store flow) and Market side by side in the middle of the screen (positions live in App.css).
 const CREATE_OPTIONS = [
   { id: 'closet', label: 'Closet', note: 'Save your finds', Icon: ClosetIcon },
@@ -269,8 +281,8 @@ export default function TabBar({ active = 'home', onChange, onCreate, quickCreat
       <span className="tab-pill" aria-hidden="true">
         <span className="tab-lens-inner">
           {TABS.map((tab) => (
-            <span key={tab.id} className="tab-lens-item">
-              <span className="tab-text">{tab.id === 'design' && createOpen ? 'Close' : tab.label}</span>
+            <span key={tab.id} className={`tab-lens-item${tab.id === 'design' ? ' is-create' : ''}`}>
+              <TabContent tab={tab} />
             </span>
           ))}
         </span>
@@ -297,7 +309,7 @@ export default function TabBar({ active = 'home', onChange, onCreate, quickCreat
               onChange?.(tab.id)
             }}
           >
-            <span className="tab-text">{tab.id === 'design' && createOpen ? 'Close' : tab.label}</span>
+            <TabContent tab={tab} />
           </button>
         )
       })}
