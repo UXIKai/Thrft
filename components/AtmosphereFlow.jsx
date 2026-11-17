@@ -84,7 +84,7 @@ function WaveFlow() {
     }
     const paint = (elapsed) => {
       if (!image) return
-      const phase = elapsed / FLOW_PERIOD_MS % 1
+      const phase = (1 - Math.cos(elapsed / FLOW_PERIOD_MS * Math.PI * 2)) / 2
       const points = WAVE_POINTS.map((value, i) => {
         const along = WAVE_POINTS[i - i % 2] / 1440
         const ripple = Math.sin((along - phase) * Math.PI * 2)
@@ -116,7 +116,7 @@ function WaveFlow() {
         }
         rows[x] = cubic(...ys, (low + high) / 2) / 900 * breadth
       }
-      const shift = phase * 2 % 1
+      const shift = phase
       light.setAttribute('gradientTransform', portrait
         ? `translate(0 ${shift * 1440})`
         : `translate(${shift * 1440} 0)`)
