@@ -1,9 +1,8 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { readBackgroundEffectStyle } from '../appAppearance.js'
 import { createWaveRenderer } from '../waveRenderer.js'
+import { waveFrame } from '../waveMotion.js'
 
-const WAVE_POINTS = [120, 610, 440, 620, 720, 490, 1180, 400]
-const FLOW_PERIOD_MS = 18000
 // A bright leading crest leaves a long, softly rippling luminous wake.
 const LIGHT_STOPS = [[0, 0], [.16, 0], [.3, .18], [.38, .08], [.48, .4],
   [.55, .3], [.64, 1], [.7, .12], [.78, 0], [1, 0]]
@@ -87,28 +86,23 @@ function WaveFlow() {
     }
     const paint = (elapsed) => {
       if (!profile || contextLost) return
-      const phase = (1 - Math.cos(elapsed / FLOW_PERIOD_MS * Math.PI * 2)) / 2
-      const points = WAVE_POINTS.map((value, i) => {
-        const along = WAVE_POINTS[i - i % 2] / 1440
-        const ripple = Math.sin((along - phase) * Math.PI * 2)
-        return value + ripple * (i % 2 === 0 ? 48 : 20)
-      })
+      const { phase, fold, points, start, end } = waveFrame(elapsed)
       const edgePoints = portrait
         ? points.map((_, i) => points[i % 2 === 0 ? i + 1 : i - 1])
         : points
       edge.setAttribute('d', portrait
-        ? `M-600 -180C${edgePoints.slice(0, 6).join(' ')}S${edgePoints.slice(6).join(' ')} 1020 1620`
-        : `M-180 -600C${edgePoints.slice(0, 6).join(' ')}S${edgePoints.slice(6).join(' ')} 1620 1020`)
+        ? `M${start[1]} ${start[0]}C${edgePoints.slice(0, 6).join(' ')}S${edgePoints.slice(6).join(' ')} ${end[1]} ${end[0]}`
+        : `M${start.join(' ')}C${edgePoints.slice(0, 6).join(' ')}S${edgePoints.slice(6).join(' ')} ${end.join(' ')}`)
       const { width, height } = canvas
       const length = portrait ? height : width
       const breadth = portrait ? width : height
       for (let x = 0; x < length; x += 1) {
         const target = (x + .5) / length * 1440
         const left = target < points[4]
-        const xs = left ? [-180, points[0], points[2], points[4]]
-          : [points[4], 2 * points[4] - points[2], points[6], 1620]
-        const ys = left ? [-600, points[1], points[3], points[5]]
-          : [points[5], 2 * points[5] - points[3], points[7], 1020]
+        const xs = left ? [start[0], points[0], points[2], points[4]]
+          : [points[4], 2 * points[4] - points[2], points[6], end[0]]
+        const ys = left ? [start[1], points[1], points[3], points[5]]
+          : [points[5], 2 * points[5] - points[3], points[7], end[1]]
         let low = 0
         let high = 1
         for (let step = 0; step < 14; step += 1) {
@@ -134,7 +128,7 @@ function WaveFlow() {
         }
         profile[pixel + 3] = stops[stop][2] + (stops[stop + 1][2] - stops[stop][2]) * amount
       }
-      renderer.paint(profile, colors)
+      renderer.paint(profile, colors, fold)
     }
     const tick = (now) => {
       if (startedAt === undefined) startedAt = now

@@ -11,6 +11,7 @@ uniform vec2 resolution;
 uniform bool portrait;
 uniform vec3 base;
 uniform vec3 reflection;
+uniform float fold;
 out vec4 color;
 void main() {
   vec2 pixel = vec2(gl_FragCoord.x, resolution.y - gl_FragCoord.y);
@@ -29,6 +30,7 @@ void main() {
   float progress = along / float(length);
   float litSide = smoothstep(0.35, 0.65, progress);
   float surface = distance < 0.0 ? 1.0 - litSide : litSide;
+  surface = mix(1.0 - surface, surface, fold * 0.5 + 0.5);
   float spread = (0.35 + 0.65 * abs(cos(progress * 3.14159265359))) * (1.0 + light.a * 0.28);
   float broad = 0.82 * exp(-pow(absolute / 145.0, 2.0)) + 0.16 * exp(-pow(absolute / 20.0, 2.0));
   float rim = 0.24 * exp(-pow(absolute / 22.0, 2.0)) + 0.74 * exp(-pow(absolute / 7.0, 2.0));
@@ -71,7 +73,7 @@ export function createWaveRenderer(canvas) {
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
-  const uniforms = Object.fromEntries(['resolution', 'portrait', 'base', 'reflection'].map((name) =>
+  const uniforms = Object.fromEntries(['resolution', 'portrait', 'base', 'reflection', 'fold'].map((name) =>
     [name, gl.getUniformLocation(program, name)]))
   const maxSize = Math.min(gl.getParameter(gl.MAX_TEXTURE_SIZE), gl.getParameter(gl.MAX_RENDERBUFFER_SIZE))
   if (maxSize < 3840) console.warn(`Wave resolution is limited to ${maxSize}px by this device.`)
@@ -87,7 +89,8 @@ export function createWaveRenderer(canvas) {
       gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA32F, length, 2, 0, gl.RGBA, gl.FLOAT, null)
       return new Float32Array(length * 8)
     },
-    paint(profile, colors) {
+    paint(profile, colors, fold = 1) {
+      gl.uniform1f(uniforms.fold, fold)
       gl.uniform3fv(uniforms.base, Array.from(colors.base, (value) => value / 255))
       gl.uniform3fv(uniforms.reflection, Array.from(colors.b, (value) => value / 255))
       gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, profile.length / 8, 2, gl.RGBA, gl.FLOAT, profile)

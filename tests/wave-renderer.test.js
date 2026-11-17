@@ -4,6 +4,7 @@ import { createWaveRenderer } from '../waveRenderer.js'
 
 function canvasFixture({ compile = true } = {}) {
   const deleted = []
+  const folds = []
   const gl = {
     MAX_TEXTURE_SIZE: 'texture-size', MAX_RENDERBUFFER_SIZE: 'buffer-size',
     createProgram: () => ({}), createTexture: () => ({}), createShader: () => ({}),
@@ -12,12 +13,24 @@ function canvasFixture({ compile = true } = {}) {
     getProgramParameter: () => true, useProgram() {}, bindTexture() {}, texParameteri() {},
     getUniformLocation: () => ({}), getParameter: () => 8192,
     viewport() {}, uniform2f() {}, uniform1i() {}, texImage2D() {},
+    uniform1f: (_, value) => folds.push(value),
+    uniform3fv() {}, texSubImage2D() {}, drawArrays() {},
     deleteTexture: (value) => deleted.push(value),
     deleteProgram: (value) => deleted.push(value),
     deleteShader: (value) => deleted.push(value),
   }
-  return { canvas: { getContext: () => gl }, deleted }
+  return { canvas: { getContext: () => gl }, deleted, folds }
 }
+
+test('passes the fold orientation to the glow so its lit surfaces invert with the curve', () => {
+  const { canvas, folds } = canvasFixture()
+  const renderer = createWaveRenderer(canvas)
+  const profile = renderer.resize(390, 844)
+  const colors = { base: [0, 0, 0], b: [128, 128, 128] }
+  for (const fold of [1, .5, 0, -.5, -1]) renderer.paint(profile, colors, fold)
+  assert.deepEqual(folds, [1, .5, 0, -.5, -1])
+  renderer.dispose()
+})
 
 test('renders 4K portrait and landscape without stretching or exceeding UHD bounds', () => {
   const { canvas } = canvasFixture()
