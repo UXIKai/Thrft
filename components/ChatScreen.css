@@ -5379,13 +5379,23 @@ html body .chat-thread-scroll > .chat-thread-body {
   -webkit-backdrop-filter: none !important;
 }
 
-/* The centre page card is clearly outlined all the way round, top and bottom curves included, while a side panel is open */
+/* Keep the page full-width as it moves aside; its opposite edge stays offscreen. */
 @media (max-width: 719px), (max-height: 499px) {
   html body .chat-mobile-nav-scrim::before,
   html body .chat-mobile-nav-scrim.is-online::before {
+    width: 100vw;
+    box-sizing: border-box;
     border-style: solid;
     border-width: 1.5px;
     border-color: light-dark(rgba(0, 0, 0, 0.45), rgba(255, 255, 255, 0.4));
     border-radius: 44px;
+  }
+  html body .chat-mobile-nav-scrim::before {
+    left: 44px;
+    right: auto;
+  }
+  html body .chat-mobile-nav-scrim.is-online::before {
+    left: auto;
+    right: 44px;
   }
 }
