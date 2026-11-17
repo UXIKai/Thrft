@@ -117,19 +117,30 @@ export default function AtmosphereFlow() {
         const transition = Math.max(0, Math.min(1, (progress - .35) / .3))
         const litSide = transition * transition * (3 - 2 * transition)
         const spread = (.35 + .65 * Math.abs(Math.cos(progress * Math.PI))) * (1 + energy * .28)
+        const baseR = colors.base[0]
+        const baseG = colors.base[1]
+        const baseB = colors.base[2]
+        const lightR = light[0] - baseR
+        const lightG = light[1] - baseG
+        const lightB = light[2] - baseB
+        const reflectedR = reflected[0] - baseR
+        const reflectedG = reflected[1] - baseG
+        const reflectedB = reflected[2] - baseB
+        let pixel = portrait ? x * width * 4 : x * 4
+        const stride = portrait ? 4 : width * 4
         for (let y = 0; y < breadth; y += 1) {
           const distance = y + .5 - rows[x]
-          const offset = Math.min(1800, Math.round(Math.abs(distance) * normal))
+          const absolute = Math.abs(distance) * normal
+          const offset = Math.min(1800, Math.round(absolute))
           const surfaceSide = distance < 0 ? 1 - litSide : litSide
           const rim = RIM_GLOW[offset]
           const diffuse = (BROAD_GLOW[offset] - rim) * surfaceSide * spread
-          const shade = .18 * surfaceSide * Math.min(1, Math.abs(distance) * normal / 24)
-          const pixel = (portrait ? x * width + y : y * width + x) * 4
-          for (let channel = 0; channel < 3; channel += 1) {
-            const base = colors.base[channel] + (128 - colors.base[channel]) * shade
-            data[pixel + channel] = base + (light[channel] - base) * rim + (reflected[channel] - base) * diffuse
-          }
+          const shade = .18 * surfaceSide * Math.min(1, absolute / 24) * (1 - rim - diffuse)
+          data[pixel] = baseR + (128 - baseR) * shade + lightR * rim + reflectedR * diffuse
+          data[pixel + 1] = baseG + (128 - baseG) * shade + lightG * rim + reflectedG * diffuse
+          data[pixel + 2] = baseB + (128 - baseB) * shade + lightB * rim + reflectedB * diffuse
           data[pixel + 3] = 255
+          pixel += stride
         }
       }
       context.putImageData(image, 0, 0)
@@ -159,8 +170,11 @@ export default function AtmosphereFlow() {
       edge.ownerSVGElement.setAttribute('viewBox', portrait ? '0 0 900 1440' : '0 0 1440 900')
       light.setAttribute('x2', portrait ? '0' : '1440')
       light.setAttribute('y2', portrait ? '1440' : '0')
-      // Only the soft glow is low resolution; the separate vector edge stays sharp.
-      const scale = Math.min(1, 180 / width, 360 / height)
+      // Give phone-sized surfaces a denser glow; the vector rim stays device-resolution.
+      const mobile = Math.min(width, height) <= 600 && Math.max(width, height) <= 1200
+      const scale = mobile
+        ? Math.min(window.devicePixelRatio || 1, 360 / Math.min(width, height), 780 / Math.max(width, height))
+        : Math.min(1, 180 / width, 360 / height)
       canvas.width = Math.max(1, Math.round(width * scale))
       canvas.height = Math.max(1, Math.round(height * scale))
       image = context.createImageData(canvas.width, canvas.height)
