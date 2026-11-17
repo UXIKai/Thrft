@@ -14,6 +14,7 @@ import HomeSegmentSlider from './components/HomeSegmentSlider.jsx'
 import LiquidGlassDefs from './components/LiquidGlassDefs.jsx'
 import CartScreen from './components/CartScreen.jsx'
 import NavButtonGlyph from './components/NavButtonGlyph.jsx'
+import HomeRadialMenu, { moveKnob, radialAt } from './components/HomeRadialMenu.jsx'
 import ProductDetail from './components/ProductDetail.jsx'
 import { guardSignedInNavigation } from './signedInNavigation.js'
 import ProductRows from './components/ProductRows.jsx'
@@ -191,8 +192,95 @@ export default function App() {
   const [rowPageOpen, setRowPageOpen] = useState(false)
   const showNav = !(tab === 'chat' && chatThreadOpen) && !homeIdle && !rowPageOpen
 
-  // The nav bar shows on every page and stays until the bottom button is tapped to hide it.
+  // Holds and page gestures can hide navigation; tapping the shuriken restores it.
   const [atBottom, setAtBottom] = useState(false)
+  const tabBarRef = useRef(null)
+  const homeSliderRef = useRef(null)
+  const shurikenTapTimer = useRef(0)
+  const shurikenHoldTimer = useRef(0)
+  const shurikenPress = useRef(null)
+  const pendingCreate = useRef(false)
+  const [shurikenMenuOpen, setShurikenMenuOpen] = useState(false)
+  const cancelShurikenTap = () => {
+    window.clearTimeout(shurikenTapTimer.current)
+    shurikenTapTimer.current = 0
+  }
+  const tapShuriken = () => {
+    if (shurikenTapTimer.current) {
+      cancelShurikenTap()
+      setAtBottom(false)
+      if (tabBarRef.current) tabBarRef.current.openCreate()
+      else {
+        pendingCreate.current = true
+        setHomeOpen(true)
+      }
+      return
+    }
+    shurikenTapTimer.current = window.setTimeout(() => {
+      shurikenTapTimer.current = 0
+      setAtBottom(false)
+      if (tab === 'home') setHomeOpen(true)
+    }, 300)
+  }
+  const holdShuriken = () => {
+    cancelShurikenTap()
+    if (tab === 'home') homeSliderRef.current?.openMenu()
+    else {
+      setAtBottom(true)
+      setShurikenMenuOpen(true)
+    }
+  }
+  const pickShurikenMenu = (id) => {
+    setShurikenMenuOpen(false)
+    if (id === 'cart') setCartOpen(true)
+    else {
+      setTab('home')
+      setHomeOpen(true)
+      if (id === 'search') setSearchSignal((n) => n + 1)
+      else setHomeSegment(id)
+    }
+  }
+  useEffect(() => {
+    if (pendingCreate.current && tabBarRef.current) {
+      pendingCreate.current = false
+      tabBarRef.current.openCreate()
+    }
+  }, [showNav])
+  useEffect(() => () => {
+    window.clearTimeout(shurikenTapTimer.current)
+    shurikenTapTimer.current = 0
+    window.clearTimeout(shurikenHoldTimer.current)
+    shurikenPress.current = null
+  }, [tab])
+  useEffect(() => {
+    if (!shurikenMenuOpen) return undefined
+    const move = (event) => {
+      const point = event.touches?.[0] || event
+      if (event.cancelable) event.preventDefault()
+      moveKnob(point.clientX, point.clientY)
+    }
+    const release = () => {
+      const selected = radialAt()?.dataset.radial
+      if (selected) pickShurikenMenu(selected)
+      else setShurikenMenuOpen(false)
+    }
+    const cancel = () => setShurikenMenuOpen(false)
+    const onKey = (event) => { if (event.key === 'Escape') cancel() }
+    window.addEventListener('pointermove', move)
+    window.addEventListener('touchmove', move, { passive: false })
+    window.addEventListener('pointerup', release)
+    window.addEventListener('pointercancel', cancel)
+    window.addEventListener('blur', cancel)
+    window.addEventListener('keydown', onKey)
+    return () => {
+      window.removeEventListener('pointermove', move)
+      window.removeEventListener('touchmove', move)
+      window.removeEventListener('pointerup', release)
+      window.removeEventListener('pointercancel', cancel)
+      window.removeEventListener('blur', cancel)
+      window.removeEventListener('keydown', onKey)
+    }
+  }, [shurikenMenuOpen])
   const [navTab, setNavTab] = useState(tab)
   // Reset before mounting the next page, not as an animated visibility change afterward.
   if (navTab !== tab) {
@@ -569,14 +657,15 @@ export default function App() {
                 openSignal={searchSignal}
               />
               {!rowPageOpen && <HomeSegmentSlider
+                ref={homeSliderRef}
                 value={homeSegment}
                 navHidden={atBottom}
                 fireSame={!homeOpen}
                 bagCount={bagCount}
                 onSearch={() => setSearchSignal((n) => n + 1)}
                 onCart={() => setCartOpen(true)}
-                onTap={() => setAtBottom((hidden) => !hidden)}
-                onHold={() => setAtBottom(true)}
+                onTap={tapShuriken}
+                onHold={() => { cancelShurikenTap(); setAtBottom(true) }}
                 onChange={(id) => {
                   setHomeSegment(id)
                   setHomeOpen(true)
@@ -858,14 +947,47 @@ export default function App() {
         <button
           type="button"
           className="nav-toggle is-bare"
-          aria-label={atBottom ? 'Show navigation' : 'Hide navigation'}
+          aria-label="Shuriken: navigation, double-tap to create, hold for menu"
           aria-expanded={!atBottom}
-          onClick={() => setAtBottom((hidden) => !hidden)}
+          onPointerDown={(event) => {
+            if (!event.isPrimary || event.button !== 0) return
+            shurikenPress.current = { x: event.clientX, y: event.clientY, held: false }
+            shurikenHoldTimer.current = window.setTimeout(() => {
+              if (!shurikenPress.current) return
+              shurikenPress.current.held = true
+              holdShuriken()
+            }, 420)
+          }}
+          onPointerMove={(event) => {
+            const press = shurikenPress.current
+            if (press && !press.held && Math.hypot(event.clientX - press.x, event.clientY - press.y) > 8) {
+              window.clearTimeout(shurikenHoldTimer.current)
+              shurikenPress.current = null
+            }
+          }}
+          onPointerUp={() => {
+            window.clearTimeout(shurikenHoldTimer.current)
+            const press = shurikenPress.current
+            shurikenPress.current = null
+            if (press && !press.held) tapShuriken()
+          }}
+          onPointerCancel={() => {
+            window.clearTimeout(shurikenHoldTimer.current)
+            shurikenPress.current = null
+          }}
+          onPointerLeave={() => {
+            if (shurikenPress.current?.held) return
+            window.clearTimeout(shurikenHoldTimer.current)
+            shurikenPress.current = null
+          }}
+          onClick={(event) => { if (event.detail === 0) tapShuriken() }}
+          onContextMenu={(event) => event.preventDefault()}
         >
           <NavButtonGlyph key={tab} star={!atBottom} />
         </button>
       )}
-      {signedIn && showNav && <TabBar active={tab} quickCreateSegment={
+      {shurikenMenuOpen && <HomeRadialMenu bagCount={bagCount} onPick={pickShurikenMenu} onClose={() => setShurikenMenuOpen(false)} />}
+      {signedIn && showNav && <TabBar ref={tabBarRef} active={tab} onShurikenTap={tapShuriken} onShurikenHold={holdShuriken} quickCreateSegment={
         tab === 'profile' ? 'closet'
           : tab === 'design' ? createSegment
             : tab === 'home' && (homeSegment === 'store' || homeSegment === 'market') ? homeSegment

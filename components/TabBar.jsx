@@ -1,6 +1,7 @@
 import { createPortal } from 'react-dom'
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useEffect, useImperativeHandle, useLayoutEffect, useRef, useState } from 'react'
 import { ShirtIcon, StallIcon } from './SegmentIcons.jsx'
+import NavButtonGlyph from './NavButtonGlyph.jsx'
 import { stepNavigationSpring } from '../navigationSpring.js'
 
 export const MAP_X = "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22256%22%20height%3D%22128%22%20viewBox%3D%220%200%20256%20128%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20x2%3D%221%22%20y1%3D%220%22%20y2%3D%220%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22rgb%28255%2C0%2C0%29%22/%3E%3Cstop%20offset%3D%220.3%22%20stop-color%3D%22rgb%28128%2C0%2C0%29%22/%3E%3Cstop%20offset%3D%220.7%22%20stop-color%3D%22rgb%28128%2C0%2C0%29%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22rgb%280%2C0%2C0%29%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width%3D%22256%22%20height%3D%22128%22%20fill%3D%22url%28%23g%29%22/%3E%3C/svg%3E"
@@ -19,9 +20,7 @@ function TabContent({ tab }) {
   return (
     <span className="tab-text">
       {tab.id === 'design' ? (
-        <svg viewBox="0 0 24 24" aria-hidden="true" className="tab-icon tab-icon-plus">
-          <path fill="currentColor" d="M11 5h2v6h6v2h-6v6h-2v-6H5v-2h6V5z" />
-        </svg>
+        <span className="tab-icon tab-icon-shuriken"><NavButtonGlyph star /></span>
       ) : tab.label}
     </span>
   )
@@ -32,13 +31,15 @@ const CREATE_OPTIONS = [
   { id: 'market', label: 'Market', Icon: StallIcon },
 ]
 
-export default function TabBar({ active = 'home', onChange, onCreate, quickCreateSegment = null }) {
+export default function TabBar({ ref, active = 'home', onChange, onCreate, onShurikenTap, onShurikenHold, quickCreateSegment = null }) {
   const [createOpen, setCreateOpen] = useState(false)
   const [createClosing, setCreateClosing] = useState(false)
   const [stageEl, setStageEl] = useState(null)
   const pageRef = useRef(null)
   const navRef = useRef(null)
   const dragRef = useRef(null)
+  const holdTimer = useRef(0)
+  useEffect(() => () => window.clearTimeout(holdTimer.current), [])
   const activeIdx = Math.max(0, TABS.findIndex((t) => t.id === active))
   const [dragPos, setDragPos] = useState(null)
   const [pressed, setPressed] = useState(false)
@@ -180,6 +181,7 @@ export default function TabBar({ active = 'home', onChange, onCreate, quickCreat
   const dismissRef = useRef(dismissCreate)
   dismissRef.current = dismissCreate
   const toggleCreate = () => (createOpen ? dismissCreate() : openCreate())
+  useImperativeHandle(ref, () => ({ openCreate }))
 
   useEffect(() => {
     if (!createOpen) return undefined
@@ -208,23 +210,37 @@ export default function TabBar({ active = 'home', onChange, onCreate, quickCreat
   }
 
   const onPointerDown = (e) => {
+    if (!e.isPrimary) return
     if (e.button !== undefined && e.button !== 0) return
     // Any press on the collapsed bar closes the menu.
-    dragRef.current = { moved: false, startX: e.clientX, closeOnly: createOpen }
+    dragRef.current = { moved: false, startX: e.clientX, startY: e.clientY, closeOnly: createOpen }
+    if (!createOpen && Math.round(posFromEvent(e)) === 2) {
+      holdTimer.current = window.setTimeout(() => {
+        if (!dragRef.current || dragRef.current.moved) return
+        dragRef.current.held = true
+        setPressed(false)
+        onShurikenHold?.()
+      }, 420)
+    }
     navRef.current.setPointerCapture?.(e.pointerId)
     setPressed(true)
   }
   const onPointerMove = (e) => {
     const d = dragRef.current
-    if (!d || d.closeOnly) return
-    if (Math.abs(e.clientX - d.startX) > 6) d.moved = true
+    if (!d || d.closeOnly || d.held) return
+    if (Math.hypot(e.clientX - d.startX, e.clientY - d.startY) > 6) {
+      d.moved = true
+      window.clearTimeout(holdTimer.current)
+    }
     if (d.moved) setDragPos(posFromEvent(e))
   }
   const endDrag = (e, commit) => {
+    window.clearTimeout(holdTimer.current)
     const d = dragRef.current
     if (!d) return
     dragRef.current = null
     setPressed(false)
+    if (d.held) return
     if (d.closeOnly) {
       if (commit) {
         setReleaseCount((count) => count + 1)
@@ -237,7 +253,7 @@ export default function TabBar({ active = 'home', onChange, onCreate, quickCreat
     if (!commit || !TABS[idx]) return
     setReleaseCount((count) => count + 1)
     if (TABS[idx].id === 'design') {
-      openCreate()
+      if (!d.moved) onShurikenTap?.()
       return
     }
     setCreateOpen(false)
@@ -295,12 +311,13 @@ export default function TabBar({ active = 'home', onChange, onCreate, quickCreat
             className={`tab-item ${selected ? 'is-active' : ''}${tab.id === 'design' ? ' is-create' : ''}`}
             style={{ '--tab-n': index - 2 }}
             aria-current={selected ? 'page' : undefined}
-            aria-label={tab.id === 'design' && createOpen ? 'Close create menu' : tab.label}
+            aria-label={tab.id === 'design' ? createOpen ? 'Close create menu' : 'Shuriken: navigation, double-tap to create, hold for menu' : tab.label}
             onClick={(e) => {
               if (e.detail !== 0) return
               setReleaseCount((count) => count + 1)
               if (tab.id === 'design') {
-                toggleCreate()
+                if (createOpen) toggleCreate()
+                else onShurikenTap?.()
                 return
               }
               setCreateOpen(false)

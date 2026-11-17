@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState } from 'react'
+import { useId, useLayoutEffect, useRef, useState } from 'react'
 
 // The open ninja star's top blade; the other arrows are 90-degree turns of it (set in CSS).
 export const arrow = (
@@ -33,6 +33,7 @@ const blendFrames = (p) => blendList(FRAME_NUMS, p)
 
 /** The empty-middle state: four blades that twist shut like a camera shutter into a ninja star. */
 function NinjaStar({ animate }) {
+  const gradientId = useId()
   const groupRef = useRef(null)
   const bladeRefs = useRef([])
 
@@ -61,7 +62,7 @@ function NinjaStar({ animate }) {
   return (
     <svg className="ninja-star" viewBox="0 0 800 800" aria-hidden="true">
       <defs>
-        <linearGradient id="ninja-star-chrome" x1="0" y1="0" x2="1" y2="1">
+        <linearGradient id={gradientId} x1="0" y1="0" x2="1" y2="1">
           <stop offset="0" className="ns-hi" />
           <stop offset="0.45" className="ns-mid" />
           <stop offset="1" className="ns-lo" />
@@ -75,7 +76,7 @@ function NinjaStar({ animate }) {
             className="ns-blade"
             transform={`rotate(${deg} 400 400)`}
             points={STAR_FRAMES[0]}
-            fill="url(#ninja-star-chrome)"
+            fill={`url(#${gradientId})`}
           />
         ))}
       </g>

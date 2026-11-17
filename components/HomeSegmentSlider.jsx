@@ -1,4 +1,4 @@
-import { startTransition, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { startTransition, useEffect, useImperativeHandle, useLayoutEffect, useRef, useState } from 'react'
 import HomeRadialMenu, { moveKnob, radialAt } from './HomeRadialMenu.jsx'
 import { MarketIcon, StoreIcon } from './SegmentIcons.jsx'
 import NavButtonGlyph, { arrow, OpeningStar } from './NavButtonGlyph.jsx'
@@ -50,7 +50,7 @@ const scrolledDown = (el, stop) => {
 
 // Store and Market sit side by side (swipe left / right); the Leaderboard sits above them:
 // pull down at the very top of the page to reach it, swipe up to come back. Swiping up at the bottom opens checkout.
-export default function HomeSegmentSlider({ value, onChange, fireSame = false, onSearch, onCart, onTap, onHold, bagCount = 0, navHidden = false }) {
+export default function HomeSegmentSlider({ ref, value, onChange, fireSame = false, onSearch, onCart, onTap, onHold, bagCount = 0, navHidden = false }) {
   const rootRef = useRef(null)
   const [menuOpen, setMenuOpen] = useState(false)
   const [phase, setPhase] = useState(navHidden ? 'done' : 'closed')
@@ -73,6 +73,12 @@ export default function HomeSegmentSlider({ value, onChange, fireSame = false, o
   menuRef.current = menuOpen
   const actionsRef = useRef({})
   actionsRef.current = { onSearch, onCart, onTap, onHold }
+  useImperativeHandle(ref, () => ({
+    openMenu() {
+      actionsRef.current.onHold?.()
+      setMenuOpen(true)
+    },
+  }), [])
   const pickRef = useRef(null)
   pickRef.current = (id) => {
     setMenuOpen(false)

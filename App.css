@@ -2440,7 +2440,7 @@ html body .stage .tab-bar.is-pressed .tab-pill {
 }
 html body .tab-bar .tab-lens-inner { top: -7.5%; bottom: -7.5%; }
 
-/* Create button: tap the plus, then tap Closet / Store / Market in the middle of the screen */
+/* Double-tap the shuriken to create; the contextual menu keeps its fly-out. */
 .tab-bar {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -2449,8 +2449,12 @@ html body .tab-bar .tab-lens-inner { top: -7.5%; bottom: -7.5%; }
 .tab-bar .tab-item { transition: transform 0.26s cubic-bezier(0.5, 0, 0.75, 0), opacity 0.14s ease 0.14s; }
 .tab-bar .tab-pill { transition: opacity 0.2s ease; }
 html body .tab-bar :is(.tab-item, .tab-lens-item).is-create .tab-icon { transition: transform 0.3s ease; }
+html body .tab-bar .tab-icon-shuriken { display: block; width: 32px; height: 32px; }
+.tab-icon-shuriken .ninja-star { display: block; width: 100%; height: 100%; overflow: visible; }
+.home-scroll,
+.stage > .nav-toggle { touch-action: manipulation; }
 
-/* The other tabs are sucked into the plus and the bar shrinks around it */
+/* The other tabs collapse into the shuriken and the bar shrinks around it. */
 .tab-bar.is-create-open .tab-item:not(.is-create) {
   transform: translateX(calc(var(--tab-n) * -100%)) scale(0.2) !important;
   opacity: 0;
@@ -2458,7 +2462,7 @@ html body .tab-bar :is(.tab-item, .tab-lens-item).is-create .tab-icon { transiti
 }
 .tab-bar.is-create-open .tab-pill { opacity: 0; }
 .tab-bar.is-create-open .is-create .tab-icon {
-  transform: rotate(45deg) !important;
+  transform: rotate(90deg) !important;
   width: 30px;
   height: 30px;
 }
