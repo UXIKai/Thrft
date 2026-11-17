@@ -1,16 +1,12 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { readBackgroundEffectStyle } from '../appAppearance.js'
+import { createWaveRenderer } from '../waveRenderer.js'
 
 const WAVE_POINTS = [120, 610, 440, 620, 720, 490, 1180, 400]
 const FLOW_PERIOD_MS = 18000
 // A bright leading crest leaves a long, softly rippling luminous wake.
 const LIGHT_STOPS = [[0, 0], [.16, 0], [.3, .18], [.38, .08], [.48, .4],
   [.55, .3], [.64, 1], [.7, .12], [.78, 0], [1, 0]]
-
-const BROAD_GLOW = Float32Array.from({ length: 1801 }, (_, distance) =>
-  .82 * Math.exp(-((distance / 145) ** 2)) + .16 * Math.exp(-((distance / 20) ** 2)))
-const RIM_GLOW = Float32Array.from({ length: 1801 }, (_, distance) =>
-  .24 * Math.exp(-((distance / 22) ** 2)) + .74 * Math.exp(-((distance / 7) ** 2)))
 
 function cubic(start, first, second, end, t) {
   const u = 1 - t
@@ -35,21 +31,27 @@ export default function AtmosphereFlow() {
 }
 
 function WaveFlow() {
+  const [unavailable, setUnavailable] = useState(false)
   const id = useId()
   const canvasRef = useRef(null)
   const edgeRef = useRef(null)
   const lightRef = useRef(null)
 
   useEffect(() => {
+    if (unavailable) return undefined
     const canvas = canvasRef.current
     const edge = edgeRef.current
     const light = lightRef.current
     const edgeStops = [...light.querySelectorAll('stop')]
-    const context = canvas.getContext('2d', { willReadFrequently: true })
-    if (!context) {
-      console.error('The animated atmosphere requires a 2D canvas context.')
+    let renderer
+    try {
+      renderer = createWaveRenderer(canvas)
+    } catch (error) {
+      console.error('Could not render the 4K wave background:', error)
+      setUnavailable(true)
       return undefined
     }
+    const context = document.createElement('canvas').getContext('2d', { willReadFrequently: true })
     const motion = window.matchMedia('(prefers-reduced-motion: reduce)')
     let frame
     let startedAt
@@ -57,8 +59,9 @@ function WaveFlow() {
     let visible = false
     let colors
     let stops
-    let image
+    let profile
     let portrait = false
+    let contextLost = false
 
     const readColors = () => {
       const style = getComputedStyle(canvas)
@@ -83,7 +86,7 @@ function WaveFlow() {
       })
     }
     const paint = (elapsed) => {
-      if (!image) return
+      if (!profile || contextLost) return
       const phase = (1 - Math.cos(elapsed / FLOW_PERIOD_MS * Math.PI * 2)) / 2
       const points = WAVE_POINTS.map((value, i) => {
         const along = WAVE_POINTS[i - i % 2] / 1440
@@ -96,10 +99,9 @@ function WaveFlow() {
       edge.setAttribute('d', portrait
         ? `M-600 -180C${edgePoints.slice(0, 6).join(' ')}S${edgePoints.slice(6).join(' ')} 1020 1620`
         : `M-180 -600C${edgePoints.slice(0, 6).join(' ')}S${edgePoints.slice(6).join(' ')} 1620 1020`)
-      const { width, height, data } = image
+      const { width, height } = canvas
       const length = portrait ? height : width
       const breadth = portrait ? width : height
-      const rows = new Float32Array(length)
       for (let x = 0; x < length; x += 1) {
         const target = (x + .5) / length * 1440
         const left = target < points[4]
@@ -114,7 +116,7 @@ function WaveFlow() {
           if (cubic(...xs, t) < target) low = t
           else high = t
         }
-        rows[x] = cubic(...ys, (low + high) / 2) / 900 * breadth
+        profile[x * 4] = cubic(...ys, (low + high) / 2) / 900 * breadth
       }
       const shift = phase
       light.setAttribute('gradientTransform', portrait
@@ -125,47 +127,18 @@ function WaveFlow() {
         let stop = 0
         while (stop < stops.length - 2 && position > stops[stop + 1][0]) stop += 1
         const amount = (position - stops[stop][0]) / (stops[stop + 1][0] - stops[stop][0])
-        const light = stops[stop][1].map((value, channel) =>
-          value + (stops[stop + 1][1][channel] - value) * amount)
-        const energy = stops[stop][2] + (stops[stop + 1][2] - stops[stop][2]) * amount
-        const reflected = light.map((value, channel) => value * .35 + colors.b[channel] * .65)
-        const slope = (rows[Math.min(length - 1, x + 1)] - rows[Math.max(0, x - 1)]) / 2
-        const normal = 900 / breadth / Math.sqrt(1 + slope * slope)
-        const progress = (x + .5) / length
-        const transition = Math.max(0, Math.min(1, (progress - .35) / .3))
-        const litSide = transition * transition * (3 - 2 * transition)
-        const spread = (.35 + .65 * Math.abs(Math.cos(progress * Math.PI))) * (1 + energy * .28)
-        const baseR = colors.base[0]
-        const baseG = colors.base[1]
-        const baseB = colors.base[2]
-        const lightR = light[0] - baseR
-        const lightG = light[1] - baseG
-        const lightB = light[2] - baseB
-        const reflectedR = reflected[0] - baseR
-        const reflectedG = reflected[1] - baseG
-        const reflectedB = reflected[2] - baseB
-        let pixel = portrait ? x * width * 4 : x * 4
-        const stride = portrait ? 4 : width * 4
-        for (let y = 0; y < breadth; y += 1) {
-          const distance = y + .5 - rows[x]
-          const absolute = Math.abs(distance) * normal
-          const offset = Math.min(1800, Math.round(absolute))
-          const surfaceSide = distance < 0 ? 1 - litSide : litSide
-          const rim = RIM_GLOW[offset]
-          const diffuse = (BROAD_GLOW[offset] - rim) * surfaceSide * spread
-          const shade = .18 * surfaceSide * Math.min(1, absolute / 24) * (1 - rim - diffuse)
-          data[pixel] = baseR + (128 - baseR) * shade + lightR * rim + reflectedR * diffuse
-          data[pixel + 1] = baseG + (128 - baseG) * shade + lightG * rim + reflectedG * diffuse
-          data[pixel + 2] = baseB + (128 - baseB) * shade + lightB * rim + reflectedB * diffuse
-          data[pixel + 3] = 255
-          pixel += stride
+        const pixel = (length + x) * 4
+        for (let channel = 0; channel < 3; channel += 1) {
+          profile[pixel + channel] = (stops[stop][1][channel] +
+            (stops[stop + 1][1][channel] - stops[stop][1][channel]) * amount) / 255
         }
+        profile[pixel + 3] = stops[stop][2] + (stops[stop + 1][2] - stops[stop][2]) * amount
       }
-      context.putImageData(image, 0, 0)
+      renderer.paint(profile, colors)
     }
     const tick = (now) => {
       if (startedAt === undefined) startedAt = now
-      if (now - lastPaint >= 1000 / 24) {
+      if (now - lastPaint >= 1000 / 30 - 1e-6) {
         paint(now - startedAt)
         lastPaint = now
       }
@@ -173,6 +146,7 @@ function WaveFlow() {
     }
     const syncMotion = () => {
       cancelAnimationFrame(frame)
+      if (contextLost) return
       if (motion.matches) {
         paint(0)
       } else if (visible && !document.hidden) {
@@ -188,16 +162,28 @@ function WaveFlow() {
       edge.ownerSVGElement.setAttribute('viewBox', portrait ? '0 0 900 1440' : '0 0 1440 900')
       light.setAttribute('x2', portrait ? '0' : '1440')
       light.setAttribute('y2', portrait ? '1440' : '0')
-      // Give phone-sized surfaces a denser glow; the vector rim stays device-resolution.
-      const mobile = Math.min(width, height) <= 600 && Math.max(width, height) <= 1200
-      const scale = mobile
-        ? Math.min(window.devicePixelRatio || 1, 360 / Math.min(width, height), 780 / Math.max(width, height))
-        : Math.min(1, 180 / width, 360 / height)
-      canvas.width = Math.max(1, Math.round(width * scale))
-      canvas.height = Math.max(1, Math.round(height * scale))
-      image = context.createImageData(canvas.width, canvas.height)
+      if (contextLost) return
+      profile = renderer.resize(width, height)
       paint(0)
     }
+    const onContextLost = (event) => {
+      event.preventDefault()
+      contextLost = true
+      cancelAnimationFrame(frame)
+    }
+    const onContextRestored = () => {
+      try {
+        renderer = createWaveRenderer(canvas)
+        contextLost = false
+        resize()
+        syncMotion()
+      } catch (error) {
+        console.error('Could not restore the 4K wave background:', error)
+        setUnavailable(true)
+      }
+    }
+    canvas.addEventListener('webglcontextlost', onContextLost)
+    canvas.addEventListener('webglcontextrestored', onContextRestored)
     readColors()
     const resizeObserver = new ResizeObserver(resize)
     resizeObserver.observe(canvas)
@@ -222,11 +208,15 @@ function WaveFlow() {
       observer.disconnect()
       resizeObserver.disconnect()
       colorObserver.disconnect()
+      canvas.removeEventListener('webglcontextlost', onContextLost)
+      canvas.removeEventListener('webglcontextrestored', onContextRestored)
+      renderer.dispose()
       motion.removeEventListener('change', syncMotion)
       document.removeEventListener('visibilitychange', syncMotion)
     }
-  }, [])
+  }, [unavailable])
 
+  if (unavailable) return <div className="atmosphere-phantom" aria-hidden="true" />
   return (
     <div className="atmosphere-flow" aria-hidden="true">
       <canvas ref={canvasRef} className="atmosphere-flow-glow" />
