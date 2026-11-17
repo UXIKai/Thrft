@@ -70,6 +70,8 @@ Profile Store and Market listings use a borderless three-column product image gr
 
 Store product details have a top-right heart that saves or removes the product from Liked. Saving uses the existing account-scoped saved-products API and refreshes saved-product preferences.
 
+Closet item previews have a bare trash button centered beneath the share plus. Deletion asks for confirmation, removes only that Closet item, and closes the preview; storage failures keep the preview open with an error.
+
 The bottom navigation uses compact uppercase HOME, CHAT, CREATE, LIKED, and PROFILE labels in place of icons. The selected word is brighter and bolder inside a moving clear-glass button with a transparent center and subtle rim; the outer container and touch navigation are unchanged. CREATE reads CLOSE while its destination menu is open.
 
 On mobile Chat, revealing Chats or Online slides the entire main page, its animated app background (or selected wallpaper), controls, and bottom navigation as one full-width rounded screen over a stationary side panel. The page fills the app height behind the navigation and home indicator, without the feed's bottom padding. The page has a subtle rim; its opposite edge stays offscreen throughout the swipe. Tapping the displaced page closes the panel. The covered stage background is hidden while mobile Chat owns the background, avoiding two active renderers.

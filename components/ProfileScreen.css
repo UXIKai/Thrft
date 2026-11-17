@@ -3054,6 +3054,24 @@
   width: 100%;
 }
 
+.closet-detail-delete {
+  flex: 0 0 auto;
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: none;
+  background: none;
+  color: light-dark(rgb(0, 0, 0), #fff);
+  cursor: pointer;
+}
+
+.closet-detail-delete:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
 .is-orders .profile-label-row.is-panel-title {
   position: relative;
   justify-content: center;

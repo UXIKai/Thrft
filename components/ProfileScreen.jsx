@@ -781,6 +781,22 @@ export default function ProfileScreen({
     [closetItems, closetBrand, closetType],
   )
 
+  function deleteClosetItem() {
+    if (!closetSelected || closetPosting) return
+    const title = closetSelected.title || `${closetSelected.brand} ${closetSelected.category}`.trim() || 'this item'
+    if (!window.confirm(`Delete ${title} from your Closet?`)) return
+    setClosetPostError('')
+    try {
+      setClosetItems(removeClosetItem(closetSelected.id))
+      setClosetSelected(null)
+      setClosetSplit(false)
+      setClosetPeople(null)
+      setClosetPickOpen(false)
+    } catch (error) {
+      setClosetPostError(String(error?.message || 'Could not delete this item.'))
+    }
+  }
+
   async function postClosetToMarket() {
     if (!closetSelected || closetPosting) return
     if (!isSupabaseConfigured()) {
@@ -1516,6 +1532,24 @@ export default function ProfileScreen({
                         </svg>
                       </button>
                     </div>
+                    <button
+                      type="button"
+                      className="closet-detail-delete is-bare"
+                      aria-label="Delete item"
+                      disabled={closetPosting}
+                      onClick={deleteClosetItem}
+                    >
+                      <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden>
+                        <path
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.8"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 10v7M14 10v7"
+                        />
+                      </svg>
+                    </button>
                     </div>
                   </div>
                   {closetPickOpen ? (

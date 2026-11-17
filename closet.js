@@ -111,6 +111,9 @@ export function closetTotalWorth(items = readAll()) {
 export function removeClosetItem(id) {
   const next = readAll().filter((item) => item.id !== id)
   writeAll(next)
+  if (readAll().some((item) => item.id === id)) {
+    throw new Error('Could not delete this item. Check that device storage is available and try again.')
+  }
   return next
 }
 
