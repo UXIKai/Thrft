@@ -2500,9 +2500,9 @@ html body .stage > .tab-bar.tab-bar.tab-bar.is-create-open {
   transition: opacity 0.25s ease 0.28s;
 }
 .create-page {
-  --tile-width: clamp(88px, calc((100vw - 56px) / 3), 168px);
-  --tile-height: 220px;
-  --pitch: calc(var(--tile-width) + 12px);
+  --tile-width: min(calc(100vw - 40px), 420px);
+  --tile-height: 92px;
+  --pitch: calc(var(--tile-height) + 12px);
   position: absolute;
   inset: 0;
   z-index: 3;
@@ -2526,12 +2526,12 @@ html body .stage > .tab-bar.tab-bar.tab-bar.is-create-open {
   width: var(--tile-width);
   height: var(--tile-height);
   margin: 0;
-  padding: 16px 10px;
+  padding: 0 24px;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 16px;
   border: 0;
   border-radius: 24px;
   background: transparent;
@@ -2549,17 +2549,17 @@ html body .stage > .tab-bar.tab-bar.tab-bar.is-create-open {
   opacity: 0;
   transition: transform 0.26s cubic-bezier(0.5, 0, 0.75, 0), opacity 0.2s ease 0.06s;
 }
-.create-page .create-menu-ico { width: 38px; height: 38px; margin-bottom: 4px; }
+.create-page .create-menu-ico { width: 38px; height: 38px; }
 .create-page .create-menu-btn.is-closet {
-  left: calc(50% - var(--tile-width) / 2 - var(--pitch));
-  --pop-from: translate(var(--pitch), var(--plus-dy, 300px));
+  top: calc(50% - var(--tile-height) / 2 - var(--pitch));
+  --pop-from: translate(0, calc(var(--plus-dy, 300px) + var(--pitch)));
 }
 .create-page .create-menu-btn.is-store {
   --pop-from: translate(0, var(--plus-dy, 300px));
 }
 .create-page .create-menu-btn.is-market {
-  left: calc(50% - var(--tile-width) / 2 + var(--pitch));
-  --pop-from: translate(calc(var(--pitch) * -1), var(--plus-dy, 300px));
+  top: calc(50% - var(--tile-height) / 2 + var(--pitch));
+  --pop-from: translate(0, calc(var(--plus-dy, 300px) - var(--pitch)));
 }
 
 /* Open: the options fly out of the × once the bar has collapsed around it */
@@ -2611,7 +2611,7 @@ html[data-app-color='none'][data-moonlight='on'] body .stage .create-page .creat
 }
 
 @media (max-height: 450px) {
-  .create-page { --tile-height: 164px; }
+  .create-page { --tile-height: 64px; }
 }
 
 /* Market: two-column photo cards under a heading and filter chips, in the app's thin-outline style */
