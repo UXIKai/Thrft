@@ -4,8 +4,6 @@
 import { clothingTypeById } from './clothingTypes.js'
 import { getSupabase, isSupabaseConfigured } from './supabase.js'
 
-const PLACEHOLDER_IMAGE = 'placeholder'
-
 /**
  * Map home clothing-type chips → listing category labels.
  * Exact types match Create categories; legacy long labels still resolve.
@@ -81,11 +79,12 @@ function makeCode(row) {
 }
 
 export function formatListingPrice(price) {
+  if (price == null || String(price).trim() === '') return 'Price unavailable'
   const n =
     typeof price === 'number'
       ? price
       : Number.parseFloat(String(price || '').replace(/[^0-9.]/g, ''))
-  if (!Number.isFinite(n)) return '$0.00'
+  if (!Number.isFinite(n)) return 'Price unavailable'
   try {
     return new Intl.NumberFormat(undefined, {
       style: 'currency',
@@ -102,6 +101,12 @@ export function parseListingPrice(price) {
   return Number.isFinite(n) ? Math.max(0, n) : 0
 }
 
+export function isValidListingPrice(price) {
+  const value = String(price ?? '').trim()
+  return /^\$?(?:\d+(?:,\d{3})*|\d+)(?:\.\d{1,2})?$/.test(value) &&
+    Number.isFinite(Number(value.replace(/[$,]/g, '')))
+}
+
 /** Normalize a DB row into the shape used by ProductRows / bag / detail. */
 export function mapListing(row) {
   if (!row) return null
@@ -116,11 +121,11 @@ export function mapListing(row) {
     category: row.category || '',
     clothingType: row.category || '',
     price: formatListingPrice(row.price),
-    priceRaw: parseListingPrice(row.price),
+    priceRaw: isValidListingPrice(row.price) ? parseListingPrice(row.price) : null,
     condition: row.condition || '',
     description: row.description || '',
-    photoUrl: row.image_url || PLACEHOLDER_IMAGE,
-    image_url: row.image_url || PLACEHOLDER_IMAGE,
+    photoUrl: row.image_url === 'placeholder' ? '' : row.image_url || '',
+    image_url: row.image_url === 'placeholder' ? '' : row.image_url || '',
     status: row.status || 'available',
     sellerId: row.seller_id,
     code: makeCode(row),
@@ -157,7 +162,7 @@ export async function getAuthUserId() {
 
 /**
  * Insert a listing for the current auth user.
- * status defaults to `available`; image_url is a placeholder until uploads land.
+ * Insert a listing with its uploaded product photo.
  */
 export async function createListing({
   title,
@@ -166,7 +171,7 @@ export async function createListing({
   price = '',
   condition = '',
   description = '',
-  imageUrl = PLACEHOLDER_IMAGE,
+  imageUrl = '',
 } = {}) {
   const supabase = await requireClient()
   const sellerId = await getAuthUserId()
@@ -175,6 +180,12 @@ export async function createListing({
     const err = new Error('Add a title before posting.')
     err.code = 'validation'
     throw err
+  }
+  if (!/^https?:\/\//i.test(String(imageUrl)) || String(imageUrl).length > 2000) {
+    throw Object.assign(new Error('Upload a product photo before posting.'), { code: 'validation' })
+  }
+  if (!isValidListingPrice(price)) {
+    throw Object.assign(new Error('Enter a valid price before posting.'), { code: 'validation' })
   }
 
   const payload = {
@@ -185,7 +196,7 @@ export async function createListing({
     price: parseListingPrice(price),
     condition: String(condition || '').trim().slice(0, 40),
     description: String(description || '').trim().slice(0, 2000),
-    image_url: String(imageUrl || PLACEHOLDER_IMAGE).slice(0, 2000),
+    image_url: imageUrl,
     status: 'available',
   }
 

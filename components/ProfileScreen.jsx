@@ -14,7 +14,8 @@ import {
 import { getCustomBrands, getCustomCategories } from '../customCatalog.js'
 import ClosetNumberLookup from './ClosetNumberLookup.jsx'
 import { LISTING_BRANDS, LISTING_CATEGORIES } from '../listingCatalog.js'
-import { createListing, fetchMyListings, fetchSellerSalesStats, formatListingPrice } from '../listings.js'
+import { createListing, fetchMyListings, fetchSellerSalesStats, formatListingPrice, isValidListingPrice } from '../listings.js'
+import { uploadProductPhoto } from '../artworkStorage.js'
 import { ClosetIcon, MarketIcon, StoreIcon } from './SegmentIcons.jsx'
 import { getSupabase, isSupabaseConfigured } from '../supabase.js'
 import BrandGlobe from './BrandGlobe.jsx'
@@ -523,6 +524,8 @@ export default function ProfileScreen({
   const [panelListingTab, setPanelListingTab] = useState('active')
   const [storeProducts, setStoreProducts] = useState([])
   const [marketListings, setMarketListings] = useState([])
+  const [storeProductsError, setStoreProductsError] = useState('')
+  const [marketListingsError, setMarketListingsError] = useState('')
   const [closetItems, setClosetItems] = useState([])
   const [closetBrand, setClosetBrand] = useState('All')
   const [closetGlobe, setClosetGlobe] = useState(null)
@@ -702,10 +705,16 @@ export default function ProfileScreen({
     let alive = true
     fetchMyProducts({ segment: 'store' })
       .then((items) => {
-        if (alive) setStoreProducts(Array.isArray(items) ? items : [])
+        if (alive) {
+          setStoreProducts(Array.isArray(items) ? items : [])
+          setStoreProductsError('')
+        }
       })
-      .catch(() => {
-        if (alive) setStoreProducts([])
+      .catch((error) => {
+        if (alive) {
+          setStoreProducts([])
+          setStoreProductsError(`Could not load Store products: ${error.message || 'Please try again.'}`)
+        }
       })
     return () => {
       alive = false
@@ -720,10 +729,16 @@ export default function ProfileScreen({
     let alive = true
     fetchMyListings()
       .then((items) => {
-        if (alive) setMarketListings(items)
+        if (alive) {
+          setMarketListings(items)
+          setMarketListingsError('')
+        }
       })
-      .catch(() => {
-        if (alive) setMarketListings([])
+      .catch((error) => {
+        if (alive) {
+          setMarketListings([])
+          setMarketListingsError(`Could not load Market listings: ${error.message || 'Please try again.'}`)
+        }
       })
     return () => {
       alive = false
@@ -803,17 +818,25 @@ export default function ProfileScreen({
       setClosetPostError('Connect Supabase to post to Market.')
       return
     }
+    const price = String(closetSelected.price ?? '').trim() ||
+      window.prompt('Enter a price for this item:', '')
+    if (price == null) return
+    if (!isValidListingPrice(price)) {
+      setClosetPostError('Enter a valid price before posting.')
+      return
+    }
     setClosetPosting(true)
     setClosetPostError('')
     try {
+      const imageUrl = await uploadProductPhoto(closetSelected.imageUrl)
       await createListing({
         title: closetSelected.title || `${closetSelected.brand} ${closetSelected.category}`,
         brand: closetSelected.brand || '',
         category: closetSelected.category || '',
-        price: '',
+        price,
         condition: 'Good',
         description: 'From my Closet',
-        imageUrl: closetSelected.imageUrl || 'placeholder',
+        imageUrl,
       })
       const next = removeClosetItem(closetSelected.id)
       setClosetItems(next)
@@ -1238,6 +1261,8 @@ export default function ProfileScreen({
                 : marketListings.filter((p) =>
                     panelListingTab === 'sold' ? p.status === 'sold' : p.status === 'available',
                   )
+              const listingError = spaceTab === 'store' ? storeProductsError : marketListingsError
+              if (listingError) return <p role="alert">{listingError}</p>
               if (!rows.length) {
                 return (
                   <div className="pf-empty-state">
@@ -1267,7 +1292,6 @@ export default function ProfileScreen({
                         }
                       >
                         <span className="profile-product-photo">
-                          {(p.photoUrl || p.image_url || p.photo_url || p.mockup_urls?.[0]) && (
                             <ProductPhoto
                               src={p.photoUrl || p.image_url || p.photo_url || p.mockup_urls?.[0]}
                               cutout={hasProductCutout(p)}
@@ -1275,7 +1299,6 @@ export default function ProfileScreen({
                               loading="lazy"
                               draggable="false"
                             />
-                          )}
                         </span>
                         <span className="profile-product-name">{p.title}</span>
                         <span className="profile-product-price">{p.price || '—'}</span>

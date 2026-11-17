@@ -5,6 +5,7 @@
  */
 
 import { getSupabase, isSupabaseConfigured } from './supabase.js'
+import { uploadProductPhoto } from './artworkStorage.js'
 import {
   getAuthSession,
   signInWithPassword as sbSignIn,
@@ -78,14 +79,10 @@ const DEFAULT_PROFILE = {
 async function refreshBearer() {
   const supabase = getSupabase()
   if (!supabase) return readSessionToken()
-  try {
-    const { data } = await supabase.auth.getSession()
-    const token = data?.session?.access_token || ''
-    writeSessionToken(token)
-    return token
-  } catch {
-    return readSessionToken()
-  }
+  const session = await getAuthSession()
+  const token = session?.token || ''
+  writeSessionToken(token)
+  return token
 }
 
 async function api(path, options) {
@@ -229,6 +226,9 @@ export async function fetchProfile() {
 }
 
 export async function saveProfile(patch) {
+  if (isSupabaseConfigured() && patch?.avatarUrl?.startsWith('data:image/')) {
+    patch = { ...patch, avatarUrl: await uploadProductPhoto(patch.avatarUrl) }
+  }
   const base = readLocalProfile()
   const identity = Object.fromEntries(
     ['username', 'displayName', 'avatarUrl'].filter((key) => typeof patch?.[key] === 'string')

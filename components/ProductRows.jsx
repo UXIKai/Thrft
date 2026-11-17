@@ -2,7 +2,6 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { fetchSaved, fetchStoreProducts, saveSavedItems } from '../api.js'
 import {
   buildPersonalizedRows,
-  fillEmptyStoreRows,
   PERSONALIZED_PRODUCTS_PER_ROW,
   PERSONALIZED_ROW_COUNT,
 } from '../forYou.js'
@@ -11,7 +10,6 @@ import {
   filterListingsByBrand,
   filterListingsByColor,
   filterListingsByClothingType,
-  parseListingPrice,
 } from '../listings.js'
 import { hasProductCutout } from '../mockupCutouts.js'
 import ProductPhoto from './ProductPhoto.jsx'
@@ -61,8 +59,8 @@ function MarketCard({ product, onOpen, liked, onToggleLike }) {
     <div className="market-card">
       <button type="button" className="market-card-open" onClick={() => onOpen?.(product)} aria-label={`${name} ${product.price || ''}`}>
         <span className="market-card-photo">
-          {photo ? <ProductPhoto src={photo} cutout={hasProductCutout(product)}
-            alt="" loading="lazy" draggable="false" /> : null}
+          <ProductPhoto src={photo} cutout={hasProductCutout(product)}
+            alt="" loading="lazy" draggable="false" />
         </span>
         <span className="market-card-name">{name}</span>
         {product.price ? <span className="market-card-price">{product.price}</span> : null}
@@ -100,11 +98,9 @@ function ProductCard({ product, onOpen }) {
       title={label}
       onClick={() => onOpen?.(product)}
     >
-      {photo && (
         <ProductPhoto className="product-box-photo" src={photo}
           cutout={hasProductCutout(product)}
           alt="" loading="lazy" draggable="false" />
-      )}
       {product.brandLogoUrl && <img className="product-box-brand-logo" src={product.brandLogoUrl} alt="" draggable="false" />}
     </button>
   )
@@ -225,7 +221,7 @@ function CrawlRow({ row, rowIndex, onOpenProduct, onHoldRow, market = false, lik
       {visible && (
         <div ref={wrapRef} className={`brand-row-track-wrap${market ? '' : ' is-store-row'}`}>
           <div
-            className={`brand-row-track ${loopPx > 0 ? market || row.empty
+            className={`brand-row-track ${loopPx > 0 ? market && fits ? '' : market || row.empty
               ? (goesRight ? 'crawl-right' : 'crawl-left')
               : fits ? (goesRight ? 'store-fits-left' : 'store-fits-right')
                 : (goesRight ? 'store-crawl-right' : 'store-crawl-left') : ''}`}
@@ -241,7 +237,7 @@ function CrawlRow({ row, rowIndex, onOpenProduct, onHoldRow, market = false, lik
                 ? emptyTiles()
                 : products.map((p, i) => renderCard(p, `${row.id}-${p.id}-${i}`))}
             </div>
-            {(market || row.empty) && <div className="brand-row-seq" aria-hidden>
+            {((market && !fits) || row.empty) && <div className="brand-row-seq" aria-hidden>
               {row.empty ? emptyTiles() : products.map((p, i) => renderCard(p, `${row.id}-${p.id}-${i}-b`))}
             </div>}
           </div>
@@ -332,7 +328,7 @@ export default function ProductRows({
       .catch((error) => {
         if (alive) {
           setSavedItems([])
-          setSavedError(error.message || 'Could not load saved products')
+          setSavedError(`Could not load saved products: ${error.message || 'Please try again.'}`)
         }
       })
     return () => {
@@ -357,7 +353,7 @@ export default function ProductRows({
       .catch((err) => {
         if (!alive) return
         setListings([])
-        setError(err.message || 'Could not load products.')
+        setError(`Could not load products: ${err.message || 'Please try again.'}`)
         setStatus('error')
       })
     return () => {
@@ -433,16 +429,15 @@ export default function ProductRows({
         `${p.category || ''} ${p.title || ''} ${p.brandName || ''}`.toLowerCase().includes(extra.key),
       )
     }
-    if (chip === 'under10') return filteredCatalog.filter((p) => parseListingPrice(p.price) < 10)
+    if (chip === 'under10') return filteredCatalog.filter((p) =>
+      p.priceRaw != null && Number.isFinite(Number(p.priceRaw)) && Number(p.priceRaw) < 10)
     return filterListingsByClothingType(filteredCatalog, chip)
   }, [filteredCatalog, chip])
 
   const marketRows = useMemo(() => {
     const out = []
     for (let i = 0; i < marketItems.length; i += MARKET_PRODUCTS_PER_ROW) {
-      let products = marketItems.slice(i, i + MARKET_PRODUCTS_PER_ROW)
-      // A short row (few matches) repeats its items so the crawl still fills the screen.
-      while (products.length < 8) products = [...products, ...products]
+      const products = marketItems.slice(i, i + MARKET_PRODUCTS_PER_ROW)
       out.push({ id: `market-row-${i / MARKET_PRODUCTS_PER_ROW}`, name: 'Market', products })
     }
     return out
@@ -497,14 +492,12 @@ export default function ProductRows({
     )
   }
 
-  const hasFilter = Boolean(brandId || brandName || colorId || (clothingType && clothingType !== 'all'))
-  const displayRows = status === 'ready' && !hasFilter ? fillEmptyStoreRows(rows) : rows
   return (
     <section className="product-feed" id="home-product-panel" role="tabpanel" aria-labelledby={`home-${segment}-tab`}>
       {error && <p role="alert">{error}</p>}
       {savedError && <p role="alert">{savedError}</p>}
-      {!rows.length && status !== 'error' && hasFilter && <p role="status">No Store products found.</p>}
-      {displayRows.map((row, rowIndex) => (
+      {!rows.length && status === 'ready' && <p role="status">No Store products found.</p>}
+      {rows.map((row, rowIndex) => (
         <CrawlRow
           key={row.id}
           row={row}

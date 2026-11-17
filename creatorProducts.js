@@ -91,8 +91,9 @@ export function mapCreatorProduct(row) {
     entry.name.toLowerCase() === String(row.brand || '').trim().toLowerCase())
   const photo = external && row.photo_url ? `/api/brands/image?id=${encodeURIComponent(row.id)}&v=${encodeURIComponent(row.external_synced_at || '')}` :
     row.mockup_urls?.[0] || row.photo_url || ''
-  let price = usdPrice.format(Number(row.price))
-  if (external) {
+  const hasPrice = row.price != null && String(row.price).trim() !== '' && Number.isFinite(Number(row.price))
+  let price = hasPrice ? usdPrice.format(Number(row.price)) : 'Price unavailable'
+  if (external && hasPrice) {
     try {
       price = new Intl.NumberFormat('en-US', { style: 'currency', currency: row.external_currency }).format(Number(row.price))
     } catch { price = 'Price unavailable' }

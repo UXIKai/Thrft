@@ -9,7 +9,7 @@ import {
 import { createListingProduct, importBrandUrl, createBrandVerificationChallenge, verifyBrandDomain } from '../api.js'
 import { isCreateStepFilled } from '../createWalkthrough.js'
 import { processCreatePhotos } from '../createPhotoProcessing.js'
-import { createListing } from '../listings.js'
+import { createListing, isValidListingPrice } from '../listings.js'
 import { isSupabaseConfigured } from '../supabase.js'
 import {
   LISTING_BRANDS,
@@ -20,7 +20,7 @@ import {
 import BrandGlobe from './BrandGlobe.jsx'
 import ClosetNumberLookup from './ClosetNumberLookup.jsx'
 import CreatorArtworkStudio from './CreatorArtworkStudio.jsx'
-import { uploadCreatorArtwork } from '../artworkStorage.js'
+import { uploadCreatorArtwork, uploadProductPhoto } from '../artworkStorage.js'
 import { creatorPricing, formatCreatorPrice } from '../creatorProducts.js'
 import { ClosetIcon, MarketIcon, StoreIcon } from './SegmentIcons.jsx'
 import './CreateListing.css'
@@ -565,6 +565,8 @@ export default function CreateListing({ onPosted, initialSegment = 'market' } = 
     }
     setPosting(true)
     try {
+      if (!isValidListingPrice(price)) throw new Error('Enter a valid price before posting.')
+      const imageUrl = await uploadProductPhoto(marketPhotos[0])
       const product = await createListing({
         title: cleanTitle,
         brand,
@@ -572,7 +574,7 @@ export default function CreateListing({ onPosted, initialSegment = 'market' } = 
         price: price.trim(),
         condition,
         description: description.trim(),
-        imageUrl: 'placeholder',
+        imageUrl,
       })
       finishListing(product, 'market')
     } catch (err) {

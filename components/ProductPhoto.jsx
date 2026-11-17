@@ -4,6 +4,7 @@ import { acquireMockupCutout } from '../mockupCutouts.js'
 export default function ProductPhoto({ src, cutout = false, ...props }) {
   const ref = useRef(null)
   const [result, setResult] = useState(null)
+  const [failedSrc, setFailedSrc] = useState(null)
 
   useEffect(() => {
     if (!src || !cutout || !ref.current) return undefined
@@ -41,7 +42,16 @@ export default function ProductPhoto({ src, cutout = false, ...props }) {
   }, [src, cutout])
 
   const current = cutout && result?.src === src ? result : null
+  const displaySrc = current?.image || src
+  if (!displaySrc || displaySrc === 'placeholder' || failedSrc === displaySrc) {
+    return <span className={`${props.className || ''} product-photo-unavailable`.trim()}
+      role="img" aria-label="Product photo unavailable">Photo unavailable</span>
+  }
   return <img {...props} ref={ref} src={current?.image || src}
+    onError={(event) => {
+      setFailedSrc(displaySrc)
+      props.onError?.(event)
+    }}
     title={current?.error ? 'Background removal failed; showing original photo' : props.title}
     className={`${props.className || ''}${current?.image ? ' is-product-cutout' : ''}`.trim()} />
 }

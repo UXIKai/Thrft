@@ -4,6 +4,7 @@
  * so the app is not permanently locked without .env.local.
  */
 import { getSupabase, isSupabaseConfigured, supabaseConfigError } from './supabase.js'
+import { uploadProductPhoto } from './artworkStorage.js'
 
 export { isSupabaseConfigured }
 
@@ -147,6 +148,25 @@ function normalizeLocalSession(result) {
   }
 }
 
+let avatarMigration = null
+
+async function compactAvatarSession(supabase, session) {
+  const avatar = session.user?.user_metadata?.avatar_url
+  if (!avatar?.startsWith('data:image/')) return session
+  if (!avatarMigration) {
+    avatarMigration = (async () => {
+      const avatarUrl = await uploadProductPhoto(avatar)
+      const { error } = await supabase.auth.updateUser({ data: { avatar_url: avatarUrl } })
+      if (error) throw error
+      const { data, error: refreshError } = await supabase.auth.refreshSession()
+      if (refreshError) throw refreshError
+      if (!data.session) throw new Error('Sign in again to finish updating your profile photo.')
+      return data.session
+    })().finally(() => { avatarMigration = null })
+  }
+  return avatarMigration
+}
+
 /** Current session (Supabase or local API). */
 export async function getAuthSession() {
   const supabase = getSupabase()
@@ -156,7 +176,7 @@ export async function getAuthSession() {
       writeSessionToken('')
       return null
     }
-    return sessionPayload(data.session)
+    return sessionPayload(await compactAvatarSession(supabase, data.session))
   }
 
   const token = readSessionToken()
