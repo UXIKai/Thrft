@@ -35,8 +35,7 @@ function PlusIcon() {
 
 function productPhotos(product) {
   const mockups = product?.mockupUrls?.length ? product.mockupUrls : product?.mockup_urls
-  const photos = mockups?.length ? mockups :
-    [product?.photoUrl || product?.photo_url || product?.imageUrl || product?.image_url]
+  const photos = [product?.photoUrl || product?.photo_url || product?.imageUrl || product?.image_url, ...(mockups || [])]
   return [...new Set(photos.filter((photo) =>
     typeof photo === 'string' && photo && !/^placeholder$/i.test(photo)))]
 }

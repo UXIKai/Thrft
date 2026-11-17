@@ -253,6 +253,22 @@ export async function fetchMyListings({ limit = 200 } = {}) {
   return (data || []).map(mapListing)
 }
 
+export async function updateMyListing(id, patch) {
+  const supabase = await requireClient()
+  const sellerId = await getAuthUserId()
+  const update = {}
+  if (patch.status === 'removed') update.status = 'removed'
+  if (typeof patch.imageUrl === 'string' && /^https?:\/\//i.test(patch.imageUrl) && patch.imageUrl.length <= 2000) {
+    update.image_url = patch.imageUrl
+  }
+  if (Object.keys(update).length !== 1) throw new Error('Invalid listing update.')
+  const { data, error } = await supabase.from('listings').update(update)
+    .eq('id', id).eq('seller_id', sellerId).select('*').maybeSingle()
+  if (error) throw new Error(error.message || 'Could not update listing.')
+  if (!data) throw new Error('Listing not found.')
+  return mapListing(data)
+}
+
 /**
  * Available listings for one brand (by slug id and/or display name).
  */

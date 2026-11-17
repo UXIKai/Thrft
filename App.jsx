@@ -677,6 +677,10 @@ export default function App() {
             }}
             account={account}
             onSaveProfile={handleSaveProfile}
+            onListingsChanged={() => {
+              setFeedRefresh((n) => n + 1)
+              setForYouRefresh((n) => n + 1)
+            }}
             onPostListing={() => setTab('design')}
             onAddProduct={(segment) => {
               setCreateSegment(segment)

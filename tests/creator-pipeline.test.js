@@ -199,6 +199,23 @@ test('Store and brand feeds expose only active Supabase listings with mockups an
   assert.deepEqual(brand.body.products[0].sizes, ['M', 'L'])
 })
 
+test('only the owner can repair a Store photo or archive a listing', async () => {
+  const f = fixture()
+  f.tables.brand_products.push({ id: productId, creator_id: creatorId, title: 'Real item',
+    status: 'active', price: 250, photo_url: '', mockup_urls: [] })
+  const photoUrl = `https://thrft-test.supabase.co/storage/v1/object/public/Thrft/${creatorId}/fixed.png`
+  const foreign = await request(`/api/creator/products/${productId}`, { method: 'PUT', token: 'other-token', body: { photoUrl } })
+  assert.notEqual(foreign.status, 200)
+  const fixed = await request(`/api/creator/products/${productId}`, { method: 'PUT', body: { photoUrl } })
+  assert.equal(fixed.status, 200)
+  assert.equal(fixed.body.product.photoUrl, photoUrl)
+  const bad = await request(`/api/creator/products/${productId}`, { method: 'PUT', body: { photoUrl: 'https://other.example/photo.png' } })
+  assert.notEqual(bad.status, 200)
+  const archived = await request(`/api/creator/products/${productId}`, { method: 'PUT', body: { status: 'archived' } })
+  assert.equal(archived.status, 200)
+  assert.equal(archived.body.product.status, 'archived')
+})
+
 test('website imports require authentication and a creator-owned logo before network access', async () => {
   fixture()
   assert.equal((await request('/api/brands/settings', { token: null })).status, 401)

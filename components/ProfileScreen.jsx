@@ -5,6 +5,7 @@ import {
   connectProvider,
   fetchMyProducts,
   initialsFromName,
+  updateListingProduct,
 } from '../api.js'
 import {
   fetchClosetItems,
@@ -14,8 +15,8 @@ import {
 import { getCustomBrands, getCustomCategories } from '../customCatalog.js'
 import ClosetNumberLookup from './ClosetNumberLookup.jsx'
 import { LISTING_BRANDS, LISTING_CATEGORIES } from '../listingCatalog.js'
-import { createListing, fetchMyListings, fetchSellerSalesStats, formatListingPrice, isValidListingPrice } from '../listings.js'
-import { uploadProductPhoto } from '../artworkStorage.js'
+import { createListing, fetchMyListings, fetchSellerSalesStats, formatListingPrice, isValidListingPrice, updateMyListing } from '../listings.js'
+import { uploadCreatorArtwork, uploadProductPhoto } from '../artworkStorage.js'
 import { ClosetIcon, MarketIcon, StoreIcon } from './SegmentIcons.jsx'
 import { getSupabase, isSupabaseConfigured } from '../supabase.js'
 import BrandGlobe from './BrandGlobe.jsx'
@@ -473,6 +474,7 @@ export default function ProfileScreen({
   account,
   onSaveProfile,
   onPostListing,
+  onListingsChanged,
   onAddProduct,
   onOpenAccountPage,
   onOpenProduct,
@@ -526,6 +528,8 @@ export default function ProfileScreen({
   const [marketListings, setMarketListings] = useState([])
   const [storeProductsError, setStoreProductsError] = useState('')
   const [marketListingsError, setMarketListingsError] = useState('')
+  const [listingAction, setListingAction] = useState('')
+  const [listingActionError, setListingActionError] = useState('')
   const [closetItems, setClosetItems] = useState([])
   const [closetBrand, setClosetBrand] = useState('All')
   const [closetGlobe, setClosetGlobe] = useState(null)
@@ -818,6 +822,7 @@ export default function ProfileScreen({
       setClosetPostError('Connect Supabase to post to Market.')
       return
     }
+
     const price = String(closetSelected.price ?? '').trim() ||
       window.prompt('Enter a price for this item:', '')
     if (price == null) return
@@ -846,6 +851,26 @@ export default function ProfileScreen({
       setClosetPostError(String(err?.message || 'Could not post to Market'))
     } finally {
       setClosetPosting(false)
+    }
+  }
+
+  async function changeOwnedListing(product, space, file) {
+    if (listingAction) return
+    if (!file && !window.confirm(`Remove "${product.title}" from ${space === 'store' ? 'Store' : 'Market'}?`)) return
+    setListingAction(product.id)
+    setListingActionError('')
+    try {
+      const photoUrl = file ? await uploadCreatorArtwork(file) : ''
+      const updated = space === 'store'
+        ? await updateListingProduct(product.id, file ? { photoUrl } : { status: 'archived' })
+        : await updateMyListing(product.id, file ? { imageUrl: photoUrl } : { status: 'removed' })
+      const setProducts = space === 'store' ? setStoreProducts : setMarketListings
+      setProducts((items) => items.map((item) => item.id === product.id ? updated : item))
+      onListingsChanged?.()
+    } catch (error) {
+      setListingActionError(error.message || 'Could not update this listing.')
+    } finally {
+      setListingAction('')
     }
   }
 
@@ -1271,6 +1296,8 @@ export default function ProfileScreen({
                 )
               }
               return (
+                <>
+                {listingActionError && <p role="alert">{listingActionError}</p>}
                 <ul className="profile-product-list">
                   {rows.map((p) => (
                     <li key={p.id}>
@@ -1303,9 +1330,25 @@ export default function ProfileScreen({
                         <span className="profile-product-name">{p.title}</span>
                         <span className="profile-product-price">{p.price || '—'}</span>
                       </button>
+                      <div className="profile-product-actions">
+                        <label className="profile-product-action">
+                          Replace photo
+                          <input type="file" accept="image/png,image/jpeg" disabled={Boolean(listingAction)}
+                            onChange={(event) => {
+                              const file = event.target.files?.[0]
+                              event.target.value = ''
+                              if (file) changeOwnedListing(p, spaceTab, file)
+                            }} />
+                        </label>
+                        <button type="button" className="profile-product-action is-bare"
+                          disabled={Boolean(listingAction)} onClick={() => changeOwnedListing(p, spaceTab)}>
+                          Remove
+                        </button>
+                      </div>
                     </li>
                   ))}
                 </ul>
+                </>
               )
             })()
           ) : (

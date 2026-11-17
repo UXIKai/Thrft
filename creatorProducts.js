@@ -90,7 +90,7 @@ export function mapCreatorProduct(row) {
   const brand = STORE_BRAND_ROWS.find((entry) =>
     entry.name.toLowerCase() === String(row.brand || '').trim().toLowerCase())
   const photo = external && row.photo_url ? `/api/brands/image?id=${encodeURIComponent(row.id)}&v=${encodeURIComponent(row.external_synced_at || '')}` :
-    row.mockup_urls?.[0] || row.photo_url || ''
+    row.photo_url || row.mockup_urls?.[0] || ''
   const hasPrice = row.price != null && String(row.price).trim() !== '' && Number.isFinite(Number(row.price))
   let price = hasPrice ? usdPrice.format(Number(row.price)) : 'Price unavailable'
   if (external && hasPrice) {

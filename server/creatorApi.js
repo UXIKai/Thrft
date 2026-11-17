@@ -322,8 +322,14 @@ export async function handleCreatorApi(req, res) {
       send(res, 201, { product: mapCreatorProduct(product) })
     } else if (/^\/api\/creator\/products\/[^/]+$/.test(path) && req.method === 'PUT') {
       const body = await readBody(req)
-      if (!['active', 'sold', 'archived'].includes(body.status)) fail('Invalid product status')
-      const row = checked(await db.from('brand_products').update({ status: body.status })
+      const patch = {}
+      if (body.status !== undefined) {
+        if (!['active', 'sold', 'archived'].includes(body.status)) fail('Invalid product status')
+        patch.status = body.status
+      }
+      if (body.photoUrl !== undefined) patch.photo_url = requireArtworkUrl(body.photoUrl, user.id)
+      if (Object.keys(patch).length !== 1) fail('Choose one product update')
+      const row = checked(await db.from('brand_products').update(patch)
         .eq('id', path.split('/').at(-1)).eq('creator_id', user.id).select().maybeSingle())
       if (!row) fail('Product not found', 404)
       send(res, 200, { product: mapCreatorProduct(row) })

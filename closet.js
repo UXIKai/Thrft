@@ -24,8 +24,6 @@ function writeAll(items) {
   return items
 }
 
-const NIKE_SEED_KEY = 'thrft-closet-nike-seed-v1'
-
 const NIKE_STARTER_ITEMS = [
   ['Tees', 'Nike Sportswear Club Tee', '30'],
   ['Tees', 'Nike Dri-FIT Training Tee', '35'],
@@ -45,31 +43,16 @@ const NIKE_STARTER_ITEMS = [
   ['Bags', 'Nike Brasilia Duffel Bag', '55'],
 ]
 
-function seedNikeItems() {
-  try {
-    if (localStorage.getItem(NIKE_SEED_KEY)) return
-    localStorage.setItem(NIKE_SEED_KEY, '1')
-  } catch {
-    return
-  }
-  const now = Date.now()
-  const seeded = NIKE_STARTER_ITEMS.map(([category, title, price], i) => ({
-    id: `closet-nike-${i + 1}`,
-    brand: 'Nike',
-    category,
-    title,
-    price,
-    imageUrl: '',
-    scanned: false,
-    backgroundRemoved: false,
-    createdAt: new Date(now - i * 1000).toISOString(),
-  }))
-  writeAll([...readAll(), ...seeded])
-}
-
 export function fetchClosetItems() {
-  seedNikeItems()
-  return readAll()
+  const items = readAll()
+  const real = items.filter((item) => {
+    const match = /^closet-nike-(\d+)$/.exec(item.id || '')
+    const seed = match && NIKE_STARTER_ITEMS[Number(match[1]) - 1]
+    return !seed || item.brand !== 'Nike' || item.category !== seed[0] ||
+      item.title !== seed[1] || item.price !== seed[2] || item.imageUrl || item.scanned || item.backgroundRemoved
+  })
+  if (real.length !== items.length) writeAll(real)
+  return real
 }
 
 export function saveClosetItems(items) {

@@ -347,6 +347,30 @@
   min-width: 0;
 }
 
+.profile-product-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+}
+.profile-product-action {
+  position: relative;
+  color: inherit;
+  font: inherit;
+  font-size: 0.7rem;
+  cursor: pointer;
+  text-decoration: underline;
+}
+.profile-product-action input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+.profile-product-action:focus-within {
+  outline: 2px solid currentColor;
+}
+
 .profile-product-row {
   width: 100%;
   display: flex;
