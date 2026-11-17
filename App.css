@@ -2451,8 +2451,25 @@ html body .tab-bar .tab-lens-inner { top: -7.5%; bottom: -7.5%; }
 html body .tab-bar :is(.tab-item, .tab-lens-item).is-create .tab-icon { transition: transform 0.3s ease; }
 html body .tab-bar .tab-icon-shuriken { display: block; width: 32px; height: 32px; }
 .tab-icon-shuriken .ninja-star { display: block; width: 100%; height: 100%; overflow: visible; }
-.home-scroll,
-.stage > .nav-toggle { touch-action: manipulation; }
+.home-scroll { touch-action: manipulation; }
+
+/* Keep the same shuriken reachable when the surrounding navigation is hidden. */
+html body .stage > .tab-bar.tab-bar.tab-bar.is-collapsed:not(#_) {
+  opacity: 1 !important;
+  translate: var(--nav-shift, 0px) 0 !important;
+  pointer-events: none !important;
+  background: transparent !important;
+  background-image: none !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+.tab-bar.is-collapsed :is(.tab-pill, .tab-item:not(.is-create)),
+.tab-bar.is-collapsed::before,
+.tab-bar.is-collapsed::after { visibility: hidden; }
+.tab-bar.is-collapsed .tab-item.is-create { pointer-events: auto; }
+.stage:is(.is-overlay-open, .is-product-open) > .tab-bar.is-collapsed { visibility: hidden; }
 
 /* The other tabs collapse into the shuriken and the bar shrinks around it. */
 .tab-bar.is-create-open .tab-item:not(.is-create) {

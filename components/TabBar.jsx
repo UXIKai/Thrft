@@ -31,7 +31,7 @@ const CREATE_OPTIONS = [
   { id: 'market', label: 'Market', Icon: StallIcon },
 ]
 
-export default function TabBar({ ref, active = 'home', onChange, onCreate, onShurikenTap, onShurikenHold, quickCreateSegment = null }) {
+export default function TabBar({ ref, active = 'home', onChange, onCreate, onShurikenTap, onShurikenHold, quickCreateSegment = null, collapsed = false }) {
   const [createOpen, setCreateOpen] = useState(false)
   const [createClosing, setCreateClosing] = useState(false)
   const [stageEl, setStageEl] = useState(null)
@@ -212,6 +212,7 @@ export default function TabBar({ ref, active = 'home', onChange, onCreate, onShu
   const onPointerDown = (e) => {
     if (!e.isPrimary) return
     if (e.button !== undefined && e.button !== 0) return
+    if (collapsed && !e.target.closest('.tab-item.is-create')) return
     // Any press on the collapsed bar closes the menu.
     dragRef.current = { moved: false, startX: e.clientX, startY: e.clientY, closeOnly: createOpen }
     if (!createOpen && Math.round(posFromEvent(e)) === 2) {
@@ -252,6 +253,10 @@ export default function TabBar({ ref, active = 'home', onChange, onCreate, onShu
     setDragPos(null)
     if (!commit || !TABS[idx]) return
     setReleaseCount((count) => count + 1)
+    if (collapsed) {
+      if (!d.moved) onShurikenTap?.()
+      return
+    }
     if (TABS[idx].id === 'design') {
       if (!d.moved) onShurikenTap?.()
       return
@@ -264,7 +269,7 @@ export default function TabBar({ ref, active = 'home', onChange, onCreate, onShu
     <>
     <nav
       ref={navRef}
-      className={`tab-bar${pressed ? ' is-pressed' : ''}${dragPos !== null ? ' is-dragging' : ''}${createOpen ? ' is-create-open' : ''}${createClosing ? ' is-create-closing' : ''}`}
+      className={`tab-bar${collapsed ? ' is-collapsed' : ''}${pressed ? ' is-pressed' : ''}${dragPos !== null ? ' is-dragging' : ''}${createOpen ? ' is-create-open' : ''}${createClosing ? ' is-create-closing' : ''}`}
       aria-label="Main"
       style={{ touchAction: 'none' }}
       onContextMenu={(e) => e.preventDefault()}
@@ -311,6 +316,8 @@ export default function TabBar({ ref, active = 'home', onChange, onCreate, onShu
             className={`tab-item ${selected ? 'is-active' : ''}${tab.id === 'design' ? ' is-create' : ''}`}
             style={{ '--tab-n': index - 2 }}
             aria-current={selected ? 'page' : undefined}
+            disabled={collapsed && tab.id !== 'design'}
+            aria-expanded={tab.id === 'design' ? !collapsed : undefined}
             aria-label={tab.id === 'design' ? createOpen ? 'Close create menu' : 'Shuriken: navigation, double-tap to create, hold for menu' : tab.label}
             onClick={(e) => {
               if (e.detail !== 0) return

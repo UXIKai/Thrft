@@ -50,7 +50,7 @@ const scrolledDown = (el, stop) => {
 
 // Store and Market sit side by side (swipe left / right); the Leaderboard sits above them:
 // pull down at the very top of the page to reach it, swipe up to come back. Swiping up at the bottom opens checkout.
-export default function HomeSegmentSlider({ ref, value, onChange, fireSame = false, onSearch, onCart, onTap, onHold, bagCount = 0, navHidden = false }) {
+export default function HomeSegmentSlider({ ref, value, onChange, fireSame = false, onSearch, onCart, onTap, onHold, bagCount = 0, navHidden = false, swipeOnly = false }) {
   const rootRef = useRef(null)
   const [menuOpen, setMenuOpen] = useState(false)
   const [phase, setPhase] = useState(navHidden ? 'done' : 'closed')
@@ -99,6 +99,7 @@ export default function HomeSegmentSlider({ ref, value, onChange, fireSame = fal
 
   // The view point is (x, y): x 0..1 picks Store / Market, y 1 is the Leaderboard above them.
   const paint = (x, y) => {
+    if (swipeOnly) return
     const root = rootRef.current
     if (!root) return
     const lx = shopIndex
@@ -144,7 +145,7 @@ export default function HomeSegmentSlider({ ref, value, onChange, fireSame = fal
       const r = rootRef.current?.getBoundingClientRect()
       const cx = r ? r.left + r.width / 2 : 0
       const cy = r ? r.top + r.height / 2 : 0
-      const onButton = Boolean(r) && Math.abs(x - cx) <= 44 && Math.abs(y - cy) <= 44
+      const onButton = !swipeOnly && Boolean(r) && Math.abs(x - cx) <= 44 && Math.abs(y - cy) <= 44
       if (onButton) {
         rootRef.current?.classList.add('is-pressed')
         holdRef.current = setTimeout(() => {
@@ -367,23 +368,29 @@ export default function HomeSegmentSlider({ ref, value, onChange, fireSame = fal
   return (
     <div
       ref={rootRef}
+      hidden={swipeOnly}
+      style={swipeOnly ? { display: 'none' } : undefined}
       className={`home-segment-slider${closed ? ' is-closed' : phase === 'opening' ? ' is-opening' : phase === 'settle' ? ' is-settling' : ''}`}
       role="status"
       aria-label={`${SEGMENTS.find((s) => s.id === value)?.label}. Swipe left or right for Store and Market; pull down at the top for the Leaderboard, swipe up at the bottom for checkout; hold for the menu.`}
     >
-      {closed && <span className="home-segment-closed-star" aria-hidden="true"><NavButtonGlyph star animate={phase === 'closing'} /></span>}
-      {phase === 'opening' && <OpeningStar final={openFinal} onDone={finishOpening} />}
-      <span className={`wheel-arrow is-left${shopIndex === 0 ? ' is-end' : side}`} aria-hidden="true">{arrow}</span>
-      <span className={`wheel-arrow is-right${shopIndex === 1 ? ' is-end' : side}`} aria-hidden="true">{arrow}</span>
-      <span className={`wheel-arrow is-up${onLeaderboard ? ' is-hidden' : ''}`} aria-hidden="true">{arrow}</span>
-      <span className="wheel-arrow is-down" aria-hidden="true">{arrow}</span>
-      <div className="home-segment-track" aria-hidden="true">
-        {SEGMENTS.map(({ id, Icon }) => (
-          <span key={id} className={`home-segment-tab is-${id}`}>
-            <Icon />
-          </span>
-        ))}
-      </div>
+      {!swipeOnly && (
+        <>
+          {closed && <span className="home-segment-closed-star" aria-hidden="true"><NavButtonGlyph star animate={phase === 'closing'} /></span>}
+          {phase === 'opening' && <OpeningStar final={openFinal} onDone={finishOpening} />}
+          <span className={`wheel-arrow is-left${shopIndex === 0 ? ' is-end' : side}`} aria-hidden="true">{arrow}</span>
+          <span className={`wheel-arrow is-right${shopIndex === 1 ? ' is-end' : side}`} aria-hidden="true">{arrow}</span>
+          <span className={`wheel-arrow is-up${onLeaderboard ? ' is-hidden' : ''}`} aria-hidden="true">{arrow}</span>
+          <span className="wheel-arrow is-down" aria-hidden="true">{arrow}</span>
+          <div className="home-segment-track" aria-hidden="true">
+            {SEGMENTS.map(({ id, Icon }) => (
+              <span key={id} className={`home-segment-tab is-${id}`}>
+                <Icon />
+              </span>
+            ))}
+          </div>
+        </>
+      )}
       {menuOpen && <HomeRadialMenu bagCount={bagCount} onPick={(id) => pickRef.current(id)} onClose={() => setMenuOpen(false)} />}
     </div>
   )
