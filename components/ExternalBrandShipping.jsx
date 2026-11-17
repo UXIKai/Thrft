@@ -99,21 +99,21 @@ export default function ExternalBrandShipping({ onBack }) {
     return () => { active = false }
   }, [])
 
-  return <section className="glass-overlay external-shipping" role="dialog" aria-modal="true" aria-label="Brand shipping">
+  return <section className="glass-overlay external-shipping" role="dialog" aria-modal="true" aria-label="Store settings">
     <header className="glass-overlay-top">
       <button type="button" className="glass-overlay-back is-bare" aria-label="Back to Settings" onClick={onBack}>
         <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
           <path d="M15 5.5 8.5 12 15 18.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </button>
-      <h1 className="glass-overlay-title">Brand shipping</h1>
+      <h1 className="glass-overlay-title">Store settings</h1>
       <span aria-hidden="true" />
     </header>
     <div className="glass-overlay-body external-shipping-body">
       <p>One flat shipping rate per brand; $0 means free shipping. Thrft charges a 10% item fee, with no monthly fee. Your payout = item sales × 90% + shipping − processing (2.9% of the total charged + $0.30), with a $0 minimum. Shared checkouts split the processing fee proportionally. Payouts are manual.</p>
       {loading && <p role="status">Loading brands…</p>}
       {error && <p role="alert">{error}</p>}
-      {!loading && !error && !brands.length && <p>No verified imported brands yet.</p>}
+      {!loading && !error && !brands.length && <p>No verified stores yet. Import a brand website from Create to sync its catalog here.</p>}
       {brands.map((brand) => <ShippingBrand key={brand.id} brand={brand} />)}
     </div>
   </section>

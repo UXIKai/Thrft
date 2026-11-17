@@ -577,7 +577,6 @@ const SHEET_COPY = {
     ],
   },
   shop: { title: '', fields: [{ key: 'shop', label: 'Shop email' }] },
-  sync: { title: '', fields: [{ key: 'sync', label: 'Catalog' }] },
   storeApi: {
     title: 'Store API',
     fields: [{ key: 'storeApiKey', label: 'API key' }],
@@ -1800,8 +1799,8 @@ export default function SettingsScreen({
             <button
               type="button"
               className="settings-icon-tile"
-              aria-label="Sync products"
-              onClick={() => openSheet('sync')}
+              aria-label="Store settings: sync catalog, shipping, Shopify"
+              onClick={() => setBrandShippingOpen(true)}
             >
               <BoxIcon />
             </button>
@@ -1897,8 +1896,8 @@ export default function SettingsScreen({
           </div>
         </Section>
 
-        <Section label="Brand shipping">
-          <Row title="External brand shipping" subtitle="Set a flat rate for each verified brand"
+        <Section label="Store">
+          <Row title="Store settings" subtitle="Re-sync your catalog, set shipping, connect Shopify"
             onClick={() => setBrandShippingOpen(true)} />
         </Section>
 
@@ -1980,11 +1979,9 @@ export default function SettingsScreen({
                 ? 'Address'
                 : sheet === 'shop'
                   ? 'Shop email'
-                  : sheet === 'sync'
-                    ? 'Catalog'
-                    : sheet === 'storeApi'
-                      ? 'Store API'
-                      : SHEET_COPY[sheet].title || 'Settings'
+                  : sheet === 'storeApi'
+                    ? 'Store API'
+                    : SHEET_COPY[sheet].title || 'Settings'
           }
         >
           <button

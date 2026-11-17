@@ -3577,3 +3577,56 @@ html body .stage .home-radial .home-radial-btn:not(#_):not(#_):not(#_) {
   background: var(--page-bg);
   color: var(--ink);
 }
+
+/* Hold menu: a silicone dome tinted with the page's background colours, light glimmering round the rim */
+html body .stage .home-radial-scrim .home-radial:not(#_):not(#_) {
+  --dome-a: var(--atmosphere-effect-a-rgb, 190, 190, 190);
+  --dome-b: var(--atmosphere-effect-b-rgb, 150, 150, 150);
+  --dome-c: var(--atmosphere-effect-c-rgb, 170, 170, 170);
+  background:
+    radial-gradient(ellipse 60% 38% at 38% 16%, rgba(255, 255, 255, 0.32), transparent 70%),
+    radial-gradient(circle at 80% 88%, rgba(var(--dome-a), 0.55), transparent 55%),
+    radial-gradient(circle at 18% 62%, rgba(var(--dome-c), 0.5), transparent 58%),
+    radial-gradient(circle at 84% 30%, rgba(var(--dome-b), 0.45), transparent 52%),
+    radial-gradient(circle at 50% 46%, rgba(0, 0, 0, 0.82) 0%, rgba(0, 0, 0, 0.7) 62%, rgba(0, 0, 0, 0.45) 100%) !important;
+  border: 0;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.22),
+    inset 0 2px 3px rgba(255, 255, 255, 0.5),
+    inset 0 0 14px 2px rgba(var(--dome-a), 0.6),
+    inset 0 0 42px 6px rgba(var(--dome-b), 0.32),
+    inset 0 -18px 30px rgba(0, 0, 0, 0.55),
+    0 0 36px rgba(var(--dome-a), 0.28),
+    0 20px 44px rgba(0, 0, 0, 0.6) !important;
+  overflow: hidden;
+}
+/* Slow glint sweeping around the rim */
+html body .stage .home-radial-scrim .home-radial:not(#_)::before {
+  inset: 0;
+  rotate: 0deg;
+  border: 0;
+  background: conic-gradient(from 0deg, transparent 0deg, rgba(255, 255, 255, 0.55) 22deg, transparent 58deg, transparent 180deg, rgba(var(--dome-a), 0.7) 205deg, transparent 240deg, transparent 360deg);
+  mask: radial-gradient(circle, transparent 90%, #000 97%, transparent 100%);
+  -webkit-mask: radial-gradient(circle, transparent 90%, #000 97%, transparent 100%);
+  animation: home-radial-glint 7s linear infinite;
+}
+html body .stage .home-radial-scrim .home-radial:not(#_)::after {
+  inset: 0;
+  border: 0;
+  background: radial-gradient(circle at 50% 50%, transparent 66%, rgba(255, 255, 255, 0.14) 100%);
+  mask: none;
+  -webkit-mask: none;
+}
+@keyframes home-radial-glint {
+  to { rotate: 360deg; }
+}
+html body .home-radial .home-radial-lens {
+  background:
+    radial-gradient(circle at 50% 18%, rgba(255, 255, 255, 0.5), transparent 42%),
+    radial-gradient(circle at 50% 50%, rgba(var(--dome-a, 190, 190, 190), 0.22), rgba(0, 0, 0, 0.1));
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 10px 18px rgba(0, 0, 0, 0.5), inset 0 1px 2px rgba(255, 255, 255, 0.5), inset 0 0 10px rgba(var(--dome-a, 190, 190, 190), 0.4);
+}
+@media (prefers-reduced-motion: reduce) {
+  html body .stage .home-radial-scrim .home-radial:not(#_)::before { animation: none; }
+}
