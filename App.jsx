@@ -931,7 +931,12 @@ export default function App() {
       </div>
 
       {shurikenMenuOpen && <HomeRadialMenu bagCount={bagCount} onPick={pickShurikenMenu} onClose={() => setShurikenMenuOpen(false)} />}
-      {signedIn && showNav && <TabBar ref={tabBarRef} collapsed={atBottom || homeIdle} active={tab} onShurikenTap={tapShuriken} onShurikenHold={holdShuriken} quickCreateSegment={
+      {signedIn && showNav && <TabBar ref={tabBarRef} collapsed={atBottom || homeIdle} active={tab} directions={tab === 'home' ? [
+        homeSegment !== 'leaderboard',
+        homeSegment === 'store',
+        true,
+        homeSegment === 'market',
+      ] : undefined} onShurikenTap={tapShuriken} onShurikenHold={holdShuriken} quickCreateSegment={
         tab === 'profile' ? 'closet'
           : tab === 'design' ? createSegment
             : tab === 'home' && (homeSegment === 'store' || homeSegment === 'market') ? homeSegment

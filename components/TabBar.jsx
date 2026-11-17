@@ -16,11 +16,11 @@ const TABS = [
   { id: 'profile', label: 'Profile' },
 ]
 
-function TabContent({ tab, collapsed = false }) {
+function TabContent({ tab, collapsed = false, directions }) {
   return (
     <span className="tab-text">
       {tab.id === 'design' ? (
-        <span className="tab-icon tab-icon-shuriken"><NavButtonGlyph star open={collapsed} /></span>
+        <span className="tab-icon tab-icon-shuriken"><NavButtonGlyph star open={collapsed} directions={directions} /></span>
       ) : tab.label}
     </span>
   )
@@ -31,7 +31,7 @@ const CREATE_OPTIONS = [
   { id: 'market', label: 'Market', Icon: StallIcon },
 ]
 
-export default function TabBar({ ref, active = 'home', onChange, onCreate, onShurikenTap, onShurikenHold, quickCreateSegment = null, collapsed = false }) {
+export default function TabBar({ ref, active = 'home', onChange, onCreate, onShurikenTap, onShurikenHold, quickCreateSegment = null, collapsed = false, directions }) {
   const [createOpen, setCreateOpen] = useState(false)
   const [createClosing, setCreateClosing] = useState(false)
   const [stageEl, setStageEl] = useState(null)
@@ -301,7 +301,7 @@ export default function TabBar({ ref, active = 'home', onChange, onCreate, onShu
         <span className="tab-lens-inner">
           {TABS.map((tab) => (
             <span key={tab.id} className={`tab-lens-item${tab.id === 'design' ? ' is-create' : ''}`}>
-              <TabContent tab={tab} collapsed={collapsed} />
+              <TabContent tab={tab} collapsed={collapsed} directions={directions} />
             </span>
           ))}
         </span>
@@ -332,7 +332,7 @@ export default function TabBar({ ref, active = 'home', onChange, onCreate, onShu
               onChange?.(tab.id)
             }}
           >
-            <TabContent tab={tab} collapsed={collapsed} />
+            <TabContent tab={tab} collapsed={collapsed} directions={directions} />
           </button>
         )
       })}

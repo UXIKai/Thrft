@@ -32,7 +32,7 @@ const blendList = (list, p) => {
 const blendFrames = (p) => blendList(FRAME_NUMS, p)
 
 /** The empty-middle state: four blades that twist shut like a camera shutter into a ninja star. */
-function NinjaStar({ animate, open = false }) {
+function NinjaStar({ animate, open = false, directions }) {
   const gradientId = useId()
   const groupRef = useRef(null)
   const bladeRefs = useRef([])
@@ -85,6 +85,7 @@ function NinjaStar({ animate, open = false }) {
             transform={`rotate(${deg} 400 400)`}
             points={STAR_FRAMES[0]}
             fill={`url(#${gradientId})`}
+            opacity={open && directions && !directions[i] ? 0 : 1}
           />
         ))}
       </g>
@@ -164,14 +165,14 @@ export function OpeningStar({ final = [1, 1, 1, 1], onDone }) {
  * The Home picker's button. With an icon in the middle the four arrows stay open around it;
  * with `star` (nothing in the middle) they close into a ninja star.
  */
-export default function NavButtonGlyph({ icon = null, star = false, animate, open = false }) {
+export default function NavButtonGlyph({ icon = null, star = false, animate, open = false, directions }) {
   const previousStar = useRef(star)
   const [animateStar, setAnimateStar] = useState(false)
   useLayoutEffect(() => {
     setAnimateStar(star && !previousStar.current)
     previousStar.current = star
   }, [star])
-  if (star && !icon) return <NinjaStar animate={animate ?? animateStar} open={open} />
+  if (star && !icon) return <NinjaStar animate={animate ?? animateStar} open={open} directions={directions} />
   return (
     <>
       <span className="wheel-arrow is-up" aria-hidden="true">{arrow}</span>
