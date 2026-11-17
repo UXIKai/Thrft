@@ -2,6 +2,9 @@ import { useEffect, useId, useRef } from 'react'
 
 const WAVE_POINTS = [120, 610, 440, 620, 720, 490, 1180, 400]
 const FLOW_PERIOD_MS = 18000
+// A bright leading crest leaves a long, softly rippling luminous wake.
+const LIGHT_STOPS = [[0, 0], [.16, 0], [.3, .18], [.38, .08], [.48, .4],
+  [.55, .3], [.64, 1], [.7, .12], [.78, 0], [1, 0]]
 
 const BROAD_GLOW = Float32Array.from({ length: 1801 }, (_, distance) =>
   .82 * Math.exp(-((distance / 145) ** 2)) + .16 * Math.exp(-((distance / 20) ** 2)))
@@ -23,6 +26,7 @@ export default function AtmosphereFlow() {
     const canvas = canvasRef.current
     const edge = edgeRef.current
     const light = lightRef.current
+    const edgeStops = [...light.querySelectorAll('stop')]
     const context = canvas.getContext('2d', { willReadFrequently: true })
     if (!context) {
       console.error('The animated atmosphere requires a 2D canvas context.')
@@ -34,6 +38,7 @@ export default function AtmosphereFlow() {
     let lastPaint = -Infinity
     let visible = false
     let colors
+    let stops
     let image
     let portrait = false
 
@@ -51,6 +56,13 @@ export default function AtmosphereFlow() {
         c: rgb('--atmosphere-effect-c', '#856344'),
         base: rgb('--atmosphere-base', '#050505'),
       }
+      const ambient = colors.a.map((channel, i) => channel * .75 + colors.c[i] * .25)
+      const crest = colors.a.map((channel) => channel + (255 - channel) * .4)
+      stops = LIGHT_STOPS.map(([offset, energy], index) => {
+        const color = ambient.map((channel, i) => channel + (crest[i] - channel) * energy)
+        edgeStops[index].setAttribute('stop-color', `rgb(${color.join(', ')})`)
+        return [offset, color, energy]
+      })
     }
     const paint = (elapsed) => {
       if (!image) return
@@ -86,13 +98,10 @@ export default function AtmosphereFlow() {
         }
         rows[x] = cubic(...ys, (low + high) / 2) / 900 * breadth
       }
-      const shift = phase
+      const shift = phase * 2 % 1
       light.setAttribute('gradientTransform', portrait
         ? `translate(0 ${shift * 1440})`
         : `translate(${shift * 1440} 0)`)
-      const highlight = colors.a.map((channel) => channel + (255 - channel) * .2)
-      const tail = colors.a.map((channel, i) => channel * .75 + colors.c[i] * .25)
-      const stops = [[0, tail], [.28, highlight], [.52, colors.b], [.84, highlight], [1, tail]]
       for (let x = 0; x < length; x += 1) {
         const position = ((x + .5) / length - shift + 1) % 1
         let stop = 0
@@ -100,13 +109,14 @@ export default function AtmosphereFlow() {
         const amount = (position - stops[stop][0]) / (stops[stop + 1][0] - stops[stop][0])
         const light = stops[stop][1].map((value, channel) =>
           value + (stops[stop + 1][1][channel] - value) * amount)
+        const energy = stops[stop][2] + (stops[stop + 1][2] - stops[stop][2]) * amount
         const reflected = light.map((value, channel) => value * .35 + colors.b[channel] * .65)
         const slope = (rows[Math.min(length - 1, x + 1)] - rows[Math.max(0, x - 1)]) / 2
         const normal = 900 / breadth / Math.sqrt(1 + slope * slope)
         const progress = (x + .5) / length
         const transition = Math.max(0, Math.min(1, (progress - .35) / .3))
         const litSide = transition * transition * (3 - 2 * transition)
-        const spread = .35 + .65 * Math.abs(Math.cos(progress * Math.PI))
+        const spread = (.35 + .65 * Math.abs(Math.cos(progress * Math.PI))) * (1 + energy * .28)
         for (let y = 0; y < breadth; y += 1) {
           const distance = y + .5 - rows[x]
           const offset = Math.min(1800, Math.round(Math.abs(distance) * normal))
@@ -191,11 +201,9 @@ export default function AtmosphereFlow() {
       <svg className="atmosphere-flow-edge" viewBox="0 0 1440 900" preserveAspectRatio="none">
         <defs>
           <linearGradient ref={lightRef} id={`${id}-edge-light`} gradientUnits="userSpaceOnUse" x2="1440" spreadMethod="repeat">
-            <stop stopColor="color-mix(in srgb, var(--atmosphere-effect-a, #ffe2a3) 75%, var(--atmosphere-effect-c, #856344))" />
-            <stop offset=".28" stopColor="color-mix(in srgb, var(--atmosphere-effect-a, #ffe2a3) 80%, white)" />
-            <stop offset=".52" stopColor="var(--atmosphere-effect-b, #d6a467)" />
-            <stop offset=".84" stopColor="color-mix(in srgb, var(--atmosphere-effect-a, #ffe2a3) 80%, white)" />
-            <stop offset="1" stopColor="color-mix(in srgb, var(--atmosphere-effect-a, #ffe2a3) 75%, var(--atmosphere-effect-c, #856344))" />
+            {LIGHT_STOPS.map(([offset]) => (
+              <stop key={offset} offset={offset} stopColor="var(--atmosphere-effect-a, #ffe2a3)" />
+            ))}
           </linearGradient>
         </defs>
         <path ref={edgeRef} fill="none" stroke={`url(#${id}-edge-light)`} strokeWidth="1"
