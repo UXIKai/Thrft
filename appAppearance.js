@@ -15,6 +15,7 @@ export const CUSTOM_COLOR_KEY = 'thrft-app-color-hex'
 export const BG_COLOR_KEY = 'thrft-bg-color-v1'
 export const CUSTOM_BG_COLOR_KEY = 'thrft-bg-color-hex-v1'
 export const BG_IMAGE_KEY = 'thrft-bg-image-v2'
+export const BG_EFFECT_STYLE_KEY = 'thrft-bg-effect-style-v1'
 const BG_MATCH_KEY = 'thrft-bg-match-color-v1'
 export const THEME_KEY = 'thrft-theme-v1'
 export const USER_THEME_KEY = 'thrft-user-theme-v1'
@@ -628,7 +629,9 @@ export function applyBgAtmosphereTokens() {
       )
     })
   } else {
-    currentBgEffects = [...DEFAULT_BG_EFFECTS]
+    currentBgEffects = root.dataset.bgEffectStyle === 'phantom'
+      ? ['#c8c8c8', '#9a9a9a', '#6e6e6e']
+      : [...DEFAULT_BG_EFFECTS]
     currentBgEffects.forEach((hex, i) => {
       const rgb = hexToRgb(hex) || [160, 160, 160]
       const key = String.fromCharCode(97 + i)
@@ -909,6 +912,29 @@ export function readBgColor() {
   }
 }
 
+export function readBackgroundEffectStyle() {
+  try {
+    return localStorage.getItem(BG_EFFECT_STYLE_KEY) === 'phantom' ? 'phantom' : 'wave'
+  } catch (error) {
+    console.warn('Unable to read background effect style.', error)
+    return 'wave'
+  }
+}
+
+export function applyBackgroundEffectStyle(style) {
+  if (style !== 'phantom' && style !== 'wave') {
+    throw new RangeError(`Unknown background effect style: ${style}`)
+  }
+  document.documentElement.dataset.bgEffectStyle = style
+  applyBgAtmosphereTokens()
+  try {
+    localStorage.setItem(BG_EFFECT_STYLE_KEY, style)
+  } catch (error) {
+    console.warn('Unable to save background effect style.', error)
+  }
+  return style
+}
+
 /**
  * Background Image: none = hide living atmosphere; atmosphere = default wash.
  */
@@ -1103,6 +1129,7 @@ export function initAppearance() {
   currentBgColorId = readBgColor()
   currentGlassPct = readBarTransparency()
   readBgEffectColors()
+  applyBackgroundEffectStyle(readBackgroundEffectStyle())
   applyBackgroundPhoto(readBackgroundPhoto())
   // Flowing B/W/gray wash is the stage look
   currentBg = readBackgroundImage()

@@ -7,10 +7,12 @@ import {
   readBrightness,
   applyAppColor,
   applyBackgroundImage,
+  applyBackgroundEffectStyle,
   exitMoonlight,
   isBrightColorId,
   readMoonlight,
   readBackgroundImage,
+  readBackgroundEffectStyle,
   applyBackgroundPhoto,
   readBackgroundPhoto,
   applyBarTransparency,
@@ -793,6 +795,7 @@ export default function SettingsScreen({
   })
   const [paletteEditorOpen, setPaletteEditorOpen] = useState(false)
   const [bgEffectOn, setBgEffectOn] = useState(() => readBackgroundImage() === 'atmosphere')
+  const [bgEffectStyle, setBgEffectStyle] = useState(() => readBackgroundEffectStyle())
   const [uiScale, setUiScale] = useState(() => readUiScale())
   const [containerEdge, setContainerEdge] = useState(() => readContainerEdge())
   const [brightness, setBrightness] = useState(() => readBrightness())
@@ -1496,6 +1499,17 @@ export default function SettingsScreen({
     setPhotoMenuOpen(false)
   }
 
+  function chooseBackgroundEffect(style) {
+    if (hasPhoto) clearPhoto()
+    if (exitMoonlight()) {
+      setTheme(readTheme())
+      setMoonlightOn(false)
+    }
+    setBgEffectStyle(applyBackgroundEffectStyle(style))
+    applyBackgroundImage('atmosphere')
+    setBgEffectOn(true)
+  }
+
   function refreshPalette() {
     setPaletteColors({ app: getPaletteColors('app'), bg: getPaletteColors('bg') })
   }
@@ -1576,6 +1590,22 @@ export default function SettingsScreen({
   const customizationSections = (
     <>
         <Section label="Appearance">
+          <div className="settings-block settings-effect-block">
+            <p className="settings-color-caption">Effect</p>
+            <div className="settings-effect-options" role="group" aria-label="Background effect style">
+              {['phantom', 'wave'].map((style) => (
+                <button
+                  key={style}
+                  type="button"
+                  className="settings-effect-option is-bare"
+                  aria-pressed={bgEffectStyle === style}
+                  onClick={() => chooseBackgroundEffect(style)}
+                >
+                  {style === 'phantom' ? 'Phantom' : 'Wave'}
+                </button>
+              ))}
+            </div>
+          </div>
           <div className={`settings-block settings-palette-block${photoMenuOpen ? ' is-photo-open' : ''}`}>
             <div className="settings-color-stack">
               <div className="settings-color-group">

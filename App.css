@@ -2277,7 +2277,8 @@ html body .stage.is-chat-panel-dragging .tab-bar {
   display: none;
 }
 
-.stage .atmosphere::before {
+.stage .atmosphere::before,
+.atmosphere-phantom {
   inset: -20%;
   background:
     radial-gradient(circle at 85% 55%, rgba(var(--atmosphere-effect-b-rgb, 150, 150, 150), 0.32), transparent 45%),
@@ -2326,6 +2327,10 @@ html body .store-row-strip .product-box {
   display: none;
 }
 
+.atmosphere-phantom {
+  position: absolute;
+}
+
 .atmosphere-flow {
   position: absolute;
   inset: 0;
@@ -2343,7 +2348,9 @@ html body .store-row-strip .product-box {
 }
 
 .stage.is-bg-none .atmosphere-flow,
-html[data-bg-photo] .atmosphere-flow {
+.stage.is-bg-none .atmosphere-phantom,
+html[data-bg-photo] .atmosphere-flow,
+html[data-bg-photo] .atmosphere-phantom {
   display: none;
 }
 

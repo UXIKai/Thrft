@@ -1,4 +1,5 @@
-import { useEffect, useId, useRef } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
+import { readBackgroundEffectStyle } from '../appAppearance.js'
 
 const WAVE_POINTS = [120, 610, 440, 620, 720, 490, 1180, 400]
 const FLOW_PERIOD_MS = 18000
@@ -17,6 +18,23 @@ function cubic(start, first, second, end, t) {
 }
 
 export default function AtmosphereFlow() {
+  const [style, setStyle] = useState(readBackgroundEffectStyle)
+
+  useEffect(() => {
+    const root = document.documentElement
+    const sync = () => setStyle(root.dataset.bgEffectStyle || readBackgroundEffectStyle())
+    const observer = new MutationObserver(sync)
+    observer.observe(root, { attributes: true, attributeFilter: ['data-bg-effect-style'] })
+    sync()
+    return () => observer.disconnect()
+  }, [])
+
+  return style === 'phantom'
+    ? <div className="atmosphere-phantom" aria-hidden="true" />
+    : <WaveFlow />
+}
+
+function WaveFlow() {
   const id = useId()
   const canvasRef = useRef(null)
   const edgeRef = useRef(null)

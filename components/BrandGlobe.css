@@ -886,6 +886,6 @@ html body .brand-globe.is-color-picker > .brand-globe-color-atmosphere {
   background: var(--page-base);
 }
 
-html body .stage .brand-globe.is-color-picker .atmosphere-flow {
+html body .stage .brand-globe.is-color-picker :is(.atmosphere-flow, .atmosphere-phantom) {
   display: block;
 }

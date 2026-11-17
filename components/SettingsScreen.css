@@ -55,6 +55,33 @@
   outline-offset: 3px;
 }
 
+.settings-effect-options {
+  display: flex;
+  gap: 8px;
+}
+
+.settings-effect-option {
+  flex: 1;
+  min-height: 50px;
+  border: 0;
+  border-radius: 12px;
+  color: var(--st-mute);
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
+}
+
+.settings-effect-option[aria-pressed='true'] {
+  color: var(--st-ink);
+  background: var(--glass-clear-tint);
+  font-weight: 700;
+}
+
+.settings-effect-option:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
 .settings-top {
   position: relative;
   flex: 0 0 auto;
