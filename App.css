@@ -3159,7 +3159,7 @@ html body .stage.is-nav-hidden > .tab-bar.tab-bar {
 }
 
 /* Logo scrolls away with the page; the picker button rides just above the nav bar and drops into its place when the nav slides away */
-.home-scroll:not(.is-home-idle) {
+.home-scroll:not(.is-home-idle):not(.is-chat-thread) {
   padding-bottom: calc(150px + env(safe-area-inset-bottom, 0px));
 }
 .home-scroll:not(.is-home-idle) .wordmark-wrap {
