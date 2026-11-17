@@ -5385,7 +5385,7 @@ html body .chat-thread-scroll > .chat-thread-body {
 
 /* A full-width foreground screen reveals stationary panels underneath. */
 @media (max-width: 719px), (max-height: 499px) {
-  .stage:has(.chat-screen:not(.is-desktop)) > .atmosphere {
+  .stage:has(.chat-screen:not(.is-desktop)):not(:has(.home-radial-scrim)) > .atmosphere {
     display: none;
   }
   .chat-main-page > .chat-page-atmosphere {

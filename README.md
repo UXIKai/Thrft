@@ -81,6 +81,8 @@ Double-tapping the shuriken follows the current page: Store opens its create flo
 
 On Home, the open navigation blades indicate destinations, not finger motion: Store shows the right blade toward Market, Market shows the left blade toward Store, and both show up toward Leaderboard and down toward checkout. Leaderboard shows only down toward the shops. Unavailable blades are hidden rather than dimmed; the closed shuriken keeps its complete shape.
 
+Holding the shuriken shows an opaque, softly shaded wheel over the chosen background. The page content and navigation hide while it is open, but the animated Wave/Phantom or wallpaper stays visible around the wheel on every tab and returns unchanged when the menu closes.
+
 On mobile Chat, revealing Chats or Online slides the entire main page, its animated app background (or selected wallpaper), controls, and bottom navigation as one full-width rounded screen over a stationary side panel. The page fills the app height behind the navigation and home indicator, without the feed's bottom padding. The page has a subtle rim; its opposite edge stays offscreen throughout the swipe. Tapping the displaced page closes the panel. The covered stage background is hidden while mobile Chat owns the background, avoiding two active renderers.
 
 The default atmosphere is a continuously bending dark wave with warm-gold light traveling along its edge, rather than a static wallpaper drifting across the screen. Appearance background colors still tint the flow; turning the effect off or choosing a photo hides it. Reduced-motion preferences pause both the wave geometry and light.
