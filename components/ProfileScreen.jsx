@@ -972,6 +972,10 @@ export default function ProfileScreen({
     if (!displayName && !username) return
     setNameSaving(true)
     try {
+      if (await usernameTaken(username)) {
+        window.alert('That username is taken')
+        return
+      }
       await onSaveProfile?.({
         ...(displayName ? { displayName } : {}),
         ...(username ? { username } : {}),
@@ -1012,6 +1016,13 @@ export default function ProfileScreen({
     setAtOpen(true)
   }
 
+  async function usernameTaken(username) {
+    const saved = String(account?.username || userProfile?.username || '').toLowerCase()
+    if (!username || username === saved || !isSupabaseConfigured()) return false
+    const found = await fetchAccountPage(username).catch(() => null)
+    return Boolean(found?.account && !found.account.isSelf)
+  }
+
   async function saveAccountEdit() {
     if (accountEditBusy) return
     const savedEmail = String(account?.email || userProfile?.email || '').trim()
@@ -1038,13 +1049,9 @@ export default function ProfileScreen({
     setAccountEditBusy(true)
     setAccountEditNote('')
     try {
-      const savedUsername = String(account?.username || userProfile?.username || '').toLowerCase()
-      if (username !== savedUsername && isSupabaseConfigured()) {
-        const found = await fetchAccountPage(username).catch(() => null)
-        if (found?.account && !found.account.isSelf) {
-          setAccountEditNote('That username is taken')
-          return
-        }
+      if (await usernameTaken(username)) {
+        setAccountEditNote('That username is taken')
+        return
       }
       if (nextPassword || emailChanged) {
         const supabase = getSupabase()
