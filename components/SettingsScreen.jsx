@@ -1972,11 +1972,7 @@ export default function SettingsScreen({
                 <path d={followingPrivate ? 'M8 11V8a4 4 0 0 1 8 0v3' : 'M8 11V8a4 4 0 0 1 7.5-1.9'} />
               </svg>
             </span>
-            <span className="settings-privacy-state">
-              <span className={followingPrivate ? '' : 'is-on'}>Public</span>
-              <span aria-hidden> - </span>
-              <span className={followingPrivate ? 'is-on' : ''}>Private</span>
-            </span>
+            <span className="settings-privacy-state is-on">{followingPrivate ? 'Private' : 'Public'}</span>
           </button>
         </Section>
 
