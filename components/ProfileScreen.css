@@ -3344,3 +3344,13 @@
 .profile-screen .profile-social-n { font-size: 1.15rem; font-weight: 800; }
 .profile-screen .profile-social-l { font-size: 0.78rem; opacity: 0.6; }
 .profile-screen .profile-identity > .profile-username-link.is-empty { grid-column: 2; }
+/* Smaller, evenly spaced header */
+.profile-screen .profile-identity { column-gap: 14px; row-gap: 2px; padding: 14px 6px 4px; }
+.profile-screen .pf-user-avatar-wrap { width: 68px; height: 68px; }
+.profile-screen .pf-user-avatar { width: 68px; height: 68px; font-size: 1.3rem; }
+.profile-screen .profile-username-link { font-size: 1rem; font-weight: 700; }
+.profile-screen .profile-name-row .profile-links-btn { width: 22px; height: 22px; }
+.profile-screen .profile-name-row .profile-links-btn svg { width: 15px; height: 15px; }
+.profile-screen .profile-social { margin-top: 2px; gap: 20px; }
+.profile-screen .profile-social-n { font-size: 0.95rem; }
+.profile-screen .profile-social-l { font-size: 0.68rem; }
