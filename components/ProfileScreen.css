@@ -3266,42 +3266,33 @@
   color: inherit;
 }
 
-/* Compact header: small avatar beside the name and counts */
+/* Compact header: small centered avatar, name below, then counts */
 .profile-screen .profile-identity {
-  display: grid;
-  grid-template-columns: 72px auto;
-  justify-content: center;
-  grid-template-rows: auto auto auto;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  column-gap: 16px;
-  row-gap: 0;
-  text-align: left;
-  padding: 4px 4px 10px;
+  text-align: center;
+  padding: 26px 4px 10px;
 }
 .profile-screen .pf-user-avatar-wrap {
-  grid-row: 1 / span 2;
   width: 72px;
   height: 72px;
-  margin: 0;
+  margin: 0 0 10px;
 }
 .profile-screen .pf-user-avatar {
   width: 72px;
   height: 72px;
   font-size: 1.4rem;
 }
-.profile-screen .profile-name-row { grid-column: 2; justify-self: start; align-self: end; }
-.profile-screen .profile-identity > .profile-username-link.is-empty { grid-column: 2; justify-self: start; }
 .profile-screen .profile-username-link { margin: 0; font-size: 0.82rem; }
-.profile-screen .profile-joined { grid-column: 2; margin: 2px 0 0; font-size: 0.7rem; }
 .profile-screen .profile-social {
-  grid-column: 1 / -1;
   justify-content: center;
   width: 100%;
   margin-top: 12px;
   gap: 28px;
 }
 .profile-screen .profile-social-rule { display: none; }
-.profile-screen .profile-social-cell { flex: none; align-items: flex-start; flex-direction: row; gap: 5px; align-items: baseline; }
+.profile-screen .profile-social-cell { flex: none; flex-direction: row; gap: 5px; align-items: baseline; }
 .profile-screen .profile-social-n { font-size: 0.95rem; }
 .profile-screen .profile-social-l { font-size: 0.72rem; }
 .profile-screen .profile-name-row .profile-links-btn {
@@ -3314,4 +3305,3 @@
   color: inherit;
 }
 .profile-screen .profile-name-row .profile-links-btn svg { width: 18px; height: 18px; }
-.profile-screen .profile-identity { padding-top: 26px; }

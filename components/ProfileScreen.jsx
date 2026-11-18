@@ -1284,7 +1284,6 @@ export default function ProfileScreen({
             Add username
           </button>
         )}
-        <p className="profile-joined">Joined {userProfile?.joined || 'Oct 22'}</p>
         <div className="profile-social">
           <button type="button" className="profile-social-cell is-bare" disabled={!userProfile?.username}
             onClick={() => setFollowSheet('following')}>
