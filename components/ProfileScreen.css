@@ -3393,14 +3393,7 @@ html body .profile-screen .profile-username-link:hover { text-decoration: none !
 .profile-screen .profile-identity {
   display: flex; flex-direction: column; align-items: stretch; text-align: left; padding: 0 0 14px;
 }
-.profile-screen .pf-x-banner {
-  display: block; flex: none; width: calc(100% + 2 * var(--pf-pad-x));
-  margin: 0 calc(-1 * var(--pf-pad-x)); height: 120px; padding: 0; overflow: hidden;
-  border: 0; border-radius: 0;
-  background: light-dark(rgba(0, 0, 0, 0.08), rgba(255, 255, 255, 0.1));
-}
-.pf-x-banner img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.profile-screen .pf-x-head { display: flex; align-items: flex-end; justify-content: space-between; margin-top: -36px; padding: 0 2px; }
+.profile-screen .pf-x-head { display: flex; align-items: flex-end; justify-content: space-between; padding: 26px 2px 0; }
 .profile-screen .pf-x-head .pf-user-avatar-wrap { width: 84px; height: 84px; margin: 0; }
 .profile-screen .pf-x-head .pf-user-avatar {
   width: 84px; height: 84px; border: 3px solid var(--page-bg, #000);

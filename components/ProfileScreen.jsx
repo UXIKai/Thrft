@@ -472,7 +472,6 @@ export default function ProfileScreen({
   const mediaOwner = account?.username || userProfile?.username || account?.id || ''
   const [media, setMedia] = useState(() => readProfileMedia(mediaOwner))
   const [viewPhoto, setViewPhoto] = useState(null)
-  const bannerInputRef = useRef(null)
   const postInputRef = useRef(null)
   useEffect(() => { setMedia(readProfileMedia(mediaOwner)) }, [mediaOwner])
   const [closetPeople, setClosetPeople] = useState(null)
@@ -995,13 +994,13 @@ export default function ProfileScreen({
     }
   }
 
-  async function onMediaPicked(file, kind) {
+  async function onMediaPicked(file) {
     if (!file || !file.type?.startsWith('image/')) return
     try {
-      const url = await storeImage(await compressImageFile(file, kind === 'banner' ? 1200 : 1080))
-      const next = kind === 'banner' ? url : [url, ...media.photos]
-      writeProfileMedia(mediaOwner, kind === 'banner' ? 'banner' : 'photos', next)
-      setMedia((m) => ({ ...m, ...(kind === 'banner' ? { banner: url } : { photos: next }) }))
+      const url = await storeImage(await compressImageFile(file, 1080))
+      const photos = [url, ...media.photos]
+      writeProfileMedia(mediaOwner, 'photos', photos)
+      setMedia((m) => ({ ...m, photos }))
     } catch (error) {
       window.alert(error?.message || 'Could not save your photo')
     }
@@ -1259,26 +1258,6 @@ export default function ProfileScreen({
           if (st?.drag) cancelPeek()
         }}
       >
-        <button
-          type="button"
-          className={`pf-x-banner is-bare${media.banner ? ' has-photo' : ''}`}
-          aria-label="Change banner"
-          onClick={() => bannerInputRef.current?.click()}
-        >
-          {media.banner && <img src={media.banner} alt="" />}
-        </button>
-        <input
-          ref={bannerInputRef}
-          className="profile-photo-file"
-          type="file"
-          accept="image/*"
-          tabIndex={-1}
-          onChange={(e) => {
-            const file = e.target.files?.[0]
-            e.target.value = ''
-            onMediaPicked(file, 'banner')
-          }}
-        />
         <div className="pf-x-head">
         <div className="pf-user-avatar-wrap">
           <button
@@ -1385,7 +1364,7 @@ export default function ProfileScreen({
           onChange={(e) => {
             const file = e.target.files?.[0]
             e.target.value = ''
-            onMediaPicked(file, 'photo')
+            onMediaPicked(file)
           }}
         />
         <div className="pf-photos-head">
