@@ -94,6 +94,14 @@ function compressImageFile(file, maxSize = 240) {
   })
 }
 
+function ShirtIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" strokeLinecap="round">
+      <path d="M8.5 4 3.5 6.5l1.8 4.2 2.2-.9V20h9V9.8l2.2.9 1.8-4.2L15.5 4c-.4 1.3-1.9 2.2-3.5 2.2S8.9 5.3 8.5 4z" />
+    </svg>
+  )
+}
+
 function SparkleIcon() {
   return (
     <svg className="profile-sparkle" viewBox="0 0 24 24" aria-hidden>
@@ -473,7 +481,7 @@ export default function ProfileScreen({
   const [media, setMedia] = useState(() => readProfileMedia(mediaOwner))
   const [viewPhoto, setViewPhoto] = useState(null)
   const postInputRef = useRef(null)
-  const photosRef = useRef(null)
+  const [profileView, setProfileView] = useState('closet')
   useEffect(() => { setMedia(readProfileMedia(mediaOwner)) }, [mediaOwner])
   const [closetPeople, setClosetPeople] = useState(null)
   const [closetPickOpen, setClosetPickOpen] = useState(false)
@@ -1380,14 +1388,26 @@ export default function ProfileScreen({
             <span className="profile-social-n">{Number.isInteger(userProfile?.followerCount) ? userProfile.followerCount : '-'}</span>
             <span className="profile-social-l">Followers</span>
           </button>
-          <button
-            type="button"
-            className="profile-photos-jump is-bare"
-            aria-label="Photos"
-            onClick={() => photosRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
-          >
-            <GalleryIcon />
-          </button>
+          <div className="profile-view-toggle">
+            <button
+              type="button"
+              className={`profile-photos-jump is-bare${profileView === 'photos' ? ' is-on' : ''}`}
+              aria-label="Photos"
+              aria-pressed={profileView === 'photos'}
+              onClick={() => setProfileView('photos')}
+            >
+              <GalleryIcon />
+            </button>
+            <button
+              type="button"
+              className={`profile-photos-jump is-bare${profileView === 'closet' ? ' is-on' : ''}`}
+              aria-label="Closet, Store and Market"
+              aria-pressed={profileView === 'closet'}
+              onClick={() => setProfileView('closet')}
+            >
+              <ShirtIcon />
+            </button>
+          </div>
         </div>
       </section>
 
@@ -1396,7 +1416,7 @@ export default function ProfileScreen({
           onClose={() => setFollowSheet(null)} onOpenAccount={onOpenAccount} />
       )}
 
-      <section ref={photosRef} className="pf-photos" aria-label="Photos">
+      <section className="pf-photos" aria-label="Photos" hidden={profileView !== 'photos'}>
         <input
           ref={postInputRef}
           className="profile-photo-file"
@@ -1429,7 +1449,7 @@ export default function ProfileScreen({
         </div>
       )}
 
-      <section className="profile-block profile-spaces-inline" aria-label="Store, Closet and Market">
+      <section className="profile-block profile-spaces-inline" aria-label="Store, Closet and Market" hidden={profileView !== 'closet'}>
         <SectionSwiper
           sections={SPACE_MODES}
           value={spaceTab}

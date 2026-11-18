@@ -3432,5 +3432,8 @@ html body .profile-screen .profile-username-link:hover { text-decoration: none !
 .profile-screen .profile-top-btn, .profile-screen .profile-menu-btn { top: 0; }
 .profile-screen .pf-x-head { padding-top: 48px; }
 .profile-screen .profile-identity .profile-social { width: 100%; align-items: center; }
-.profile-screen .profile-photos-jump { margin-left: auto; width: 36px; height: 36px; display: grid; place-items: center; padding: 0; color: var(--pf-ink); }
+.profile-screen .profile-view-toggle { margin-left: auto; display: flex; gap: 4px; }
+.profile-screen .profile-photos-jump { opacity: 0.5; width: 36px; height: 36px; display: grid; place-items: center; padding: 0; color: var(--pf-ink); }
 .profile-screen .profile-photos-jump svg { width: 24px; height: 24px; }
+.profile-screen .profile-photos-jump.is-on { opacity: 1; }
+.profile-screen [hidden] { display: none !important; }
