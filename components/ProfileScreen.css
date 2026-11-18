@@ -2707,7 +2707,7 @@
 }
 
 .closet-browse-label {
-  margin: 0 0 2px;
+  margin: 0 0 -3px;
   padding: 0 8px;
   font-family: var(--font-sans);
   font-size: 0.58rem;
@@ -2724,7 +2724,7 @@
 
 /* Closet drums: short viewport — only the centered word reads. */
 .closet-browse .closet-orbit.is-compact-wheel .type-carousel.is-wheel {
-  height: 34px;
+  height: 26px;
   perspective: 280px;
   overflow: hidden;
   -webkit-mask-image: none;
@@ -3134,7 +3134,7 @@
 /* Closet shows inline below the wheel; the add (scanner) button sits at the right */
 .closet-page-head {
   position: absolute;
-  top: 8px;
+  top: -1px;
   right: max(0px, calc((100% - 340px) / 2 - 6px));
   z-index: 1;
 }
