@@ -2,6 +2,7 @@ import { createPortal } from 'react-dom'
 import { useEffect, useState } from 'react'
 import { fetchAccountPage, initialsFromName, setFollowingAccount } from '../api.js'
 import { isSupabaseConfigured } from '../supabase.js'
+import FollowListSheet from './FollowListSheet.jsx'
 import './GlassOverlay.css'
 import './AccountPage.css'
 
@@ -26,6 +27,7 @@ export default function AccountPage({
   onOpenProduct,
   isOwn = false,
   onFollowChange,
+  onOpenAccount,
 }) {
   const [stageEl, setStageEl] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -33,6 +35,7 @@ export default function AccountPage({
   const [account, setAccount] = useState(null)
   const [products, setProducts] = useState([])
   const [followBusy, setFollowBusy] = useState(false)
+  const [followSheet, setFollowSheet] = useState(null)
 
   useEffect(() => {
     setStageEl(document.querySelector('.stage'))
@@ -151,21 +154,26 @@ export default function AccountPage({
               )}
               <div className="account-page-connections" aria-label="Connections">
                 {[
-                  ['Following', account.followingCount],
-                  ['Followers', account.followerCount],
-                ].map(([label, count]) => {
+                  ['Following', account.followingCount, 'following'],
+                  ['Followers', account.followerCount, 'followers'],
+                ].map(([label, count, kind]) => {
                   const available = Number.isInteger(count) && count >= 0
                   return (
-                    <div key={label}>
+                    <button key={label} type="button" className="is-bare" onClick={() => setFollowSheet(kind)}>
                       <span className="account-page-count" aria-label={available ? `${count} ${label.toLowerCase()}` : `${label} count unavailable`}>
                         {available ? count : '-'}
                       </span>
                       <span>{label}</span>
-                    </div>
+                    </button>
                   )
                 })}
               </div>
             </div>
+
+            {followSheet && (
+              <FollowListSheet username={account.username || username} type={followSheet} isOwn={isOwn}
+                onClose={() => setFollowSheet(null)} onOpenAccount={onOpenAccount} />
+            )}
 
             <h2 className="account-page-section-label">Store</h2>
             {products.length === 0 ? (

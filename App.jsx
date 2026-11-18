@@ -426,6 +426,15 @@ export default function App() {
     }
   }, [])
 
+  // Follower counts change from other accounts, so re-read them whenever Profile is opened or the app regains focus
+  useEffect(() => {
+    if (!signedIn || tab !== 'profile') return undefined
+    refreshOwnProfile()
+    const onVisible = () => { if (!document.hidden) refreshOwnProfile() }
+    document.addEventListener('visibilitychange', onVisible)
+    return () => document.removeEventListener('visibilitychange', onVisible)
+  }, [signedIn, tab, refreshOwnProfile])
+
   useEffect(() => {
     if (!signedIn || !account?.id) return undefined
     let alive = true
@@ -771,6 +780,7 @@ export default function App() {
               if (!username) return
               setActiveAccount({ username, isOwn: true })
             }}
+            onOpenAccount={(username) => setActiveAccount({ username, isOwn: false })}
             onOpenProduct={setActiveProduct}
             onSignOut={async () => {
               await signOut()
@@ -913,6 +923,7 @@ export default function App() {
           isOwn={Boolean(activeAccount.isOwn)}
           onClose={() => setActiveAccount(null)}
           onOpenProduct={(product) => setActiveProduct(product)}
+          onOpenAccount={(next) => setActiveAccount({ username: next, isOwn: false })}
           onFollowChange={refreshOwnProfile}
         />
       )}

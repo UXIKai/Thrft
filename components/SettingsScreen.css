@@ -2945,3 +2945,27 @@ html body .settings-screen .settings-theme-toggle:not(#_) {
 .settings-screen > .settings-top {
   margin-inline: var(--st-pad);
 }
+
+.settings-privacy {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  padding: 14px 16px;
+  text-align: left;
+  color: inherit;
+  cursor: pointer;
+}
+.settings-privacy-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.settings-privacy-state {
+  font-size: 0.82rem;
+  opacity: 0.55;
+}
+.settings-privacy-state .is-on {
+  font-weight: 700;
+  opacity: 1;
+}

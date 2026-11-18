@@ -85,6 +85,28 @@ export async function fetchFollowing(userId) {
   return rows.map((row) => ({ username: row.username, displayName: row.display_name, avatarUrl: row.avatar_url }))
 }
 
+export async function listFollows(username, type, viewerId) {
+  const db = getAdminSupabase()
+  const id = await profileByUsername(username)
+  const isSelf = id === viewerId
+  if (type === 'following' && !isSelf) {
+    const prefs = checked(await db.from('creator_profile_preferences').select('preferences')
+      .eq('user_id', id).maybeSingle())
+    if (prefs?.preferences?.followingPrivate) return { private: true, accounts: [] }
+  }
+  const [column, other] = type === 'followers' ? ['followed_id', 'follower_id'] : ['follower_id', 'followed_id']
+  const links = checked(await db.from('creator_follows').select(other).eq(column, id)
+    .order('created_at', { ascending: false }).limit(500))
+  if (!links.length) return { private: false, accounts: [] }
+  const rows = checked(await db.from('creator_profiles').select('id, username, display_name, avatar_url')
+    .in('id', links.map((link) => link[other])))
+  const byId = new Map(rows.map((row) => [row.id, row]))
+  const following = await followedIds(viewerId, rows.map((row) => row.id))
+  return { private: false, accounts: links.map((link) => byId.get(link[other])).filter(Boolean).map((row) => ({
+    username: row.username, displayName: row.display_name, avatarUrl: row.avatar_url,
+    isSelf: row.id === viewerId, following: following.has(row.id) })) }
+}
+
 export async function fetchSocialProfile(user) {
   const db = getAdminSupabase()
   const [identity, settings] = await Promise.all([

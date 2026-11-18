@@ -6,6 +6,7 @@ import { productSizeOptions } from '../productSizes.js'
 import { externalProductVariants, externalVariantLabel, isExternalProduct, storedPrintfulVariants } from '../creatorProducts.js'
 import { formatMoney, selectedExternalVariants } from '../cart.js'
 import ProductPhoto from './ProductPhoto.jsx'
+import ProductSpin from './ProductSpin.jsx'
 import { fetchSaved, saveSavedItems } from '../api.js'
 import './GlassOverlay.css'
 import './ProductDetail.css'
@@ -434,13 +435,14 @@ export default function ProductDetail({
             {brand}
           </button>
         )}
-        <div className={`product-detail-photo${photos.length > 1 ? ' has-mockup-gallery' : ''}`}
-          role={photos.length > 1 ? 'region' : undefined}
-          aria-label={photos.length > 1 ? 'Product mockups; swipe to see more' : undefined}
-          tabIndex={photos.length > 1 ? 0 : undefined}>
-          {photos.length ? (
-            photos.map((url, index) => <ProductPhoto key={url} src={url} cutout={isPrintful || isExternal}
-              alt={`${name}, preview ${index + 1} of ${photos.length}`} />)
+        <div className="product-detail-photo">
+          {photos.length > 1 ? (
+            <ProductSpin count={photos.length} label="Product mockups; drag to rotate">
+              {photos.map((url, index) => <ProductPhoto key={url} src={url} cutout={isPrintful || isExternal}
+                alt={`${name}, preview ${index + 1} of ${photos.length}`} />)}
+            </ProductSpin>
+          ) : photos.length ? (
+            <ProductPhoto src={photos[0]} cutout={isPrintful || isExternal} alt={name} />
           ) : (
             <span className="product-detail-photo-empty" aria-hidden />
           )}

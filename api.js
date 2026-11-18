@@ -373,6 +373,11 @@ export async function fetchFollowing() {
   return Array.isArray(data.accounts) ? data.accounts.map((a) => a.username) : []
 }
 
+export async function fetchFollowList(username, type) {
+  const data = await api(`/api/creator/accounts/${encodeURIComponent(username)}/${type}`)
+  return { private: Boolean(data.private), accounts: Array.isArray(data.accounts) ? data.accounts : [] }
+}
+
 export async function setFollowingAccount(username, follow) {
   return api('/api/creator/follows', {
     method: follow ? 'POST' : 'DELETE',

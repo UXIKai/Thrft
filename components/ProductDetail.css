@@ -704,6 +704,10 @@ html body .product-detail-photo {
   box-shadow: none;
 }
 
+html body .product-detail-photo {
+  overflow: visible;
+}
+
 html body .product-detail-photo::after {
   content: none;
 }

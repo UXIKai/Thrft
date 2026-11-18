@@ -83,7 +83,9 @@
   margin-top: 10px;
 }
 
-.account-page-connections > div {
+.account-page-connections > button {
+  align-items: center;
+  cursor: pointer;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -92,7 +94,7 @@
   font-size: 0.78rem;
 }
 
-.account-page-connections > div + div {
+.account-page-connections > button + button {
   border-left: 1px solid var(--glass-border);
 }
 

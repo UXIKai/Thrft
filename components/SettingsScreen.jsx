@@ -987,6 +987,8 @@ export default function SettingsScreen({
   const sizeSheetCardRef = useRef(null)
 
   const displayName = userProfile?.displayName || 'Member'
+  const [followingPrivate, setFollowingPrivate] = useState(Boolean(userProfile?.followingPrivate))
+  useEffect(() => { setFollowingPrivate(Boolean(userProfile?.followingPrivate)) }, [userProfile?.followingPrivate])
   const email = userProfile?.email || ''
   const identityStatus = userProfile?.identityStatus || 'unverified'
   const identityRef = userProfile?.identityRef || ''
@@ -1952,6 +1954,30 @@ export default function SettingsScreen({
             </span>
             <span className="settings-pill is-active">Active</span>
           </div>
+        </Section>
+
+        <Section label="Following">
+          <button type="button" className="settings-privacy is-bare" aria-pressed={followingPrivate}
+            aria-label={`Following is ${followingPrivate ? 'private' : 'public'}. Tap to switch.`}
+            onClick={async () => {
+              const next = !followingPrivate
+              setFollowingPrivate(next)
+              try { await onSaveProfile?.({ followingPrivate: next }) } catch { setFollowingPrivate(!next) }
+            }}>
+            <span className="settings-privacy-top">
+              <span className="settings-row-title">Following</span>
+              <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor"
+                strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="5" y="11" width="14" height="9" rx="2" />
+                <path d={followingPrivate ? 'M8 11V8a4 4 0 0 1 8 0v3' : 'M8 11V8a4 4 0 0 1 7.5-1.9'} />
+              </svg>
+            </span>
+            <span className="settings-privacy-state">
+              <span className={followingPrivate ? '' : 'is-on'}>Public</span>
+              <span aria-hidden> - </span>
+              <span className={followingPrivate ? 'is-on' : ''}>Private</span>
+            </span>
+          </button>
         </Section>
 
         <Section label="Store">

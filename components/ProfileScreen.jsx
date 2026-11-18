@@ -26,6 +26,7 @@ import SectionSwiper from './SectionSwiper.jsx'
 import SettingsScreen from './SettingsScreen.jsx'
 import SwipeBackPage from './SwipeBackPage.jsx'
 import ProductPhoto from './ProductPhoto.jsx'
+import FollowListSheet from './FollowListSheet.jsx'
 import { hasProductCutout } from '../mockupCutouts.js'
 import './GlassOverlay.css'
 import './ProfileScreen.css'
@@ -460,10 +461,12 @@ export default function ProfileScreen({
   onListingsChanged,
   onAddProduct,
   onOpenAccountPage,
+  onOpenAccount,
   onOpenProduct,
   onSignOut,
 }) {
   const [closetSplit, setClosetSplit] = useState(false)
+  const [followSheet, setFollowSheet] = useState(null)
   const [closetPeople, setClosetPeople] = useState(null)
   const [closetPickOpen, setClosetPickOpen] = useState(false)
   const [closetPickQuery, setClosetPickQuery] = useState('')
@@ -1275,17 +1278,24 @@ export default function ProfileScreen({
         )}
         <p className="profile-joined">Joined {userProfile?.joined || 'Oct 22'}</p>
         <div className="profile-social">
-          <div className="profile-social-cell">
+          <button type="button" className="profile-social-cell is-bare" disabled={!userProfile?.username}
+            onClick={() => setFollowSheet('following')}>
             <span className="profile-social-n">{Number.isInteger(userProfile?.followingCount) ? userProfile.followingCount : '-'}</span>
             <span className="profile-social-l">Following</span>
-          </div>
+          </button>
           <div className="profile-social-rule" aria-hidden />
-          <div className="profile-social-cell">
+          <button type="button" className="profile-social-cell is-bare" disabled={!userProfile?.username}
+            onClick={() => setFollowSheet('followers')}>
             <span className="profile-social-n">{Number.isInteger(userProfile?.followerCount) ? userProfile.followerCount : '-'}</span>
             <span className="profile-social-l">Followers</span>
-          </div>
+          </button>
         </div>
       </section>
+
+      {followSheet && userProfile?.username && (
+        <FollowListSheet username={userProfile.username} type={followSheet} isOwn
+          onClose={() => setFollowSheet(null)} onOpenAccount={onOpenAccount} />
+      )}
 
       <section className="profile-block profile-spaces-inline" aria-label="Store, Closet and Market">
         <button

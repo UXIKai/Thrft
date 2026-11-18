@@ -1,0 +1,29 @@
+.product-spin {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  perspective: 1100px;
+  touch-action: pan-y;
+  cursor: grab;
+  outline: none;
+  user-select: none;
+}
+.product-spin:active { cursor: grabbing; }
+.product-spin-ring {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+.product-spin-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.product-spin-face img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  -webkit-user-drag: none;
+}

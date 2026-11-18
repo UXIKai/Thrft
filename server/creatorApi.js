@@ -7,7 +7,7 @@ import {
 } from '../printful.js'
 import { createCheckoutSession, estimateCheckout, getCheckoutSession, handleStripeWebhook,
   getStripeCheckoutConfig } from '../stripeCheckout.js'
-import { searchPublicAccounts, fetchPublicAccount, setFollowing, fetchFollowing, fetchSocialProfile, saveSocialProfile,
+import { searchPublicAccounts, fetchPublicAccount, setFollowing, fetchFollowing, listFollows, fetchSocialProfile, saveSocialProfile,
   fetchSocialSaved, saveSocialSaved, fetchLeaderboard } from './socialStore.js'
 import { fetchOrders } from './orders.js'
 import { collectExternalProducts } from './externalBrands.js'
@@ -202,6 +202,11 @@ export async function handleCreatorApi(req, res) {
     }
     if (path === '/api/creator/accounts' && req.method === 'GET') {
       send(res, 200, { accounts: await searchPublicAccounts(url.searchParams.get('q'), (await optionalCreator(req))?.id) })
+      return true
+    }
+    const followsMatch = path.match(/^\/api\/creator\/accounts\/([^/]+)\/(following|followers)$/)
+    if (followsMatch && req.method === 'GET') {
+      send(res, 200, await listFollows(decodeURIComponent(followsMatch[1]), followsMatch[2], (await optionalCreator(req))?.id))
       return true
     }
     const accountMatch = path.match(/^\/api\/creator\/accounts\/([^/]+)$/)
