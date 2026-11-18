@@ -1335,9 +1335,6 @@ export default function ProfileScreen({
             }}
           />
         </div>
-          <button type="button" className="pf-x-edit is-bare" onClick={() => openProfileEditor('Profile')}>
-            Edit profile
-          </button>
         </div>
         <div className="profile-name-row">
           <p className="profile-display-name">
