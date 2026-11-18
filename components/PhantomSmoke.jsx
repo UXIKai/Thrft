@@ -72,27 +72,21 @@ float fbm(vec2 p) {
   return sum;
 }
 void main() {
-  vec2 uv = gl_FragCoord.xy / resolution;
-  float ax = uv.x * resolution.x / resolution.y;
-  float t = time * 0.05;
-  vec3 glow = vec3(0.0);
-  float total = 0.0;
-  for (int i = 0; i < 3; i++) {
-    float fi = float(i);
-    float x = ax * (1.1 + 0.35 * fi) + fi * 9.0;
-    float sway = fbm(vec2(x * 0.9, t * (1.0 + 0.3 * fi) + fi * 3.0));
-    float edge = 0.08 + 0.42 * sway + 0.12 * fi;
-    float d = uv.y - edge;
-    float shape = d > 0.0 ? exp(-d * (2.4 - 0.3 * fi)) : exp(d * 16.0);
-    float xr = x + uv.y * (sway - 0.5) * 0.5 * (1.0 + fi * 0.3);
-    float rays = smoothstep(0.15, 0.95, 0.65 * noise(vec2(xr * 11.0, t * 2.0 + fi * 5.0)) + 0.35 * noise(vec2(xr * 30.0, t * 3.0 + fi)));
-    float soft = 0.55 + 0.45 * fbm(vec2(x * 2.5, uv.y * 1.6 - t * 3.0));
-    float k = shape * (0.35 + 0.9 * rays) * soft;
-    vec3 tint = i == 0 ? tintA : (i == 1 ? tintB : tintC);
-    glow += tint * k;
-    total += k;
-  }
-  vec3 lit = base + glow * 0.85;
+  vec2 uv = gl_FragCoord.xy / resolution.y * 0.95;
+  float t = time * 0.03;
+  vec2 q = vec2(fbm(uv * 0.8 + vec2(0.0, t)), fbm(uv * 0.8 + vec2(4.1, 2.7 - t)));
+  vec2 r = vec2(fbm(uv * 0.9 + 2.2 * q + vec2(1.7 + t, 9.2)),
+    fbm(uv * 0.9 + 2.2 * q + vec2(8.3, 2.8 - t)));
+  float f = fbm(uv * 0.9 + 2.4 * r);
+  float d1 = abs(f - 0.5);
+  float body = exp(-d1 * 8.0);
+  body = pow(body, 3.4);
+  float core = exp(-d1 * 13.0);
+  float lump = smoothstep(0.35, 0.8, fbm(uv * 1.1 + 3.0 * r + t));
+  vec3 tint = mix(tintA, tintB, clamp(r.x * 1.5 - 0.2, 0.0, 1.0));
+  vec3 bright = mix(tintC, vec3(0.8, 1.0, 0.95), 0.35);
+  float glow = body * (0.25 + 0.95 * lump);
+  vec3 lit = base + tint * glow * 0.9 + bright * core * glow * 0.55;
   color = vec4(min(lit, vec3(1.0)), 1.0);
 }`
 
