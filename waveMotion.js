@@ -1,19 +1,31 @@
-const WAVE_POINTS = [120, 610, 440, 620, 720, 490, 1180, 400]
 const FLOW_PERIOD_MS = 18000
-const EDGE_ON_SPEED = 4
+const SPIN_PERIOD_MS = 18000
+const MID = 450
+const AMPLITUDE = 330
+const WAVELENGTH = 1440
+const START = -180
+const CENTER = 720
+const END = 1620
+const HANDLE = (CENTER - START) / 3
 
+// The S is a helix seen from the side: turning it about the vertical axis slides its phase, so the curve keeps
+// its bend and never folds flat.
 export function waveFrame(elapsed) {
-  const angle = (elapsed % FLOW_PERIOD_MS) / FLOW_PERIOD_MS * Math.PI * 2
-  // Turning on a pole: the S dwells face-on, mirrored, and only sweeps through edge-on very briefly
-  const fold = Math.tanh(EDGE_ON_SPEED * Math.cos(angle)) / Math.tanh(EDGE_ON_SPEED)
-  const across = (value) => 450 + (value - 450) * fold
+  const spin = (elapsed % SPIN_PERIOD_MS) / SPIN_PERIOD_MS * Math.PI * 2
+  const k = Math.PI * 2 / WAVELENGTH
+  const across = (along) => MID + AMPLITUDE * Math.sin(k * along - spin)
+  const slope = (along) => AMPLITUDE * k * Math.cos(k * along - spin)
   return {
-    fold,
-    phase: (1 - fold) / 2,
-    points: WAVE_POINTS.map((value, i) => i % 2 === 0
-      ? value + Math.sin(value / 1440 * Math.PI * 2) * 48
-      : across(value)),
-    start: [-180, across(-600)],
-    end: [1620, across(1020)],
+    fold: 1,
+    phase: (elapsed % FLOW_PERIOD_MS) / FLOW_PERIOD_MS,
+    spin,
+    points: [
+      START + HANDLE, across(START) + slope(START) * HANDLE,
+      CENTER - HANDLE, across(CENTER) - slope(CENTER) * HANDLE,
+      CENTER, across(CENTER),
+      END - HANDLE, across(END) - slope(END) * HANDLE,
+    ],
+    start: [START, across(START)],
+    end: [END, across(END)],
   }
 }
