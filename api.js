@@ -368,6 +368,18 @@ export async function searchAccounts(query) {
   return data.accounts
 }
 
+export async function fetchFollowing() {
+  const data = await api('/api/creator/me/following')
+  return Array.isArray(data.accounts) ? data.accounts.map((a) => a.username) : []
+}
+
+export async function setFollowingAccount(username, follow) {
+  return api('/api/creator/follows', {
+    method: follow ? 'POST' : 'DELETE',
+    body: JSON.stringify({ username }),
+  })
+}
+
 export async function fetchMyAccount() {
   return api('/api/me/account')
 }

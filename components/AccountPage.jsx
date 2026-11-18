@@ -1,6 +1,7 @@
 import { createPortal } from 'react-dom'
 import { useEffect, useState } from 'react'
-import { fetchAccountPage, initialsFromName } from '../api.js'
+import { fetchAccountPage, initialsFromName, setFollowingAccount } from '../api.js'
+import { isSupabaseConfigured } from '../supabase.js'
 import './GlassOverlay.css'
 import './AccountPage.css'
 
@@ -24,12 +25,14 @@ export default function AccountPage({
   onClose,
   onOpenProduct,
   isOwn = false,
+  onFollowChange,
 }) {
   const [stageEl, setStageEl] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [account, setAccount] = useState(null)
   const [products, setProducts] = useState([])
+  const [followBusy, setFollowBusy] = useState(false)
 
   useEffect(() => {
     setStageEl(document.querySelector('.stage'))
@@ -61,6 +64,21 @@ export default function AccountPage({
       cancelled = true
     }
   }, [username])
+
+  async function toggleFollow() {
+    if (followBusy || !account) return
+    const follow = !account.following
+    setFollowBusy(true)
+    try {
+      const result = await setFollowingAccount(account.username, follow)
+      setAccount((prev) => ({ ...prev, following: result.following, followerCount: result.followerCount }))
+      onFollowChange?.()
+    } catch {
+      // The button keeps its previous state when the request fails
+    } finally {
+      setFollowBusy(false)
+    }
+  }
 
   if (!stageEl) return null
 
@@ -120,6 +138,17 @@ export default function AccountPage({
               {account.joined ? (
                 <p className="account-page-joined">Joined {account.joined}</p>
               ) : null}
+              {!isOwn && !account.isSelf && isSupabaseConfigured() && (
+                <button
+                  type="button"
+                  className="account-page-follow"
+                  aria-pressed={Boolean(account.following)}
+                  disabled={followBusy}
+                  onClick={toggleFollow}
+                >
+                  {account.following ? 'Following' : 'Follow'}
+                </button>
+              )}
               <div className="account-page-connections" aria-label="Connections">
                 {[
                   ['Following', account.followingCount],

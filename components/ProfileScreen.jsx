@@ -1276,12 +1276,12 @@ export default function ProfileScreen({
         <p className="profile-joined">Joined {userProfile?.joined || 'Oct 22'}</p>
         <div className="profile-social">
           <div className="profile-social-cell">
-            <span className="profile-social-n">-</span>
+            <span className="profile-social-n">{Number.isInteger(userProfile?.followingCount) ? userProfile.followingCount : '-'}</span>
             <span className="profile-social-l">Following</span>
           </div>
           <div className="profile-social-rule" aria-hidden />
           <div className="profile-social-cell">
-            <span className="profile-social-n">-</span>
+            <span className="profile-social-n">{Number.isInteger(userProfile?.followerCount) ? userProfile.followerCount : '-'}</span>
             <span className="profile-social-l">Followers</span>
           </div>
         </div>

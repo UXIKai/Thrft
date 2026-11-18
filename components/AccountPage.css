@@ -166,3 +166,13 @@
   font-size: 0.78rem;
   color: light-dark(rgba(11, 11, 13, 0.55), rgba(244, 244, 242, 0.55));
 }
+
+.account-page-follow {
+  margin: 12px auto 0;
+  padding: 8px 26px;
+  border-radius: 999px;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.account-page-follow[aria-pressed='true'] { opacity: 0.75; }

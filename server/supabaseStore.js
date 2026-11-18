@@ -29,6 +29,14 @@ export async function requireCreator(req) {
   return data.user
 }
 
+export async function optionalCreator(req) {
+  try {
+    return await requireCreator(req)
+  } catch {
+    return null
+  }
+}
+
 export function requireArtworkUrl(value, creatorId) {
   const base = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL
   const prefix = `${base}/storage/v1/object/public/Thrft/`

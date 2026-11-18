@@ -21,24 +21,68 @@ function accountFromRow(row) {
     followingCount: Number(row.following_count), followerCount: Number(row.follower_count) }
 }
 
-export async function searchPublicAccounts(query) {
-  const term = String(query || '').trim().replace(/^@/, '').toLowerCase().replace(/[^a-z0-9_ ]/g, '').slice(0, 64)
-  if (!term) return []
-  const rows = checked(await getAdminSupabase().from('creator_public_profiles')
-    .select('username, display_name, avatar_url')
-    .or(`username.ilike.%${term}%,display_name.ilike.%${term}%`)
-    .order('username').limit(36))
-  return rows.map((row) => ({ username: row.username, displayName: row.display_name, avatarUrl: row.avatar_url }))
+async function followedIds(viewerId, ids) {
+  if (!viewerId || !ids.length) return new Set()
+  const rows = checked(await getAdminSupabase().from('creator_follows').select('followed_id')
+    .eq('follower_id', viewerId).in('followed_id', ids))
+  return new Set(rows.map((row) => row.followed_id))
 }
 
-export async function fetchPublicAccount(username) {
+export async function searchPublicAccounts(query, viewerId) {
+  const term = String(query || '').trim().replace(/^@/, '').toLowerCase().replace(/[^a-z0-9_ ]/g, '').slice(0, 64)
+  if (!term) return []
+  let request = getAdminSupabase().from('creator_public_profiles')
+    .select('id, username, display_name, avatar_url')
+    .or(`username.ilike.%${term}%,display_name.ilike.%${term}%`)
+  if (viewerId) request = request.neq('id', viewerId)
+  const rows = checked(await request.order('username').limit(36))
+  const following = await followedIds(viewerId, rows.map((row) => row.id))
+  return rows.map((row) => ({ username: row.username, displayName: row.display_name,
+    avatarUrl: row.avatar_url, following: following.has(row.id) }))
+}
+
+export async function fetchPublicAccount(username, viewerId) {
   const db = getAdminSupabase()
   const row = checked(await db.from('creator_public_profiles').select('*')
     .eq('username', username.toLowerCase().replace(/^@/, '')).maybeSingle())
   if (!row) throw Object.assign(new Error('Account not found'), { status: 404 })
   const products = checked(await db.from('brand_products').select('*')
     .eq('creator_id', row.id).eq('status', 'active').order('created_at', { ascending: false }))
-  return { account: accountFromRow(row), products: products.map(mapCreatorProduct) }
+  return { account: { ...accountFromRow(row), isSelf: row.id === viewerId,
+    following: (await followedIds(viewerId, [row.id])).has(row.id) },
+  products: products.map(mapCreatorProduct) }
+}
+
+async function profileByUsername(username) {
+  const row = checked(await getAdminSupabase().from('creator_profiles').select('id')
+    .eq('username', String(username || '').toLowerCase().replace(/^@/, '')).maybeSingle())
+  if (!row) throw Object.assign(new Error('Account not found'), { status: 404 })
+  return row.id
+}
+
+export async function setFollowing(user, username, follow) {
+  const targetId = await profileByUsername(username)
+  if (targetId === user.id) throw Object.assign(new Error('You cannot follow yourself'), { status: 400 })
+  const table = getAdminSupabase().from('creator_follows')
+  if (follow) {
+    checked(await table.upsert({ follower_id: user.id, followed_id: targetId },
+      { onConflict: 'follower_id,followed_id', ignoreDuplicates: true }))
+  } else {
+    checked(await table.delete().eq('follower_id', user.id).eq('followed_id', targetId))
+  }
+  const row = checked(await getAdminSupabase().from('creator_public_profiles')
+    .select('following_count, follower_count').eq('id', targetId).maybeSingle())
+  return { following: follow, followerCount: Number(row?.follower_count || 0) }
+}
+
+export async function fetchFollowing(userId) {
+  const db = getAdminSupabase()
+  const links = checked(await db.from('creator_follows').select('followed_id')
+    .eq('follower_id', userId).order('created_at', { ascending: false }).limit(500))
+  if (!links.length) return []
+  const rows = checked(await db.from('creator_profiles').select('username, display_name, avatar_url')
+    .in('id', links.map((link) => link.followed_id)))
+  return rows.map((row) => ({ username: row.username, displayName: row.display_name, avatarUrl: row.avatar_url }))
 }
 
 export async function fetchSocialProfile(user) {

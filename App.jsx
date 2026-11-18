@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import AccountPage from './components/AccountPage.jsx'
 import AtmosphereFlow from './components/AtmosphereFlow.jsx'
 import AuthScreen from './components/AuthScreen.jsx'
@@ -138,6 +138,9 @@ export default function App() {
   const productReturnRef = useRef(null)
   const [activeBrand, setActiveBrand] = useState(null)
   const [activeAccount, setActiveAccount] = useState(null) // { username, isOwn }
+  const refreshOwnProfile = useCallback(() => {
+    fetchProfile().then((profile) => setUserProfile((prev) => ({ ...prev, ...profile }))).catch(() => {})
+  }, [])
   const [account, setAccount] = useState(null)
   const [userProfile, setUserProfile] = useState({
     email: '',
@@ -726,6 +729,7 @@ export default function App() {
               if (!username) return
               setActiveAccount({ username, isOwn: false })
             }}
+            onFollowChange={refreshOwnProfile}
           />
         )}
 
@@ -909,6 +913,7 @@ export default function App() {
           isOwn={Boolean(activeAccount.isOwn)}
           onClose={() => setActiveAccount(null)}
           onOpenProduct={(product) => setActiveProduct(product)}
+          onFollowChange={refreshOwnProfile}
         />
       )}
         </>

@@ -1,6 +1,7 @@
 import { Fragment, useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal, flushSync } from 'react-dom'
-import { fetchSaved, searchAccounts } from '../api.js'
+import { fetchFollowing, fetchSaved, searchAccounts, setFollowingAccount } from '../api.js'
+import { isSupabaseConfigured } from '../supabase.js'
 import BrandGlobe from './BrandGlobe.jsx'
 import StageSlot from './StageSlot.jsx'
 import AtmosphereFlow from './AtmosphereFlow.jsx'
@@ -24,6 +25,7 @@ function readStoredFriends() {
 }
 
 function writeStoredFriends(list) {
+  if (isSupabaseConfigured()) return
   try {
     localStorage.setItem(
       FRIENDS_KEY,
@@ -580,6 +582,7 @@ function ToggleIcon() {
 export default function ChatScreen({
   onBack,
   onOpenAccount,
+  onFollowChange,
   onThreadActiveChange,
 } = {}) {
   const [chats, setChats] = useState(() => readStoredChats())
@@ -596,6 +599,7 @@ export default function ChatScreen({
   const [dmNameDraft, setDmNameDraft] = useState('')
   const [query, setQuery] = useState('')
   const [searchOpen, setSearchOpen] = useState(false)
+  const [peopleSearchOpen, setPeopleSearchOpen] = useState(false)
   const searchBarRef = useRef(null)
   useEffect(() => {
     if (!searchOpen) return undefined
@@ -634,7 +638,20 @@ export default function ChatScreen({
   const [findUsersOpen, setFindUsersOpen] = useState(false)
   const [usersPickerOpen, setUsersPickerOpen] = useState(false)
   const [usersQuery, setUsersQuery] = useState('')
-  const [friends, setFriends] = useState(() => readStoredFriends())
+  const [friends, setFriends] = useState(() => {
+    if (!isSupabaseConfigured()) return readStoredFriends()
+    // Follows live on the account; a list cached by another login must not leak across accounts
+    try { localStorage.removeItem(FRIENDS_KEY) } catch { /* ignore */ }
+    return []
+  })
+  useEffect(() => {
+    if (!isSupabaseConfigured()) return
+    let active = true
+    fetchFollowing().then((names) => {
+      if (active) setFriends(names)
+    }).catch(() => {})
+    return () => { active = false }
+  }, [])
   const [groupSelected, setGroupSelected] = useState(false)
   const [memberGlobeOpen, setMemberGlobeOpen] = useState(false)
   const [memberGlobePhase, setMemberGlobePhase] = useState('closed')
@@ -1141,13 +1158,23 @@ export default function ChatScreen({
   function toggleFriend(name) {
     const clean = String(name || '').trim()
     if (!clean) return
-    setFriends((prev) => {
-      const key = clean.toLowerCase()
-      const next = prev.some((f) => f.toLowerCase() === key)
-        ? prev.filter((f) => f.toLowerCase() !== key)
-        : [...prev, clean]
+    const key = clean.toLowerCase()
+    const adding = !friends.some((f) => f.toLowerCase() === key)
+    const apply = (list) => {
+      const next = list.filter((f) => f.toLowerCase() !== key)
+      if (adding) next.push(clean)
       writeStoredFriends(next)
       return next
+    }
+    setFriends(apply)
+    if (!isSupabaseConfigured()) return
+    setFollowingAccount(clean, adding).then(() => onFollowChange?.()).catch(() => {
+      setFriends((prev) => {
+        const next = prev.filter((f) => f.toLowerCase() !== key)
+        if (!adding) next.push(clean)
+        writeStoredFriends(next)
+        return next
+      })
     })
   }
 
@@ -2776,7 +2803,7 @@ export default function ChatScreen({
                           <li key={`sel-${name}`}>
                             <label className="chat-new-row">
                               <span className="chat-users-avatar" aria-hidden>{(name[0] || '?').toUpperCase()}</span>
-                              <span className="chat-users-name">{name}</span>
+                              <button type="button" className="chat-users-name chat-users-name-btn is-bare" aria-label={`View ${name} profile`} onClick={() => onOpenAccount?.(name)}>{name}</button>
                               <input type="checkbox" className="chat-new-check" checked onChange={() => toggleDraftMember(name)} aria-label={`Remove ${name}`} />
                             </label>
                           </li>
@@ -2795,7 +2822,7 @@ export default function ChatScreen({
                             <li key={name}>
                               <label className="chat-new-row">
                                 <span className="chat-users-avatar" aria-hidden>{initials || '?'}</span>
-                                <span className="chat-users-name">{name}</span>
+                                <button type="button" className="chat-users-name chat-users-name-btn is-bare" aria-label={`View ${name} profile`} onClick={() => onOpenAccount?.(name)}>{name}</button>
                                 <input type="checkbox" className="chat-new-check" checked={checked} onChange={() => toggleDraftMember(name)} aria-label={`Select ${name}`} />
                               </label>
                             </li>
@@ -2806,7 +2833,7 @@ export default function ChatScreen({
                           <li key={name}>
                             <div className="chat-new-row">
                               <span className="chat-users-avatar" aria-hidden>{initials || '?'}</span>
-                              <span className="chat-users-name">{name}</span>
+                              <button type="button" className="chat-users-name chat-users-name-btn is-bare" aria-label={`View ${name} profile`} onClick={() => onOpenAccount?.(name)}>{name}</button>
                               <div className="chat-users-actions">
                                 <button
                                   type="button"
@@ -2929,8 +2956,13 @@ export default function ChatScreen({
             aria-expanded={searchOpen}
             onClick={() => {
               setMobileNavOpen(false)
-              flushSync(() => setSearchOpen(true))
-              document.getElementById('chat-search-input')?.focus({ preventScroll: true })
+              if (isDesktop) {
+                flushSync(() => setSearchOpen(true))
+                document.getElementById('chat-search-input')?.focus({ preventScroll: true })
+                return
+              }
+              flushSync(() => setPeopleSearchOpen(true))
+              document.getElementById('chat-people-search')?.focus({ preventScroll: true })
             }}
           >
             <SearchIcon />
@@ -3155,8 +3187,9 @@ export default function ChatScreen({
           >
             <ToggleIcon />
           </button>
-          {!imagesOnly && !requestsView && !composer && (
+          {peopleSearchOpen && !imagesOnly && !requestsView && !composer && (
             <input
+              id="chat-people-search"
               type="search"
               className="chat-friends-find is-in-header"
               aria-label="Search people"
@@ -3165,6 +3198,8 @@ export default function ChatScreen({
               spellCheck={false}
               value={friendsQuery}
               onChange={(e) => setFriendsQuery(e.target.value)}
+              onBlur={() => { if (!friendsQuery.trim()) setPeopleSearchOpen(false) }}
+              onKeyDown={(e) => { if (e.key === 'Escape') { setFriendsQuery(''); setPeopleSearchOpen(false) } }}
             />
           )}
         </div>
@@ -3313,7 +3348,7 @@ export default function ChatScreen({
                       return (
                         <li key={name} className="chat-friends-row">
                           <span className="chat-users-avatar" aria-hidden>{initials || '?'}</span>
-                          <span className="chat-users-name">{name}</span>
+                          <button type="button" className="chat-users-name chat-users-name-btn is-bare" aria-label={`View ${name} profile`} onClick={() => onOpenAccount?.(name)}>{name}</button>
                           <div className="chat-users-actions">
                             <button type="button" className="chat-users-action" aria-label={`Message ${name}`} onClick={() => startChatWithUser(name)}>
                               <SendIcon />
@@ -3728,7 +3763,7 @@ export default function ChatScreen({
                       <span className="chat-users-avatar" aria-hidden>
                         {initials || '?'}
                       </span>
-                      <span className="chat-users-name">{name}</span>
+                      <button type="button" className="chat-users-name chat-users-name-btn is-bare" aria-label={`View ${name} profile`} onClick={() => onOpenAccount?.(name)}>{name}</button>
                       <div className="chat-users-actions">
                         <button
                           type="button"

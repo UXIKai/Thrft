@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto'
-import { getAdminSupabase, requireCreator, requireArtworkUrl } from './supabaseStore.js'
+import { getAdminSupabase, optionalCreator, requireCreator, requireArtworkUrl } from './supabaseStore.js'
 import { mapCreatorProduct, selectCatalogVariants, storedPrintfulVariants } from '../creatorProducts.js'
 import {
   getPrintfulConfig, checkPrintfulConnection, listCatalogProducts, getCatalogProduct,
@@ -7,7 +7,7 @@ import {
 } from '../printful.js'
 import { createCheckoutSession, estimateCheckout, getCheckoutSession, handleStripeWebhook,
   getStripeCheckoutConfig } from '../stripeCheckout.js'
-import { searchPublicAccounts, fetchPublicAccount, fetchSocialProfile, saveSocialProfile,
+import { searchPublicAccounts, fetchPublicAccount, setFollowing, fetchFollowing, fetchSocialProfile, saveSocialProfile,
   fetchSocialSaved, saveSocialSaved, fetchLeaderboard } from './socialStore.js'
 import { fetchOrders } from './orders.js'
 import { collectExternalProducts } from './externalBrands.js'
@@ -201,12 +201,12 @@ export async function handleCreatorApi(req, res) {
       return true
     }
     if (path === '/api/creator/accounts' && req.method === 'GET') {
-      send(res, 200, { accounts: await searchPublicAccounts(url.searchParams.get('q')) })
+      send(res, 200, { accounts: await searchPublicAccounts(url.searchParams.get('q'), (await optionalCreator(req))?.id) })
       return true
     }
     const accountMatch = path.match(/^\/api\/creator\/accounts\/([^/]+)$/)
     if (accountMatch && req.method === 'GET') {
-      send(res, 200, await fetchPublicAccount(decodeURIComponent(accountMatch[1])))
+      send(res, 200, await fetchPublicAccount(decodeURIComponent(accountMatch[1]), (await optionalCreator(req))?.id))
       return true
     }
     if (path === '/api/creator/leaderboard' && req.method === 'GET') {
@@ -236,6 +236,10 @@ export async function handleCreatorApi(req, res) {
       send(res, 200, await fetchSocialProfile(user))
     } else if (path === '/api/creator/me/profile' && req.method === 'PUT') {
       send(res, 200, await saveSocialProfile(user, await readBody(req)))
+    } else if (path === '/api/creator/me/following' && req.method === 'GET') {
+      send(res, 200, { accounts: await fetchFollowing(user.id) })
+    } else if (path === '/api/creator/follows' && (req.method === 'POST' || req.method === 'DELETE')) {
+      send(res, 200, await setFollowing(user, (await readBody(req)).username, req.method === 'POST'))
     } else if (path === '/api/creator/me/saved' && req.method === 'GET') {
       send(res, 200, { items: await fetchSocialSaved(user.id) })
     } else if (path === '/api/creator/me/saved' && req.method === 'PUT') {
