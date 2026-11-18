@@ -32,6 +32,28 @@ function centerSlide(track, index, smooth = true) {
   })
 }
 
+const DRUM_STEP = 124 // piece width + gap
+const DRUM_MAX_DEG = 62
+
+// Curves pieces around a sideways drum: tilt, shrink and fade with distance from centre.
+function updateDrum(track, tick) {
+  const mid = track.scrollLeft + track.clientWidth / 2
+  let nearest = -1
+  let nearestDist = Infinity
+  Array.from(track.children).forEach((el, i) => {
+    const dist = el.offsetLeft + el.clientWidth / 2 - mid
+    const t = Math.max(-1, Math.min(1, dist / (DRUM_STEP * 2.2)))
+    el.style.transform = `perspective(500px) rotateY(${-t * DRUM_MAX_DEG}deg) scale(${1 - Math.abs(t) * 0.22})`
+    el.style.opacity = String(1 - Math.abs(t) * 0.55)
+    if (Math.abs(dist) < nearestDist) { nearestDist = Math.abs(dist); nearest = i }
+  })
+  if (nearest !== track.dataset.centered) {
+    const first = track.dataset.centered === undefined
+    track.dataset.centered = String(nearest)
+    if (!first) tick()
+  }
+}
+
 /** Outfit builder: swipe each row to try pieces together, or shuffle for a random outfit. */
 export default function StylstBoard() {
   const [items, setItems] = useState(() => fetchClosetItems())
@@ -40,8 +62,11 @@ export default function StylstBoard() {
 
   useEffect(() => {
     // Start each row on its first piece, not the add tile.
-    ROWS.forEach((row) => centerSlide(tracks.current[row.id], 0, false))
-  }, [])
+    ROWS.forEach((row) => {
+      centerSlide(tracks.current[row.id], 0, false)
+      if (tracks.current[row.id]) updateDrum(tracks.current[row.id], () => {})
+    })
+  }, [items])
 
   function rowItems(row) {
     return items.filter((item) => row.categories.includes(item.category))
@@ -74,7 +99,8 @@ export default function StylstBoard() {
         const list = rowItems(row)
         return (
           <div className="stylst-row" key={row.id} role="group" aria-label={row.label}>
-            <div className="stylst-track" ref={(el) => { tracks.current[row.id] = el }}>
+            <div className="stylst-track" ref={(el) => { tracks.current[row.id] = el }}
+              onScroll={(e) => updateDrum(e.currentTarget, () => navigator.vibrate?.(8))}>
               {list.map((item) => (
                 <div className="stylst-piece" key={item.id}>
                   {item.imageUrl

@@ -5,13 +5,14 @@
 }
 .stylst-row { width: 100%; }
 .stylst-track {
-  display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory;
-  padding: 0 calc(50% - 56px); scrollbar-width: none; -webkit-overflow-scrolling: touch;
+  display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; perspective: 600px;
+  padding: 14px calc(50% - 56px); scrollbar-width: none; -webkit-overflow-scrolling: touch;
   overscroll-behavior-x: contain;
 }
 .stylst-track::-webkit-scrollbar { display: none; }
 .stylst-piece {
-  flex: 0 0 112px; height: 112px; scroll-snap-align: center; display: grid; place-items: center;
+  will-change: transform, opacity;
+  flex: 0 0 112px; height: 112px; scroll-snap-align: center; scroll-snap-stop: always; display: grid; place-items: center;
   border-radius: 16px; overflow: hidden; text-align: center; padding: 6px;
   font: 600 0.75rem var(--pf, inherit); color: var(--pf-mute-2, inherit);
   background: var(--pf-card-2, rgba(255, 255, 255, 0.06));
