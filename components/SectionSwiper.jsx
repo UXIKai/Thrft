@@ -28,7 +28,7 @@ export default function SectionSwiper({
     count: sections.length,
     onChange: (i) => onChange(sections[i].id),
   })
-  const { Icon } = sections[index]
+  const { label: currentLabel } = sections[index]
 
   const hold = useRef({ timer: 0, x: 0, y: 0, fired: false })
   const cancelHold = () => {
@@ -90,8 +90,8 @@ export default function SectionSwiper({
         onClickCapture={onClickCapture}
         onContextMenu={onHold ? (e) => e.preventDefault() : undefined}
       >
-        <span className="section-pager-icon" aria-hidden="true">
-          <Icon />
+        <span className="section-pager-label" aria-hidden="true">
+          {currentLabel}
         </span>
         <div className="section-pager-dots">
           {sections.map(({ id, label: name }, i) => (

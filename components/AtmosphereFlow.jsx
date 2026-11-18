@@ -27,16 +27,17 @@ export default function AtmosphereFlow() {
 
   if (style === 'phantom') return <PhantomSmoke />
   if (style === 'aurora') return <PhantomSmoke key="aurora" variant="aurora" />
+  if (style === 'serenity') return <SerenityFlow />
   return <WaveFlow />
 }
 
 // Three soft pools of the background colours drifting slowly past each other
-function AuroraFlow() {
+function SerenityFlow() {
   return (
-    <div className="atmosphere-aurora" aria-hidden="true">
-      <span className="atmosphere-aurora-pool is-a" />
-      <span className="atmosphere-aurora-pool is-b" />
-      <span className="atmosphere-aurora-pool is-c" />
+    <div className="atmosphere-serenity" aria-hidden="true">
+      <span className="atmosphere-serenity-pool is-a" />
+      <span className="atmosphere-serenity-pool is-b" />
+      <span className="atmosphere-serenity-pool is-c" />
     </div>
   )
 }

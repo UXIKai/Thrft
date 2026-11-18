@@ -3641,15 +3641,15 @@ html body .home-radial .home-radial-lens {
   html body .stage .home-radial-scrim .home-radial:not(#_)::before { animation: none; }
 }
 
-/* Aurora effect: slow pools of the background colours */
-.atmosphere-aurora {
+/* Serenity effect: slow pools of the background colours */
+.atmosphere-serenity {
   position: absolute;
   inset: 0;
   overflow: hidden;
 }
-.stage.is-bg-none .atmosphere-aurora,
-html[data-bg-photo] .atmosphere-aurora { display: none; }
-.atmosphere-aurora-pool {
+.stage.is-bg-none .atmosphere-serenity,
+html[data-bg-photo] .atmosphere-serenity { display: none; }
+.atmosphere-serenity-pool {
   position: absolute;
   width: 95%;
   aspect-ratio: 1;
@@ -3658,27 +3658,27 @@ html[data-bg-photo] .atmosphere-aurora { display: none; }
   opacity: 0.85;
   will-change: transform;
 }
-.atmosphere-aurora-pool.is-a {
+.atmosphere-serenity-pool.is-a {
   left: -35%;
   top: -8%;
   background: radial-gradient(circle, rgba(var(--atmosphere-effect-a-rgb, 190, 190, 190), 0.75), transparent 68%);
-  animation: aurora-drift-a 21s ease-in-out infinite alternate;
+  animation: serenity-drift-a 21s ease-in-out infinite alternate;
 }
-.atmosphere-aurora-pool.is-b {
+.atmosphere-serenity-pool.is-b {
   right: -40%;
   top: 30%;
   background: radial-gradient(circle, rgba(var(--atmosphere-effect-b-rgb, 150, 150, 150), 0.7), transparent 68%);
-  animation: aurora-drift-b 27s ease-in-out infinite alternate;
+  animation: serenity-drift-b 27s ease-in-out infinite alternate;
 }
-.atmosphere-aurora-pool.is-c {
+.atmosphere-serenity-pool.is-c {
   left: -10%;
   bottom: -25%;
   background: radial-gradient(circle, rgba(var(--atmosphere-effect-c-rgb, 170, 170, 170), 0.7), transparent 68%);
-  animation: aurora-drift-c 24s ease-in-out infinite alternate;
+  animation: serenity-drift-c 24s ease-in-out infinite alternate;
 }
-@keyframes aurora-drift-a { to { transform: translate(38%, 30%) scale(1.15); } }
-@keyframes aurora-drift-b { to { transform: translate(-42%, -28%) scale(0.9); } }
-@keyframes aurora-drift-c { to { transform: translate(40%, -34%) scale(1.2); } }
+@keyframes serenity-drift-a { to { transform: translate(38%, 30%) scale(1.15); } }
+@keyframes serenity-drift-b { to { transform: translate(-42%, -28%) scale(0.9); } }
+@keyframes serenity-drift-c { to { transform: translate(40%, -34%) scale(1.2); } }
 @media (prefers-reduced-motion: reduce) {
-  .atmosphere-aurora-pool { animation: none; }
+  .atmosphere-serenity-pool { animation: none; }
 }

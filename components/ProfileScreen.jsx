@@ -17,7 +17,6 @@ import ClosetNumberLookup from './ClosetNumberLookup.jsx'
 import { LISTING_BRANDS, LISTING_CATEGORIES } from '../listingCatalog.js'
 import { createListing, fetchMyListings, fetchSellerSalesStats, formatListingPrice, isValidListingPrice, updateMyListing } from '../listings.js'
 import { uploadCreatorArtwork, uploadProductPhoto } from '../artworkStorage.js'
-import { ClosetIcon, MarketIcon, StoreIcon } from './SegmentIcons.jsx'
 import { getSupabase, isSupabaseConfigured } from '../supabase.js'
 import BrandGlobe from './BrandGlobe.jsx'
 import GiveBack from './GiveBack.jsx'
@@ -448,9 +447,9 @@ function PriceTagIcon() {
  * Mock data / UI-only actions.
  */
 const SPACE_MODES = [
-  { id: 'store', label: 'Store', Icon: StoreIcon },
-  { id: 'closet', label: 'Closet', Icon: ClosetIcon },
-  { id: 'market', label: 'Market', Icon: MarketIcon },
+  { id: 'store', label: 'Store' },
+  { id: 'closet', label: 'Closet' },
+  { id: 'market', label: 'Market' },
 ]
 
 export default function ProfileScreen({

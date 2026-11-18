@@ -1,4 +1,4 @@
-/* Section picker: the open section's icon over a row of dots. The content below is swiped left or right. */
+/* Section picker: the open section's name over a row of dots. The content below is swiped left or right. */
 .section-pager {
   display: flex;
   flex-direction: column;
@@ -10,10 +10,12 @@
   user-select: none;
 }
 
-.section-pager-icon svg {
-  display: block;
-  width: 28px;
-  height: 28px;
+.section-pager-label {
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 28px;
 }
 
 .section-pager-dots {

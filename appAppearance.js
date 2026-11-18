@@ -20,6 +20,7 @@ export const BG_EFFECT_STYLES = [
   { id: 'phantom', label: 'Phantom' },
   { id: 'wave', label: 'Wave' },
   { id: 'aurora', label: 'Aurora' },
+  { id: 'serenity', label: 'Serenity' },
 ]
 const isEffectStyle = (style) => BG_EFFECT_STYLES.some(({ id }) => id === style)
 const BG_MATCH_KEY = 'thrft-bg-match-color-v1'
