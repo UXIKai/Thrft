@@ -18,6 +18,7 @@ import ClosetNumberLookup from './ClosetNumberLookup.jsx'
 import { LISTING_BRANDS, LISTING_CATEGORIES } from '../listingCatalog.js'
 import { createListing, fetchMyListings, fetchSellerSalesStats, formatListingPrice, isValidListingPrice, updateMyListing } from '../listings.js'
 import { uploadCreatorArtwork, uploadProductPhoto } from '../artworkStorage.js'
+import { readProfileMedia, storeImage, writeProfileMedia } from '../profileMedia.js'
 import { getSupabase, isSupabaseConfigured } from '../supabase.js'
 import BrandGlobe from './BrandGlobe.jsx'
 import GiveBack from './GiveBack.jsx'
@@ -468,6 +469,12 @@ export default function ProfileScreen({
 }) {
   const [closetSplit, setClosetSplit] = useState(false)
   const [followSheet, setFollowSheet] = useState(null)
+  const mediaOwner = account?.username || userProfile?.username || account?.id || ''
+  const [media, setMedia] = useState(() => readProfileMedia(mediaOwner))
+  const [viewPhoto, setViewPhoto] = useState(null)
+  const bannerInputRef = useRef(null)
+  const postInputRef = useRef(null)
+  useEffect(() => { setMedia(readProfileMedia(mediaOwner)) }, [mediaOwner])
   const [closetPeople, setClosetPeople] = useState(null)
   const [closetPickOpen, setClosetPickOpen] = useState(false)
   const [closetPickQuery, setClosetPickQuery] = useState('')
@@ -988,6 +995,25 @@ export default function ProfileScreen({
     }
   }
 
+  async function onMediaPicked(file, kind) {
+    if (!file || !file.type?.startsWith('image/')) return
+    try {
+      const url = await storeImage(await compressImageFile(file, kind === 'banner' ? 1200 : 1080))
+      const next = kind === 'banner' ? url : [url, ...media.photos]
+      writeProfileMedia(mediaOwner, kind === 'banner' ? 'banner' : 'photos', next)
+      setMedia((m) => ({ ...m, ...(kind === 'banner' ? { banner: url } : { photos: next }) }))
+    } catch (error) {
+      window.alert(error?.message || 'Could not save your photo')
+    }
+  }
+
+  function removePhoto(url) {
+    const photos = media.photos.filter((p) => p !== url)
+    writeProfileMedia(mediaOwner, 'photos', photos)
+    setMedia((m) => ({ ...m, photos }))
+    setViewPhoto(null)
+  }
+
   async function onPhotoPicked(file) {
     if (!file || !file.type?.startsWith('image/')) return
     try {
@@ -1233,6 +1259,27 @@ export default function ProfileScreen({
           if (st?.drag) cancelPeek()
         }}
       >
+        <button
+          type="button"
+          className={`pf-x-banner is-bare${media.banner ? ' has-photo' : ''}`}
+          aria-label="Change banner"
+          onClick={() => bannerInputRef.current?.click()}
+        >
+          {media.banner && <img src={media.banner} alt="" />}
+        </button>
+        <input
+          ref={bannerInputRef}
+          className="profile-photo-file"
+          type="file"
+          accept="image/*"
+          tabIndex={-1}
+          onChange={(e) => {
+            const file = e.target.files?.[0]
+            e.target.value = ''
+            onMediaPicked(file, 'banner')
+          }}
+        />
+        <div className="pf-x-head">
         <div className="pf-user-avatar-wrap">
           <button
             type="button"
@@ -1272,13 +1319,13 @@ export default function ProfileScreen({
             }}
           />
         </div>
+          <button type="button" className="pf-x-edit is-bare" onClick={() => openProfileEditor('Profile')}>
+            Edit profile
+          </button>
+        </div>
         <div className="profile-name-row">
-          <p className="profile-name">
-            {(account?.username || userProfile?.username) ? (
-              <button type="button" className="profile-username-link is-bare" onClick={() => onOpenAccountPage?.()}>
-                {account?.username || userProfile?.username}
-              </button>
-            ) : 'Member'}
+          <p className="profile-display-name">
+            {userProfile?.displayName || account?.displayName || 'Member'}
             {userProfile?.identityStatus === 'verified' && (
               <span className="profile-id-badge" title="Identity verified with ID.me">
                 ID
@@ -1294,6 +1341,11 @@ export default function ProfileScreen({
             <LinkIcon />
           </button>
         </div>
+        {(account?.username || userProfile?.username) && (
+          <button type="button" className="profile-handle is-bare" onClick={() => onOpenAccountPage?.()}>
+            @{account?.username || userProfile?.username}
+          </button>
+        )}
         {!(account?.username || userProfile?.username) && (
           <button
             type="button"
@@ -1321,6 +1373,42 @@ export default function ProfileScreen({
       {followSheet && userProfile?.username && (
         <FollowListSheet username={userProfile.username} type={followSheet}
           onClose={() => setFollowSheet(null)} onOpenAccount={onOpenAccount} />
+      )}
+
+      <section className="pf-photos" aria-label="Photos">
+        <input
+          ref={postInputRef}
+          className="profile-photo-file"
+          type="file"
+          accept="image/*"
+          tabIndex={-1}
+          onChange={(e) => {
+            const file = e.target.files?.[0]
+            e.target.value = ''
+            onMediaPicked(file, 'photo')
+          }}
+        />
+        <div className="pf-photos-head">
+          <span>{media.photos.length} {media.photos.length === 1 ? 'photo' : 'photos'}</span>
+        </div>
+        <div className="pf-photos-grid">
+          <button type="button" className="pf-photo-add is-bare" aria-label="Add photo" onClick={() => postInputRef.current?.click()}>
+            <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M12 5v14M5 12h14" /></svg>
+          </button>
+          {media.photos.map((url, i) => (
+            <button key={url.slice(-40) + i} type="button" className="pf-photo-tile is-bare" aria-label="View photo" onClick={() => setViewPhoto(url)}>
+              <img src={url} alt="" loading="lazy" />
+            </button>
+          ))}
+        </div>
+      </section>
+      {viewPhoto && (
+        <div className="profile-photo-view" role="dialog" aria-label="Photo" onClick={() => setViewPhoto(null)}>
+          <img className="pf-photo-full" src={viewPhoto} alt="" />
+          <button type="button" className="pf-photo-delete is-bare" onClick={(e) => { e.stopPropagation(); removePhoto(viewPhoto) }}>
+            Delete
+          </button>
+        </div>
       )}
 
       <section className="profile-block profile-spaces-inline" aria-label="Store, Closet and Market">
