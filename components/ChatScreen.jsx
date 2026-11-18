@@ -589,6 +589,8 @@ export default function ChatScreen({
   onFollowChange,
   onThreadActiveChange,
   accountId,
+  openUser,
+  onOpenUserHandled,
 } = {}) {
   const [chats, setChats] = useState(() => readStoredChats(accountId))
   const [isDesktop, setIsDesktop] = useState(
@@ -810,6 +812,8 @@ export default function ChatScreen({
   }, [likedItems, likedQuery])
 
   const filteredUsers = allMemberNames
+  // Someone you've added drops out of the find-people list.
+  const pickerUsers = filteredUsers.filter((name) => !isFriend(name))
 
   const friendsView = useMemo(() => {
     const q = friendsQuery.trim().toLowerCase()
@@ -1224,6 +1228,13 @@ export default function ChatScreen({
     setActiveChatId(openId)
     setDraftMessage('')
   }
+
+  useEffect(() => {
+    if (!openUser) return
+    startChatWithUser(openUser)
+    onOpenUserHandled?.()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [openUser])
 
   function toggleDraftMember(name) {
     const key = name.toLowerCase()
@@ -3753,9 +3764,9 @@ export default function ChatScreen({
             {accountQuery && !accountSearchError && (
               accountSearch.loading || accountSearch.query !== accountQuery
                 ? <li role="status">Searching accounts...</li>
-                : filteredUsers.length === 0 && <li role="status">No accounts found.</li>
+                : pickerUsers.length === 0 && <li role="status">No accounts found.</li>
             )}
-            {filteredUsers.map((name) => {
+            {pickerUsers.map((name) => {
                 const friend = isFriend(name)
                 const initials = name
                   .split(/\s+/)

@@ -28,6 +28,7 @@ export default function AccountPage({
   isOwn = false,
   onFollowChange,
   onOpenAccount,
+  onMessage,
 }) {
   const [stageEl, setStageEl] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -141,16 +142,30 @@ export default function AccountPage({
               {account.joined ? (
                 <p className="account-page-joined">Joined {account.joined}</p>
               ) : null}
-              {!isOwn && !account.isSelf && isSupabaseConfigured() && (
-                <button
-                  type="button"
-                  className="account-page-follow"
-                  aria-pressed={Boolean(account.following)}
-                  disabled={followBusy}
-                  onClick={toggleFollow}
-                >
-                  {account.following ? 'Following' : 'Follow'}
-                </button>
+              {!isOwn && !account.isSelf && (
+                <div className="account-page-actions">
+                  {isSupabaseConfigured() && (
+                    <button
+                      type="button"
+                      className="account-page-follow"
+                      aria-pressed={Boolean(account.following)}
+                      disabled={followBusy}
+                      onClick={toggleFollow}
+                    >
+                      {account.following ? 'Following' : 'Follow'}
+                    </button>
+                  )}
+                  {onMessage && (
+                    <button
+                      type="button"
+                      className="account-page-message"
+                      aria-label={`Message ${handle}`}
+                      onClick={() => onMessage(username)}
+                    >
+                      <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M4 5.5h16v10.5H9.5L5 20v-4H4z" /></svg>
+                    </button>
+                  )}
+                </div>
               )}
               <div className="account-page-connections" aria-label="Connections">
                 {[

@@ -138,6 +138,7 @@ export default function App() {
   const productReturnRef = useRef(null)
   const [activeBrand, setActiveBrand] = useState(null)
   const [activeAccount, setActiveAccount] = useState(null) // { username, isOwn }
+  const [chatTarget, setChatTarget] = useState(null)
   const refreshOwnProfile = useCallback(() => {
     fetchProfile().then((profile) => setUserProfile((prev) => ({ ...prev, ...profile }))).catch(() => {})
   }, [])
@@ -741,6 +742,8 @@ export default function App() {
               setActiveAccount({ username, isOwn: false })
             }}
             onFollowChange={refreshOwnProfile}
+            openUser={chatTarget}
+            onOpenUserHandled={() => setChatTarget(null)}
           />
         )}
 
@@ -927,6 +930,11 @@ export default function App() {
           onOpenProduct={(product) => setActiveProduct(product)}
           onOpenAccount={(next) => setActiveAccount({ username: next, isOwn: false })}
           onFollowChange={refreshOwnProfile}
+          onMessage={(name) => {
+            setActiveAccount(null)
+            setChatTarget(name)
+            setTab('chat')
+          }}
         />
       )}
         </>
