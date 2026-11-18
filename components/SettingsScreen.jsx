@@ -8,6 +8,7 @@ import {
   applyAppColor,
   applyBackgroundImage,
   applyBackgroundEffectStyle,
+  BG_EFFECT_STYLES,
   exitMoonlight,
   isBrightColorId,
   readMoonlight,
@@ -765,6 +766,63 @@ function GenderDrum({ value, onPick, options = GENDER_OPTIONS }) {
         <div key={g} data-opt={g} className="gender-drum-row">
           <button type="button" className="is-bare" onClick={() => pickRef.current?.(g)}>
             {g}
+          </button>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+// Vertical wheel: the row that settles in the middle becomes the active effect
+function EffectWheel({ value, onChange }) {
+  const ref = useRef(null)
+  const changeRef = useRef(onChange)
+  changeRef.current = onChange
+  const settled = useRef(value)
+  settled.current = value
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return undefined
+    const rowH = () => el.firstElementChild?.offsetHeight || 44
+    const paint = () => {
+      const center = el.scrollTop + el.clientHeight / 2
+      el.querySelectorAll('.effect-wheel-row').forEach((row) => {
+        const d = (row.offsetTop + row.offsetHeight / 2 - center) / row.offsetHeight
+        const a = Math.min(Math.abs(d), 3)
+        row.style.transform = `rotateX(${(-d * 16).toFixed(1)}deg) scale(${(1 - a * 0.08).toFixed(3)})`
+        row.style.opacity = String(Math.max(0.25, 1 - a * 0.32).toFixed(2))
+        row.classList.toggle('is-hot', Math.abs(d) < 0.5)
+      })
+    }
+    el.scrollTop = Math.max(0, BG_EFFECT_STYLES.findIndex(({ id }) => id === settled.current)) * rowH()
+    paint()
+    let timer = 0
+    const onScroll = () => {
+      paint()
+      window.clearTimeout(timer)
+      timer = window.setTimeout(() => {
+        const id = BG_EFFECT_STYLES[Math.round(el.scrollTop / rowH())]?.id
+        if (id && id !== settled.current) changeRef.current?.(id)
+      }, 140)
+    }
+    el.addEventListener('scroll', onScroll, { passive: true })
+    return () => {
+      window.clearTimeout(timer)
+      el.removeEventListener('scroll', onScroll)
+    }
+  }, [])
+
+  return (
+    <div className="effect-wheel" ref={ref} role="listbox" aria-label="Background effect">
+      {BG_EFFECT_STYLES.map(({ id, label }, i) => (
+        <div key={id} className="effect-wheel-row" role="option" aria-selected={value === id}>
+          <button
+            type="button"
+            className="is-bare"
+            onClick={() => ref.current?.scrollTo({ top: i * (ref.current.firstElementChild?.offsetHeight || 44), behavior: 'smooth' })}
+          >
+            {label}
           </button>
         </div>
       ))}
@@ -1591,19 +1649,7 @@ export default function SettingsScreen({
         <Section label="Appearance">
           <div className="settings-block settings-effect-block">
             <p className="settings-color-caption">Effect</p>
-            <div className="settings-effect-options" role="group" aria-label="Background effect style">
-              {['phantom', 'wave'].map((style) => (
-                <button
-                  key={style}
-                  type="button"
-                  className="settings-effect-option is-bare"
-                  aria-pressed={bgEffectStyle === style}
-                  onClick={() => chooseBackgroundEffect(style)}
-                >
-                  {style === 'phantom' ? 'Phantom' : 'Wave'}
-                </button>
-              ))}
-            </div>
+            <EffectWheel value={bgEffectStyle} onChange={chooseBackgroundEffect} />
           </div>
           <div className={`settings-block settings-palette-block${photoMenuOpen ? ' is-photo-open' : ''}`}>
             <div className="settings-color-stack">

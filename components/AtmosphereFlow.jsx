@@ -24,9 +24,20 @@ export default function AtmosphereFlow() {
     return () => observer.disconnect()
   }, [])
 
-  return style === 'phantom'
-    ? <div className="atmosphere-phantom" aria-hidden="true" />
-    : <WaveFlow />
+  if (style === 'phantom') return <div className="atmosphere-phantom" aria-hidden="true" />
+  if (style === 'aurora') return <AuroraFlow />
+  return <WaveFlow />
+}
+
+// Three soft pools of the background colours drifting slowly past each other
+function AuroraFlow() {
+  return (
+    <div className="atmosphere-aurora" aria-hidden="true">
+      <span className="atmosphere-aurora-pool is-a" />
+      <span className="atmosphere-aurora-pool is-b" />
+      <span className="atmosphere-aurora-pool is-c" />
+    </div>
+  )
 }
 
 function WaveFlow() {

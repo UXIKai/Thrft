@@ -16,6 +16,12 @@ export const BG_COLOR_KEY = 'thrft-bg-color-v1'
 export const CUSTOM_BG_COLOR_KEY = 'thrft-bg-color-hex-v1'
 export const BG_IMAGE_KEY = 'thrft-bg-image-v2'
 export const BG_EFFECT_STYLE_KEY = 'thrft-bg-effect-style-v1'
+export const BG_EFFECT_STYLES = [
+  { id: 'phantom', label: 'Phantom' },
+  { id: 'wave', label: 'Wave' },
+  { id: 'aurora', label: 'Aurora' },
+]
+const isEffectStyle = (style) => BG_EFFECT_STYLES.some(({ id }) => id === style)
 const BG_MATCH_KEY = 'thrft-bg-match-color-v1'
 export const THEME_KEY = 'thrft-theme-v1'
 export const USER_THEME_KEY = 'thrft-user-theme-v1'
@@ -914,7 +920,8 @@ export function readBgColor() {
 
 export function readBackgroundEffectStyle() {
   try {
-    return localStorage.getItem(BG_EFFECT_STYLE_KEY) === 'phantom' ? 'phantom' : 'wave'
+    const stored = localStorage.getItem(BG_EFFECT_STYLE_KEY)
+    return isEffectStyle(stored) ? stored : 'wave'
   } catch (error) {
     console.warn('Unable to read background effect style.', error)
     return 'wave'
@@ -922,7 +929,7 @@ export function readBackgroundEffectStyle() {
 }
 
 export function applyBackgroundEffectStyle(style) {
-  if (style !== 'phantom' && style !== 'wave') {
+  if (!isEffectStyle(style)) {
     throw new RangeError(`Unknown background effect style: ${style}`)
   }
   document.documentElement.dataset.bgEffectStyle = style

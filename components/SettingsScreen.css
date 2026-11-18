@@ -55,32 +55,32 @@
   outline-offset: 3px;
 }
 
-.settings-effect-options {
+.effect-wheel {
+  --row-h: 48px;
+  height: calc(var(--row-h) * 3);
+  padding: var(--row-h) 0;
+  box-sizing: border-box;
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+  perspective: 420px;
+  scrollbar-width: none;
+  touch-action: pan-y;
+  overscroll-behavior: contain;
+  mask: linear-gradient(transparent, #000 30%, #000 70%, transparent);
+  -webkit-mask: linear-gradient(transparent, #000 30%, #000 70%, transparent);
+}
+.effect-wheel::-webkit-scrollbar { display: none; }
+.effect-wheel-row {
+  height: var(--row-h);
   display: flex;
-  gap: 8px;
-}
-
-.settings-effect-option {
-  flex: 1;
-  min-height: 50px;
-  border: 0;
-  border-radius: 12px;
+  align-items: center;
+  justify-content: center;
+  scroll-snap-align: center;
   color: var(--st-mute);
-  background: transparent;
-  font: inherit;
-  cursor: pointer;
+  font-size: 1.2rem;
 }
-
-.settings-effect-option[aria-pressed='true'] {
-  color: var(--st-ink);
-  background: var(--glass-clear-tint);
-  font-weight: 700;
-}
-
-.settings-effect-option:focus-visible {
-  outline: 2px solid currentColor;
-  outline-offset: 2px;
-}
+.effect-wheel-row button { color: inherit; font: inherit; }
+.effect-wheel-row.is-hot { color: var(--st-ink); font-weight: 700; }
 
 .settings-top {
   position: relative;
