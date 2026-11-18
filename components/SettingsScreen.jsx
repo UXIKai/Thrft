@@ -1649,6 +1649,46 @@ export default function SettingsScreen({
         <Section label="Appearance">
           <div className="settings-block settings-effect-block">
             <p className="settings-color-caption">Effect</p>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={bgEffectOn}
+              aria-label="Background effect"
+              className={`settings-effect-switch is-bare is-in-block${bgEffectOn ? ' is-on' : ''}`}
+              ref={(el) => {
+                // Inline !important so no theme/glass rule can turn the track gray.
+                if (!el) return
+                const track = bgEffectOn ? '#000' : '#fff'
+                el.style.setProperty('background', track, 'important')
+                el.style.setProperty('background-color', track, 'important')
+                el.style.setProperty('opacity', '1', 'important')
+                el.style.setProperty('filter', 'none', 'important')
+                el.style.setProperty('box-shadow', 'none', 'important')
+                el.style.setProperty(
+                  'border',
+                  `2px solid var(--effect-switch-outline, ${bgEffectOn ? '#fff' : '#000'})`,
+                  'important',
+                )
+                el.style.setProperty('forced-color-adjust', 'none', 'important')
+                const knob = el.firstElementChild
+                knob?.style.setProperty(
+                  'background',
+                  bgEffectOn ? '#fff' : '#000',
+                  'important',
+                )
+              }}
+              onClick={() => {
+                const next = bgEffectOn ? 'none' : 'atmosphere'
+                if (next === 'atmosphere' && exitMoonlight()) {
+                  setTheme(readTheme())
+                  setMoonlightOn(false)
+                }
+                applyBackgroundImage(next)
+                setBgEffectOn(next === 'atmosphere')
+              }}
+            >
+              <span className="settings-effect-knob" />
+            </button>
             <EffectWheel value={bgEffectStyle} onChange={chooseBackgroundEffect} />
           </div>
           <div className={`settings-block settings-palette-block${photoMenuOpen ? ' is-photo-open' : ''}`}>
@@ -1883,48 +1923,6 @@ export default function SettingsScreen({
             title="Profile"
             onClick={onEditProfile}
           />
-          <div className="settings-theme-toggle">
-            <button
-              type="button"
-              role="switch"
-              aria-checked={bgEffectOn}
-              aria-label="Background effect"
-              className={`settings-effect-switch is-bare is-in-row${bgEffectOn ? ' is-on' : ''}`}
-              ref={(el) => {
-                // Inline !important so no theme/glass rule can turn the track gray.
-                if (!el) return
-                const track = bgEffectOn ? '#000' : '#fff'
-                el.style.setProperty('background', track, 'important')
-                el.style.setProperty('background-color', track, 'important')
-                el.style.setProperty('opacity', '1', 'important')
-                el.style.setProperty('filter', 'none', 'important')
-                el.style.setProperty('box-shadow', 'none', 'important')
-                el.style.setProperty(
-                  'border',
-                  `2px solid var(--effect-switch-outline, ${bgEffectOn ? '#fff' : '#000'})`,
-                  'important',
-                )
-                el.style.setProperty('forced-color-adjust', 'none', 'important')
-                const knob = el.firstElementChild
-                knob?.style.setProperty(
-                  'background',
-                  bgEffectOn ? '#fff' : '#000',
-                  'important',
-                )
-              }}
-              onClick={() => {
-                const next = bgEffectOn ? 'none' : 'atmosphere'
-                if (next === 'atmosphere' && exitMoonlight()) {
-                  setTheme(readTheme())
-                  setMoonlightOn(false)
-                }
-                applyBackgroundImage(next)
-                setBgEffectOn(next === 'atmosphere')
-              }}
-            >
-              <span className="settings-effect-knob" />
-            </button>
-          </div>
         </Section>
 
         <Section label="Accounts">
