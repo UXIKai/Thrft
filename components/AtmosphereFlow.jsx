@@ -1,5 +1,6 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { readBackgroundEffectStyle } from '../appAppearance.js'
+import PhantomSmoke from './PhantomSmoke.jsx'
 import { createWaveRenderer } from '../waveRenderer.js'
 import { waveFrame } from '../waveMotion.js'
 
@@ -24,7 +25,7 @@ export default function AtmosphereFlow() {
     return () => observer.disconnect()
   }, [])
 
-  if (style === 'phantom') return <div className="atmosphere-phantom" aria-hidden="true" />
+  if (style === 'phantom') return <PhantomSmoke />
   if (style === 'aurora') return <AuroraFlow />
   return <WaveFlow />
 }

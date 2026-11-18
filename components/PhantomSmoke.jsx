@@ -1,0 +1,161 @@
+import { useEffect, useRef, useState } from 'react'
+
+const FRAGMENT = `#version 300 es
+precision highp float;
+uniform vec2 resolution;
+uniform float time;
+uniform vec3 base;
+uniform vec3 tintA;
+uniform vec3 tintB;
+uniform vec3 tintC;
+out vec4 color;
+float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+float noise(vec2 p) {
+  vec2 i = floor(p);
+  vec2 f = fract(p);
+  f = f * f * (3.0 - 2.0 * f);
+  return mix(mix(hash(i), hash(i + vec2(1, 0)), f.x),
+    mix(hash(i + vec2(0, 1)), hash(i + vec2(1, 1)), f.x), f.y);
+}
+float fbm(vec2 p) {
+  float sum = 0.0;
+  float amp = 0.5;
+  mat2 turn = mat2(0.8, -0.6, 0.6, 0.8);
+  for (int i = 0; i < 5; i++) {
+    sum += amp * noise(p);
+    p = turn * p * 2.03 + 11.0;
+    amp *= 0.5;
+  }
+  return sum;
+}
+void main() {
+  vec2 uv = gl_FragCoord.xy / resolution.y * 2.4;
+  float t = time * 0.045;
+  vec2 q = vec2(fbm(uv + vec2(0.0, t)), fbm(uv + vec2(5.2, 1.3 - t)));
+  vec2 r = vec2(fbm(uv + 3.2 * q + vec2(1.7 + t * 1.3, 9.2)),
+    fbm(uv + 3.2 * q + vec2(8.3, 2.8 - t)));
+  float density = fbm(uv + 3.4 * r);
+  float smoke = smoothstep(0.36, 0.82, density);
+  smoke = pow(smoke, 1.6);
+  float core = smoothstep(0.55, 1.0, density + 0.35 * length(r - 0.5));
+  float hue = clamp(r.x * 1.4, 0.0, 1.0);
+  vec3 tint = mix(mix(tintA, tintB, hue), tintC, clamp(q.y * 1.2 - 0.2, 0.0, 1.0));
+  vec3 lit = tint * (0.55 + 0.9 * core);
+  color = vec4(base + (lit - base) * smoke * 0.95, 1.0);
+}`
+
+const VERTEX = `#version 300 es
+void main() {
+  vec2 p = vec2((gl_VertexID << 1) & 2, gl_VertexID & 2);
+  gl_Position = vec4(p * 2.0 - 1.0, 0.0, 1.0);
+}`
+
+const SCALE = 0.4
+
+function parse(value, fallback) {
+  const parts = String(value || '').match(/[\d.]+/g)
+  return parts && parts.length >= 3 ? parts.slice(0, 3).map(Number) : fallback
+}
+
+// Drifting smoke lit in the background effect colours
+export default function PhantomSmoke() {
+  const canvasRef = useRef(null)
+  const [unavailable, setUnavailable] = useState(false)
+
+  useEffect(() => {
+    const canvas = canvasRef.current
+    const gl = canvas.getContext('webgl2', { alpha: false, antialias: false, depth: false })
+    if (!gl) {
+      setUnavailable(true)
+      return undefined
+    }
+    const program = gl.createProgram()
+    const shaders = [[gl.VERTEX_SHADER, VERTEX], [gl.FRAGMENT_SHADER, FRAGMENT]].map(([type, source]) => {
+      const shader = gl.createShader(type)
+      gl.shaderSource(shader, source)
+      gl.compileShader(shader)
+      gl.attachShader(program, shader)
+      return shader
+    })
+    gl.linkProgram(program)
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+      console.error('Phantom smoke failed:', gl.getProgramInfoLog(program))
+      shaders.forEach((shader) => gl.deleteShader(shader))
+      gl.deleteProgram(program)
+      setUnavailable(true)
+      return undefined
+    }
+    gl.useProgram(program)
+    const loc = (name) => gl.getUniformLocation(program, name)
+    const uniforms = { resolution: loc('resolution'), time: loc('time'), base: loc('base'),
+      a: loc('tintA'), b: loc('tintB'), c: loc('tintC') }
+    const motion = window.matchMedia('(prefers-reduced-motion: reduce)')
+    let frame
+    let lastPaint = -Infinity
+    let lastColors = -Infinity
+    let visible = false
+
+    const readColors = () => {
+      canvas.style.backgroundColor = 'var(--atmosphere-base, #050505)'
+      const style = getComputedStyle(canvas)
+      const base = parse(style.backgroundColor, [5, 5, 5])
+      const tint = (key, fallback) => parse(`rgb(${style.getPropertyValue(`--atmosphere-effect-${key}-rgb`)})`, fallback)
+      const norm = (rgb) => rgb.map((v) => v / 255)
+      gl.uniform3fv(uniforms.base, norm(base))
+      gl.uniform3fv(uniforms.a, norm(tint('a', [190, 190, 190])))
+      gl.uniform3fv(uniforms.b, norm(tint('b', [150, 150, 150])))
+      gl.uniform3fv(uniforms.c, norm(tint('c', [170, 170, 170])))
+    }
+    const resize = () => {
+      const { width, height } = canvas.getBoundingClientRect()
+      if (!width || !height) return
+      canvas.width = Math.ceil(width * SCALE)
+      canvas.height = Math.ceil(height * SCALE)
+      gl.viewport(0, 0, canvas.width, canvas.height)
+      gl.uniform2f(uniforms.resolution, canvas.width, canvas.height)
+      paint(motion.matches ? 0 : performance.now())
+    }
+    function paint(now) {
+      if (now - lastColors > 500) {
+        readColors()
+        lastColors = now
+      }
+      gl.uniform1f(uniforms.time, now / 1000)
+      gl.drawArrays(gl.TRIANGLES, 0, 3)
+    }
+    const tick = (now) => {
+      if (now - lastPaint >= 1000 / 30 - 1e-6) {
+        paint(now)
+        lastPaint = now
+      }
+      frame = requestAnimationFrame(tick)
+    }
+    const sync = () => {
+      cancelAnimationFrame(frame)
+      if (motion.matches) paint(0)
+      else if (visible && !document.hidden) frame = requestAnimationFrame(tick)
+    }
+    const observer = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting
+      sync()
+    })
+    observer.observe(canvas)
+    const resizer = new ResizeObserver(resize)
+    resizer.observe(canvas)
+    document.addEventListener('visibilitychange', sync)
+    motion.addEventListener('change', sync)
+    resize()
+    return () => {
+      cancelAnimationFrame(frame)
+      observer.disconnect()
+      resizer.disconnect()
+      document.removeEventListener('visibilitychange', sync)
+      motion.removeEventListener('change', sync)
+      shaders.forEach((shader) => gl.deleteShader(shader))
+      gl.deleteProgram(program)
+    }
+  }, [])
+
+  if (unavailable) return <div className="atmosphere-phantom" aria-hidden="true" />
+  return <canvas ref={canvasRef} className="atmosphere-smoke" aria-hidden="true" />
+}

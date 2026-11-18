@@ -2345,6 +2345,14 @@ html body .store-row-strip .product-box {
   position: absolute;
 }
 
+.atmosphere-smoke {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
 .atmosphere-flow {
   position: absolute;
   inset: 0;
@@ -2363,7 +2371,9 @@ html body .store-row-strip .product-box {
 
 .stage.is-bg-none .atmosphere-flow,
 .stage.is-bg-none .atmosphere-phantom,
+.stage.is-bg-none .atmosphere-smoke,
 html[data-bg-photo] .atmosphere-flow,
+html[data-bg-photo] .atmosphere-smoke,
 html[data-bg-photo] .atmosphere-phantom {
   display: none;
 }

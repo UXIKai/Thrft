@@ -419,7 +419,7 @@ html body .home-search-modal > .home-search-preview {
   filter: brightness(.8);
 }
 
-html body .stage .home-search-preview :is(.atmosphere-flow, .atmosphere-phantom) {
+html body .stage .home-search-preview :is(.atmosphere-flow, .atmosphere-phantom, .atmosphere-smoke) {
   display: block;
 }
 
