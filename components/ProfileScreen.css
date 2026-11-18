@@ -3269,7 +3269,8 @@
 /* Compact header: small avatar beside the name and counts */
 .profile-screen .profile-identity {
   display: grid;
-  grid-template-columns: 72px 1fr;
+  grid-template-columns: 72px auto;
+  justify-content: center;
   grid-template-rows: auto auto auto;
   align-items: center;
   column-gap: 16px;
