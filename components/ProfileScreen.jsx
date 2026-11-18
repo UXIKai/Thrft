@@ -545,6 +545,8 @@ export default function ProfileScreen({
   const [closetPostError, setClosetPostError] = useState('')
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [settingsClosing, setSettingsClosing] = useState(false)
+  const [settingsPeek, setSettingsPeek] = useState(false)
+  const [settingsInstant, setSettingsInstant] = useState(false)
   const closeSettings = () => {
     setSettingsClosing(true)
     setTimeout(() => {
@@ -1129,6 +1131,33 @@ export default function ProfileScreen({
 
   const settingsSwipe = useRef(null)
 
+  // Dragging the profile left slides the page aside like a glass card, revealing Settings underneath
+  const peekTimer = useRef(null)
+  const peekTravel = () => Math.min(window.innerWidth * 0.8, 340)
+  const setPeek = (p) => stageEl?.style.setProperty('--settings-p', String(p))
+  const endPeek = () => {
+    stageEl?.classList.remove('is-settings-peek', 'is-settings-dragging', 'is-settings-committing')
+    stageEl?.style.removeProperty('--settings-p')
+    setSettingsPeek(false)
+  }
+  const commitPeek = () => {
+    stageEl?.classList.remove('is-settings-dragging')
+    stageEl?.classList.add('is-settings-committing')
+    clearTimeout(peekTimer.current)
+    peekTimer.current = setTimeout(() => {
+      setSettingsInstant(true)
+      setSettingsOpen(true)
+      endPeek()
+    }, 260)
+  }
+  const cancelPeek = () => {
+    stageEl?.classList.remove('is-settings-dragging')
+    setPeek(0)
+    clearTimeout(peekTimer.current)
+    peekTimer.current = setTimeout(endPeek, 280)
+  }
+  useEffect(() => () => clearTimeout(peekTimer.current), [])
+
   function holdScroll(e) {
     // Avoid browser scrolling the focused control into view
     e.preventDefault()
@@ -1141,7 +1170,7 @@ export default function ProfileScreen({
         className="profile-menu-btn is-bare"
         aria-label="Settings"
         onMouseDown={holdScroll}
-        onClick={() => setSettingsOpen(true)}
+        onClick={() => { setSettingsInstant(false); setSettingsOpen(true) }}
       >
         <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
       </button>
@@ -1150,7 +1179,30 @@ export default function ProfileScreen({
         aria-label="Account"
         style={{ touchAction: 'pan-y' }}
         onPointerDown={(e) => {
-          if (e.isPrimary && (e.pointerType !== 'mouse' || e.button === 0)) settingsSwipe.current = { x: e.clientX, y: e.clientY }
+          if (e.isPrimary && (e.pointerType !== 'mouse' || e.button === 0)) {
+            settingsSwipe.current = { x: e.clientX, y: e.clientY, t: performance.now(), drag: false }
+          }
+        }}
+        onPointerMove={(e) => {
+          const st = settingsSwipe.current
+          if (!st || !e.isPrimary || e.pointerType === 'mouse' || !stageEl) return
+          const dx = e.clientX - st.x
+          const dy = e.clientY - st.y
+          if (!st.drag) {
+            if (Math.abs(dy) > 12 && Math.abs(dy) > Math.abs(dx)) {
+              settingsSwipe.current = null
+              return
+            }
+            if (dx > -12 || -dx < Math.abs(dy) * 1.5) return
+            try { e.currentTarget.setPointerCapture(e.pointerId) } catch { return }
+            if (!e.currentTarget.hasPointerCapture(e.pointerId)) return
+            st.drag = true
+            clearTimeout(peekTimer.current)
+            setSettingsPeek(true)
+            stageEl.classList.remove('is-settings-committing')
+            stageEl.classList.add('is-settings-peek', 'is-settings-dragging')
+          }
+          setPeek(Math.min(1, Math.max(0, -dx / peekTravel())))
         }}
         onPointerUp={(e) => {
           const st = settingsSwipe.current
@@ -1158,10 +1210,23 @@ export default function ProfileScreen({
           if (!st) return
           const dx = e.clientX - st.x
           const dy = e.clientY - st.y
-          // A deliberate sideways swipe over the top of the profile opens Settings
-          if (dx < -50 && Math.abs(dx) > Math.abs(dy) * 1.5) setSettingsOpen(true)
+          if (st.drag) {
+            const velocity = dx / Math.max(1, performance.now() - st.t)
+            if (-dx > peekTravel() * 0.4 || velocity < -0.5) commitPeek()
+            else cancelPeek()
+            return
+          }
+          // A deliberate sideways swipe with a mouse opens Settings
+          if (dx < -50 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+            setSettingsInstant(false)
+            setSettingsOpen(true)
+          }
         }}
-        onPointerCancel={() => { settingsSwipe.current = null }}
+        onPointerCancel={() => {
+          const st = settingsSwipe.current
+          settingsSwipe.current = null
+          if (st?.drag) cancelPeek()
+        }}
       >
         <div className="pf-user-avatar-wrap">
           <button
@@ -2288,10 +2353,18 @@ export default function ProfileScreen({
           stageEl,
         )}
 
-      {stageEl &&
-        settingsOpen &&
+      {stageEl && settingsPeek && stageEl.querySelector('.app-column') &&
         createPortal(
-          <SwipeBackPage className={`settings-slide${settingsClosing ? ' is-closing' : ''}`} onDismiss={() => { setSettingsOpen(false); setSettingsClosing(false) }}>
+          <div className="atmosphere settings-peek-atmosphere" aria-hidden>
+            <AtmosphereFlow />
+          </div>,
+          stageEl.querySelector('.app-column'),
+        )}
+
+      {stageEl &&
+        (settingsOpen || settingsPeek) &&
+        createPortal(
+          <SwipeBackPage className={`settings-slide${settingsOpen ? '' : ' is-peeking'}${settingsInstant ? ' is-instant' : ''}${settingsClosing ? ' is-closing' : ''}`} onDismiss={() => { setSettingsOpen(false); setSettingsClosing(false) }}>
           <div className="atmosphere" aria-hidden>
             <AtmosphereFlow />
           </div>

@@ -3194,6 +3194,16 @@
   animation: settings-slide-in 0.28s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
 }
 
+.settings-slide.is-instant {
+  animation: none;
+}
+
+.settings-slide.is-peeking {
+  z-index: 0;
+  animation: none;
+  pointer-events: none;
+}
+
 .settings-slide.is-closing {
   animation: settings-slide-out 0.28s cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
@@ -3210,4 +3220,34 @@
 @keyframes settings-slide-out {
   from { transform: translateX(0); }
   to { transform: translateX(100%); }
+}
+
+/* Peek: the app column becomes a glass card that slides left over a stationary Settings */
+@media (max-width: 719px), (max-height: 499px) {
+  html body .stage.is-settings-peek > .app-column {
+    background: var(--page-bg);
+    border-radius: 44px;
+    transform: translateX(calc(var(--settings-p, 0) * min(80vw, 340px) * -1));
+    transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.45);
+  }
+  html body .stage.is-settings-peek > .app-column::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    border: 1px solid light-dark(rgba(0, 0, 0, 0.18), rgba(255, 255, 255, 0.22));
+    border-radius: inherit;
+    pointer-events: none;
+  }
+  html body .stage.is-settings-dragging > .app-column {
+    transition: none;
+  }
+  html body .stage.is-settings-committing > .app-column {
+    transform: translateX(-105%);
+  }
+  .settings-peek-atmosphere {
+    z-index: -1;
+    filter: brightness(0.8);
+  }
 }
