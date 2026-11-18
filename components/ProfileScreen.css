@@ -3421,3 +3421,8 @@ html body .profile-screen .profile-username-link:hover { text-decoration: none !
 .pf-photo-delete { position: absolute; left: 50%; bottom: calc(28px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); padding: 10px 22px; border-radius: 999px; font: 700 0.95rem var(--pf); color: #ff453a; }
 .profile-screen .profile-identity .profile-name-row .profile-links-btn { margin: 0; flex: none; }
 .profile-screen .profile-identity .profile-name-row { flex-wrap: nowrap; }
+
+.profile-screen .profile-top-btn.is-link { right: calc(var(--pf-pad-x) + 36px); }
+.profile-screen .profile-top-btn.is-share { right: calc(var(--pf-pad-x) + 80px); }
+.profile-screen .profile-top-btn .profile-links-btn,
+.profile-screen .profile-top-btn svg { width: 22px; height: 22px; }
