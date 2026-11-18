@@ -3305,3 +3305,9 @@
   color: inherit;
 }
 .profile-screen .profile-name-row .profile-links-btn svg { width: 18px; height: 18px; }
+.profile-screen .profile-name-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
