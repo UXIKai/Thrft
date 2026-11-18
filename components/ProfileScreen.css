@@ -3386,3 +3386,5 @@ html body .stage .profile-links-layer .profile-panel {
 }
 html body .stage .profile-links-layer .profile-links-scrim { background: var(--page-bg) !important; }
 .stage:has(.profile-links-layer) .settings-screen > :is(.settings-top, .settings-scroll) { visibility: hidden; }
+html body .profile-screen .profile-username-link,
+html body .profile-screen .profile-username-link:hover { text-decoration: none !important; border-bottom: 0 !important; box-shadow: none !important; }
