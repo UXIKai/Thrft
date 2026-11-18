@@ -3236,7 +3236,7 @@
     position: absolute;
     inset: 0;
     z-index: 20;
-    border: 1px solid light-dark(rgba(0, 0, 0, 0.18), rgba(255, 255, 255, 0.22));
+    border: 1px solid light-dark(rgba(0, 0, 0, 0.18), rgba(255, 255, 255, 0.18));
     border-radius: inherit;
     pointer-events: none;
   }

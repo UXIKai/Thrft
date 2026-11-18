@@ -5406,6 +5406,7 @@ html body .chat-thread-scroll > .chat-thread-body {
   html body .chat-screen:is(.is-mobile-nav-open, .is-online-open) .chat-main-page {
     background: var(--page-bg);
     border-radius: 44px;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.45);
   }
   html body .chat-screen:is(.is-mobile-nav-open, .is-online-open) .chat-main-page::before {
     content: '';
