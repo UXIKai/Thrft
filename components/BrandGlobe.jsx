@@ -57,6 +57,9 @@ function GlobePeopleIcon() {
 const CENTER_SELECT = 0.48
 /** Extra px clear of the seat so chips never clip / pop into the circle. */
 const SEAT_PAD_PX = 36
+/** Dragging back within this many px of the middle counts as centered. */
+const CENTER_CLOSE_PX = 12
+
 /** Hide any shell chip whose center falls inside this seat radius (px). */
 const SEAT_HIDE_R = 72
 /** Concentric orbit spacing — clear air so courses sit above/below, not on. */
@@ -579,6 +582,7 @@ function BrandGlobeView({
   showBrandLogos = title === 'Brands',
 }) {
   const [focusId, setFocusId] = useState(null)
+  const [centerDragged, setCenterDragged] = useState(false)
   // Dragging down onto the bottom bar clears the seat so releasing picks nothing.
   const overBarRef = useRef(false)
   const [failedCenterLogos, setFailedCenterLogos] = useState(() => new Set())
@@ -899,6 +903,8 @@ function BrandGlobeView({
       : seatOpen && focusId
       ? brands.find((b) => b.id === focusId) || null
       : typedBrand
+  const showCenterClose = showBrandLogos && centerDragged && !focusBrand &&
+    Math.hypot(panX, panY) <= CENTER_CLOSE_PX
   const focusLabel = focusBrand?.label || ''
   const focusWords = focusLabel.trim().split(/\s+/).filter(Boolean)
 
@@ -1318,6 +1324,7 @@ function BrandGlobeView({
       const next = gestureSnapshot()
       if (Math.hypot(event.clientX - pointerDownRef.current.x, event.clientY - pointerDownRef.current.y) > DRAG_THRESHOLD) {
         movedRef.current = true
+        if (centerTapRef.current && !searchPointerRef.current) setCenterDragged(true)
       }
       if (touchesRef.current.size > 1 && previous.distance > 0) {
         zoomAt(zoomRef.current * next.distance / previous.distance, previous.x, previous.y)
@@ -1390,6 +1397,16 @@ function BrandGlobeView({
       setBrushing(false)
       setChoosing(false)
       gestureRef.current = null
+      setCenterDragged(false)
+      // Held the center, dragged, and let go back on the middle: close.
+      if (
+        event.type !== 'pointercancel' && centerTapRef.current && movedRef.current &&
+        !searchPointerRef.current && Math.hypot(panXRef.current, panYRef.current) <= CENTER_CLOSE_PX
+      ) {
+        centerTapRef.current = false
+        onClose?.()
+        return
+      }
       if (event.type !== 'pointercancel' && !movedRef.current && !searchPointerRef.current && !event.target?.closest?.('.brand-globe-search-row, .brand-globe-brand-back, .brand-globe-close')) {
         const rect = stageRef.current?.getBoundingClientRect()
         const slots = slotsRef.current
@@ -1548,7 +1565,7 @@ function BrandGlobeView({
         aria-label="Close brands"
         onClick={onClose}
       />
-      {previewColors && (
+      {(previewColors || showBrandLogos) && (
         <div className="brand-globe-color-atmosphere atmosphere" aria-hidden>
           <AtmosphereFlow />
         </div>
@@ -1711,7 +1728,13 @@ function BrandGlobeView({
               key={focusBrand?.id || 'empty'}
               style={{ fontSize: `${focusFitPx}px` }}
             >
-              {showBrandLogos && focusBrand
+              {showCenterClose
+                ? (
+                  <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="#111" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true">
+                    <path d="M6 6l12 12M18 6 6 18" />
+                  </svg>
+                )
+                : showBrandLogos && focusBrand
                 ? <BrandLogo
                     name={focusBrand.label}
                     logoOnly

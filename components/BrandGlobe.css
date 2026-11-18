@@ -787,13 +787,13 @@ html[data-bg-image='none'] .brand-globe.is-color-picker .brand-globe-stage .bran
 
 .brand-globe.is-brand-picker {
   color-scheme: dark;
-  background: #000;
+  background: var(--page-bg);
   color: #fff;
 }
 
 .brand-globe.is-brand-picker .brand-globe-scrim,
 .brand-globe.is-brand-picker .brand-globe-panel {
-  background: #000;
+  background: transparent;
 }
 
 html .brand-globe.is-brand-picker .brand-globe-center-hole {
@@ -881,11 +881,11 @@ html .brand-globe.is-brand-picker .brand-globe-center-hole {
   background: transparent;
 }
 
-html body .brand-globe.is-color-picker > .brand-globe-color-atmosphere {
+html body .brand-globe:is(.is-color-picker, .is-brand-picker) > .brand-globe-color-atmosphere {
   display: block;
   background: var(--page-base);
 }
 
-html body .stage .brand-globe.is-color-picker :is(.atmosphere-flow, .atmosphere-phantom, .atmosphere-smoke) {
+html body .stage .brand-globe:is(.is-color-picker, .is-brand-picker) :is(.atmosphere-flow, .atmosphere-phantom, .atmosphere-smoke) {
   display: block;
 }
