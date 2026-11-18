@@ -3372,3 +3372,8 @@
 .profile-screen .profile-name-row .profile-links-btn,
 .profile-screen .profile-social,
 .profile-screen .profile-identity > .profile-username-link.is-empty { grid-column: 2; }
+/* Right column centered: name, counts, then the link */
+.profile-screen .profile-name-row .profile-name { grid-row: 1; justify-self: center; text-align: center; }
+.profile-screen .profile-social { grid-row: 2; justify-self: center; justify-content: center; margin-top: 2px; }
+.profile-screen .profile-social-cell { align-items: center; text-align: center; }
+.profile-screen .profile-name-row .profile-links-btn { grid-row: 3; justify-self: center; margin-top: 4px; }
