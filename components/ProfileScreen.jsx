@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom'
 import AtmosphereFlow from './AtmosphereFlow.jsx'
 import {
   connectProvider,
+  fetchAccountPage,
   fetchMyProducts,
   initialsFromName,
   updateListingProduct,
@@ -967,7 +968,7 @@ export default function ProfileScreen({
       .trim()
       .replace(/^@+/, '')
       .toLowerCase()
-      .replace(/[^a-z0-9._]/g, '')
+      .replace(/[^a-z0-9_]/g, '')
     if (!displayName && !username) return
     setNameSaving(true)
     try {
@@ -1037,6 +1038,14 @@ export default function ProfileScreen({
     setAccountEditBusy(true)
     setAccountEditNote('')
     try {
+      const savedUsername = String(account?.username || userProfile?.username || '').toLowerCase()
+      if (username !== savedUsername && isSupabaseConfigured()) {
+        const found = await fetchAccountPage(username).catch(() => null)
+        if (found?.account && !found.account.isSelf) {
+          setAccountEditNote('That username is taken')
+          return
+        }
+      }
       if (nextPassword || emailChanged) {
         const supabase = getSupabase()
         if (!supabase) {
@@ -1993,6 +2002,18 @@ export default function ProfileScreen({
                     <PersonIcon />
                   </span>
                   <input
+                    value={accountNameDraft}
+                    aria-label="Name"
+                    placeholder="Name"
+                    autoComplete="name"
+                    onChange={(e) => setAccountNameDraft(e.target.value)}
+                  />
+                </label>
+                <label className="profile-name-field">
+                  <span className="profile-name-field-mark" aria-hidden>
+                    <PersonIcon />
+                  </span>
+                  <input
                     value={accountUsernameDraft}
                     aria-label="Username"
                     placeholder="Username"
@@ -2001,18 +2022,6 @@ export default function ProfileScreen({
                     autoCorrect="off"
                     spellCheck={false}
                     onChange={(e) => setAccountUsernameDraft(e.target.value.replace(/^@+/, ''))}
-                  />
-                </label>
-                <label className="profile-name-field">
-                  <span className="profile-name-field-mark" aria-hidden>
-                    <PersonIcon />
-                  </span>
-                  <input
-                    value={accountNameDraft}
-                    aria-label="Name"
-                    placeholder="Name"
-                    autoComplete="name"
-                    onChange={(e) => setAccountNameDraft(e.target.value)}
                   />
                 </label>
                 <label className="profile-name-field">
