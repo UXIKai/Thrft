@@ -3426,3 +3426,5 @@ html body .profile-screen .profile-username-link:hover { text-decoration: none !
 .profile-screen .profile-top-btn.is-share { right: calc(var(--pf-pad-x) + 80px); }
 .profile-screen .profile-top-btn .profile-links-btn,
 .profile-screen .profile-top-btn svg { width: 22px; height: 22px; }
+
+.profile-screen .profile-top-btn.is-add { right: auto; left: calc(var(--pf-pad-x) - 8px); }

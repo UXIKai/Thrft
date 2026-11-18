@@ -1220,6 +1220,15 @@ export default function ProfileScreen({
       </button>
       <button
         type="button"
+        className="profile-menu-btn profile-top-btn is-add is-bare"
+        aria-label="Add photo"
+        onMouseDown={holdScroll}
+        onClick={() => postInputRef.current?.click()}
+      >
+        <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M12 5v14M5 12h14" /></svg>
+      </button>
+      <button
+        type="button"
         className="profile-menu-btn profile-top-btn is-share is-bare"
         aria-label="Share profile"
         onMouseDown={holdScroll}
@@ -1395,9 +1404,6 @@ export default function ProfileScreen({
           <span>{media.photos.length} {media.photos.length === 1 ? 'photo' : 'photos'}</span>
         </div>
         <div className="pf-photos-grid">
-          <button type="button" className="pf-photo-add is-bare" aria-label="Add photo" onClick={() => postInputRef.current?.click()}>
-            <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M12 5v14M5 12h14" /></svg>
-          </button>
           {media.photos.map((url, i) => (
             <button key={url.slice(-40) + i} type="button" className="pf-photo-tile is-bare" aria-label="View photo" onClick={() => setViewPhoto(url)}>
               <img src={url} alt="" loading="lazy" />
