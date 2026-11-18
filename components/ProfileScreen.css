@@ -3303,4 +3303,14 @@
 .profile-screen .profile-social-cell { flex: none; align-items: flex-start; flex-direction: row; gap: 5px; align-items: baseline; }
 .profile-screen .profile-social-n { font-size: 0.95rem; }
 .profile-screen .profile-social-l { font-size: 0.72rem; }
-.profile-screen .profile-spaces-inline .profile-links-btn { width: 28px; height: 28px; margin: 0 auto; }
+.profile-screen .profile-name-row .profile-links-btn {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  margin: 0;
+  padding: 0;
+  color: inherit;
+}
+.profile-screen .profile-name-row .profile-links-btn svg { width: 18px; height: 18px; }
+.profile-screen .profile-identity { padding-top: 26px; }

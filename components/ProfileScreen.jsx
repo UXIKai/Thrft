@@ -1266,6 +1266,14 @@ export default function ProfileScreen({
               </span>
             )}
           </p>
+          <button
+            type="button"
+            className="profile-links-btn is-bare"
+            aria-label="Links"
+            onClick={() => openProfileEditor('Links')}
+          >
+            <LinkIcon />
+          </button>
         </div>
         {!(account?.username || userProfile?.username) && (
           <button
@@ -1298,14 +1306,6 @@ export default function ProfileScreen({
       )}
 
       <section className="profile-block profile-spaces-inline" aria-label="Store, Closet and Market">
-        <button
-          type="button"
-          className="profile-links-btn is-bare"
-          aria-label="Links"
-          onClick={() => openProfileEditor('Links')}
-        >
-          <LinkIcon />
-        </button>
         <SectionSwiper
           sections={SPACE_MODES}
           value={spaceTab}
