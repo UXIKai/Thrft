@@ -3311,3 +3311,4 @@
   align-items: center;
   gap: 6px;
 }
+.profile-screen .profile-name-row { order: -1; margin-bottom: 12px; }
