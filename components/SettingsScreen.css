@@ -60,7 +60,7 @@
   height: calc(var(--row-h) * 3);
   padding: var(--row-h) 0;
   box-sizing: border-box;
-  overflow-y: auto;
+  overflow-y: hidden;
   scroll-snap-type: y mandatory;
   perspective: 420px;
   scrollbar-width: none;
@@ -69,6 +69,7 @@
   mask: linear-gradient(transparent, #000 30%, #000 70%, transparent);
   -webkit-mask: linear-gradient(transparent, #000 30%, #000 70%, transparent);
 }
+.effect-wheel.is-engaged { overflow-y: auto; }
 .effect-wheel::-webkit-scrollbar { display: none; }
 .effect-wheel-row {
   height: var(--row-h);

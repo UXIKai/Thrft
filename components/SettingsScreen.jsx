@@ -780,6 +780,17 @@ function EffectWheel({ value, onChange }) {
   changeRef.current = onChange
   const settled = useRef(value)
   settled.current = value
+  // Locked until tapped so a page scroll that starts on the wheel keeps scrolling the page
+  const [engaged, setEngaged] = useState(false)
+
+  useEffect(() => {
+    if (!engaged) return undefined
+    const release = (event) => {
+      if (!ref.current?.contains(event.target)) setEngaged(false)
+    }
+    document.addEventListener('pointerdown', release, true)
+    return () => document.removeEventListener('pointerdown', release, true)
+  }, [engaged])
 
   useEffect(() => {
     const el = ref.current
@@ -814,13 +825,16 @@ function EffectWheel({ value, onChange }) {
   }, [])
 
   return (
-    <div className="effect-wheel" ref={ref} role="listbox" aria-label="Background effect">
+    <div className={`effect-wheel${engaged ? ' is-engaged' : ''}`} ref={ref} role="listbox" aria-label="Background effect">
       {BG_EFFECT_STYLES.map(({ id, label }, i) => (
         <div key={id} className="effect-wheel-row" role="option" aria-selected={value === id}>
           <button
             type="button"
             className="is-bare"
-            onClick={() => ref.current?.scrollTo({ top: i * (ref.current.firstElementChild?.offsetHeight || 44), behavior: 'smooth' })}
+            onClick={() => {
+              setEngaged(true)
+              ref.current?.scrollTo({ top: i * (ref.current.firstElementChild?.offsetHeight || 44), behavior: 'smooth' })
+            }}
           >
             {label}
           </button>
