@@ -44,6 +44,64 @@ void main() {
   color = vec4(base + (lit - base) * smoke * 0.95, 1.0);
 }`
 
+const AURORA = `#version 300 es
+precision highp float;
+uniform vec2 resolution;
+uniform float time;
+uniform vec3 base;
+uniform vec3 tintA;
+uniform vec3 tintB;
+uniform vec3 tintC;
+out vec4 color;
+float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+float noise(vec2 p) {
+  vec2 i = floor(p);
+  vec2 f = fract(p);
+  f = f * f * (3.0 - 2.0 * f);
+  return mix(mix(hash(i), hash(i + vec2(1, 0)), f.x),
+    mix(hash(i + vec2(0, 1)), hash(i + vec2(1, 1)), f.x), f.y);
+}
+float fbm(vec2 p) {
+  float sum = 0.0;
+  float amp = 0.5;
+  for (int i = 0; i < 4; i++) {
+    sum += amp * noise(p);
+    p = p * 2.02 + 7.0;
+    amp *= 0.5;
+  }
+  return sum;
+}
+void main() {
+  vec2 uv = gl_FragCoord.xy / resolution;
+  float ax = uv.x * resolution.x / resolution.y;
+  float t = time * 0.05;
+  vec3 glow = vec3(0.0);
+  float total = 0.0;
+  for (int i = 0; i < 3; i++) {
+    float fi = float(i);
+    float x = ax * (1.1 + 0.35 * fi) + fi * 9.0;
+    float sway = fbm(vec2(x * 0.9, t * (1.0 + 0.3 * fi) + fi * 3.0));
+    float edge = 0.08 + 0.42 * sway + 0.12 * fi;
+    float d = uv.y - edge;
+    float shape = d > 0.0 ? exp(-d * (2.4 - 0.3 * fi)) : exp(d * 16.0);
+    float xr = x + uv.y * (sway - 0.5) * 0.5 * (1.0 + fi * 0.3);
+    float rays = smoothstep(0.15, 0.95, 0.65 * noise(vec2(xr * 11.0, t * 2.0 + fi * 5.0)) + 0.35 * noise(vec2(xr * 30.0, t * 3.0 + fi)));
+    float soft = 0.55 + 0.45 * fbm(vec2(x * 2.5, uv.y * 1.6 - t * 3.0));
+    float k = shape * (0.35 + 0.9 * rays) * soft;
+    vec3 tint = i == 0 ? tintA : (i == 1 ? tintB : tintC);
+    glow += tint * k;
+    total += k;
+  }
+  vec2 cell = floor(gl_FragCoord.xy / 5.0);
+  float seed = hash(cell);
+  vec2 local = fract(gl_FragCoord.xy / 5.0) - 0.5;
+  float star = seed > 0.982 ? smoothstep(0.3, 0.0, length(local)) : 0.0;
+  star *= 0.55 + 0.45 * sin(time * (0.8 + seed * 2.0) + seed * 40.0);
+  vec3 lit = base + glow * 0.85;
+  lit += vec3(0.8, 0.9, 1.0) * star * 0.6 * clamp(1.0 - total * 0.6, 0.0, 1.0);
+  color = vec4(min(lit, vec3(1.0)), 1.0);
+}`
+
 const VERTEX = `#version 300 es
 void main() {
   vec2 p = vec2((gl_VertexID << 1) & 2, gl_VertexID & 2);
@@ -58,7 +116,7 @@ function parse(value, fallback) {
 }
 
 // Drifting smoke lit in the background effect colours
-export default function PhantomSmoke() {
+export default function PhantomSmoke({ variant = 'smoke' }) {
   const canvasRef = useRef(null)
   const [unavailable, setUnavailable] = useState(false)
 
@@ -70,7 +128,7 @@ export default function PhantomSmoke() {
       return undefined
     }
     const program = gl.createProgram()
-    const shaders = [[gl.VERTEX_SHADER, VERTEX], [gl.FRAGMENT_SHADER, FRAGMENT]].map(([type, source]) => {
+    const shaders = [[gl.VERTEX_SHADER, VERTEX], [gl.FRAGMENT_SHADER, variant === 'aurora' ? AURORA : FRAGMENT]].map(([type, source]) => {
       const shader = gl.createShader(type)
       gl.shaderSource(shader, source)
       gl.compileShader(shader)
@@ -79,7 +137,7 @@ export default function PhantomSmoke() {
     })
     gl.linkProgram(program)
     if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-      console.error('Phantom smoke failed:', gl.getProgramInfoLog(program))
+      console.error('Background shader failed:', gl.getProgramInfoLog(program))
       shaders.forEach((shader) => gl.deleteShader(shader))
       gl.deleteProgram(program)
       setUnavailable(true)
@@ -154,7 +212,7 @@ export default function PhantomSmoke() {
       shaders.forEach((shader) => gl.deleteShader(shader))
       gl.deleteProgram(program)
     }
-  }, [])
+  }, [variant])
 
   if (unavailable) return <div className="atmosphere-phantom" aria-hidden="true" />
   return <canvas ref={canvasRef} className="atmosphere-smoke" aria-hidden="true" />

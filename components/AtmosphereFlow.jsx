@@ -26,7 +26,7 @@ export default function AtmosphereFlow() {
   }, [])
 
   if (style === 'phantom') return <PhantomSmoke />
-  if (style === 'aurora') return <AuroraFlow />
+  if (style === 'aurora') return <PhantomSmoke key="aurora" variant="aurora" />
   return <WaveFlow />
 }
 
