@@ -25,6 +25,7 @@ import GiveBack from './GiveBack.jsx'
 import OrbitCarousel from './OrbitCarousel.jsx'
 import OrdersScreen from './OrdersScreen.jsx'
 import SectionSwiper from './SectionSwiper.jsx'
+import StylstBoard from './StylstBoard.jsx'
 import SettingsScreen from './SettingsScreen.jsx'
 import SwipeBackPage from './SwipeBackPage.jsx'
 import ProductPhoto from './ProductPhoto.jsx'
@@ -1475,9 +1476,7 @@ export default function ProfileScreen({
             </div>
           )}
           {spaceTab === 'stylst' ? (
-            <div className="pf-empty-state">
-              <EmptyBoxIcon />
-            </div>
+            <StylstBoard />
           ) : spaceTab !== 'closet' ? (
             (() => {
               const rows = spaceTab === 'store'
