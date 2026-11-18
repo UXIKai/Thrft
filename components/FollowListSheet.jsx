@@ -62,7 +62,7 @@ export default function FollowListSheet({ username, type: initialType, onClose, 
   let body
   if (current.loading) body = <p className="follow-page-muted">Loading…</p>
   else if (current.error) body = <p className="follow-page-muted" role="alert">{current.error}</p>
-  else if (current.private) body = <p className="follow-page-muted">@{username} keeps who they follow private.</p>
+  else if (current.private) body = <p className="follow-page-muted">{username} keeps who they follow private.</p>
   else if (!rows.length) {
     body = <p className="follow-page-muted">{query ? 'No matches.' : type === 'following' ? 'Not following anyone yet.' : 'No followers yet.'}</p>
   } else {

@@ -132,7 +132,7 @@ export default function AccountPage({
                 )}
               </span>
               <p className="account-page-name">
-                @{handle}
+                {handle}
                 {account.identityStatus === 'verified' && (
                   <span className="account-page-id-badge" title="Identity verified with ID.me">ID</span>
                 )}
