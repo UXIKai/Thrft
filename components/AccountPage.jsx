@@ -171,7 +171,7 @@ export default function AccountPage({
             </div>
 
             {followSheet && (
-              <FollowListSheet username={account.username || username} type={followSheet} isOwn={isOwn}
+              <FollowListSheet username={account.username || username} type={followSheet}
                 onClose={() => setFollowSheet(null)} onOpenAccount={onOpenAccount} />
             )}
 

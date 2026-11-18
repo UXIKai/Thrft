@@ -1293,7 +1293,7 @@ export default function ProfileScreen({
       </section>
 
       {followSheet && userProfile?.username && (
-        <FollowListSheet username={userProfile.username} type={followSheet} isOwn
+        <FollowListSheet username={userProfile.username} type={followSheet}
           onClose={() => setFollowSheet(null)} onOpenAccount={onOpenAccount} />
       )}
 
