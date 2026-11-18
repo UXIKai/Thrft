@@ -64,7 +64,6 @@ function WaveFlow() {
     const context = document.createElement('canvas').getContext('2d', { willReadFrequently: true })
     const motion = window.matchMedia('(prefers-reduced-motion: reduce)')
     let frame
-    let startedAt
     let lastPaint = -Infinity
     let visible = false
     let colors
@@ -142,9 +141,8 @@ function WaveFlow() {
       renderer.paint(profile, colors, fold)
     }
     const tick = (now) => {
-      if (startedAt === undefined) startedAt = now
       if (now - lastPaint >= 1000 / 30 - 1e-6) {
-        paint(now - startedAt)
+        paint(now)
         lastPaint = now
       }
       frame = requestAnimationFrame(tick)
@@ -155,7 +153,6 @@ function WaveFlow() {
       if (motion.matches) {
         paint(0)
       } else if (visible && !document.hidden) {
-        startedAt = undefined
         lastPaint = -Infinity
         frame = requestAnimationFrame(tick)
       }
@@ -169,7 +166,7 @@ function WaveFlow() {
       light.setAttribute('y2', portrait ? '1440' : '0')
       if (contextLost) return
       profile = renderer.resize(width, height)
-      paint(0)
+      paint(motion.matches ? 0 : performance.now())
     }
     const onContextLost = (event) => {
       event.preventDefault()
