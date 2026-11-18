@@ -92,13 +92,7 @@ void main() {
     glow += tint * k;
     total += k;
   }
-  vec2 cell = floor(gl_FragCoord.xy / 5.0);
-  float seed = hash(cell);
-  vec2 local = fract(gl_FragCoord.xy / 5.0) - 0.5;
-  float star = seed > 0.982 ? smoothstep(0.3, 0.0, length(local)) : 0.0;
-  star *= 0.55 + 0.45 * sin(time * (0.8 + seed * 2.0) + seed * 40.0);
   vec3 lit = base + glow * 0.85;
-  lit += vec3(0.8, 0.9, 1.0) * star * 0.6 * clamp(1.0 - total * 0.6, 0.0, 1.0);
   color = vec4(min(lit, vec3(1.0)), 1.0);
 }`
 
