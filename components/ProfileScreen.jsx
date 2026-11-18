@@ -1476,7 +1476,7 @@ export default function ProfileScreen({
             </div>
           )}
           {spaceTab === 'stylst' ? (
-            <StylstBoard />
+            <StylstBoard onOpenProduct={onOpenProduct} />
           ) : spaceTab !== 'closet' ? (
             (() => {
               const rows = spaceTab === 'store'

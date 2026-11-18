@@ -57,11 +57,12 @@ function updateDrum(track, tick) {
 }
 
 /** Outfit builder: swipe each row to try pieces together, or shuffle for a random outfit. */
-export default function StylstBoard() {
+export default function StylstBoard({ onOpenProduct }) {
   const [closet, setCloset] = useState(() => fetchClosetItems())
   const [store, setStore] = useState([])
   const tracks = useRef({})
-  const fileInputs = useRef({})
+  const fileInput = useRef(null)
+  const [pending, setPending] = useState(null)
 
   useEffect(() => {
     let active = true
@@ -74,6 +75,7 @@ export default function StylstBoard() {
     ...closet.map((item) => ({ ...item, key: `c-${item.id}`, label: item.brand || '', cutout: false })),
     ...store.map((p) => ({
       key: `s-${p.id}`,
+      product: p,
       category: p.clothingType,
       title: p.title,
       label: p.brandName || '',
@@ -102,22 +104,52 @@ export default function StylstBoard() {
     })
   }
 
-  async function onPicked(row, file) {
+  async function onPicked(file) {
     if (!file || !file.type?.startsWith('image/')) return
     try {
-      const imageUrl = await compressImage(file)
-      addClosetItem({ category: row.add, title: row.label, imageUrl })
-      setCloset(fetchClosetItems())
+      setPending(await compressImage(file))
     } catch (error) {
       window.alert(error?.message || 'Could not add that piece')
     }
   }
 
+  function savePending(row) {
+    addClosetItem({ category: row.add, title: row.label, imageUrl: pending })
+    setCloset(fetchClosetItems())
+    setPending(null)
+  }
+
   return (
     <div className="stylst" data-no-section-swipe>
-      <button type="button" className="stylst-shuffle is-bare" aria-label="Pick an outfit for me" onClick={shuffle}>
-        <RefreshIcon />
-      </button>
+      <div className="stylst-bar">
+        <button type="button" className="stylst-shuffle is-bare" aria-label="Add a clothing item" onClick={() => fileInput.current?.click()}>
+          <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M12 5v14M5 12h14" /></svg>
+        </button>
+        <button type="button" className="stylst-shuffle is-bare" aria-label="Pick an outfit for me" onClick={shuffle}>
+          <RefreshIcon />
+        </button>
+        <input
+          ref={fileInput}
+          className="profile-photo-file"
+          type="file"
+          accept="image/*"
+          tabIndex={-1}
+          onChange={(e) => {
+            const file = e.target.files?.[0]
+            e.target.value = ''
+            onPicked(file)
+          }}
+        />
+      </div>
+      {pending && (
+        <div className="stylst-pick" role="group" aria-label="What is this piece?">
+          <img src={pending} alt="" />
+          {ROWS.map((row) => (
+            <button key={row.id} type="button" className="stylst-pick-btn is-bare" onClick={() => savePending(row)}>{row.label}</button>
+          ))}
+          <button type="button" className="stylst-pick-btn is-bare" onClick={() => setPending(null)}>Cancel</button>
+        </div>
+      )}
       {ROWS.map((row) => {
         const list = rowItems(row)
         return (
@@ -125,32 +157,18 @@ export default function StylstBoard() {
             <div className="stylst-track" ref={(el) => { tracks.current[row.id] = el }}
               onScroll={(e) => updateDrum(e.currentTarget, () => navigator.vibrate?.(8))}>
               {list.map((item) => (
-                <div className="stylst-piece" key={item.key}>
+                <button
+                  type="button"
+                  className="stylst-piece is-bare"
+                  key={item.key}
+                  aria-label={item.title || row.label}
+                  onClick={() => item.product && onOpenProduct?.({ ...item.product, detailVariant: 'store' })}
+                >
                   <ProductPhoto src={item.imageUrl} cutout={item.cutout} alt={item.title || row.label} draggable={false} />
                   {item.label ? <span className="stylst-brand">{item.label}</span> : null}
-                </div>
+                </button>
               ))}
-              <button
-                type="button"
-                className="stylst-piece stylst-add is-bare"
-                aria-label={`Add ${row.label.toLowerCase()}`}
-                onClick={() => fileInputs.current[row.id]?.click()}
-              >
-                <svg width="28" height="28" viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M12 5v14M5 12h14" /></svg>
-              </button>
             </div>
-            <input
-              ref={(el) => { fileInputs.current[row.id] = el }}
-              className="profile-photo-file"
-              type="file"
-              accept="image/*"
-              tabIndex={-1}
-              onChange={(e) => {
-                const file = e.target.files?.[0]
-                e.target.value = ''
-                onPicked(row, file)
-              }}
-            />
           </div>
         )
       })}
