@@ -35,12 +35,14 @@ void main() {
   vec2 r = vec2(fbm(uv + 3.2 * q + vec2(1.7 + t * 1.3, 9.2)),
     fbm(uv + 3.2 * q + vec2(8.3, 2.8 - t)));
   float density = fbm(uv + 3.4 * r);
-  float smoke = smoothstep(0.36, 0.82, density);
-  smoke = pow(smoke, 1.6);
+  // Tall phone screens show less of the field, so open the smoke up a little
+  float tall = step(resolution.x, resolution.y);
+  float smoke = smoothstep(0.36 - 0.05 * tall, 0.82, density);
+  smoke = pow(smoke, 1.6 - 0.25 * tall);
   float core = smoothstep(0.55, 1.0, density + 0.35 * length(r - 0.5));
   float hue = clamp(r.x * 1.4, 0.0, 1.0);
   vec3 tint = mix(mix(tintA, tintB, hue), tintC, clamp(q.y * 1.2 - 0.2, 0.0, 1.0));
-  vec3 lit = tint * (0.55 + 0.9 * core);
+  vec3 lit = tint * (0.55 + 0.1 * tall + 0.9 * core);
   color = vec4(base + (lit - base) * smoke * 0.95, 1.0);
 }`
 
