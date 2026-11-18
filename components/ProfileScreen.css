@@ -3279,7 +3279,7 @@
   padding: 4px 4px 10px;
 }
 .profile-screen .pf-user-avatar-wrap {
-  grid-row: 1 / span 3;
+  grid-row: 1 / span 2;
   width: 72px;
   height: 72px;
   margin: 0;
@@ -3294,11 +3294,11 @@
 .profile-screen .profile-username-link { margin: 0; font-size: 0.82rem; }
 .profile-screen .profile-joined { grid-column: 2; margin: 2px 0 0; font-size: 0.7rem; }
 .profile-screen .profile-social {
-  grid-column: 2;
-  justify-content: flex-start;
-  width: auto;
-  margin-top: 8px;
-  gap: 20px;
+  grid-column: 1 / -1;
+  justify-content: center;
+  width: 100%;
+  margin-top: 12px;
+  gap: 28px;
 }
 .profile-screen .profile-social-rule { display: none; }
 .profile-screen .profile-social-cell { flex: none; align-items: flex-start; flex-direction: row; gap: 5px; align-items: baseline; }
