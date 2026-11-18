@@ -3254,3 +3254,14 @@
     clip-path: inset(0 round 44px);
   }
 }
+
+.profile-spaces-inline .profile-links-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  margin: 0 auto 4px;
+  padding: 0;
+  color: inherit;
+}

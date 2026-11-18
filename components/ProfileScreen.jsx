@@ -395,26 +395,10 @@ function LinkIcon() {
       <path
         fill="none"
         stroke="currentColor"
-        strokeWidth="1.55"
+        strokeWidth="1.8"
         strokeLinecap="round"
         strokeLinejoin="round"
-        d="M9.6 14.4 14.4 9.6"
-      />
-      <path
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.55"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M10.35 16.65 8.7 18.3a3.3 3.3 0 0 1-4.65-4.65l1.65-1.65"
-      />
-      <path
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.55"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M13.65 7.35 15.3 5.7a3.3 3.3 0 0 1 4.65 4.65l-1.65 1.65"
+        d="M10.2 13.8 13.8 10.2M9.4 6.4l1.7-1.7a4.1 4.1 0 0 1 5.8 5.8l-1.7 1.7M14.6 17.6l-1.7 1.7a4.1 4.1 0 0 1-5.8-5.8l1.7-1.7"
       />
     </svg>
   )
@@ -1305,6 +1289,14 @@ export default function ProfileScreen({
       </section>
 
       <section className="profile-block profile-spaces-inline" aria-label="Store, Closet and Market">
+        <button
+          type="button"
+          className="profile-links-btn is-bare"
+          aria-label="Links"
+          onClick={() => openProfileEditor('Links')}
+        >
+          <LinkIcon />
+        </button>
         <SectionSwiper
           sections={SPACE_MODES}
           value={spaceTab}
