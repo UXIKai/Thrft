@@ -3321,3 +3321,26 @@
 .profile-spaces-inline-body { gap: 2px; }
 .profile-screen .closet-browse { gap: 4px; }
 .profile-screen .closet-browse .closet-browse-wheels { margin-bottom: 0; }
+/* TikTok layout, mirrored: avatar left, name / link / counts stacked on the right */
+.profile-screen .profile-identity {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto auto;
+  align-content: center;
+  align-items: center;
+  justify-items: start;
+  column-gap: 18px;
+  row-gap: 4px;
+  text-align: left;
+  padding: 22px 6px 12px;
+}
+.profile-screen .pf-user-avatar-wrap { grid-column: 1; grid-row: 1 / span 3; width: 96px; height: 96px; margin: 0; }
+.profile-screen .pf-user-avatar { width: 96px; height: 96px; font-size: 1.8rem; }
+.profile-screen .profile-name-row .profile-name { grid-column: 2; grid-row: 1; order: 0; margin: 0; align-self: end; }
+.profile-screen .profile-username-link { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.01em; }
+.profile-screen .profile-name-row .profile-links-btn { grid-column: 2; grid-row: 2; order: 0; margin: 0; }
+.profile-screen .profile-social { grid-column: 2; grid-row: 3; order: 0; width: auto; justify-content: flex-start; margin-top: 6px; gap: 24px; align-self: start; }
+.profile-screen .profile-social-cell { flex-direction: column; align-items: flex-start; gap: 0; }
+.profile-screen .profile-social-n { font-size: 1.15rem; font-weight: 800; }
+.profile-screen .profile-social-l { font-size: 0.78rem; opacity: 0.6; }
+.profile-screen .profile-identity > .profile-username-link.is-empty { grid-column: 2; }
