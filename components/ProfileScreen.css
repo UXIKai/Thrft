@@ -3365,3 +3365,10 @@
 .profile-screen .profile-social-n { font-size: 1rem; }
 .profile-screen .profile-social-l { font-size: 0.72rem; }
 .profile-screen .profile-identity > .profile-username-link.is-empty { grid-column: 1; }
+/* Photo stays on the left, text on the right */
+.profile-screen .profile-identity { grid-template-columns: auto 1fr; }
+.profile-screen .pf-user-avatar-wrap { grid-column: 1; }
+.profile-screen .profile-name-row .profile-name,
+.profile-screen .profile-name-row .profile-links-btn,
+.profile-screen .profile-social,
+.profile-screen .profile-identity > .profile-username-link.is-empty { grid-column: 2; }
