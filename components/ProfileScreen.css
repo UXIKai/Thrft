@@ -3317,3 +3317,7 @@
 .profile-screen .profile-name-row .profile-name { order: -1; margin-bottom: 12px; }
 .profile-screen .profile-name-row .profile-links-btn { order: 1; margin-top: 2px; }
 .profile-screen .profile-social { order: 2; }
+/* Brand and Type sit right under the Closet word, as the first option */
+.profile-spaces-inline-body { gap: 2px; }
+.profile-screen .closet-browse { gap: 4px; }
+.profile-screen .closet-browse .closet-browse-wheels { margin-bottom: 0; }
