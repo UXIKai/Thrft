@@ -3377,3 +3377,12 @@
 .profile-screen .profile-social { grid-row: 2; justify-self: center; justify-content: center; margin-top: 2px; }
 .profile-screen .profile-social-cell { align-items: center; text-align: center; }
 .profile-screen .profile-name-row .profile-links-btn { grid-row: 3; justify-self: center; margin-top: 4px; }
+/* Pop-ups carry the effect-tinted page wash instead of letting the page behind show through */
+html body .stage .profile-links-layer .profile-links-scrim,
+html body .stage .profile-links-layer .profile-panel {
+  background: color-mix(in srgb, var(--page-bg) 88%, transparent) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+html body .stage .profile-links-layer .profile-links-scrim { background: var(--page-bg) !important; }
+.stage:has(.profile-links-layer) .settings-screen > :is(.settings-top, .settings-scroll) { visibility: hidden; }
