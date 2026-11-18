@@ -3354,3 +3354,14 @@
 .profile-screen .profile-social { margin-top: 2px; gap: 20px; }
 .profile-screen .profile-social-n { font-size: 0.95rem; }
 .profile-screen .profile-social-l { font-size: 0.68rem; }
+/* Match the TikTok reference: text on the left, photo on the right, counts in a row */
+.profile-screen .profile-identity { grid-template-columns: 1fr auto; padding: 14px 16px 6px; column-gap: 12px; }
+.profile-screen .pf-user-avatar-wrap { grid-column: 2; }
+.profile-screen .profile-name-row .profile-name,
+.profile-screen .profile-name-row .profile-links-btn,
+.profile-screen .profile-social { grid-column: 1; }
+.profile-screen .profile-username-link { font-size: 1.15rem; font-weight: 800; }
+.profile-screen .profile-social { gap: 22px; margin-top: 6px; }
+.profile-screen .profile-social-n { font-size: 1rem; }
+.profile-screen .profile-social-l { font-size: 0.72rem; }
+.profile-screen .profile-identity > .profile-username-link.is-empty { grid-column: 1; }
