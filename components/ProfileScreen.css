@@ -3265,3 +3265,42 @@
   padding: 0;
   color: inherit;
 }
+
+/* Compact header: small avatar beside the name and counts */
+.profile-screen .profile-identity {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  grid-template-rows: auto auto auto;
+  align-items: center;
+  column-gap: 16px;
+  row-gap: 0;
+  text-align: left;
+  padding: 4px 4px 10px;
+}
+.profile-screen .pf-user-avatar-wrap {
+  grid-row: 1 / span 3;
+  width: 72px;
+  height: 72px;
+  margin: 0;
+}
+.profile-screen .pf-user-avatar {
+  width: 72px;
+  height: 72px;
+  font-size: 1.4rem;
+}
+.profile-screen .profile-name-row { grid-column: 2; justify-self: start; align-self: end; }
+.profile-screen .profile-identity > .profile-username-link.is-empty { grid-column: 2; justify-self: start; }
+.profile-screen .profile-username-link { margin: 0; font-size: 0.82rem; }
+.profile-screen .profile-joined { grid-column: 2; margin: 2px 0 0; font-size: 0.7rem; }
+.profile-screen .profile-social {
+  grid-column: 2;
+  justify-content: flex-start;
+  width: auto;
+  margin-top: 8px;
+  gap: 20px;
+}
+.profile-screen .profile-social-rule { display: none; }
+.profile-screen .profile-social-cell { flex: none; align-items: flex-start; flex-direction: row; gap: 5px; align-items: baseline; }
+.profile-screen .profile-social-n { font-size: 0.95rem; }
+.profile-screen .profile-social-l { font-size: 0.72rem; }
+.profile-screen .profile-spaces-inline .profile-links-btn { width: 28px; height: 28px; margin: 0 auto; }
