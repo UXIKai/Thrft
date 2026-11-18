@@ -1553,7 +1553,8 @@
 
 /* Desktop has no on-screen keyboard: the bar always sits on the bottom edge */
 @media (hover: hover) and (pointer: fine) {
-  .chat-compose { bottom: 20px; }
+  .chat-compose { bottom: 28px; }
+  .chat-thread-scroll { padding-bottom: 112px; }
 }
 
 .chat-compose-attach {
