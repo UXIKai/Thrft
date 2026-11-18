@@ -7,7 +7,7 @@ import {
 } from '../printful.js'
 import { createCheckoutSession, estimateCheckout, getCheckoutSession, handleStripeWebhook,
   getStripeCheckoutConfig } from '../stripeCheckout.js'
-import { fetchPublicAccount, fetchSocialProfile, saveSocialProfile,
+import { searchPublicAccounts, fetchPublicAccount, fetchSocialProfile, saveSocialProfile,
   fetchSocialSaved, saveSocialSaved, fetchLeaderboard } from './socialStore.js'
 import { fetchOrders } from './orders.js'
 import { collectExternalProducts } from './externalBrands.js'
@@ -198,6 +198,10 @@ export async function handleCreatorApi(req, res) {
       } else if (url.searchParams.get('brand')) query = query.eq('brand', url.searchParams.get('brand'))
       send(res, 200, { products: checked(await query.order('created_at', { ascending: false }).limit(240))
         .map(mapCreatorProduct) })
+      return true
+    }
+    if (path === '/api/creator/accounts' && req.method === 'GET') {
+      send(res, 200, { accounts: await searchPublicAccounts(url.searchParams.get('q')) })
       return true
     }
     const accountMatch = path.match(/^\/api\/creator\/accounts\/([^/]+)$/)

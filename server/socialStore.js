@@ -21,6 +21,16 @@ function accountFromRow(row) {
     followingCount: Number(row.following_count), followerCount: Number(row.follower_count) }
 }
 
+export async function searchPublicAccounts(query) {
+  const term = String(query || '').trim().replace(/^@/, '').toLowerCase().replace(/[^a-z0-9_ ]/g, '').slice(0, 64)
+  if (!term) return []
+  const rows = checked(await getAdminSupabase().from('creator_public_profiles')
+    .select('username, display_name, avatar_url')
+    .or(`username.ilike.%${term}%,display_name.ilike.%${term}%`)
+    .order('username').limit(36))
+  return rows.map((row) => ({ username: row.username, displayName: row.display_name, avatarUrl: row.avatar_url }))
+}
+
 export async function fetchPublicAccount(username) {
   const db = getAdminSupabase()
   const row = checked(await db.from('creator_public_profiles').select('*')

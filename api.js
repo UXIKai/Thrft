@@ -363,7 +363,7 @@ export async function fetchOrders(kind) {
 }
 
 export async function searchAccounts(query) {
-  const data = await api(`/api/accounts?q=${encodeURIComponent(query)}`)
+  const data = await api(`/api/${isSupabaseConfigured() ? 'creator/' : ''}accounts?q=${encodeURIComponent(query)}`)
   if (!Array.isArray(data.accounts)) throw new Error('Invalid account search response')
   return data.accounts
 }
