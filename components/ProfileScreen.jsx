@@ -448,6 +448,7 @@ const SPACE_MODES = [
   { id: 'store', label: 'Store' },
   { id: 'closet', label: 'Closet' },
   { id: 'market', label: 'Market' },
+  { id: 'stylst', label: 'Stylst' },
 ]
 
 export default function ProfileScreen({
@@ -511,7 +512,7 @@ export default function ProfileScreen({
     setClosetSplit(false)
     setClosetSelected(null)
   }
-  const [spaceTab, setSpaceTab] = useState('closet') // 'store' | 'market' | 'closet'
+  const [spaceTab, setSpaceTab] = useState('closet') // 'store' | 'market' | 'closet' | 'stylst'
   const [panelListingTab, setPanelListingTab] = useState('active')
   const [storeProducts, setStoreProducts] = useState([])
   const [marketListings, setMarketListings] = useState([])
@@ -1438,12 +1439,12 @@ export default function ProfileScreen({
           sections={SPACE_MODES}
           value={spaceTab}
           onChange={switchSpace}
-          label="Closet, Store and Market"
-          onHold={onAddProduct}
+          label="Closet, Store, Market and Stylst"
+          onHold={spaceTab === 'stylst' ? undefined : onAddProduct}
           idPrefix="profile-space"
           className="profile-spaces-inline-body"
         >
-          {spaceTab !== 'closet' && (
+          {spaceTab !== 'closet' && spaceTab !== 'stylst' && (
             <div
               className="profile-listing-tabs is-panel"
               role="tablist"
@@ -1473,7 +1474,11 @@ export default function ProfileScreen({
               </button>
             </div>
           )}
-          {spaceTab !== 'closet' ? (
+          {spaceTab === 'stylst' ? (
+            <div className="pf-empty-state">
+              <EmptyBoxIcon />
+            </div>
+          ) : spaceTab !== 'closet' ? (
             (() => {
               const rows = spaceTab === 'store'
                 ? storeProducts.filter((p) => p.status === panelListingTab)
