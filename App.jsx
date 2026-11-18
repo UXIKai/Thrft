@@ -732,6 +732,8 @@ export default function App() {
 
         {tab === 'chat' && (
           <ChatScreen
+            key={account?.id || 'guest'}
+            accountId={account?.id}
             onBack={() => setTab('home')}
             onThreadActiveChange={setChatThreadOpen}
             onOpenAccount={(username) => {

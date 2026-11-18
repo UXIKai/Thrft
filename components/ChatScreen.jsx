@@ -76,9 +76,13 @@ function normalizeChat(chat) {
   return { ...chat, messages }
 }
 
-function readStoredChats() {
+function chatsKey(accountId) {
+  return accountId ? `${CHATS_KEY}:${accountId}` : CHATS_KEY
+}
+
+function readStoredChats(accountId) {
   try {
-    const raw = localStorage.getItem(CHATS_KEY)
+    const raw = localStorage.getItem(chatsKey(accountId))
     if (!raw) return []
     const parsed = JSON.parse(raw)
     if (!Array.isArray(parsed)) return []
@@ -88,9 +92,9 @@ function readStoredChats() {
   }
 }
 
-function writeStoredChats(list) {
+function writeStoredChats(list, accountId) {
   try {
-    localStorage.setItem(CHATS_KEY, JSON.stringify(Array.isArray(list) ? list : []))
+    localStorage.setItem(chatsKey(accountId), JSON.stringify(Array.isArray(list) ? list : []))
   } catch {
     /* ignore */
   }
@@ -584,8 +588,9 @@ export default function ChatScreen({
   onOpenAccount,
   onFollowChange,
   onThreadActiveChange,
+  accountId,
 } = {}) {
-  const [chats, setChats] = useState(() => readStoredChats())
+  const [chats, setChats] = useState(() => readStoredChats(accountId))
   const [isDesktop, setIsDesktop] = useState(
     () => typeof window !== 'undefined' && window.matchMedia('(min-width: 720px) and (min-height: 500px)').matches,
   )
@@ -833,8 +838,8 @@ export default function ChatScreen({
   }, [friends, friendsTab, friendsQuery, allMemberNames])
 
   useEffect(() => {
-    writeStoredChats(chats)
-  }, [chats])
+    writeStoredChats(chats, accountId)
+  }, [chats, accountId])
 
   useEffect(() => {
     onThreadActiveChange?.(Boolean(activeChatId))
