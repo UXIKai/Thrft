@@ -1,5 +1,7 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { addClosetItem, fetchClosetItems } from '../closet.js'
+import { fetchStoreProducts } from '../api.js'
+import ProductPhoto from './ProductPhoto.jsx'
 import { compressImage } from '../profileMedia.js'
 import './StylstBoard.css'
 
@@ -56,9 +58,29 @@ function updateDrum(track, tick) {
 
 /** Outfit builder: swipe each row to try pieces together, or shuffle for a random outfit. */
 export default function StylstBoard() {
-  const [items, setItems] = useState(() => fetchClosetItems())
+  const [closet, setCloset] = useState(() => fetchClosetItems())
+  const [store, setStore] = useState([])
   const tracks = useRef({})
   const fileInputs = useRef({})
+
+  useEffect(() => {
+    let active = true
+    fetchStoreProducts().then((products) => { if (active) setStore(products) }).catch(() => {})
+    return () => { active = false }
+  }, [])
+
+  // Closet pieces are already cutouts; store listings get their background removed on display.
+  const items = useMemo(() => [
+    ...closet.map((item) => ({ ...item, key: `c-${item.id}`, label: item.brand || '', cutout: false })),
+    ...store.map((p) => ({
+      key: `s-${p.id}`,
+      category: p.clothingType,
+      title: p.title,
+      label: p.brandName || '',
+      imageUrl: p.mockupUrls?.[0] || p.photoUrl,
+      cutout: true,
+    })),
+  ], [closet, store])
 
   useEffect(() => {
     // Start each row on its first piece, not the add tile.
@@ -69,7 +91,8 @@ export default function StylstBoard() {
   }, [items])
 
   function rowItems(row) {
-    return items.filter((item) => row.categories.includes(item.category))
+    const wanted = row.categories.map((c) => c.toLowerCase())
+    return items.filter((item) => item.imageUrl && wanted.includes(String(item.category).toLowerCase()))
   }
 
   function shuffle() {
@@ -84,7 +107,7 @@ export default function StylstBoard() {
     try {
       const imageUrl = await compressImage(file)
       addClosetItem({ category: row.add, title: row.label, imageUrl })
-      setItems(fetchClosetItems())
+      setCloset(fetchClosetItems())
     } catch (error) {
       window.alert(error?.message || 'Could not add that piece')
     }
@@ -102,10 +125,9 @@ export default function StylstBoard() {
             <div className="stylst-track" ref={(el) => { tracks.current[row.id] = el }}
               onScroll={(e) => updateDrum(e.currentTarget, () => navigator.vibrate?.(8))}>
               {list.map((item) => (
-                <div className="stylst-piece" key={item.id}>
-                  {item.imageUrl
-                    ? <img src={item.imageUrl} alt={item.title || row.label} draggable={false} />
-                    : <span>{item.title || item.category}</span>}
+                <div className="stylst-piece" key={item.key}>
+                  <ProductPhoto src={item.imageUrl} cutout={item.cutout} alt={item.title || row.label} draggable={false} />
+                  {item.label ? <span className="stylst-brand">{item.label}</span> : null}
                 </div>
               ))}
               <button

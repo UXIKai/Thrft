@@ -18,4 +18,6 @@
   background: var(--pf-card-2, rgba(255, 255, 255, 0.06));
 }
 .stylst-piece img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.stylst-piece { position: relative; }
+.stylst-brand { position: absolute; left: 0; right: 0; bottom: 4px; font: 600 0.62rem var(--pf, inherit); opacity: .75; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; padding: 0 6px; pointer-events: none; }
 .stylst-add { border: 1px dashed var(--pf-line, rgba(255, 255, 255, 0.2)); color: var(--pf-ink, currentColor); }
