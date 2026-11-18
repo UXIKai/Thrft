@@ -473,6 +473,7 @@ export default function ProfileScreen({
   const [media, setMedia] = useState(() => readProfileMedia(mediaOwner))
   const [viewPhoto, setViewPhoto] = useState(null)
   const postInputRef = useRef(null)
+  const photosRef = useRef(null)
   useEffect(() => { setMedia(readProfileMedia(mediaOwner)) }, [mediaOwner])
   const [closetPeople, setClosetPeople] = useState(null)
   const [closetPickOpen, setClosetPickOpen] = useState(false)
@@ -1379,6 +1380,14 @@ export default function ProfileScreen({
             <span className="profile-social-n">{Number.isInteger(userProfile?.followerCount) ? userProfile.followerCount : '-'}</span>
             <span className="profile-social-l">Followers</span>
           </button>
+          <button
+            type="button"
+            className="profile-photos-jump is-bare"
+            aria-label="Photos"
+            onClick={() => photosRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+          >
+            <GalleryIcon />
+          </button>
         </div>
       </section>
 
@@ -1387,7 +1396,7 @@ export default function ProfileScreen({
           onClose={() => setFollowSheet(null)} onOpenAccount={onOpenAccount} />
       )}
 
-      <section className="pf-photos" aria-label="Photos">
+      <section ref={photosRef} className="pf-photos" aria-label="Photos">
         <input
           ref={postInputRef}
           className="profile-photo-file"
