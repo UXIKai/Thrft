@@ -1492,6 +1492,8 @@ export default function SettingsScreen({
         setSheet(null)
         setSizeBrandFocus(null)
       }, 350)
+    } catch (err) {
+      setSaveNote(err?.message || 'Could not save')
     } finally {
       setSaveBusy(false)
     }

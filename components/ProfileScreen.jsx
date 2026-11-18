@@ -574,6 +574,7 @@ export default function ProfileScreen({
   const [nameSheetOpen, setNameSheetOpen] = useState(false)
   const [nameDraft, setNameDraft] = useState('')
   const [accountEmailDraft, setAccountEmailDraft] = useState('')
+  const [accountNameDraft, setAccountNameDraft] = useState('')
   const [accountUsernameDraft, setAccountUsernameDraft] = useState('')
   const [accountPasswordDraft, setAccountPasswordDraft] = useState('')
   const [accountEditNote, setAccountEditNote] = useState('')
@@ -1000,6 +1001,7 @@ export default function ProfileScreen({
     setAccountUsernameDraft(
       String(account?.username || userProfile?.username || '').replace(/^@+/, ''),
     )
+    setAccountNameDraft(String(userProfile?.displayName || account?.displayName || ''))
     setAccountPasswordDraft('')
     setAccountEditNote('')
     setMusicSheet(null)
@@ -1051,7 +1053,8 @@ export default function ProfileScreen({
         }
         setAccountPasswordDraft('')
       }
-      await onSaveProfile?.({ username })
+      const displayName = accountNameDraft.trim()
+      await onSaveProfile?.({ username, ...(displayName ? { displayName } : {}) })
       setAccountEditNote('')
       closeLinks()
     } catch (err) {
@@ -1998,6 +2001,18 @@ export default function ProfileScreen({
                     autoCorrect="off"
                     spellCheck={false}
                     onChange={(e) => setAccountUsernameDraft(e.target.value.replace(/^@+/, ''))}
+                  />
+                </label>
+                <label className="profile-name-field">
+                  <span className="profile-name-field-mark" aria-hidden>
+                    <PersonIcon />
+                  </span>
+                  <input
+                    value={accountNameDraft}
+                    aria-label="Name"
+                    placeholder="Name"
+                    autoComplete="name"
+                    onChange={(e) => setAccountNameDraft(e.target.value)}
                   />
                 </label>
                 <label className="profile-name-field">
