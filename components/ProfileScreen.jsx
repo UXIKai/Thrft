@@ -47,25 +47,9 @@ function CameraBadge() {
 function GalleryIcon() {
   return (
     <svg viewBox="0 0 24 24" aria-hidden>
-      <rect
-        x="4.2"
-        y="5.2"
-        width="15.6"
-        height="13.6"
-        rx="2"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.6"
-      />
-      <circle cx="9" cy="10.2" r="1.5" fill="currentColor" />
-      <path
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="m5.8 16.4 3.6-3.4 2.4 2.2 3-3.2 3.4 4.4"
-      />
+      <rect x="3.5" y="3.5" width="17" height="17" rx="3" fill="none" stroke="currentColor" strokeWidth="1.7" />
+      <circle cx="9" cy="9" r="1.6" fill="currentColor" />
+      <path fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" d="m4.5 17 4.2-4.2 3 3 3.3-3.8 4.5 5" />
     </svg>
   )
 }
@@ -96,8 +80,11 @@ function compressImageFile(file, maxSize = 240) {
 
 function ShirtIcon() {
   return (
-    <svg viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" strokeLinecap="round">
-      <path d="M8.5 4 3.5 6.5l1.8 4.2 2.2-.9V20h9V9.8l2.2.9 1.8-4.2L15.5 4c-.4 1.3-1.9 2.2-3.5 2.2S8.9 5.3 8.5 4z" />
+    <svg viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round" strokeLinecap="round">
+      <path d="M6.2 5.5H3.8A2.3 2.3 0 0 0 1.5 7.8v0A2.3 2.3 0 0 0 3.8 10.1h16.4a2.3 2.3 0 0 0 2.3-2.3v0a2.3 2.3 0 0 0-2.3-2.3H18" />
+      <rect x="1.5" y="10.4" width="21" height="4.6" rx="2.3" />
+      <rect x="1.5" y="15.3" width="21" height="4.6" rx="2.3" />
+      <path d="M8 4h8l1.7 1.6-3.2 2.3L12 9.4l-2.5-1.5-3.2-2.3zM12 7.4l2.3 2M12 7.4l-2.1 2" />
     </svg>
   )
 }
