@@ -1260,7 +1260,7 @@ export default function ProfileScreen({
           <p className="profile-name">
             {(account?.username || userProfile?.username) ? (
               <button type="button" className="profile-username-link is-bare" onClick={() => onOpenAccountPage?.()}>
-                @{account?.username || userProfile?.username}
+                {account?.username || userProfile?.username}
               </button>
             ) : 'Member'}
             {userProfile?.identityStatus === 'verified' && (
