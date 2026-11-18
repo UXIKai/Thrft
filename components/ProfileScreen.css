@@ -3246,8 +3246,11 @@
   html body .stage.is-settings-committing > .app-column {
     transform: translateX(-105%);
   }
+  /* An explicit clip keeps the animated canvas inside the rounded corners and rim (Safari ignores overflow clipping for composited children) */
   .settings-peek-atmosphere {
     z-index: -1;
     filter: brightness(0.8);
+    border-radius: 44px;
+    clip-path: inset(0 round 44px);
   }
 }

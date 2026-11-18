@@ -5392,6 +5392,10 @@ html body .chat-thread-scroll > .chat-thread-body {
     z-index: -1;
     filter: brightness(0.8);
   }
+  html body .chat-screen:is(.is-mobile-nav-open, .is-online-open) .chat-main-page > .chat-page-atmosphere {
+    border-radius: 44px;
+    clip-path: inset(0 round 44px);
+  }
   html body .chat-screen .chat-main-page {
     position: absolute;
     inset: 0;
