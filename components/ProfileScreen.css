@@ -3389,36 +3389,42 @@ html body .stage .profile-links-layer .profile-links-scrim { background: var(--p
 html body .profile-screen .profile-username-link,
 html body .profile-screen .profile-username-link:hover { text-decoration: none !important; border-bottom: 0 !important; box-shadow: none !important; }
 
-/* X-style header + Instagram-style photo grid */
-.profile-identity { align-items: stretch; text-align: left; padding: 0 0 14px; }
-.pf-x-banner {
-  position: relative; display: block; width: calc(100% + 2 * var(--pf-pad-x));
+/* X-style header + Instagram-style photo grid (scoped to beat the compact-header overrides above) */
+.profile-screen .profile-identity {
+  display: flex; flex-direction: column; align-items: stretch; text-align: left; padding: 0 0 14px;
+}
+.profile-screen .pf-x-banner {
+  display: block; flex: none; width: calc(100% + 2 * var(--pf-pad-x));
   margin: 0 calc(-1 * var(--pf-pad-x)); height: 120px; padding: 0; overflow: hidden;
   border: 0; border-radius: 0;
   background: light-dark(rgba(0, 0, 0, 0.08), rgba(255, 255, 255, 0.1));
 }
 .pf-x-banner img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.pf-x-head { display: flex; align-items: flex-end; justify-content: space-between; margin-top: -36px; }
-.pf-x-head .pf-user-avatar-wrap { margin-bottom: 0; width: 84px; height: 84px; }
-.pf-x-head .pf-user-avatar {
+.profile-screen .pf-x-head { display: flex; align-items: flex-end; justify-content: space-between; margin-top: -36px; padding: 0 2px; }
+.profile-screen .pf-x-head .pf-user-avatar-wrap { width: 84px; height: 84px; margin: 0; }
+.profile-screen .pf-x-head .pf-user-avatar {
   width: 84px; height: 84px; border: 3px solid var(--page-bg, #000);
   backdrop-filter: none; -webkit-backdrop-filter: none;
 }
-.pf-x-edit {
-  margin-bottom: 4px; padding: 7px 16px; border-radius: 999px; font: 700 0.85rem var(--pf);
-  color: var(--pf-ink); border: 1px solid var(--pf-line);
+.profile-screen .pf-x-edit {
+  margin-bottom: 4px; padding: 7px 16px; border-radius: 999px; white-space: nowrap;
+  font: 700 0.85rem var(--pf); color: var(--pf-ink); border: 1px solid var(--pf-line);
 }
-.profile-identity .profile-name-row { justify-content: flex-start; margin-top: 10px; }
+.profile-screen .profile-identity .profile-name-row {
+  order: 0; flex-direction: row; justify-content: flex-start; margin: 10px 0 0; gap: 8px;
+}
 .profile-display-name {
   margin: 0; display: inline-flex; align-items: center; gap: 6px;
   font: 800 1.35rem var(--pf); letter-spacing: -0.02em; color: var(--pf-ink);
 }
-.profile-handle { align-self: flex-start; padding: 0; font: 400 0.95rem var(--pf); color: var(--pf-mute-2); }
-.profile-identity .profile-social { justify-content: flex-start; margin-top: 10px; }
+.profile-screen .profile-handle { align-self: flex-start; padding: 0; font: 400 0.95rem var(--pf); color: var(--pf-mute-2); }
+.profile-screen .profile-identity .profile-social { justify-content: flex-start; margin-top: 10px; gap: 18px; }
 .pf-photos { margin: 4px calc(-1 * var(--pf-pad-x)) 14px; }
 .pf-photos-head { padding: 8px var(--pf-pad-x); font: 700 0.9rem var(--pf); color: var(--pf-mute-2); border-top: 1px solid var(--pf-line); }
 .pf-photos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
-.pf-photo-tile, .pf-photo-add { aspect-ratio: 1; padding: 0; border: 0; border-radius: 0; overflow: hidden; display: grid; place-items: center; color: var(--pf-ink); background: var(--pf-card-2); }
+.profile-screen .pf-photo-tile, .profile-screen .pf-photo-add { width: 100%; aspect-ratio: 1; padding: 0; border: 0; border-radius: 0; overflow: hidden; display: grid; place-items: center; color: var(--pf-ink); background: var(--pf-card-2); }
 .pf-photo-tile img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .pf-photo-full { max-width: 100%; max-height: 80%; object-fit: contain; border-radius: 12px; }
 .pf-photo-delete { position: absolute; left: 50%; bottom: calc(28px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); padding: 10px 22px; border-radius: 999px; font: 700 0.95rem var(--pf); color: #ff453a; }
+.profile-screen .profile-identity .profile-name-row .profile-links-btn { margin: 0; flex: none; }
+.profile-screen .profile-identity .profile-name-row { flex-wrap: nowrap; }
