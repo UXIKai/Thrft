@@ -3586,12 +3586,12 @@ html body .pf-comment .pf-comment-like.is-liked { color: #ff5a6e; }
 .pf-comments { max-height: min(72vh, 100%); transition: height 0.2s ease; }
 
 /* Top-right buttons: identical box on one line, so their icons share a centre. */
-html body .profile-screen > .profile-menu-btn {
-  top: 6px !important; margin: 0 !important; translate: none !important; transform: none !important;
+html body .profile-screen .pf-top-actions .profile-menu-btn {
+  position: static !important; top: auto !important; right: auto !important; margin: 0 !important; translate: none !important; transform: none !important;
   width: 44px !important; height: 44px !important; padding: 0 !important; display: grid !important; place-items: center !important;
 }
-html body .profile-screen > .profile-menu-btn svg { width: 24px !important; height: 24px !important; display: block; }
-html body .app-column.is-profile-wide .profile-screen > .profile-menu-btn { top: 12px !important; }
+html body .profile-screen .pf-top-actions .profile-menu-btn svg { width: 24px !important; height: 24px !important; display: block; }
+html body .app-column.is-profile-wide .profile-screen .pf-top-actions { top: 12px; right: 14px; }
 
 /* Icon buttons above Following/Followers, bottom-right, level with the @handle; photo and name sit lower */
 .profile-screen .profile-identity { position: relative; }
@@ -3606,13 +3606,12 @@ html body .app-column.is-profile-wide .profile-screen > .profile-menu-btn { top:
 .profile-screen .profile-name-row { display: flex; align-items: center; gap: 4px; }
 .profile-screen .pf-name-link { flex: none; width: 32px; height: 32px; }
 
-/* Whole profile top in an opaque card like the navigation bar */
-html body .profile-screen .profile-identity {
-  margin: 6px 0 8px;
-  padding: 14px 16px 12px;
-  border-radius: 28px;
+/* Share and menu buttons share one opaque pill, like the navigation bar */
+html body .profile-screen .pf-top-actions {
+  position: absolute; top: 6px; right: calc(var(--pf-pad-x) - 8px); z-index: 7;
+  display: flex; align-items: center; padding: 2px 4px;
+  border-radius: 999px;
   border: 1px solid light-dark(rgba(0, 0, 0, 0.3), rgba(255, 255, 255, 0.08));
   background: var(--page-bg);
   box-shadow: 0 4px 14px light-dark(rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.25));
 }
-html body .profile-screen .profile-identity .profile-social { right: 16px; bottom: 21px; }
