@@ -1,4 +1,4 @@
-const CACHE_NAME = 'thrft-mockup-cutouts-v7'
+const CACHE_NAME = 'thrft-mockup-cutouts-v8'
 // Only photos that are already PNGs skip removal; a .jpg/.jpeg from any feed is always processed.
 function isPngUrl(url) {
   try { return /\.png$/i.test(new URL(url, globalThis.location?.href).pathname) } catch { return false }
@@ -54,9 +54,25 @@ async function cacheWrite(url, image) {
   await cache.put(url, new Response(image, { headers: { 'Content-Type': 'text/plain' } }))
 }
 
+// Cross-origin photos (Shopify/Printful CDNs) are fetched through our backend to avoid CORS blocks.
+async function fetchMockup(url) {
+  const options = { mode: 'cors', signal: AbortSignal.timeout(20000) }
+  let remote = false
+  try { remote = new URL(url, globalThis.location?.href).origin !== globalThis.location?.origin } catch { /* relative */ }
+  if (!remote) return fetch(url, options)
+  try {
+    const direct = await fetch(url, options)
+    if (direct.ok) return direct
+    console.warn('Direct photo fetch failed, using proxy:', url, direct.status)
+  } catch (error) {
+    console.warn('Direct photo fetch blocked (CORS?), using proxy:', url, error)
+  }
+  return fetch(`/api/brands/proxy?url=${encodeURIComponent(url)}`, { ...options, signal: AbortSignal.timeout(20000) })
+}
+
 async function processMockup(url) {
   if (isPngUrl(url)) return url
-  const response = await fetch(url, { mode: 'cors', signal: AbortSignal.timeout(20000) })
+  const response = await fetchMockup(url)
   if (!response.ok) throw new Error(`Could not load mockup (${response.status})`)
   const image = await response.blob()
   if (!image.type.startsWith('image/')) throw new Error('Mockup is not an image')

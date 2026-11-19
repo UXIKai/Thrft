@@ -173,6 +173,20 @@ export async function handleCreatorApi(req, res) {
       send(res, 200, getStripeCheckoutConfig())
       return true
     }
+    if (path === '/api/brands/proxy' && req.method === 'GET') {
+      const target = publicHttpsUrl(url.searchParams.get('url') || '')
+      const host = target.hostname.toLowerCase()
+      if (!/(^|\.)(shopify\.com|myshopify\.com|shopifycdn\.com|printful\.com)$/.test(host)) fail('Image host is not allowed', 403)
+      const image = await fetchPublicHttps(target.href, { maxBytes: 8 * 1024 * 1024 })
+      const type = String(image.headers['content-type'] || '').split(';')[0].toLowerCase()
+      if (image.status !== 200 || !['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/avif'].includes(type)) {
+        fail('Could not load product image', 502)
+      }
+      res.writeHead(200, { 'Content-Type': type, 'X-Content-Type-Options': 'nosniff',
+        'Cache-Control': 'public, max-age=86400' })
+      res.end(image.body)
+      return true
+    }
     if (path === '/api/brands/image' && req.method === 'GET') {
       const id = url.searchParams.get('id') || ''
       if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) fail('Invalid product ID')
