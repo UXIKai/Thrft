@@ -471,6 +471,16 @@ export default function ProfileScreen({
   const [viewPhoto, setViewPhoto] = useState(null)
   const postInputRef = useRef(null)
   const [profileView, setProfileView] = useState('closet')
+  useEffect(() => {
+    // Double-tapping the shuriken adds a photo while the photos grid is showing.
+    if (profileView === 'closet') return undefined
+    const add = (e) => {
+      e.detail.handled = true
+      postInputRef.current?.click()
+    }
+    window.addEventListener('thrft:stylst-add', add)
+    return () => window.removeEventListener('thrft:stylst-add', add)
+  }, [profileView])
   useEffect(() => { setMedia(readProfileMedia(mediaOwner)) }, [mediaOwner])
   const [closetPeople, setClosetPeople] = useState(null)
   const [closetPickOpen, setClosetPickOpen] = useState(false)
@@ -1215,15 +1225,6 @@ export default function ProfileScreen({
         onClick={() => { setSettingsInstant(false); setSettingsOpen(true) }}
       >
         <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
-      </button>
-      <button
-        type="button"
-        className="profile-menu-btn profile-top-btn is-add is-bare"
-        aria-label="Add photo"
-        onMouseDown={holdScroll}
-        onClick={() => postInputRef.current?.click()}
-      >
-        <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M12 5v14M5 12h14" /></svg>
       </button>
       <button
         type="button"

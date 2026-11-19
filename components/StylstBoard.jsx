@@ -167,6 +167,9 @@ export default function StylstBoard({ onOpenProduct }) {
   return (
     <div className="stylst" ref={root} data-no-section-swipe>
       <div className="stylst-bar">
+        <button type="button" className="stylst-shuffle is-bare" aria-label="Add a clothing item or brand catalog" onClick={() => setMenu((m) => (m ? null : 'add'))}>
+          <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M12 5v14M5 12h14" /></svg>
+        </button>
         <button type="button" className="stylst-shuffle is-bare" aria-label="Pick an outfit for me" onClick={shuffle}>
           <RefreshIcon />
         </button>
