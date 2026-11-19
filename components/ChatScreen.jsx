@@ -2889,8 +2889,6 @@ export default function ChatScreen({
             </div>
   ) : null
 
-  if (activeChat && !isDesktop) return renderThread()
-
   const friendsPanel = (
   <div className="chat-friends-panel">
     <input
@@ -2983,9 +2981,19 @@ export default function ChatScreen({
     </aside>
   )
 
+  const threadOverlay = activeChat && !isDesktop
   return (
+    <>
+    {threadOverlay && (
+      <div className="chat-thread-overlay">
+        <div className="atmosphere chat-page-atmosphere" aria-hidden="true">
+          <AtmosphereFlow />
+        </div>
+        {renderThread()}
+      </div>
+    )}
     <div
-      className={`chat-screen${isDesktop && friendsDrawerOpen ? ' is-friends-open' : ''}${composer?.mode === 'create' ? ' is-new-chat' : ''}${isDesktop ? ' is-desktop' : ''}${isDesktop && sidebarCollapsed ? ' is-sidebar-collapsed' : ''}${!isDesktop && (mobileNavOpen || (navDragP ?? 0) > 0.01) ? ' is-mobile-nav-open' : ''}${navDragP !== null || onlineDragP !== null ? ' is-nav-dragging' : ''}${!isDesktop && (activeNowOpen || onlineDragP !== null) ? ' is-online-open' : ''}`}
+      className={`chat-screen${threadOverlay ? ' is-behind-thread' : ''}${isDesktop && friendsDrawerOpen ? ' is-friends-open' : ''}${composer?.mode === 'create' ? ' is-new-chat' : ''}${isDesktop ? ' is-desktop' : ''}${isDesktop && sidebarCollapsed ? ' is-sidebar-collapsed' : ''}${!isDesktop && (mobileNavOpen || (navDragP ?? 0) > 0.01) ? ' is-mobile-nav-open' : ''}${navDragP !== null || onlineDragP !== null ? ' is-nav-dragging' : ''}${!isDesktop && (activeNowOpen || onlineDragP !== null) ? ' is-online-open' : ''}`}
       style={!isDesktop ? { '--nav-p': navDragP ?? (mobileNavOpen ? 1 : 0), '--online-p': onlineDragP ?? (activeNowOpen ? 1 : 0) } : undefined}
       onTouchStart={(e) => {
         if (isDesktop || e.touches.length !== 1 || e.target.closest?.('input,textarea,select')) return
@@ -3942,5 +3950,6 @@ export default function ChatScreen({
         />
       )}
     </div>
+    </>
   )
 }

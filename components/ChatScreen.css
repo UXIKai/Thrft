@@ -5636,3 +5636,19 @@ html body .chat-screen.is-desktop.is-sidebar-collapsed::before { transform: tran
   white-space: nowrap;
   opacity: 0.6;
 }
+
+/* The chats list waits behind an open chat and shows while it is swiped away */
+.chat-thread-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: var(--page-bg);
+  overflow: hidden;
+}
+.chat-thread-overlay > .chat-page-atmosphere { position: absolute; inset: 0; z-index: 0; filter: brightness(0.8); }
+.chat-thread-overlay > .chat-thread { position: relative; z-index: 1; }
+.chat-thread-overlay:has(.chat-thread[data-swiping]) { background: transparent; }
+.chat-thread-overlay:has(.chat-thread[data-swiping]) > .chat-page-atmosphere { display: none; }
+.chat-thread[data-swiping] { background: var(--page-bg); box-shadow: -12px 0 30px rgba(0, 0, 0, 0.35); }
+.chat-screen.is-behind-thread { visibility: hidden; }
+.chat-thread-overlay:has(.chat-thread[data-swiping]) ~ .chat-screen.is-behind-thread { visibility: visible; }
