@@ -3585,13 +3585,16 @@ html body .pf-comment .pf-comment-like.is-liked { color: #ff5a6e; }
 
 .pf-comments { max-height: min(72vh, 100%); transition: height 0.2s ease; }
 
-/* Mobile: the hamburger sits 12px above the share button; drop it onto the same line. */
-html body .profile-screen .profile-menu-btn:not(.profile-top-btn) { translate: 0 12px; }
-html body .app-column.is-profile-wide .profile-screen .profile-menu-btn:not(.profile-top-btn) { translate: none; }
+/* Mobile: share button level with the hamburger. */
+html body .profile-screen .profile-menu-btn.profile-top-btn.is-share { top: -12px; }
+html body .app-column.is-profile-wide .profile-screen .profile-menu-btn.profile-top-btn.is-share { top: 12px; }
 
-/* One line: icon buttons on the left, Following/Followers on the right */
-.profile-screen .profile-identity .profile-social { justify-content: flex-start; gap: 16px; }
-.profile-screen .profile-identity .profile-view-toggle { order: -1; margin: 0 auto 0 0; }
+/* Icon buttons above Following/Followers, bottom-right, level with the @handle; photo and name sit lower */
+.profile-screen .profile-identity { position: relative; }
+.profile-screen .profile-identity .pf-x-head { padding-top: 84px; }
+.profile-screen .profile-identity .profile-social { position: absolute; right: 0; bottom: 0; width: auto; margin: 0; display: grid; grid-template-columns: auto auto; justify-content: end; align-items: baseline; column-gap: 16px; row-gap: 6px; }
+.profile-screen .profile-identity .profile-view-toggle { grid-row: 1; grid-column: 1 / -1; justify-self: end; margin: 0; }
+.profile-screen .profile-identity .profile-social-cell { grid-row: 2; }
 .profile-screen .profile-identity .profile-social-rule { display: none; }
 .profile-screen .profile-identity .profile-social-cell { flex: none; flex-direction: row; align-items: baseline; gap: 4px; }
 .profile-screen .profile-identity .profile-social-n { font-size: 1rem; }
