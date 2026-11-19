@@ -3673,3 +3673,61 @@ html body .profile-screen .profile-identity .pf-x-head { padding-top: 2px; }
 .profile-screen .profile-identity { position: relative; z-index: 2; }
 .profile-screen .section-pager { margin-top: 6px; }
 .profile-screen .section-pager-drum { height: 32px; padding-block: 0; }
+
+.section-pager-chip {
+  min-width: 96px;
+  padding: 7px 18px;
+  border-radius: 999px;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: inherit;
+  background: var(--page-bg);
+  border: 1px solid light-dark(rgba(0, 0, 0, 0.3), rgba(255, 255, 255, 0.1));
+  -webkit-touch-callout: none;
+}
+.section-popup-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.45);
+  animation: section-popup-fade 0.15s ease-out;
+}
+.section-popup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 200px;
+  padding: 14px;
+  border-radius: 24px;
+  color: light-dark(#000, #fff);
+  background: var(--page-bg);
+  border: 1px solid light-dark(rgba(0, 0, 0, 0.3), rgba(255, 255, 255, 0.1));
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+  animation: section-popup-pop 0.18s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+}
+.section-popup-btn {
+  padding: 12px 18px;
+  border-radius: 14px;
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: center;
+  color: inherit;
+  background: none;
+  border: 0;
+  opacity: 0.6;
+}
+.section-popup-btn.is-active {
+  opacity: 1;
+  background: light-dark(rgba(0, 0, 0, 0.08), rgba(255, 255, 255, 0.12));
+}
+@keyframes section-popup-fade { from { opacity: 0; } }
+@keyframes section-popup-pop { from { opacity: 0; transform: scale(0.85); } }

@@ -1801,8 +1801,6 @@ export default function ProfileScreen({
           value={spaceTab}
           onChange={switchSpace}
           label="Closet, Store, Market and Stylst"
-          onHold={spaceTab === 'stylst' ? undefined : onAddProduct}
-          idPrefix="profile-space"
           className="profile-spaces-inline-body"
         >
           {spaceTab !== 'closet' && spaceTab !== 'stylst' && (
