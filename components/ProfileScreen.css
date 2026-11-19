@@ -3889,11 +3889,4 @@ html body .profile-screen .section-pager-bar.is-active::after { opacity: 1; heig
 html body .profile-screen .profile-card .section-pager { padding-bottom: 6px; }
 html body .profile-screen .profile-card .profile-identity { margin-top: 5px; }
 
-html body .profile-screen .profile-product-delete {
-  position: absolute; top: 6px; right: 6px; z-index: 2; cursor: pointer;
-  width: 32px; height: 32px; padding: 0; border-radius: 50%;
-  display: grid; place-items: center; color: #fff;
-  background: rgba(0, 0, 0, 0.55) !important;
-  backdrop-filter: blur(6px);
-}
 html body .profile-screen .profile-product-photo { position: relative; }
