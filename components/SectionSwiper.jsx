@@ -8,7 +8,6 @@ import './SectionSwiper.css'
  * and the content below swaps when it is swiped left or right (or a dot is tapped).
  * Holding the chip opens a centered popup listing every section.
  */
-const ITEM_PX = 36
 const HOLD_MS = 450
 const HOLD_SLOP_PX = 10
 
@@ -32,7 +31,7 @@ export default function SectionSwiper({
   const paintDrum = () => {
     const el = drum.current
     if (!el) return
-    const pos = el.scrollTop / ITEM_PX
+    const pos = el.scrollLeft / (el.clientWidth || 1)
     Array.from(el.children).forEach((child, i) => {
       const d = Math.min(2, Math.abs(i - pos))
       child.style.opacity = String(1 - d * 0.42)
@@ -45,7 +44,7 @@ export default function SectionSwiper({
     settle.current = window.setTimeout(() => {
       const el = drum.current
       if (!el) return
-      const i = Math.max(0, Math.min(sections.length - 1, Math.round(el.scrollTop / ITEM_PX)))
+      const i = Math.max(0, Math.min(sections.length - 1, Math.round(el.scrollLeft / (el.clientWidth || 1))))
       if (i !== index) {
         navigator.vibrate?.(8)
         onChange(sections[i].id)
@@ -55,7 +54,7 @@ export default function SectionSwiper({
   useEffect(() => {
     const el = drum.current
     if (!el) return
-    if (Math.abs(el.scrollTop - index * ITEM_PX) > 1) el.scrollTo({ top: index * ITEM_PX, behavior: 'smooth' })
+    if (Math.abs(el.scrollLeft - index * el.clientWidth) > 1) el.scrollTo({ left: index * el.clientWidth, behavior: 'smooth' })
     paintDrum()
   }, [index])
   useEffect(() => () => window.clearTimeout(settle.current), [])
@@ -106,13 +105,31 @@ export default function SectionSwiper({
         onClickCapture={onClickCapture}
         onContextMenu={(e) => e.preventDefault()}
       >
-        <div ref={drum} className="section-pager-drum" aria-hidden="true" onScroll={onDrumScroll}>
+        <button
+          type="button"
+          className="section-pager-arrow is-bare"
+          aria-label="Previous section"
+          disabled={index === 0}
+          onClick={() => go(index - 1)}
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M15 5l-7 7 7 7" /></svg>
+        </button>
+        <div ref={drum} className="section-pager-drum" data-no-section-swipe aria-hidden="true" onScroll={onDrumScroll}>
           {sections.map(({ id, label: name }) => (
             <span key={id} className="section-pager-label">
               {name}
             </span>
           ))}
         </div>
+        <button
+          type="button"
+          className="section-pager-arrow is-bare"
+          aria-label="Next section"
+          disabled={index === sections.length - 1}
+          onClick={() => go(index + 1)}
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M9 5l7 7-7 7" /></svg>
+        </button>
       </div>
       {open &&
         createPortal(

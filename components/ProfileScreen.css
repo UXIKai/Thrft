@@ -3773,3 +3773,44 @@ html body .profile-screen .profile-card .profile-spaces-inline {
 
 html body .profile-screen .profile-card { margin-inline: -8px; }
 html body .profile-screen .profile-card { min-height: calc(100dvh - 173px); box-sizing: border-box; }
+
+/* Section picker: names swipe sideways between arrows, no container */
+html body .profile-screen .section-pager,
+html body .profile-screen .profile-card .section-pager {
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  background: none;
+  border: 0;
+  overflow: visible;
+  touch-action: pan-x;
+}
+.profile-screen .section-pager-drum {
+  display: flex;
+  flex: 0 0 140px;
+  width: 140px;
+  height: 36px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  touch-action: pan-x;
+}
+.profile-screen .section-pager-drum .section-pager-label {
+  flex: 0 0 100%;
+  height: 36px;
+  line-height: 36px;
+  scroll-snap-align: center;
+}
+.section-pager-arrow {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  color: inherit;
+  background: none;
+  border: 0;
+  opacity: 0.8;
+}
+.section-pager-arrow:disabled { opacity: 0.2; }
