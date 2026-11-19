@@ -1590,7 +1590,8 @@ export default function ProfileScreen({
             <p className="pf-viewer-caption"><strong>{postName}</strong> {captions[viewPhoto]}</p>
           ) : null}
           {commentsOpen && (
-            <div className="pf-sheet-backdrop" onClick={() => setCommentsOpen(false)}>
+            createPortal(
+<div className="pf-sheet-backdrop" onClick={() => setCommentsOpen(false)}>
               <div className="pf-sheet pf-comments" role="dialog" aria-label="Comments" onClick={(e) => e.stopPropagation()}>
                 <span className="pf-sheet-grab" aria-hidden="true" />
                 <h3 className="pf-comments-title">Comments</h3>
@@ -1618,10 +1619,12 @@ export default function ProfileScreen({
                   <button type="submit" className="is-bare" disabled={!commentDraft.trim() || !!metaOf(viewPhoto).noComments}>Post</button>
                 </form>
               </div>
-            </div>
+            </div>,
+            document.body)
           )}
           {postMenuOpen && (
-            <div className="pf-sheet-backdrop" onClick={() => setPostMenuOpen(false)}>
+            createPortal(
+<div className="pf-sheet-backdrop" onClick={() => setPostMenuOpen(false)}>
               <div className="pf-sheet" role="menu" onClick={(e) => e.stopPropagation()}>
                 <span className="pf-sheet-grab" aria-hidden="true" />
                 {postMenuOpen === 'menu' && (
@@ -1658,7 +1661,8 @@ export default function ProfileScreen({
                   </div>
                 )}
               </div>
-            </div>
+            </div>,
+            document.body)
           )}
         </div>
       )}

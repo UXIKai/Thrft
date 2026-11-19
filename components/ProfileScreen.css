@@ -3532,7 +3532,7 @@ html body .pf-viewer .pf-viewer-delete {
 .pf-photo-tile { position: relative; }
 .pf-photo-pin { position: absolute; top: 6px; right: 6px; font-size: 0.8rem; }
 html body .pf-photos .pf-archive-toggle { display: block; margin: 16px auto; padding: 8px 18px; border-radius: 999px; color: inherit; background: rgba(127, 127, 127, 0.2); }
-.pf-sheet-backdrop { position: fixed; inset: 0; z-index: 70; display: flex; align-items: flex-end; background: rgba(0, 0, 0, 0.5); }
+.pf-sheet-backdrop { position: fixed; inset: 0; z-index: 2000; display: flex; align-items: flex-end; background: rgba(0, 0, 0, 0.5); }
 .pf-sheet {
   width: 100%;
   max-height: 80vh;
