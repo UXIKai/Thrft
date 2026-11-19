@@ -1400,3 +1400,10 @@ html body .saved-view-tabs .saved-fab-toggle { width: 40px; height: 36px; }
 html body .saved-view-rail-inner .saved-view-tab { padding: 8px 10px; font-size: 0.8rem; }
 html body .saved-fav-brands.is-fab-open { margin-top: 62px; }
 html body .saved-fav-brands.is-fab-open.is-expanded:has(.saved-brands-empty) { margin-top: 16px; }
+
+/* + at the right edge: its menu drops in a column down the screen edge */
+html body .saved-view-tabs .saved-fab .saved-fab-item.saved-fab-item:nth-child(1) { --fab-x: 0px; --fab-y: 42px; }
+html body .saved-view-tabs .saved-fab .saved-fab-item.saved-fab-item:nth-child(2) { --fab-x: 0px; --fab-y: 84px; }
+html body .saved-view-tabs .saved-fab .saved-fab-item.saved-fab-item:nth-child(3) { --fab-x: 0px; --fab-y: 126px; }
+html body .saved-fav-brands.is-fab-open { margin-top: 84px; }
+html body .saved-fav-brands.is-fab-open.is-expanded:has(.saved-brands-empty) { margin-top: 16px; }

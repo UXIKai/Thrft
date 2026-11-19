@@ -676,6 +676,15 @@ export default function SavedScreen({
               ))}
             </div>
           </div>
+          <button
+            type="button"
+            className="saved-view-heart is-bare"
+            aria-label={likedTabsOpen ? 'Close liked menu' : 'Open liked menu'}
+            aria-expanded={likedTabsOpen}
+            onClick={() => setLikedTabsOpen((o) => !o)}
+          >
+            <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden fill={likedTabsOpen ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20s-7-4.4-8.6-9C2.4 8 4.2 5 7.2 5c1.8 0 3.2 1 4.8 2.8C13.6 6 15 5 16.8 5c3 0 4.8 3 3.8 6-1.6 4.6-8.6 9-8.6 9z" /></svg>
+          </button>
           <div className={`saved-fab${fabOpen ? ' is-open' : ''}${selectMode ? ' is-selecting' : ''}`}>
         <button
           type="button"
@@ -768,15 +777,6 @@ export default function SavedScreen({
         </div>
         </div>
       </div>
-          <button
-            type="button"
-            className="saved-view-heart is-bare"
-            aria-label={likedTabsOpen ? 'Close liked menu' : 'Open liked menu'}
-            aria-expanded={likedTabsOpen}
-            onClick={() => setLikedTabsOpen((o) => !o)}
-          >
-            <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden fill={likedTabsOpen ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20s-7-4.4-8.6-9C2.4 8 4.2 5 7.2 5c1.8 0 3.2 1 4.8 2.8C13.6 6 15 5 16.8 5c3 0 4.8 3 3.8 6-1.6 4.6-8.6 9-8.6 9z" /></svg>
-          </button>
         </div>
         {searchOpen && (
           <div className="saved-inline-search" ref={searchWrapRef}>
