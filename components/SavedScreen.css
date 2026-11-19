@@ -1446,3 +1446,14 @@ html body .saved-view-tabs .saved-fab.is-open .saved-fab-item.saved-fab-item {
   opacity: 1;
   transition-delay: calc(var(--i) * 40ms);
 }
+
+/* Bare icons inside the container: no circle behind each button */
+html body .saved-view-tabs .saved-fab-item :is(.saved-fab-btn, .saved-filter-btn, .saved-pencil-btn) {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  width: 36px;
+  height: 36px;
+}
