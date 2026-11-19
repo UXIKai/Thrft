@@ -5513,3 +5513,12 @@ html body .chat-thread-scroll > .chat-thread-body {
   text-align: left;
   cursor: pointer;
 }
+
+html body .chat-screen .chat-page-friends.is-desktop {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 6;
+  width: 36px;
+  height: 36px;
+}
