@@ -5649,13 +5649,14 @@ html body .chat-screen.is-desktop.is-sidebar-collapsed::before { transform: tran
 .chat-thread-overlay > .chat-thread { position: relative; z-index: 1; }
 .chat-thread-overlay:has(.chat-thread[data-swiping]) { background: transparent; }
 .chat-thread-overlay:has(.chat-thread[data-swiping]) > .chat-page-atmosphere { display: none; }
-.chat-thread[data-swiping] {
+.chat-thread[data-swiping] { background: var(--page-bg); box-shadow: -12px 0 30px rgba(0, 0, 0, 0.35); }
+/* The screen being returned to gets the rounded card edges */
+html body .chat-thread-overlay:has(.chat-thread[data-swiping]) ~ .chat-screen .chat-main-page {
   background: var(--page-bg);
   border-radius: 44px;
-  clip-path: inset(0 round 44px);
   box-shadow: 0 0 40px rgba(0, 0, 0, 0.45);
 }
-.chat-thread[data-swiping]::before {
+html body .chat-thread-overlay:has(.chat-thread[data-swiping]) ~ .chat-screen .chat-main-page::before {
   content: '';
   position: absolute;
   inset: 0;
@@ -5663,5 +5664,9 @@ html body .chat-screen.is-desktop.is-sidebar-collapsed::before { transform: tran
   border: 1px solid light-dark(rgba(0, 0, 0, 0.18), rgba(255, 255, 255, 0.18));
   border-radius: inherit;
   pointer-events: none;
+}
+html body .chat-thread-overlay:has(.chat-thread[data-swiping]) ~ .chat-screen .chat-main-page > .chat-page-atmosphere {
+  border-radius: 44px;
+  clip-path: inset(0 round 44px);
 }
 .chat-screen.is-behind-thread { isolation: isolate; pointer-events: none; }
