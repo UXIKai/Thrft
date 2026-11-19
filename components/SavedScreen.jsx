@@ -366,6 +366,11 @@ export default function SavedScreen({
   )
   const [fabOpen, setFabOpen] = useState(false)
   const [brandsOpen, setBrandsOpen] = useState(true)
+  const [likedView, setLikedView] = useState('products') // products | brands | photos
+  const likedPhotos = useMemo(() => {
+    if (likedView !== 'photos') return []
+    try { return JSON.parse(localStorage.getItem('thrft-profile-flags') || '{}').likes || [] } catch { return [] }
+  }, [likedView])
   const brandRowRef = useRef(null)
   const [brandPill, setBrandPill] = useState(null)
   const [pillActive, setPillActive] = useState(false)
@@ -761,8 +766,23 @@ export default function SavedScreen({
           </div>
         )}
       </header>
+      <div className="saved-view-tabs" role="tablist" aria-label="Liked">
+        {[['products', 'Products'], ['brands', 'Brands'], ['photos', 'Photos']].map(([id, label]) => (
+          <button
+            key={id}
+            type="button"
+            role="tab"
+            aria-selected={likedView === id}
+            className={`saved-view-tab is-bare${likedView === id ? ' is-on' : ''}`}
+            onClick={() => setLikedView(id)}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
       <div
         ref={brandRowRef}
+        hidden={likedView !== 'brands'}
         className={`saved-fav-brands${fabOpen ? ' is-fab-open' : ''}${selectMode ? ' is-expanded' : ''}${brandsOpen || selectMode ? '' : ' is-collapsed'}`}
         aria-label="Favorite brands"
         onPointerOver={(e) => {
@@ -818,7 +838,13 @@ export default function SavedScreen({
               </button>
             ))}
       </div>
-      <div className="saved-grid is-products market-product-grid">
+      {likedView === 'photos' && (
+        <div className="saved-photos-grid">
+          {likedPhotos.length === 0 && <p role="status">No liked photos yet.</p>}
+          {likedPhotos.map((url) => <img key={url} src={url} alt="" loading="lazy" />)}
+        </div>
+      )}
+      <div className="saved-grid is-products market-product-grid" hidden={likedView !== 'products'}>
         {savedLoading && <p role="status">Loading saved products...</p>}
         {savedError && <p role="alert">{savedError}</p>}
         {!savedLoading && !savedError && !visibleItems.length && <p role="status">No saved products yet.</p>}
