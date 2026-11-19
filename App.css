@@ -3686,3 +3686,10 @@ html[data-bg-photo] .atmosphere-serenity { display: none; }
 @media (prefers-reduced-motion: reduce) {
   .atmosphere-serenity-pool { animation: none; }
 }
+
+html body .stage.is-post-open > .tab-bar,
+html body .stage.is-post-open > .nav-toggle {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  translate: 0 140% !important;
+}

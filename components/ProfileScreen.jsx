@@ -502,6 +502,13 @@ export default function ProfileScreen({
   const [heartPop, setHeartPop] = useState(0)
   const [kbInset, setKbInset] = useState(0)
   useEffect(() => {
+    // The nav bar steps aside while a post is open.
+    if (!viewPhoto && !composeOpen) return undefined
+    const stage = document.querySelector('.stage')
+    stage?.classList.add('is-post-open')
+    return () => stage?.classList.remove('is-post-open')
+  }, [viewPhoto, composeOpen])
+  useEffect(() => {
     const vv = window.visualViewport
     if (!commentsOpen || !vv) return undefined
     const update = () => setKbInset(Math.max(0, Math.round(window.innerHeight - vv.height - vv.offsetTop)))
