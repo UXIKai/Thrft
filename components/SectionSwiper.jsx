@@ -36,7 +36,10 @@ export default function SectionSwiper({
     hold.current.timer = 0
   }
   useEffect(() => cancelHold, [])
+  const drag = useRef(null)
+  const swiped = useRef(false)
   const onPointerDown = (e) => {
+    if (e.isPrimary) drag.current = { id: e.pointerId, x: e.clientX, y: e.clientY }
     if (!onHold || (e.pointerType === 'mouse' && e.button !== 0)) return
     const h = hold.current
     cancelHold()
@@ -50,12 +53,30 @@ export default function SectionSwiper({
       onHold(id)
     }, HOLD_MS)
   }
+  const onPointerUp = (e) => {
+    cancelHold()
+    const d = drag.current
+    drag.current = null
+    if (!d || d.id !== e.pointerId) return
+    const dx = e.clientX - d.x
+    if (Math.abs(dx) < 30 || Math.abs(dx) < Math.abs(e.clientY - d.y) * 1.5) return
+    const next = index + (dx < 0 ? 1 : -1)
+    if (next < 0 || next >= sections.length) return
+    swiped.current = true
+    window.setTimeout(() => { swiped.current = false }, 0)
+    go(next)
+  }
   const onPointerMove = (e) => {
     const h = hold.current
     if (h.timer && Math.hypot(e.clientX - h.x, e.clientY - h.y) > HOLD_SLOP_PX) cancelHold()
   }
   // A hold must not also count as a tap on a dot.
   const onClickCapture = (e) => {
+    if (swiped.current) {
+      e.preventDefault()
+      e.stopPropagation()
+      return
+    }
     if (!hold.current.fired) return
     hold.current.fired = false
     e.preventDefault()
@@ -84,8 +105,8 @@ export default function SectionSwiper({
         onKeyDown={onKeyDown}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
-        onPointerUp={cancelHold}
-        onPointerCancel={cancelHold}
+        onPointerUp={onPointerUp}
+        onPointerCancel={() => { cancelHold(); drag.current = null }}
         onPointerLeave={cancelHold}
         onClickCapture={onClickCapture}
         onContextMenu={onHold ? (e) => e.preventDefault() : undefined}
