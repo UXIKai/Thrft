@@ -18,7 +18,7 @@ import ClosetNumberLookup from './ClosetNumberLookup.jsx'
 import { LISTING_BRANDS, LISTING_CATEGORIES } from '../listingCatalog.js'
 import { createListing, fetchMyListings, fetchSellerSalesStats, formatListingPrice, isValidListingPrice, updateMyListing } from '../listings.js'
 import { uploadCreatorArtwork, uploadProductPhoto } from '../artworkStorage.js'
-import { readProfileMedia, storeImage, writeProfileMedia } from '../profileMedia.js'
+import { compressImage, readProfileMedia, storeImage, writeProfileMedia } from '../profileMedia.js'
 import { getSupabase, isSupabaseConfigured } from '../supabase.js'
 import BrandGlobe from './BrandGlobe.jsx'
 import GiveBack from './GiveBack.jsx'
@@ -995,7 +995,7 @@ export default function ProfileScreen({
   async function onMediaPicked(file) {
     if (!file || !file.type?.startsWith('image/')) return
     try {
-      const url = await storeImage(await compressImageFile(file, 1080))
+      const url = await storeImage(await compressImage(file, 1080, true))
       const photos = [url, ...media.photos]
       writeProfileMedia(mediaOwner, 'photos', photos)
       setMedia((m) => ({ ...m, photos }))
@@ -1414,9 +1414,12 @@ export default function ProfileScreen({
             onMediaPicked(file)
           }}
         />
-        <div className="pf-photos-head">
-          <span>{media.photos.length} {media.photos.length === 1 ? 'photo' : 'photos'}</span>
-        </div>
+        {media.photos.length === 0 && (
+          <div className="pf-photos-empty">
+            <p>Share photos</p>
+            <button type="button" className="pf-photos-empty-btn is-bare" onClick={() => postInputRef.current?.click()}>Add your first photo</button>
+          </div>
+        )}
         <div className="pf-photos-grid">
           {media.photos.map((url, i) => (
             <button key={url.slice(-40) + i} type="button" className="pf-photo-tile is-bare" aria-label="View photo" onClick={() => setViewPhoto(url)}>
@@ -1427,7 +1430,12 @@ export default function ProfileScreen({
       </section>
       {viewPhoto && (
         <div className="profile-photo-view" role="dialog" aria-label="Photo" onClick={() => setViewPhoto(null)}>
-          <img className="pf-photo-full" src={viewPhoto} alt="" />
+          <div className="pf-post" onClick={(e) => e.stopPropagation()}>
+            <div className="pf-post-head">
+              <span className="pf-post-name">{account?.username || userProfile?.username || userProfile?.displayName || 'Me'}</span>
+            </div>
+            <img className="pf-photo-full" src={viewPhoto} alt="" />
+          </div>
           <button type="button" className="pf-photo-delete is-bare" onClick={(e) => { e.stopPropagation(); removePhoto(viewPhoto) }}>
             Delete
           </button>

@@ -3414,10 +3414,10 @@ html body .profile-screen .profile-username-link:hover { text-decoration: none !
 .profile-screen .profile-identity .profile-social { justify-content: flex-start; margin-top: 10px; gap: 18px; }
 .pf-photos { margin: 4px calc(-1 * var(--pf-pad-x)) 14px; }
 .pf-photos-head { padding: 8px var(--pf-pad-x); font: 700 0.9rem var(--pf); color: var(--pf-mute-2); border-top: 1px solid var(--pf-line); }
-.pf-photos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+.pf-photos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; }
 .profile-screen .pf-photo-tile, .profile-screen .pf-photo-add { width: 100%; aspect-ratio: 1; padding: 0; border: 0; border-radius: 0; overflow: hidden; display: grid; place-items: center; color: var(--pf-ink); background: var(--pf-card-2); }
 .pf-photo-tile img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.pf-photo-full { max-width: 100%; max-height: 80%; object-fit: contain; border-radius: 12px; }
+.pf-photo-full { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; border-radius: 0; }
 .pf-photo-delete { position: absolute; left: 50%; bottom: calc(28px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); padding: 10px 22px; border-radius: 999px; font: 700 0.95rem var(--pf); color: #ff453a; }
 .profile-screen .profile-identity .profile-name-row .profile-links-btn { margin: 0; flex: none; }
 .profile-screen .profile-identity .profile-name-row { flex-wrap: nowrap; }
@@ -3437,3 +3437,9 @@ html body .profile-screen .profile-username-link:hover { text-decoration: none !
 .profile-screen .profile-photos-jump.is-on { opacity: 1; }
 .profile-screen [hidden] { display: none !important; }
 .profile-screen .profile-photos-jump .profile-links-btn, .profile-screen .profile-photos-jump svg { width: 24px; height: 24px; }
+.pf-photos-empty { display: grid; justify-items: center; gap: 12px; padding: 48px 16px; color: var(--pf-mute-2); font: 700 1.1rem var(--pf); }
+.pf-photos-empty p { margin: 0; color: var(--pf-ink); }
+.pf-photos-empty-btn { padding: 8px 18px; border-radius: 8px; font: 700 0.9rem var(--pf); color: var(--pf-ink); background: var(--pf-card-2); }
+.pf-post { width: 100%; align-self: center; }
+.pf-post-head { padding: 10px 14px; font: 700 0.9rem var(--pf); color: var(--pf-ink); }
+.profile-photo-view:has(.pf-post) { padding: 0; }
