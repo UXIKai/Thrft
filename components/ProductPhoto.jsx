@@ -25,7 +25,7 @@ export default function ProductPhoto({ src, cutout = false, ...props }) {
         if (!active || request !== currentRequest) return
         console.error('Could not remove product photo background:', error)
         failed = true
-        setResult({ src, error: true })
+        setResult({ src, error: error?.message || String(error) })
       })
     }
     const observer = typeof IntersectionObserver === 'undefined' ? null : new IntersectionObserver((entries) => {
@@ -52,6 +52,6 @@ export default function ProductPhoto({ src, cutout = false, ...props }) {
       setFailedSrc(displaySrc)
       props.onError?.(event)
     }}
-    title={current?.error ? 'Background removal failed; showing original photo' : props.title}
+    title={current?.error ? `Background removal failed: ${current.error}` : props.title}
     className={`${props.className || ''}${current?.image ? ' is-product-cutout' : ''}`.trim()} />
 }
