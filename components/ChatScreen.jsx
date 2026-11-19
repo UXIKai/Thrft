@@ -597,7 +597,7 @@ export default function ChatScreen({
   const [isDesktop, setIsDesktop] = useState(
     () => typeof window !== 'undefined' && window.matchMedia('(min-width: 720px) and (min-height: 500px)').matches,
   )
-  const [mobileNavOpen, setMobileNavOpen] = useState(false)
+  const [mobileNavOpen, setMobileNavOpen] = useState(() => !isDesktop)
   const [navDragP, setNavDragP] = useState(null)
   const navDragRef = useRef(null)
   const [onlineDragP, setOnlineDragP] = useState(null)
