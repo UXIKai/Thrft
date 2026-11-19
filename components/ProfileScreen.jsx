@@ -1496,6 +1496,7 @@ export default function ProfileScreen({
           <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
         </button>
       </div>
+      <div className="profile-card">
       <section
         className="profile-identity"
         aria-label="Account"
@@ -2228,6 +2229,7 @@ export default function ProfileScreen({
           )}
         </SectionSwiper>
       </section>
+      </div>
 
       {stageEl &&
         moneyOpen &&

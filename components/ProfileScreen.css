@@ -3744,3 +3744,29 @@ html body .profile-screen .profile-identity .pf-x-head { padding-top: 2px; }
 }
 .profile-screen .section-pager-drum { height: 36px; }
 .profile-screen .section-pager-drum .section-pager-label { height: 36px; line-height: 36px; font-size: 0.85rem; }
+
+/* One card holds the profile header and everything under it */
+html body .profile-screen .profile-card {
+  margin: 6px 0 8px;
+  border-radius: 28px;
+  border: 1px solid light-dark(rgba(0, 0, 0, 0.3), rgba(255, 255, 255, 0.08));
+  background: var(--page-bg);
+  box-shadow: 0 4px 14px light-dark(rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.25));
+  padding-bottom: 14px;
+}
+html body .profile-screen .profile-card .profile-identity {
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  z-index: auto;
+}
+html body .profile-screen .profile-card .section-pager {
+  background: none;
+  border-color: light-dark(rgba(0, 0, 0, 0.25), rgba(255, 255, 255, 0.12));
+}
+html body .profile-screen .profile-card .pf-photos,
+html body .profile-screen .profile-card .profile-spaces-inline {
+  padding-inline: 12px;
+}
