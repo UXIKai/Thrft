@@ -1418,33 +1418,16 @@ export default function ProfileScreen({
   }
 
   return (
-    <div className="profile-screen" role="region" aria-label="Profile">
-      <div className="pf-top-actions">
-        <button
-          type="button"
-          className="profile-menu-btn profile-top-btn is-share is-bare"
-          aria-label="Share profile"
-          onMouseDown={holdScroll}
-          onClick={shareProfile}
-        >
-          <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 15V3M7.5 7.5 12 3l4.5 4.5M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7" /></svg>
-        </button>
-        <button
-          type="button"
-          className="profile-menu-btn is-bare"
-          aria-label="Settings"
-          onMouseDown={holdScroll}
-          onClick={openSettingsAnimated}
-        >
-          <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
-        </button>
-      </div>
-      <section
-        className="profile-identity"
-        aria-label="Account"
-        style={{ touchAction: 'pan-y' }}
+    <div
+      className="profile-screen"
+      role="region"
+      aria-label="Profile"
         onPointerDown={(e) => {
-          if (e.isPrimary && (e.pointerType !== 'mouse' || e.button === 0)) {
+          // Only from the section picker upwards, so the content below keeps its own gestures
+          const pager = e.currentTarget.querySelector('.section-pager')
+          const pr = pager?.getBoundingClientRect()
+          const limit = pr && pr.height > 0 ? pr.bottom : e.currentTarget.querySelector('.profile-identity')?.getBoundingClientRect().bottom ?? Infinity
+          if (e.isPrimary && (e.pointerType !== 'mouse' || e.button === 0) && e.clientY <= limit && !e.target.closest?.('input, textarea, select, [data-no-section-swipe]')) {
             settingsSwipe.current = { x: e.clientX, y: e.clientY, t: performance.now(), drag: false }
           }
         }}
@@ -1492,6 +1475,31 @@ export default function ProfileScreen({
           settingsSwipe.current = null
           if (st?.drag) cancelPeek()
         }}
+    >
+      <div className="pf-top-actions">
+        <button
+          type="button"
+          className="profile-menu-btn profile-top-btn is-share is-bare"
+          aria-label="Share profile"
+          onMouseDown={holdScroll}
+          onClick={shareProfile}
+        >
+          <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 15V3M7.5 7.5 12 3l4.5 4.5M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7" /></svg>
+        </button>
+        <button
+          type="button"
+          className="profile-menu-btn is-bare"
+          aria-label="Settings"
+          onMouseDown={holdScroll}
+          onClick={openSettingsAnimated}
+        >
+          <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
+        </button>
+      </div>
+      <section
+        className="profile-identity"
+        aria-label="Account"
+        style={{ touchAction: 'pan-y' }}
       >
         <div className="pf-x-head">
         <div className="pf-user-avatar-wrap">
