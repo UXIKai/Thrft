@@ -3588,3 +3588,9 @@ html body .pf-comment .pf-comment-like.is-liked { color: #ff5a6e; }
 /* Mobile: the hamburger sits 12px above the share button; drop it onto the same line. */
 html body .profile-screen .profile-menu-btn:not(.profile-top-btn) { translate: 0 12px; }
 html body .app-column.is-profile-wide .profile-screen .profile-menu-btn:not(.profile-top-btn) { translate: none; }
+
+/* Followers/Following on top, icon row beneath */
+.profile-screen .profile-identity .profile-social { flex-wrap: wrap; justify-content: flex-start; }
+.profile-screen .profile-identity .profile-social-cell { flex: 0 0 auto; align-items: flex-start; }
+.profile-screen .profile-identity .profile-social-rule { margin: 2px 16px; }
+.profile-screen .profile-identity .profile-view-toggle { flex: 0 0 100%; margin: 10px 0 0; justify-content: flex-start; }
