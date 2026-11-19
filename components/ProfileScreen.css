@@ -3814,3 +3814,7 @@ html body .profile-screen .profile-card .section-pager {
   opacity: 0.8;
 }
 .section-pager-arrow:disabled { opacity: 0.2; }
+
+/* Card ends the same distance above the nav bar when scrolled to the end as when it is short */
+html body .profile-screen { padding-bottom: 0; }
+html body .profile-screen .profile-card { margin-bottom: calc(5px - env(safe-area-inset-bottom, 0px)); }
