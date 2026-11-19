@@ -1384,7 +1384,8 @@ html body .saved-view-tabs {
   left: 50%;
   right: auto;
   transform: translate(-50%, -50%);
-  max-width: calc(100% - 24px);
+  width: max-content;
+  max-width: calc(100vw - 24px);
   flex-direction: row;
 }
 html body .saved-view-tabs .saved-fab {
