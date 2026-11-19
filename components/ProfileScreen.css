@@ -3667,3 +3667,5 @@ html body .app-column.is-profile-wide .profile-screen .pf-top-actions { top: 20p
 
 /* Avatar rises beside the buttons instead of sitting below a tall gap */
 html body .profile-screen .profile-identity .pf-x-head { padding-top: 2px; }
+
+.profile-screen .section-pager { margin-top: -14px; }
