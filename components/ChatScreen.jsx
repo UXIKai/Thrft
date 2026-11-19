@@ -3413,17 +3413,6 @@ export default function ChatScreen({
                 </div>
                 <div className={`chat-friends-active-head${activeNowOpen || onlineDragP !== null ? '' : ' is-collapsed'}`}>
                   {activeNowOpen && <h3 className="chat-friends-active-title">Online</h3>}
-                  <button
-                    type="button"
-                    className="chat-friends-active-toggle"
-                    aria-label={activeNowOpen ? 'Close Online' : 'Open Online'}
-                    aria-expanded={activeNowOpen}
-                    onClick={() => setActiveNowOpen((o) => !o)}
-                  >
-                    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden style={{ transform: activeNowOpen ? 'none' : 'scaleX(-1)' }}>
-                      <path d="M4 12h11M11 8l4 4-4 4M20 5v14" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  </button>
                 </div>
               </nav>
               {!isDesktop && (
