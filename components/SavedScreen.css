@@ -1407,3 +1407,7 @@ html body .saved-view-tabs .saved-fab .saved-fab-item.saved-fab-item:nth-child(2
 html body .saved-view-tabs .saved-fab .saved-fab-item.saved-fab-item:nth-child(3) { --fab-x: 0px; --fab-y: 126px; }
 html body .saved-fav-brands.is-fab-open { margin-top: 84px; }
 html body .saved-fav-brands.is-fab-open.is-expanded:has(.saved-brands-empty) { margin-top: 16px; }
+
+/* Opening the + pushes the heart left while the tabs fold shut */
+html body .saved-view-heart { margin-right: 0; transition: margin-right 0.32s cubic-bezier(0.2, 0.8, 0.2, 1); }
+html body .saved-view-tabs.is-fab-open .saved-view-heart { margin-right: 46px; }
