@@ -625,6 +625,7 @@ export default function ChatScreen({
   const [friendsTabsOpen, setFriendsTabsOpen] = useState(false)
   const [friendsClicked, setFriendsClicked] = useState(false)
   const [friendsDrawerOpen, setFriendsDrawerOpen] = useState(false)
+  useEffect(() => { if (!sidebarCollapsed) setFriendsDrawerOpen(false) }, [sidebarCollapsed])
   useEffect(() => {
     if (!friendsTabsOpen) return undefined
     const dismiss = (event) => {
@@ -2949,7 +2950,11 @@ export default function ChatScreen({
     className={`chat-sidebar-control is-bare chat-page-friends${isDesktop ? ' is-desktop' : ''}`}
     aria-label="Friends"
     onClick={() => {
-      if (isDesktop) { setFriendsDrawerOpen((open) => !open); return }
+      if (isDesktop) {
+        if (!friendsDrawerOpen) setSidebarCollapsed(true)
+        setFriendsDrawerOpen((open) => !open)
+        return
+      }
       setActiveNowOpen(false); setMobileNavOpen(false); if (composer) closeComposer(); setImagesOnly(false); setRequestsView(false); setActiveChatId(null); setFriendsClicked(true)
     }}
     aria-expanded={isDesktop ? friendsDrawerOpen : undefined}
