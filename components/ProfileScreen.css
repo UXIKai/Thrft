@@ -3772,3 +3772,4 @@ html body .profile-screen .profile-card .profile-spaces-inline {
 }
 
 html body .profile-screen .profile-card { margin-inline: -8px; }
+html body .profile-screen .profile-card { min-height: calc(100dvh - 173px); box-sizing: border-box; }
