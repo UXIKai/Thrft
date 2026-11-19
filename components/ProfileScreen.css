@@ -3818,3 +3818,8 @@ html body .profile-screen .profile-card .section-pager {
 /* Card ends the same distance above the nav bar when scrolled to the end as when it is short */
 html body .profile-screen { padding-bottom: 0; }
 html body .profile-screen .profile-card { margin-bottom: calc(5px - env(safe-area-inset-bottom, 0px)); }
+
+/* Store and Market show just the product photo */
+html body .profile-screen .profile-product-name,
+html body .profile-screen .profile-product-price,
+html body .profile-screen .profile-product-actions { display: none; }
