@@ -3885,3 +3885,5 @@ html body .profile-screen .section-pager-bar::after {
   transition: opacity 0.2s, height 0.2s, top 0.2s;
 }
 html body .profile-screen .section-pager-bar.is-active::after { opacity: 1; height: 3px; top: 5.5px; }
+.profile-screen .section-pager-drum { flex: 0 0 auto; }
+html body .profile-screen .profile-card .section-pager { padding-bottom: 6px; }
