@@ -3671,3 +3671,5 @@ html body .profile-screen .profile-identity .pf-x-head { padding-top: 2px; }
 .profile-screen .section-pager { margin-top: -14px; }
 .profile-screen .section-pager { margin-top: -30px; }
 .profile-screen .profile-identity { position: relative; z-index: 2; }
+.profile-screen .section-pager { margin-top: 6px; }
+.profile-screen .section-pager-drum { height: 32px; padding-block: 0; }
