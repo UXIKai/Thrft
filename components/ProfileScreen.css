@@ -3241,6 +3241,11 @@
     pointer-events: none;
   }
   /* Lens filters re-sample the backdrop while it moves, which draws a mirrored second bar */
+  /* Settings hides the page underneath; show it again while it slides in or out */
+  html body .stage.is-settings-peek.is-overlay-open .home-scroll,
+  html body .stage.is-settings-peek.is-overlay-open > .tab-bar {
+    opacity: 1;
+  }
   html body .stage.is-settings-peek > .tab-bar,
   html body .stage.is-settings-peek > .tab-bar * {
     -webkit-backdrop-filter: none !important;
