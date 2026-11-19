@@ -367,6 +367,7 @@ export default function SavedScreen({
   const [fabOpen, setFabOpen] = useState(false)
   const [brandsOpen, setBrandsOpen] = useState(true)
   const [likedView, setLikedView] = useState('products') // products | brands | photos
+  const [likedTabsOpen, setLikedTabsOpen] = useState(false)
   const likedPhotos = useMemo(() => {
     if (likedView !== 'photos') return []
     try { return JSON.parse(localStorage.getItem('thrft-profile-flags') || '{}').likes || [] } catch { return [] }
@@ -657,19 +658,33 @@ export default function SavedScreen({
     <section className="saved-screen" aria-label="Liked">
       <header className="saved-page-header">
         <span className="saved-header-spacer" aria-hidden />
-        <div className="saved-view-tabs" role="tablist" aria-label="Liked">
-          {[['products', 'Products'], ['brands', 'Brands'], ['photos', 'Photos']].map(([id, label]) => (
-            <button
-              key={id}
-              type="button"
-              role="tab"
-              aria-selected={likedView === id}
-              className={`saved-view-tab is-bare${likedView === id ? ' is-on' : ''}`}
-              onClick={() => setLikedView(id)}
-            >
-              {label}
-            </button>
-          ))}
+        <div className={`saved-view-tabs${likedTabsOpen ? ' is-open' : ''}`}>
+          <button
+            type="button"
+            className="saved-view-heart is-bare"
+            aria-label={likedTabsOpen ? 'Close liked menu' : 'Open liked menu'}
+            aria-expanded={likedTabsOpen}
+            onClick={() => setLikedTabsOpen((o) => !o)}
+          >
+            <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden fill={likedTabsOpen ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20s-7-4.4-8.6-9C2.4 8 4.2 5 7.2 5c1.8 0 3.2 1 4.8 2.8C13.6 6 15 5 16.8 5c3 0 4.8 3 3.8 6-1.6 4.6-8.6 9-8.6 9z" /></svg>
+          </button>
+          <div className="saved-view-rail" role="tablist" aria-label="Liked" aria-hidden={!likedTabsOpen}>
+            <div className="saved-view-rail-inner">
+              {[['products', 'Products'], ['brands', 'Brands'], ['photos', 'Photos']].map(([id, label]) => (
+                <button
+                  key={id}
+                  type="button"
+                  role="tab"
+                  tabIndex={likedTabsOpen ? 0 : -1}
+                  aria-selected={likedView === id}
+                  className={`saved-view-tab is-bare${likedView === id ? ' is-on' : ''}`}
+                  onClick={() => { setLikedView(id); setLikedTabsOpen(false) }}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
 <div className={`saved-fab${fabOpen ? ' is-open' : ''}${selectMode ? ' is-selecting' : ''}`}>
         <button

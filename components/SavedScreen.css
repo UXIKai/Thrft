@@ -1328,3 +1328,53 @@ html body .saved-view-tabs {
   box-shadow: 0 4px 14px light-dark(rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.25));
 }
 html body .saved-view-tab.is-on { background: light-dark(rgba(0, 0, 0, 0.08), rgba(255, 255, 255, 0.12)); }
+
+/* Collapsed heart that opens into the three tabs, centred like the nav's shuriken */
+html body .saved-view-tabs {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  padding: 3px;
+  gap: 0;
+  transition: gap 0.32s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+html body .saved-view-heart {
+  width: 40px;
+  height: 40px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: inherit;
+  cursor: pointer;
+}
+.saved-view-rail {
+  display: grid;
+  grid-template-columns: 0fr;
+  transition: grid-template-columns 0.32s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.saved-view-tabs.is-open .saved-view-rail { grid-template-columns: 1fr; }
+.saved-view-rail-inner {
+  display: flex;
+  gap: 4px;
+  min-width: 0;
+  overflow: hidden;
+}
+html body .saved-view-rail-inner .saved-view-tab {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  opacity: 0;
+  transform: scale(0.4);
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.32s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+html body .saved-view-tabs.is-open .saved-view-rail-inner .saved-view-tab {
+  opacity: 0.5;
+  transform: none;
+  pointer-events: auto;
+}
+html body .saved-view-tabs.is-open .saved-view-rail-inner .saved-view-tab.is-on { opacity: 1; }
