@@ -10,7 +10,7 @@ import './SectionSwiper.css'
  */
 const HOLD_MS = 450
 const HOLD_SLOP_PX = 10
-const ITEM_PX = 120
+const ITEM_PX = 32
 
 export default function SectionSwiper({
   sections,
@@ -35,11 +35,11 @@ export default function SectionSwiper({
   const paintDrum = () => {
     const el = drum.current
     if (!el) return
-    const pos = el.scrollLeft / ITEM_PX
+    const pos = el.scrollTop / ITEM_PX
     Array.from(el.children).forEach((child, i) => {
       const d = Math.min(2, Math.abs(i - pos))
       child.style.opacity = String(1 - d * 0.42)
-      child.style.transform = `scale(${1 - d * 0.18})`
+      child.style.transform = `scale(${1 - d * 0.15})`
     })
   }
   const onDrumScroll = () => {
@@ -48,7 +48,7 @@ export default function SectionSwiper({
     settle.current = window.setTimeout(() => {
       const el = drum.current
       if (!el) return
-      const i = Math.max(0, Math.min(sections.length - 1, Math.round(el.scrollLeft / ITEM_PX)))
+      const i = Math.max(0, Math.min(sections.length - 1, Math.round(el.scrollTop / ITEM_PX)))
       if (i !== index) {
         navigator.vibrate?.(8)
         onChange(sections[i].id)
@@ -58,7 +58,7 @@ export default function SectionSwiper({
   useEffect(() => {
     const el = drum.current
     if (!el) return
-    if (Math.abs(el.scrollLeft - index * ITEM_PX) > 1) el.scrollTo({ left: index * ITEM_PX, behavior: 'smooth' })
+    if (Math.abs(el.scrollTop - index * ITEM_PX) > 1) el.scrollTo({ top: index * ITEM_PX, behavior: 'smooth' })
     paintDrum()
   }, [index])
   useEffect(() => () => window.clearTimeout(settle.current), [])

@@ -11,17 +11,27 @@
 }
 
 .section-pager-drum {
-  display: flex;
   width: 100%;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
+  height: 96px;
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
   scrollbar-width: none;
-  padding-inline: calc(50% - 60px);
+  padding-block: 32px;
   box-sizing: border-box;
-  touch-action: pan-x;
+  touch-action: pan-y;
+  overscroll-behavior: contain;
 }
 .section-pager-drum::-webkit-scrollbar { display: none; }
 .section-pager-drum .section-pager-label {
+  display: block;
+  height: 32px;
+  line-height: 32px;
+  text-align: center;
+  scroll-snap-align: center;
+  scroll-snap-stop: always;
+}
+
+.section-pager-label {
   flex: 0 0 120px;
   text-align: center;
   scroll-snap-align: center;
@@ -33,7 +43,6 @@
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  line-height: 28px;
 }
 
 .section-pager-dots {
