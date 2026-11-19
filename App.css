@@ -2740,7 +2740,7 @@ html body .market-card .market-card-open {
   overflow: hidden;
   border-radius: 18px;
   border: 1px solid var(--glass-border);
-  background: light-dark(#fff, #000);
+  background: transparent;
 }
 
 .market-card-photo img {

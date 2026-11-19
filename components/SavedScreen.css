@@ -1286,7 +1286,7 @@ html body .saved-page-header { top: -20px; }
 html body .saved-screen .saved-item-media {
   border: 1px solid var(--glass-border) !important;
   border-radius: 14px !important;
-  background: light-dark(#fff, #000) !important;
+  background: transparent !important;
 }
 html body .saved-screen .saved-item-media .saved-item-mark,
 html body .saved-screen .saved-item-media.is-product .saved-item-mark {
