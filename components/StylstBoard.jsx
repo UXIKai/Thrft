@@ -17,6 +17,18 @@ const ROWS = [
   { id: 'shoes', label: 'Shoes', add: 'Sneakers', categories: ['Shoes', 'Sneakers', 'Boots'] },
 ]
 
+const CATALOGS_KEY = 'thrft-stylst-catalogs'
+const catalogKey = (p) => String(p.creatorId || p.accountId || p.brandId || p.brandName || '')
+
+function loadCatalogs() {
+  try {
+    const list = JSON.parse(localStorage.getItem(CATALOGS_KEY) || '[]')
+    return Array.isArray(list) ? list : []
+  } catch {
+    return []
+  }
+}
+
 function RefreshIcon() {
   return (
     <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -63,6 +75,8 @@ export default function StylstBoard({ onOpenProduct }) {
   const tracks = useRef({})
   const fileInput = useRef(null)
   const [pending, setPending] = useState(null)
+  const [menu, setMenu] = useState(null) // null | 'add' | 'catalogs'
+  const [catalogs, setCatalogs] = useState(loadCatalogs)
 
   useEffect(() => {
     let active = true
@@ -73,7 +87,7 @@ export default function StylstBoard({ onOpenProduct }) {
   // Closet pieces are already cutouts; store listings get their background removed on display.
   const items = useMemo(() => [
     ...closet.map((item) => ({ ...item, key: `c-${item.id}`, label: item.brand || '', cutout: false })),
-    ...store.map((p) => ({
+    ...store.filter((p) => catalogs.includes(catalogKey(p))).map((p) => ({
       key: `s-${p.id}`,
       product: p,
       category: p.clothingType,
@@ -82,7 +96,27 @@ export default function StylstBoard({ onOpenProduct }) {
       imageUrl: p.mockupUrls?.[0] || p.photoUrl,
       cutout: true,
     })),
-  ], [closet, store])
+  ], [closet, store, catalogs])
+
+  const brands = useMemo(() => {
+    const map = new Map()
+    store.forEach((p) => {
+      const key = catalogKey(p)
+      if (!key) return
+      const entry = map.get(key) || { key, name: p.brandName || p.sellerName || 'Brand', count: 0 }
+      entry.count += 1
+      map.set(key, entry)
+    })
+    return [...map.values()].sort((a, b) => a.name.localeCompare(b.name))
+  }, [store])
+
+  function toggleCatalog(key) {
+    setCatalogs((prev) => {
+      const next = prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]
+      try { localStorage.setItem(CATALOGS_KEY, JSON.stringify(next)) } catch { /* storage full */ }
+      return next
+    })
+  }
 
   useEffect(() => {
     // Start each row on its first piece, not the add tile.
@@ -122,7 +156,7 @@ export default function StylstBoard({ onOpenProduct }) {
   return (
     <div className="stylst" data-no-section-swipe>
       <div className="stylst-bar">
-        <button type="button" className="stylst-shuffle is-bare" aria-label="Add a clothing item" onClick={() => fileInput.current?.click()}>
+        <button type="button" className="stylst-shuffle is-bare" aria-label="Add a clothing item or brand catalog" aria-expanded={menu !== null} onClick={() => setMenu((m) => (m ? null : 'add'))}>
           <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M12 5v14M5 12h14" /></svg>
         </button>
         <button type="button" className="stylst-shuffle is-bare" aria-label="Pick an outfit for me" onClick={shuffle}>
@@ -141,6 +175,29 @@ export default function StylstBoard({ onOpenProduct }) {
           }}
         />
       </div>
+      {menu === 'add' && (
+        <div className="stylst-pick" role="group" aria-label="Add to Stylst">
+          <button type="button" className="stylst-pick-btn is-bare" onClick={() => { setMenu(null); fileInput.current?.click() }}>Add photo</button>
+          <button type="button" className="stylst-pick-btn is-bare" onClick={() => setMenu('catalogs')}>Add brand catalog</button>
+        </div>
+      )}
+      {menu === 'catalogs' && (
+        <div className="stylst-pick" role="group" aria-label="Brand catalogs">
+          {brands.length === 0 && <span className="stylst-pick-empty">No brand catalogs yet</span>}
+          {brands.map((b) => (
+            <button
+              key={b.key}
+              type="button"
+              className={`stylst-pick-btn is-bare${catalogs.includes(b.key) ? ' is-on' : ''}`}
+              aria-pressed={catalogs.includes(b.key)}
+              onClick={() => toggleCatalog(b.key)}
+            >
+              {catalogs.includes(b.key) ? '✓ ' : ''}{b.name} · {b.count}
+            </button>
+          ))}
+          <button type="button" className="stylst-pick-btn is-bare" onClick={() => setMenu(null)}>Done</button>
+        </div>
+      )}
       {pending && (
         <div className="stylst-pick" role="group" aria-label="What is this piece?">
           <img src={pending} alt="" />

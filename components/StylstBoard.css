@@ -25,3 +25,6 @@
 .stylst-pick { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 6px 12px; }
 .stylst-pick img { width: 44px; height: 44px; object-fit: contain; border-radius: 10px; }
 .stylst-pick-btn { padding: 6px 12px; border-radius: 999px; font: 600 0.8rem var(--pf, inherit); color: var(--pf-ink, currentColor); background: var(--pf-card-2, rgba(255,255,255,.08)); }
+
+.stylst-pick-btn.is-on { background: var(--pf-ink, #fff); color: var(--pf-bg, #000); }
+.stylst-pick-empty { font-size: 0.8rem; opacity: 0.7; }
