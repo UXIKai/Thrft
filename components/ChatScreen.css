@@ -5678,3 +5678,7 @@ html body .chat-thread-overlay:has(.chat-thread[data-swiping='release']) ~ .chat
 
 /* No gap behind the curved card while the drawer or Online panel is open */
 html body .chat-screen:is(.is-mobile-nav-open, .is-online-open) { background: var(--page-bg); }
+
+.has-avatar-photo { overflow: hidden; padding: 0; }
+.person-avatar-img { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }
+.person-avatar-fill { display: grid; place-items: center; width: 100%; height: 100%; border-radius: inherit; }

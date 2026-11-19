@@ -1,3 +1,4 @@
+import PersonAvatar from './PersonAvatar.jsx'
 import { Fragment, useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal, flushSync } from 'react-dom'
 import { fetchFollowing, fetchSaved, searchAccounts, setFollowingAccount } from '../api.js'
@@ -2021,7 +2022,7 @@ export default function ChatScreen({
               else openContactSheet()
             }}
           >
-            {activeChat.initials}
+            <PersonAvatar className="person-avatar-fill" username={activeChat.kind === 'dm' ? usernameForName(activeChat.title) : ''} initials={activeChat.initials} />
           </button>
           {activeChat.kind === 'dm' ? (
             <button
@@ -2382,7 +2383,7 @@ export default function ChatScreen({
                 <BackIcon />
               </button>
               <span className="chat-contact-avatar" aria-hidden>
-                {activeChat.initials}
+                <PersonAvatar className="person-avatar-fill" username={activeChat.kind === 'dm' ? usernameForName(activeChat.title) : ''} initials={activeChat.initials} />
               </span>
               <div className="chat-contact-name-row">
                 {editingNick ? (
@@ -2646,7 +2647,7 @@ export default function ChatScreen({
                 </button>
               ) : null}
               <span className="chat-contact-avatar" aria-hidden>
-                {peerProfile.initials}
+                <PersonAvatar className="person-avatar-fill" username={usernameForName(peerProfile.name)} initials={peerProfile.initials} />
               </span>
               <div className="chat-contact-name-row">
                 {editingNick ? (
@@ -2853,7 +2854,7 @@ export default function ChatScreen({
                           return (
                             <li key={name}>
                               <label className="chat-new-row">
-                                <span className="chat-users-avatar" aria-hidden>{initials || '?'}</span>
+                                <span className="chat-users-avatar" aria-hidden><PersonAvatar className="person-avatar-fill" username={name} initials={initials || '?'} /></span>
                                 <button type="button" className="chat-users-name chat-users-name-btn is-bare" aria-label={`View ${name} profile`} onClick={() => onOpenAccount?.(name)}>{name}</button>
                                 <input type="checkbox" className="chat-new-check" checked={checked} onChange={() => toggleDraftMember(name)} aria-label={`Select ${name}`} />
                               </label>
@@ -2864,7 +2865,7 @@ export default function ChatScreen({
                         return (
                           <li key={name}>
                             <div className="chat-new-row">
-                              <span className="chat-users-avatar" aria-hidden>{initials || '?'}</span>
+                              <span className="chat-users-avatar" aria-hidden><PersonAvatar className="person-avatar-fill" username={name} initials={initials || '?'} /></span>
                               <button type="button" className="chat-users-name chat-users-name-btn is-bare" aria-label={`View ${name} profile`} onClick={() => onOpenAccount?.(name)}>{name}</button>
                               <div className="chat-users-actions">
                                 <button
@@ -2910,7 +2911,7 @@ export default function ChatScreen({
           const friend = isFriend(name)
           return (
             <li key={name} className="chat-friends-row">
-              <span className="chat-users-avatar" aria-hidden>{initials || '?'}</span>
+              <span className="chat-users-avatar" aria-hidden><PersonAvatar className="person-avatar-fill" username={name} initials={initials || '?'} /></span>
               <button type="button" className="chat-users-name chat-users-name-btn is-bare" aria-label={`View ${name} profile`} onClick={() => onOpenAccount?.(name)}>{name}</button>
               <div className="chat-users-actions">
                 <button type="button" className="chat-users-action" aria-label={`Message ${name}`} onClick={() => startChatWithUser(name)}>
@@ -3233,7 +3234,7 @@ export default function ChatScreen({
                   {pinsMode === 'pins' && chat.pinned && (
                     <span className="chat-pin-remove"><MinusIcon /></span>
                   )}
-                  {chat.initials}
+                  <PersonAvatar className="person-avatar-fill" username={chat.kind === 'dm' ? usernameForName(chat.title) : ''} initials={chat.initials} />
                 </span>
                 <span className="chat-row-copy">
                   <span className="chat-row-top">
@@ -3330,7 +3331,7 @@ export default function ChatScreen({
           {filtered.all.filter((chat) => chat.preview).map((chat) => (
             <li key={chat.id}>
               <button type="button" className="chat-home-row is-bare" onClick={() => openThread(chat)}>
-                <span className="chat-avatar" aria-hidden>{chat.initials}</span>
+                <span className="chat-avatar" aria-hidden><PersonAvatar className="person-avatar-fill" username={chat.kind === 'dm' ? usernameForName(chat.title) : ''} initials={chat.initials} /></span>
                 <span className="chat-row-copy">
                   <span className="chat-row-top">
                     <span className="chat-row-title">
@@ -3506,7 +3507,7 @@ export default function ChatScreen({
                     className="chat-search-modal-row"
                     onClick={() => { setQuery(''); setSearchOpen(false); openThread(chat) }}
                   >
-                    <span className="chat-avatar" aria-hidden>{chat.initials}</span>
+                    <span className="chat-avatar" aria-hidden><PersonAvatar className="person-avatar-fill" username={chat.kind === 'dm' ? usernameForName(chat.title) : ''} initials={chat.initials} /></span>
                     <span className="chat-search-modal-title">{chat.title}</span>
                   </button>
                 </li>
