@@ -95,9 +95,9 @@ export default function StylstBoard({ onOpenProduct }) {
     return () => { active = false }
   }, [])
 
-  // Closet pieces are already cutouts; store listings get their background removed on display.
+  // Product photos get their background removed on display.
   const items = useMemo(() => [
-    ...closet.map((item) => ({ ...item, key: `c-${item.id}`, label: item.brand || '', cutout: false })),
+    ...closet.map((item) => ({ ...item, key: `c-${item.id}`, label: item.brand || '', cutout: true })),
     ...store.filter((p) => catalogs.includes(catalogKey(p))).map((p) => ({
       key: `s-${p.id}`,
       product: p,

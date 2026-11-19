@@ -1878,7 +1878,7 @@ export default function ProfileScreen({
                         <span className="profile-product-photo">
                             <ProductPhoto
                               src={p.photoUrl || p.image_url || p.photo_url || p.mockup_urls?.[0]}
-                              cutout={hasProductCutout(p)}
+                              cutout
                               alt={p.title}
                               loading="lazy"
                               draggable="false"
@@ -1985,9 +1985,10 @@ export default function ProfileScreen({
                         }}
                       >
                         {item.imageUrl ? (
-                          <img
+                          <ProductPhoto
                             className="closet-tile-img"
                             src={item.imageUrl}
+                            cutout
                             alt=""
                           />
                         ) : (
@@ -2038,9 +2039,10 @@ export default function ProfileScreen({
                       </svg>
                     </button>
                     {closetSelected.imageUrl ? (
-                      <img
+                      <ProductPhoto
                         className="closet-detail-img"
                         src={closetSelected.imageUrl}
+                        cutout
                         alt=""
                       />
                     ) : null}
