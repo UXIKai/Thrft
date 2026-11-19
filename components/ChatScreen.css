@@ -5580,3 +5580,12 @@ html body .chat-screen:not(.is-desktop) .chat-friends-tabs[aria-label='Message r
 
 html body .chat-screen.is-desktop { transition: padding-right 0.28s cubic-bezier(0.2, 0.8, 0.2, 1); }
 html body .chat-screen.is-desktop.is-friends-open { padding-right: calc(16px + min(380px, 90vw)); }
+
+html body .stage > .tab-bar,
+html body .stage > .nav-toggle {
+  transition: translate 0.28s cubic-bezier(0.2, 0.8, 0.2, 1), --tab-i 0.45s cubic-bezier(0.34, 1.28, 0.5, 1);
+}
+html body .stage:has(.chat-screen.is-friends-open) > .tab-bar,
+html body .stage:has(.chat-screen.is-friends-open) > .nav-toggle {
+  translate: calc(min(380px, 90vw) / -2) 0;
+}
