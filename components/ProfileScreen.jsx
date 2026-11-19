@@ -27,7 +27,6 @@ import OrdersScreen from './OrdersScreen.jsx'
 import SectionSwiper from './SectionSwiper.jsx'
 import StylstBoard from './StylstBoard.jsx'
 import SettingsScreen from './SettingsScreen.jsx'
-import SwipeBackPage from './SwipeBackPage.jsx'
 import ProductPhoto from './ProductPhoto.jsx'
 import FollowListSheet from './FollowListSheet.jsx'
 import { hasProductCutout } from '../mockupCutouts.js'
@@ -1307,6 +1306,77 @@ export default function ProfileScreen({
       setSettingsOpen(true)
       endPeek()
     }, 260)
+  }
+  // Dragging Settings right slides the page card and nav bar back in from the left, following the finger
+  const settingsBackDrag = useRef(null)
+  const backParts = () => ({
+    col: stageEl?.querySelector('.app-column'),
+    bar: stageEl?.querySelector(':scope > .tab-bar'),
+  })
+  const setBackX = (x) => {
+    const { col, bar } = backParts()
+    if (col) col.style.transform = `translateX(${x}px)`
+    if (bar) bar.style.translate = `${x}px 0`
+  }
+  const clearBack = () => {
+    const { col, bar } = backParts()
+    if (col) col.style.transform = ''
+    if (bar) bar.style.translate = ''
+    stageEl?.classList.remove('is-settings-peek', 'is-settings-dragging', 'is-settings-backdrag')
+    stageEl?.style.removeProperty('--settings-p')
+    setSettingsPeek(false)
+  }
+  const onSettingsBackDown = (e) => {
+    if (!e.isPrimary || (e.pointerType === 'mouse' && e.button !== 0)) return
+    if (e.target.closest?.('input, textarea, select, [data-no-swipe-back]')) return
+    settingsBackDrag.current = { x: e.clientX, y: e.clientY, t: performance.now(), id: e.pointerId, drag: false }
+  }
+  const onSettingsBackMove = (e) => {
+    const st = settingsBackDrag.current
+    if (!st || e.pointerId !== st.id || !stageEl) return
+    const dx = e.clientX - st.x
+    const dy = e.clientY - st.y
+    if (!st.drag) {
+      if (Math.abs(dy) > 12 && Math.abs(dy) > Math.abs(dx)) { settingsBackDrag.current = null; return }
+      if (dx < 12 || dx < Math.abs(dy) * 1.5) return
+      try { e.currentTarget.setPointerCapture(e.pointerId) } catch { return }
+      st.drag = true
+      clearTimeout(peekTimer.current)
+      setSettingsPeek(true)
+      stageEl.classList.add('is-settings-peek', 'is-settings-dragging', 'is-settings-backdrag')
+    }
+    const w = window.innerWidth
+    setBackX(Math.min(0, -w * 1.05 + dx))
+  }
+  const onSettingsBackUp = (e) => {
+    const st = settingsBackDrag.current
+    if (!st || e.pointerId !== st.id) return
+    settingsBackDrag.current = null
+    if (!st.drag || !stageEl) return
+    const w = window.innerWidth
+    const dx = e.clientX - st.x
+    const velocity = dx / Math.max(1, performance.now() - st.t)
+    stageEl.classList.remove('is-settings-dragging')
+    if (dx > w * 0.3 || velocity > 0.5) {
+      setBackX(0)
+      peekTimer.current = setTimeout(() => {
+        setSettingsInstant(true)
+        setSettingsOpen(false)
+        clearBack()
+        setTimeout(() => setSettingsInstant(false), 50)
+      }, 290)
+    } else {
+      setBackX(-w * 1.05)
+      peekTimer.current = setTimeout(clearBack, 290)
+    }
+  }
+  const onSettingsBackCancel = () => {
+    const st = settingsBackDrag.current
+    settingsBackDrag.current = null
+    if (!st?.drag || !stageEl) return
+    stageEl.classList.remove('is-settings-dragging')
+    setBackX(-window.innerWidth * 1.05)
+    peekTimer.current = setTimeout(clearBack, 290)
   }
   const openSettingsAnimated = () => {
     if (!stageEl || !stageEl.querySelector('.app-column')) { setSettingsInstant(false); setSettingsOpen(true); return }
@@ -2791,7 +2861,13 @@ export default function ProfileScreen({
       {stageEl &&
         (settingsOpen || settingsPeek) &&
         createPortal(
-          <SwipeBackPage className={`settings-slide${settingsOpen ? '' : ' is-peeking'}${settingsInstant ? ' is-instant' : ''}${settingsClosing ? ' is-closing' : ''}`} onDismiss={() => { setSettingsOpen(false); setSettingsClosing(false) }}>
+          <div
+            className={`settings-slide${settingsOpen ? '' : ' is-peeking'}${settingsInstant ? ' is-instant' : ''}${settingsClosing ? ' is-closing' : ''}`}
+            onPointerDown={settingsOpen ? onSettingsBackDown : undefined}
+            onPointerMove={settingsOpen ? onSettingsBackMove : undefined}
+            onPointerUp={settingsOpen ? onSettingsBackUp : undefined}
+            onPointerCancel={settingsOpen ? onSettingsBackCancel : undefined}
+          >
           <div className="atmosphere" aria-hidden>
             <AtmosphereFlow />
           </div>
@@ -2805,7 +2881,7 @@ export default function ProfileScreen({
             onEditMoney={() => openProfileEditor('Money')}
             onOpenOrders={() => setShipOpen(true)}
           />
-          </SwipeBackPage>,
+          </div>,
           stageEl,
         )}
 

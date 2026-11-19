@@ -3250,6 +3250,9 @@
   html body .stage.is-settings-committing > .tab-bar {
     translate: -110vw 0;
   }
+  html body .stage.is-settings-backdrag > .settings-slide {
+    z-index: 0;
+  }
   html body .stage.is-settings-dragging > .app-column {
     transition: none;
   }
