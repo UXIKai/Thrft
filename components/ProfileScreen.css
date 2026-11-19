@@ -3666,4 +3666,4 @@ html body .profile-screen .pf-top-actions { top: 14px; right: calc(var(--pf-pad-
 html body .app-column.is-profile-wide .profile-screen .pf-top-actions { top: 20px; right: 22px; }
 
 /* Avatar rises beside the buttons instead of sitting below a tall gap */
-html body .profile-screen .profile-identity .pf-x-head { padding-top: 16px; }
+html body .profile-screen .profile-identity .pf-x-head { padding-top: 2px; }
