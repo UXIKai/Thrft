@@ -2024,7 +2024,8 @@ export default function ChatScreen({
             <button
               type="button"
               className="chat-thread-name is-link"
-              onClick={() => openPeerProfile(activeChat.title)}
+              aria-label={`View ${activeChat.title} profile`}
+              onClick={() => onOpenAccount?.(usernameForName(activeChat.title))}
             >
               {activeChat.title}
             </button>
@@ -2665,7 +2666,14 @@ export default function ChatScreen({
                 ) : (
                   <>
                     <span className="chat-contact-name-spacer" aria-hidden />
-                    <p className="chat-contact-name">{peerProfile.name}</p>
+                    <button
+                      type="button"
+                      className="chat-contact-name is-link"
+                      aria-label={`View ${peerProfile.name} profile`}
+                      onClick={() => onOpenAccount?.(activeChat?.memberUsernames?.[peerProfile.name] || usernameForName(peerProfile.name))}
+                    >
+                      {peerProfile.name}
+                    </button>
                     {peerProfile.fromGroup ? (
                       <button
                         type="button"
