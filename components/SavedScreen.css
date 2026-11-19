@@ -1405,9 +1405,44 @@ html body .saved-fav-brands.is-fab-open.is-expanded:has(.saved-brands-empty) { m
 html body .saved-view-tabs .saved-fab .saved-fab-item.saved-fab-item:nth-child(1) { --fab-x: 0px; --fab-y: 42px; }
 html body .saved-view-tabs .saved-fab .saved-fab-item.saved-fab-item:nth-child(2) { --fab-x: 0px; --fab-y: 84px; }
 html body .saved-view-tabs .saved-fab .saved-fab-item.saved-fab-item:nth-child(3) { --fab-x: 0px; --fab-y: 126px; }
-html body .saved-fav-brands.is-fab-open { margin-top: 84px; }
+html body .saved-fav-brands.is-fab-open,
 html body .saved-fav-brands.is-fab-open.is-expanded:has(.saved-brands-empty) { margin-top: 16px; }
 
 /* Opening the + pushes the heart left while the tabs fold shut */
-html body .saved-view-heart { margin-right: 0; transition: margin-right 0.32s cubic-bezier(0.2, 0.8, 0.2, 1); }
-html body .saved-view-tabs.is-fab-open .saved-view-heart { margin-right: 46px; }
+
+/* The + opens its buttons inside the container, pushing the heart left */
+html body .saved-view-tabs .saved-fab {
+  width: 40px;
+  transition: width 0.32s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+html body .saved-view-tabs .saved-fab.is-open { width: 170px; }
+html body .saved-view-tabs .saved-fab.is-open.is-selecting { width: 82px; }
+html body .saved-view-tabs .saved-fab .saved-fab-toggle { position: absolute; right: 0; top: 0; }
+html body .saved-view-tabs .saved-fab .saved-fab-items {
+  position: absolute;
+  left: 0;
+  right: auto;
+  top: 0;
+  width: auto;
+  height: 36px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 2px;
+  pointer-events: none;
+}
+html body .saved-view-tabs .saved-fab.is-open .saved-fab-items { pointer-events: auto; }
+html body .saved-view-tabs .saved-fab .saved-fab-item.saved-fab-item {
+  position: static;
+  flex: 0 0 auto;
+  transform: scale(0.4);
+  transform-origin: 100% 50%;
+  opacity: 0;
+  transition: transform 0.32s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.2s ease;
+  transition-delay: 0ms;
+}
+html body .saved-view-tabs .saved-fab.is-open .saved-fab-item.saved-fab-item {
+  transform: none;
+  opacity: 1;
+  transition-delay: calc(var(--i) * 40ms);
+}
