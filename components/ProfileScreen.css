@@ -3486,3 +3486,43 @@ html body .pf-compose .pf-compose-square {
   resize: none;
 }
 .pf-post-caption { margin: 0; padding: 10px 14px 14px; text-align: left; white-space: pre-wrap; word-break: break-word; }
+
+.pf-viewer {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  padding-bottom: 40px;
+  background: var(--page-bg);
+  color: light-dark(#000, #fff);
+  font-family: inherit;
+}
+.pf-viewer-top { position: relative; display: flex; justify-content: center; padding: max(10px, env(safe-area-inset-top, 0px)) 16px 8px; }
+.pf-viewer-back { position: absolute; left: 12px; top: max(8px, env(safe-area-inset-top, 0px)); width: 40px; height: 40px; display: grid; place-items: center; color: inherit; }
+.pf-viewer-title { display: flex; flex-direction: column; align-items: center; line-height: 1.25; }
+.pf-viewer-title strong { font-size: 1.05rem; letter-spacing: 0.08em; text-transform: uppercase; }
+.pf-viewer-title span { font-size: 0.8rem; opacity: 0.65; }
+.pf-viewer-head { position: relative; display: flex; align-items: center; gap: 10px; padding: 8px 14px 10px; }
+.pf-viewer-avatar { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; background: rgba(127, 127, 127, 0.3); flex: none; }
+.pf-viewer-name { flex: 1; min-width: 0; font-weight: 700; overflow: hidden; text-overflow: ellipsis; }
+.pf-viewer-menu { width: 36px; height: 36px; display: grid; place-items: center; color: inherit; }
+html body .pf-viewer .pf-viewer-delete {
+  position: absolute;
+  right: 14px;
+  top: 100%;
+  z-index: 2;
+  padding: 10px 16px;
+  border-radius: 14px;
+  color: #ff5a4d;
+  font-weight: 700;
+  background: var(--page-bg);
+  border: 1px solid rgba(127, 127, 127, 0.4);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+.pf-viewer-photo { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; background: rgba(127, 127, 127, 0.15); }
+.pf-viewer-actions { display: flex; align-items: center; gap: 8px; padding: 10px 12px 4px; }
+.pf-viewer-act { width: 40px; height: 40px; display: grid; place-items: center; color: inherit; }
+.pf-viewer-act.is-liked { color: #ff5a6e; }
+.pf-viewer-caption { margin: 0; padding: 4px 16px; white-space: pre-wrap; word-break: break-word; line-height: 1.45; }

@@ -468,11 +468,23 @@ export default function ProfileScreen({
   const [followSheet, setFollowSheet] = useState(null)
   const mediaOwner = account?.username || userProfile?.username || account?.id || ''
   const [media, setMedia] = useState(() => readProfileMedia(mediaOwner))
+  const postName = account?.username || userProfile?.username || userProfile?.displayName || 'Me'
   const [captions, setCaptions] = useState(() => readCaptions(mediaOwner))
   const [viewPhoto, setViewPhoto] = useState(null)
   const postInputRef = useRef(null)
   const [profileView, setProfileView] = useState('closet')
   const [composeOpen, setComposeOpen] = useState(false)
+  const [postMenuOpen, setPostMenuOpen] = useState(false)
+  const [likes, setLikes] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('thrft-profile-likes') || '[]') } catch { return [] }
+  })
+  function toggleLike(url) {
+    setLikes((prev) => {
+      const next = prev.includes(url) ? prev.filter((u) => u !== url) : [...prev, url]
+      try { localStorage.setItem('thrft-profile-likes', JSON.stringify(next)) } catch { /* storage full */ }
+      return next
+    })
+  }
   const [draftPhoto, setDraftPhoto] = useState('')
   const [draftCaption, setDraftCaption] = useState('')
   const [posting, setPosting] = useState(false)
@@ -1482,17 +1494,38 @@ export default function ProfileScreen({
         </div>
       )}
       {viewPhoto && (
-        <div className="profile-photo-view" role="dialog" aria-label="Photo" onClick={() => setViewPhoto(null)}>
-          <div className="pf-post" onClick={(e) => e.stopPropagation()}>
-            <div className="pf-post-head">
-              <span className="pf-post-name">{account?.username || userProfile?.username || userProfile?.displayName || 'Me'}</span>
+        <div className="pf-viewer" role="dialog" aria-label="Post">
+          <div className="pf-viewer-top">
+            <button type="button" className="pf-viewer-back is-bare" aria-label="Back" onClick={() => { setViewPhoto(null); setPostMenuOpen(false) }}>
+              <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 5l-7 7 7 7" /></svg>
+            </button>
+            <div className="pf-viewer-title">
+              <strong>Post</strong>
+              <span>{postName}</span>
             </div>
-            <img className="pf-photo-full" src={viewPhoto} alt="" />
-            {captions[viewPhoto] ? <p className="pf-post-caption">{captions[viewPhoto]}</p> : null}
           </div>
-          <button type="button" className="pf-photo-delete is-bare" onClick={(e) => { e.stopPropagation(); removePhoto(viewPhoto) }}>
-            Delete
-          </button>
+          <div className="pf-viewer-head">
+            {avatarUrl ? <img className="pf-viewer-avatar" src={avatarUrl} alt="" /> : <span className="pf-viewer-avatar" aria-hidden="true" />}
+            <span className="pf-viewer-name">{postName}</span>
+            <button type="button" className="pf-viewer-menu is-bare" aria-label="Post options" aria-expanded={postMenuOpen} onClick={() => setPostMenuOpen((o) => !o)}>
+              <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M4 9h16M4 15h10" /></svg>
+            </button>
+            {postMenuOpen && (
+              <button type="button" className="pf-viewer-delete is-bare" onClick={() => { setPostMenuOpen(false); removePhoto(viewPhoto) }}>Delete post</button>
+            )}
+          </div>
+          <img className="pf-viewer-photo" src={viewPhoto} alt="" />
+          <div className="pf-viewer-actions">
+            <button type="button" className={`pf-viewer-act is-bare${likes.includes(viewPhoto) ? ' is-liked' : ''}`} aria-label="Like" aria-pressed={likes.includes(viewPhoto)} onClick={() => toggleLike(viewPhoto)}>
+              <svg width="28" height="28" viewBox="0 0 24 24" aria-hidden fill={likes.includes(viewPhoto) ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round"><path d="M12 20.5s-7.500-4.600-7.500-10.200A4.300 4.300 0 0 1 12 7.600a4.300 4.300 0 0 1 7.500 2.700c0 5.600-7.500 10.200-7.500 10.200z" /></svg>
+            </button>
+            <button type="button" className="pf-viewer-act is-bare" aria-label="Share" onClick={shareProfile}>
+              <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M21 4 3 11l7 3 3 7z" /></svg>
+            </button>
+          </div>
+          {captions[viewPhoto] ? (
+            <p className="pf-viewer-caption"><strong>{postName}</strong> {captions[viewPhoto]}</p>
+          ) : null}
         </div>
       )}
 
