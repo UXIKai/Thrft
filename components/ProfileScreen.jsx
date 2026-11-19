@@ -630,11 +630,26 @@ export default function ProfileScreen({
   const [settingsPeek, setSettingsPeek] = useState(false)
   const [settingsInstant, setSettingsInstant] = useState(false)
   const closeSettings = () => {
-    setSettingsClosing(true)
-    setTimeout(() => {
-      setSettingsOpen(false)
-      setSettingsClosing(false)
-    }, 280)
+    const col = stageEl?.querySelector('.app-column')
+    if (!stageEl || !col) {
+      setSettingsClosing(true)
+      setTimeout(() => {
+        setSettingsOpen(false)
+        setSettingsClosing(false)
+      }, 280)
+      return
+    }
+    // Reverse of the open: Settings stays put while the page card and nav bar slide back in
+    clearTimeout(peekTimer.current)
+    stageEl.classList.add('is-settings-peek', 'is-settings-dragging', 'is-settings-committing')
+    setSettingsPeek(true)
+    setSettingsInstant(true)
+    setSettingsOpen(false)
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      stageEl.classList.remove('is-settings-dragging', 'is-settings-committing')
+      setPeek(0)
+      peekTimer.current = setTimeout(() => { endPeek(); setSettingsInstant(false) }, 300)
+    }))
   }
   const [shipOpen, setShipOpen] = useState(false)
   const [musicSheet, setMusicSheet] = useState(null) // 'spotify' | 'apple'
