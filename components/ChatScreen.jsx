@@ -624,6 +624,7 @@ export default function ChatScreen({
   const [friendsTab, setFriendsTab] = useState('all')
   const [friendsTabsOpen, setFriendsTabsOpen] = useState(false)
   const [friendsClicked, setFriendsClicked] = useState(false)
+  const [friendsDrawerOpen, setFriendsDrawerOpen] = useState(false)
   useEffect(() => {
     if (!friendsTabsOpen) return undefined
     const dismiss = (event) => {
@@ -2875,12 +2876,83 @@ export default function ChatScreen({
 
   if (activeChat && !isDesktop) return renderThread()
 
+  const friendsPanel = (
+  <div className="chat-friends-panel">
+    <input
+      type="search"
+      className="chat-friends-find is-in-panel"
+      aria-label="Search people"
+      placeholder="Search people"
+      autoComplete="off"
+      spellCheck={false}
+      value={friendsQuery}
+      onChange={(e) => setFriendsQuery(e.target.value)}
+    />
+    {friendsView.list.length === 0 ? (
+      <p className="chat-desktop-empty">{accountSearchError || (friendsQuery.trim() && (accountSearch.loading || accountSearch.query !== accountQuery) ? 'Searching…' : friendsQuery.trim() ? 'No accounts found.' : friendsView.empty)}</p>
+    ) : (
+      <ul className="chat-friends-list">
+        {friendsView.list.map((name) => {
+          const initials = name.split(/\s+/).slice(0, 2).map((w) => w[0]?.toUpperCase() || '').join('')
+          const friend = isFriend(name)
+          return (
+            <li key={name} className="chat-friends-row">
+              <span className="chat-users-avatar" aria-hidden>{initials || '?'}</span>
+              <button type="button" className="chat-users-name chat-users-name-btn is-bare" aria-label={`View ${name} profile`} onClick={() => onOpenAccount?.(name)}>{name}</button>
+              <div className="chat-users-actions">
+                <button type="button" className="chat-users-action" aria-label={`Message ${name}`} onClick={() => startChatWithUser(name)}>
+                  <SendIcon />
+                </button>
+                <button
+                  type="button"
+                  className={`chat-users-action${friend ? ' is-on' : ''}`}
+                  aria-label={friend ? `Remove ${name} from friends` : `Add ${name} as friend`}
+                  aria-pressed={friend}
+                  onClick={() => toggleFriend(name)}
+                >
+                  {friend ? <CheckCircleIcon className="chat-ico" /> : <PlusIcon />}
+                </button>
+              </div>
+            </li>
+          )
+        })}
+      </ul>
+    )}
+  </div>
+  )
+
+  const friendsDrawer = isDesktop && friendsDrawerOpen ? (
+    <aside className="chat-friends-drawer" aria-label="Friends">
+      <div className="chat-friends-drawer-head">
+        <h3>Friends</h3>
+      </div>
+      <div className="chat-friends-drawer-tabs">
+        {[['all', 'All'], ['pending', 'Pending'], ['suggestions', 'Suggestions']].map(([id, label]) => (
+          <button
+            key={id}
+            type="button"
+            className={`chat-friends-drawer-tab is-bare${friendsTab === id ? ' is-active' : ''}`}
+            aria-pressed={friendsTab === id}
+            onClick={() => setFriendsTab(id)}
+          >
+            {label}<span className="chat-friends-tab-count">{friendsView.counts[id]}</span>
+          </button>
+        ))}
+      </div>
+      {friendsPanel}
+    </aside>
+  ) : null
+
   const friendsBtn = (
   <button
     type="button"
     className={`chat-sidebar-control is-bare chat-page-friends${isDesktop ? ' is-desktop' : ''}`}
     aria-label="Friends"
-    onClick={() => { setActiveNowOpen(false); setMobileNavOpen(false); if (composer) closeComposer(); setImagesOnly(false); setRequestsView(false); setActiveChatId(null); setFriendsClicked(true) }}
+    onClick={() => {
+      if (isDesktop) { setFriendsDrawerOpen((open) => !open); return }
+      setActiveNowOpen(false); setMobileNavOpen(false); if (composer) closeComposer(); setImagesOnly(false); setRequestsView(false); setActiveChatId(null); setFriendsClicked(true)
+    }}
+    aria-expanded={isDesktop ? friendsDrawerOpen : undefined}
   >
     <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden fill="currentColor"><circle cx="9" cy="8" r="3.2" /><path d="M2.500 19.500c0-3.300 2.800-5.500 6.500-5.500s6.500 2.200 6.500 5.500z" /><circle cx="16.500" cy="9" r="2.600" /><path d="M16.500 14c3 0 5 1.800 5 4.500h-4.200c-.1-1.800-.8-3.200-2-4.200.4-.2.800-.3 1.200-.3z" /></svg>
   </button>
@@ -3191,6 +3263,7 @@ export default function ChatScreen({
 
       <div className="chat-main-page">
       {isDesktop && friendsBtn}
+      {friendsDrawer}
       {!isDesktop && (
         <div className="atmosphere chat-page-atmosphere" aria-hidden="true">
           <AtmosphereFlow />
@@ -3348,48 +3421,7 @@ export default function ChatScreen({
                 </div>
               </nav>
               <div className="chat-friends-body">
-              <div className="chat-friends-panel">
-                <input
-                  type="search"
-                  className="chat-friends-find is-in-panel"
-                  aria-label="Search people"
-                  placeholder="Search people"
-                  autoComplete="off"
-                  spellCheck={false}
-                  value={friendsQuery}
-                  onChange={(e) => setFriendsQuery(e.target.value)}
-                />
-                {friendsView.list.length === 0 ? (
-                  <p className="chat-desktop-empty">{accountSearchError || (friendsQuery.trim() && (accountSearch.loading || accountSearch.query !== accountQuery) ? 'Searching…' : friendsQuery.trim() ? 'No accounts found.' : friendsView.empty)}</p>
-                ) : (
-                  <ul className="chat-friends-list">
-                    {friendsView.list.map((name) => {
-                      const initials = name.split(/\s+/).slice(0, 2).map((w) => w[0]?.toUpperCase() || '').join('')
-                      const friend = isFriend(name)
-                      return (
-                        <li key={name} className="chat-friends-row">
-                          <span className="chat-users-avatar" aria-hidden>{initials || '?'}</span>
-                          <button type="button" className="chat-users-name chat-users-name-btn is-bare" aria-label={`View ${name} profile`} onClick={() => onOpenAccount?.(name)}>{name}</button>
-                          <div className="chat-users-actions">
-                            <button type="button" className="chat-users-action" aria-label={`Message ${name}`} onClick={() => startChatWithUser(name)}>
-                              <SendIcon />
-                            </button>
-                            <button
-                              type="button"
-                              className={`chat-users-action${friend ? ' is-on' : ''}`}
-                              aria-label={friend ? `Remove ${name} from friends` : `Add ${name} as friend`}
-                              aria-pressed={friend}
-                              onClick={() => toggleFriend(name)}
-                            >
-                              {friend ? <CheckCircleIcon className="chat-ico" /> : <PlusIcon />}
-                            </button>
-                          </div>
-                        </li>
-                      )
-                    })}
-                  </ul>
-                )}
-              </div>
+              {friendsPanel}
               {isDesktop && onlinePanel}
               </div>
             </div>

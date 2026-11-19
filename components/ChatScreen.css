@@ -5522,3 +5522,26 @@ html body .chat-screen .chat-page-friends.is-desktop {
   width: 36px;
   height: 36px;
 }
+
+html body .chat-screen .chat-friends-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 7;
+  width: min(380px, 90vw);
+  display: flex;
+  flex-direction: column;
+  padding: 16px 16px 24px;
+  overflow-y: auto;
+  background: var(--page-bg);
+  border-left: 1px solid var(--edge-ink, rgba(255, 255, 255, 0.12));
+  animation: chat-friends-drawer-in 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@keyframes chat-friends-drawer-in { from { transform: translateX(100%); } to { transform: none; } }
+.chat-friends-drawer-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.chat-friends-drawer-head h3 { margin: 0; font-size: 1.1rem; }
+.chat-friends-drawer-tabs { display: flex; gap: 6px; margin-bottom: 10px; }
+.chat-friends-drawer-tab { padding: 6px 12px; border-radius: 999px; font: inherit; font-size: 0.85rem; color: inherit; opacity: 0.7; background: rgba(255, 255, 255, 0.06); }
+.chat-friends-drawer-tab.is-active { opacity: 1; background: rgba(255, 255, 255, 0.16); }
+html body .chat-screen .chat-page-friends.is-desktop { z-index: 8; }
