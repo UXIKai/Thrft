@@ -620,7 +620,7 @@ export default function ChatScreen({
     document.addEventListener('pointerdown', dismiss, true)
     return () => document.removeEventListener('pointerdown', dismiss, true)
   }, [searchOpen])
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(isDesktop)
   const [friendsTab, setFriendsTab] = useState('all')
   const [friendsTabsOpen, setFriendsTabsOpen] = useState(false)
   const [friendsClicked, setFriendsClicked] = useState(false)
