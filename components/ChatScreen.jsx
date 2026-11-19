@@ -3280,6 +3280,7 @@ export default function ChatScreen({
           >
             <ToggleIcon />
           </button>
+          {requestsView && !composer && <h2 className="chat-page-title">Message Requests</h2>}
           {friendsBtn}
           {peopleSearchOpen && !imagesOnly && !requestsView && !composer && (
             <input
