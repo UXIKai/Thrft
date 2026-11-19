@@ -3731,3 +3731,16 @@ html body .profile-screen .profile-identity .pf-x-head { padding-top: 2px; }
 }
 @keyframes section-popup-fade { from { opacity: 0; } }
 @keyframes section-popup-pop { from { opacity: 0; transform: scale(0.85); } }
+
+.profile-screen .section-pager {
+  align-self: center;
+  width: 150px;
+  margin-inline: auto;
+  border-radius: 999px;
+  background: var(--page-bg);
+  border: 1px solid light-dark(rgba(0, 0, 0, 0.3), rgba(255, 255, 255, 0.1));
+  overflow: hidden;
+  -webkit-touch-callout: none;
+}
+.profile-screen .section-pager-drum { height: 36px; }
+.profile-screen .section-pager-drum .section-pager-label { height: 36px; line-height: 36px; font-size: 0.85rem; }

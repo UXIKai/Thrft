@@ -8,6 +8,7 @@ import './SectionSwiper.css'
  * and the content below swaps when it is swiped left or right (or a dot is tapped).
  * Holding the chip opens a centered popup listing every section.
  */
+const ITEM_PX = 36
 const HOLD_MS = 450
 const HOLD_SLOP_PX = 10
 
@@ -25,6 +26,39 @@ export default function SectionSwiper({
     count: sections.length,
     onChange: (i) => onChange(sections[i].id),
   })
+
+  const drum = useRef(null)
+  const settle = useRef(0)
+  const paintDrum = () => {
+    const el = drum.current
+    if (!el) return
+    const pos = el.scrollTop / ITEM_PX
+    Array.from(el.children).forEach((child, i) => {
+      const d = Math.min(2, Math.abs(i - pos))
+      child.style.opacity = String(1 - d * 0.42)
+      child.style.transform = `scale(${1 - d * 0.15})`
+    })
+  }
+  const onDrumScroll = () => {
+    paintDrum()
+    window.clearTimeout(settle.current)
+    settle.current = window.setTimeout(() => {
+      const el = drum.current
+      if (!el) return
+      const i = Math.max(0, Math.min(sections.length - 1, Math.round(el.scrollTop / ITEM_PX)))
+      if (i !== index) {
+        navigator.vibrate?.(8)
+        onChange(sections[i].id)
+      }
+    }, 110)
+  }
+  useEffect(() => {
+    const el = drum.current
+    if (!el) return
+    if (Math.abs(el.scrollTop - index * ITEM_PX) > 1) el.scrollTo({ top: index * ITEM_PX, behavior: 'smooth' })
+    paintDrum()
+  }, [index])
+  useEffect(() => () => window.clearTimeout(settle.current), [])
 
   const [open, setOpen] = useState(false)
 
@@ -72,9 +106,13 @@ export default function SectionSwiper({
         onClickCapture={onClickCapture}
         onContextMenu={(e) => e.preventDefault()}
       >
-        <button type="button" className="section-pager-chip is-bare" aria-haspopup="dialog" aria-expanded={open}>
-          {sections[index].label}
-        </button>
+        <div ref={drum} className="section-pager-drum" aria-hidden="true" onScroll={onDrumScroll}>
+          {sections.map(({ id, label: name }) => (
+            <span key={id} className="section-pager-label">
+              {name}
+            </span>
+          ))}
+        </div>
       </div>
       {open &&
         createPortal(
