@@ -3649,3 +3649,14 @@ html body .profile-screen .pf-top-actions {
 }
 
 .profile-screen .section-pager { touch-action: pan-y; }
+
+/* Whole profile top in an opaque card like the navigation bar */
+html body .profile-screen .profile-identity {
+  margin: 6px 0 8px;
+  padding: 14px 16px 12px;
+  border-radius: 28px;
+  border: 1px solid light-dark(rgba(0, 0, 0, 0.3), rgba(255, 255, 255, 0.08));
+  background: var(--page-bg);
+  box-shadow: 0 4px 14px light-dark(rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.25));
+}
+html body .profile-screen .profile-identity .profile-social { right: 16px; bottom: 21px; }
