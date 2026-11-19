@@ -3,6 +3,7 @@ import { createPortal, flushSync } from 'react-dom'
 import { fetchFollowing, fetchSaved, searchAccounts, setFollowingAccount } from '../api.js'
 import { isSupabaseConfigured } from '../supabase.js'
 import { onlineCount, subscribePresence } from '../presence.js'
+import useSwipeBack from './useSwipeBack.js'
 import BrandGlobe from './BrandGlobe.jsx'
 import StageSlot from './StageSlot.jsx'
 import AtmosphereFlow from './AtmosphereFlow.jsx'
@@ -700,6 +701,7 @@ export default function ChatScreen({
   }, [memberGlobeVisible])
   const [menuPos, setMenuPos] = useState(null) // { top, right } viewport coords
   const [activeChatId, setActiveChatId] = useState(null)
+  const threadSwipeRef = useSwipeBack(() => backToChats(), !isDesktop && Boolean(activeChatId))
   const [contactSheetOpen, setContactSheetOpen] = useState(false)
   const [editingNick, setEditingNick] = useState(false)
   const [nickDraft, setNickDraft] = useState('')
@@ -1971,6 +1973,7 @@ export default function ChatScreen({
     if (!activeChat) return null
     return (
       <div
+        ref={threadSwipeRef}
         className="chat-thread"
         role="dialog"
         aria-label={activeChat.title}
