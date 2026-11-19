@@ -3584,3 +3584,7 @@ html body .pf-comment .pf-comment-like.is-liked { color: #ff5a6e; }
 .pf-comments .pf-viewer-comment-form { align-items: center; padding: 10px 0 0; border-top: 1px solid rgba(127, 127, 127, 0.25); }
 
 .pf-comments { max-height: min(72vh, 100%); transition: height 0.2s ease; }
+
+/* Mobile: the hamburger sits 12px above the share button; drop it onto the same line. */
+html body .profile-screen .profile-menu-btn:not(.profile-top-btn) { translate: 0 12px; }
+html body .app-column.is-profile-wide .profile-screen .profile-menu-btn:not(.profile-top-btn) { translate: none; }
