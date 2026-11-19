@@ -1,3 +1,4 @@
+import { updateMyListing } from '../listings.js'
 import { createPortal } from 'react-dom'
 import { useEffect, useState } from 'react'
 import { useBag } from '../BagContext.jsx'
@@ -56,6 +57,7 @@ export default function ProductDetail({
   onOpenBrand,
   openQuantity = false,
   onSavedChange,
+  accountId,
 }) {
   const [stageEl, setStageEl] = useState(null)
   const { items, addItem, replaceItems, removeItem } = useBag()
@@ -71,6 +73,17 @@ export default function ProductDetail({
   const isPrintful = Boolean(variants.length || product?.printfulVariantId)
   const isExternal = isExternalProduct(product)
   const isMarket = product?.detailVariant === 'market' && !isPrintful && !isExternal
+  const isOwnListing = isMarket && accountId && product?.sellerId === accountId
+  async function deleteListing() {
+    if (!window.confirm(`Delete "${product.title || 'this listing'}"?`)) return
+    try {
+      await updateMyListing(product.id, { status: 'removed' })
+      onSavedChange?.()
+      onClose?.()
+    } catch (error) {
+      setSelectionError(error.message || 'Could not delete this listing.')
+    }
+  }
   const externalVariants = externalProductVariants(product)
   const selectedVariantIds = Array.isArray(bagItem?.selectedVariantIds) ? bagItem.selectedVariantIds :
     Array.from({ length: inBag }, () => bagItem?.externalVariantId || '')
@@ -465,15 +478,25 @@ export default function ProductDetail({
         {isExternal && !externalVariants.length && <p className="product-detail-external-unavailable">This product is not available for checkout. USD pricing and saved variants are required.</p>}
         {selectionError && <p role="alert">{selectionError}</p>}
         {isMarket ? (
-          <button
-            type="button"
-            className="is-bare"
-            aria-label={added ? 'Remove from bag' : 'Add to bag'}
-            aria-pressed={added}
-            onClick={() => added ? removeItem(product.id) : start()}
-          >
-            {added ? <DoneCheckIcon /> : <PlusIcon />}
-          </button>
+          <div className="product-detail-market-actions">
+            <button
+              type="button"
+              className="is-bare"
+              aria-label={added ? 'Remove from bag' : 'Add to bag'}
+              aria-pressed={added}
+              onClick={() => added ? removeItem(product.id) : start()}
+            >
+              {added ? <DoneCheckIcon /> : <PlusIcon />}
+            </button>
+            {isOwnListing && (
+              <button type="button" className="is-bare" aria-label="Delete listing" onClick={deleteListing}>
+                <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden>
+                  <path fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+                    d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3" />
+                </svg>
+              </button>
+            )}
+          </div>
         ) : <div
           className={`product-detail-buy${added && !sizing ? ' is-added' : ''}`}
         >

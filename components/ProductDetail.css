@@ -759,3 +759,10 @@ button.product-detail-brand:has(.product-detail-brand-logo) {
   font-weight: 700;
   text-decoration: none;
 }
+
+.product-detail-market-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+}

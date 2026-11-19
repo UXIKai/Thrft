@@ -830,6 +830,7 @@ export default function App() {
       {activeProduct && (
         <ProductDetail
           product={activeProduct}
+          accountId={account?.id}
           onSavedChange={() => setForYouRefresh((n) => n + 1)}
           openQuantity={Boolean(productReturnRef.current?.quantity)}
           onClose={() => {
