@@ -1857,7 +1857,7 @@ export default function ProfileScreen({
                 {listingActionError && <p role="alert">{listingActionError}</p>}
                 <ul className="profile-product-list">
                   {rows.map((p) => (
-                    <li key={p.id}>
+                    <li key={p.id} className="profile-product-item">
                       <button
                         type="button"
                         className="profile-product-row is-bare"
@@ -1886,6 +1886,13 @@ export default function ProfileScreen({
                         </span>
                         <span className="profile-product-name">{p.title}</span>
                         <span className="profile-product-price">{p.price || '—'}</span>
+                      </button>
+                      <button type="button" className="profile-product-delete is-bare" aria-label={`Delete ${p.title || 'item'}`}
+                        disabled={Boolean(listingAction)} onClick={() => changeOwnedListing(p, spaceTab)}>
+                        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden>
+                          <path fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+                            d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3" />
+                        </svg>
                       </button>
                       <div className="profile-product-actions">
                         <label className="profile-product-action">
