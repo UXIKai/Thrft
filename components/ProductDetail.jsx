@@ -108,16 +108,20 @@ export default function ProductDetail({
 
   async function toggleLike() {
     if (!savedProducts || savingLike) return
+    navigator.vibrate?.(10)
     setSavingLike(true)
     setLikeError('')
+    const previous = savedProducts
+    const next = liked
+      ? savedProducts.filter((item) => String(item.id) !== String(product.id))
+      : [...savedProducts, product]
+    setSavedProducts(next) // heart flips instantly; the save happens behind it
     try {
-      const next = liked
-        ? savedProducts.filter((item) => String(item.id) !== String(product.id))
-        : [...savedProducts, product]
       const result = await saveSavedItems(next)
       setSavedProducts(result.items)
       onSavedChange?.()
     } catch (error) {
+      setSavedProducts(previous)
       setLikeError(error.message || 'Could not update liked products')
     } finally {
       setSavingLike(false)
@@ -405,7 +409,7 @@ export default function ProductDetail({
       {!isMarket && (
         <button type="button" className="product-detail-like is-bare"
           aria-label={liked ? 'Remove from Liked' : 'Add to Liked'}
-          aria-pressed={liked} disabled={!savedProducts || savingLike}
+          aria-pressed={liked} disabled={!savedProducts}
           onClick={toggleLike}>
           <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
             <path d="M12 20.5s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.5 2.7c0 5.6-7.5 10.2-7.5 10.2Z"
