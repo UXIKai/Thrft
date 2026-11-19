@@ -3823,3 +3823,32 @@ html body .profile-screen .profile-card { margin-bottom: calc(5px - env(safe-are
 html body .profile-screen .profile-product-name,
 html body .profile-screen .profile-product-price,
 html body .profile-screen .profile-product-actions { display: none; }
+
+/* The card holds only the header and the section picker; the items sit below it */
+html body .profile-screen { padding-bottom: 36px; }
+html body .profile-screen .profile-card { display: contents; }
+html body .profile-screen .profile-card .profile-identity {
+  margin: 6px -8px 8px;
+  border: 1px solid light-dark(rgba(0, 0, 0, 0.3), rgba(255, 255, 255, 0.08));
+  border-radius: 28px;
+  background: var(--page-bg);
+  box-shadow: 0 4px 14px light-dark(rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.25));
+}
+html body .profile-screen:has(.profile-spaces-inline:not([hidden])) .profile-card .profile-identity {
+  margin-bottom: 0;
+  border-bottom: 0;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  box-shadow: none;
+}
+html body .profile-screen .profile-card .profile-spaces-inline { padding-inline: 0; }
+html body .profile-screen .profile-card .section-pager {
+  align-self: stretch;
+  margin: 0 -8px;
+  padding-bottom: 14px;
+  background: var(--page-bg);
+  border: 1px solid light-dark(rgba(0, 0, 0, 0.3), rgba(255, 255, 255, 0.08));
+  border-top: 0;
+  border-radius: 0 0 28px 28px;
+  box-shadow: 0 4px 14px light-dark(rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.25));
+}
