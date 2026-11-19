@@ -3403,7 +3403,7 @@ export default function ChatScreen({
                 </div>
               </div>
             </div>
-          ) : activeChat ? (
+          ) : activeChat && !threadOverlay ? (
             renderThread()
           ) : (
             <div className="chat-friends-empty">
