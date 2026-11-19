@@ -16,7 +16,7 @@ const TABS = [
   { id: 'profile', label: 'Profile' },
 ]
 
-function TabContent({ tab, collapsed = false, directions }) {
+function TabContent({ tab, collapsed = false, compact = false, directions }) {
   return (
     <span className="tab-text">
       {tab.id === 'design' ? (
@@ -269,7 +269,7 @@ export default function TabBar({ ref, active = 'home', onChange, onCreate, onShu
     <>
     <nav
       ref={navRef}
-      className={`tab-bar${collapsed ? ' is-collapsed' : ''}${pressed ? ' is-pressed' : ''}${dragPos !== null ? ' is-dragging' : ''}${createOpen ? ' is-create-open' : ''}${createClosing ? ' is-create-closing' : ''}`}
+      className={`tab-bar${collapsed ? ' is-collapsed' : ''}${compact && !collapsed ? ' is-compact' : ''}${pressed ? ' is-pressed' : ''}${dragPos !== null ? ' is-dragging' : ''}${createOpen ? ' is-create-open' : ''}${createClosing ? ' is-create-closing' : ''}`}
       aria-label="Main"
       style={{ touchAction: 'none' }}
       onContextMenu={(e) => e.preventDefault()}

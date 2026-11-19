@@ -286,6 +286,24 @@ export default function App() {
       window.removeEventListener('keydown', onKey)
     }
   }, [shurikenMenuOpen])
+  const [navCompact, setNavCompact] = useState(false)
+  // Like Instagram: the bar shrinks while scrolling down and returns on scroll up.
+  useEffect(() => {
+    const el = scrollRef.current
+    if (!el) return undefined
+    let last = el.scrollTop
+    const onScroll = () => {
+      const top = el.scrollTop
+      const delta = top - last
+      if (top < 24) setNavCompact(false)
+      else if (delta > 6) setNavCompact(true)
+      else if (delta < -6) setNavCompact(false)
+      if (Math.abs(delta) > 6) last = top
+    }
+    el.addEventListener('scroll', onScroll, { passive: true })
+    return () => el.removeEventListener('scroll', onScroll)
+  }, [tab])
+  useEffect(() => setNavCompact(false), [tab])
   const [navTab, setNavTab] = useState(tab)
   // Reset before mounting the next page, not as an animated visibility change afterward.
   if (navTab !== tab) {
@@ -967,7 +985,7 @@ export default function App() {
       </div>
 
       {shurikenMenuOpen && <HomeRadialMenu bagCount={bagCount} onPick={pickShurikenMenu} onClose={() => setShurikenMenuOpen(false)} />}
-      {signedIn && showNav && <TabBar ref={tabBarRef} collapsed={atBottom || homeIdle} active={tab} directions={tab === 'home' ? [
+      {signedIn && showNav && <TabBar ref={tabBarRef} compact={navCompact} collapsed={atBottom || homeIdle} active={tab} directions={tab === 'home' ? [
         homeSegment !== 'leaderboard',
         homeSegment === 'store',
         true,

@@ -3693,3 +3693,9 @@ html body .stage.is-post-open > .nav-toggle {
   pointer-events: none !important;
   translate: 0 140% !important;
 }
+
+/* Shrinks while scrolling down, like Instagram's bar */
+.tab-bar { transform-origin: 50% 100%; }
+html body .stage > .tab-bar.tab-bar.tab-bar:not(.is-collapsed) { transition: scale 0.28s cubic-bezier(0.2, 0.9, 0.3, 1); }
+html body .stage > .tab-bar.tab-bar.tab-bar.is-compact { scale: 0.78; }
+html body .stage.is-settings-peek > .tab-bar.tab-bar.tab-bar.is-compact { scale: 1; }
