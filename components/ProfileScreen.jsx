@@ -1293,6 +1293,18 @@ export default function ProfileScreen({
       endPeek()
     }, 260)
   }
+  const openSettingsAnimated = () => {
+    if (!stageEl || !stageEl.querySelector('.app-column')) { setSettingsInstant(false); setSettingsOpen(true); return }
+    clearTimeout(peekTimer.current)
+    setSettingsPeek(true)
+    stageEl.classList.remove('is-settings-committing', 'is-settings-dragging')
+    stageEl.classList.add('is-settings-peek')
+    setPeek(0)
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      setPeek(1)
+      peekTimer.current = setTimeout(commitPeek, 300)
+    }))
+  }
   const cancelPeek = () => {
     stageEl?.classList.remove('is-settings-dragging')
     setPeek(0)
@@ -1337,7 +1349,7 @@ export default function ProfileScreen({
           className="profile-menu-btn is-bare"
           aria-label="Settings"
           onMouseDown={holdScroll}
-          onClick={() => { setSettingsInstant(false); setSettingsOpen(true) }}
+          onClick={openSettingsAnimated}
         >
           <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
         </button>
