@@ -5607,3 +5607,32 @@ html body .chat-screen.is-desktop::before {
 html body .chat-screen.is-desktop.is-sidebar-collapsed::before { transform: translateX(-100%); }
 
 .chat-friends-active-aside-title .chat-online-count { margin-left: 10px; font-size: 1rem; font-weight: 600; opacity: 0.6; }
+
+/* Active chats on the main page */
+.chat-home-list {
+  position: absolute;
+  inset: calc(env(safe-area-inset-top, 0px) + 72px) 0 110px;
+  z-index: 2;
+  margin: 0;
+  padding: 0 14px;
+  list-style: none;
+  overflow-y: auto;
+}
+.chat-home-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 6px;
+  text-align: left;
+  color: inherit;
+}
+.chat-home-row .chat-row-copy { flex: 1; min-width: 0; }
+.chat-home-row .chat-row-top { display: flex; justify-content: space-between; gap: 8px; }
+.chat-home-row .chat-row-preview {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  opacity: 0.6;
+}

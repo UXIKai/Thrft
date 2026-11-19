@@ -597,7 +597,7 @@ export default function ChatScreen({
   const [isDesktop, setIsDesktop] = useState(
     () => typeof window !== 'undefined' && window.matchMedia('(min-width: 720px) and (min-height: 500px)').matches,
   )
-  const [mobileNavOpen, setMobileNavOpen] = useState(() => !isDesktop)
+  const [mobileNavOpen, setMobileNavOpen] = useState(false)
   const [navDragP, setNavDragP] = useState(null)
   const navDragRef = useRef(null)
   const [onlineDragP, setOnlineDragP] = useState(null)
@@ -3313,6 +3313,27 @@ export default function ChatScreen({
             />
           )}
         </div>
+      )}
+      {!isDesktop && !activeChatId && !imagesOnly && !requestsView && !composer && !peopleSearchOpen && (
+        <ul className="chat-home-list" aria-label="Active chats">
+          {filtered.all.filter((chat) => chat.preview).map((chat) => (
+            <li key={chat.id}>
+              <button type="button" className="chat-home-row is-bare" onClick={() => openThread(chat)}>
+                <span className="chat-avatar" aria-hidden>{chat.initials}</span>
+                <span className="chat-row-copy">
+                  <span className="chat-row-top">
+                    <span className="chat-row-title">
+                      {chat.title}
+                      {chat.unread && <span className="chat-unread-dot" aria-label="Unread" />}
+                    </span>
+                    <span className="chat-row-time">{chat.time}</span>
+                  </span>
+                  <span className="chat-row-preview">{chat.preview}</span>
+                </span>
+              </button>
+            </li>
+          ))}
+        </ul>
       )}
       {(
         <section
