@@ -1378,3 +1378,25 @@ html body .saved-view-tabs.is-open .saved-view-rail-inner .saved-view-tab {
   pointer-events: auto;
 }
 html body .saved-view-tabs.is-open .saved-view-rail-inner .saved-view-tab.is-on { opacity: 1; }
+
+/* Heart pinned right with the + inside the container; the tabs grow leftwards across the page */
+html body .saved-view-tabs {
+  left: auto;
+  right: 12px;
+  transform: translateY(-50%);
+  max-width: calc(100% - 24px);
+  flex-direction: row;
+}
+html body .saved-view-tabs .saved-fab {
+  position: relative;
+  right: auto;
+  top: auto;
+  z-index: auto;
+  flex: 0 0 auto;
+  width: 40px;
+  height: 36px;
+}
+html body .saved-view-tabs .saved-fab-toggle { width: 40px; height: 36px; }
+html body .saved-view-rail-inner .saved-view-tab { padding: 8px 10px; font-size: 0.8rem; }
+html body .saved-fav-brands.is-fab-open { margin-top: 62px; }
+html body .saved-fav-brands.is-fab-open.is-expanded:has(.saved-brands-empty) { margin-top: 16px; }
