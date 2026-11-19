@@ -5675,3 +5675,6 @@ html body .chat-thread-overlay:has(.chat-thread[data-swiping]) ~ .chat-screen .c
 html body .chat-thread-overlay:has(.chat-thread[data-swiping='release']) ~ .chat-screen .chat-main-page {
   transition: transform 0.2s ease-out;
 }
+
+/* No gap behind the curved card while the drawer or Online panel is open */
+html body .chat-screen:is(.is-mobile-nav-open, .is-online-open) { background: var(--page-bg); }
