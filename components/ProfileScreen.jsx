@@ -500,6 +500,20 @@ export default function ProfileScreen({
   const [commentsOpen, setCommentsOpen] = useState(false)
   const [commentDraft, setCommentDraft] = useState('')
   const [heartPop, setHeartPop] = useState(0)
+  const [kbInset, setKbInset] = useState(0)
+  useEffect(() => {
+    const vv = window.visualViewport
+    if (!commentsOpen || !vv) return undefined
+    const update = () => setKbInset(Math.max(0, Math.round(window.innerHeight - vv.height - vv.offsetTop)))
+    update()
+    vv.addEventListener('resize', update)
+    vv.addEventListener('scroll', update)
+    return () => {
+      vv.removeEventListener('resize', update)
+      vv.removeEventListener('scroll', update)
+      setKbInset(0)
+    }
+  }, [commentsOpen])
   const lastTap = useRef(0)
   function patchFlags(patch) {
     setFlags((prev) => {
@@ -1591,7 +1605,7 @@ export default function ProfileScreen({
           ) : null}
           {commentsOpen && (
             createPortal(
-<div className="pf-sheet-backdrop" onClick={() => setCommentsOpen(false)}>
+<div className="pf-sheet-backdrop" style={{ bottom: kbInset }} onClick={() => setCommentsOpen(false)}>
               <div className="pf-sheet pf-comments" role="dialog" aria-label="Comments" onClick={(e) => e.stopPropagation()}>
                 <span className="pf-sheet-grab" aria-hidden="true" />
                 <h3 className="pf-comments-title">Comments</h3>
