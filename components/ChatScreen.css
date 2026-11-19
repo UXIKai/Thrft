@@ -5652,6 +5652,8 @@ html body .chat-screen.is-desktop.is-sidebar-collapsed::before { transform: tran
 .chat-thread[data-swiping] { background: var(--page-bg); box-shadow: -12px 0 30px rgba(0, 0, 0, 0.35); }
 /* The screen being returned to gets the rounded card edges */
 html body .chat-thread-overlay:has(.chat-thread[data-swiping]) ~ .chat-screen .chat-main-page {
+  transform: translateX(calc(var(--swipe-back-x, 0px) - 100%));
+  transition: none;
   background: var(--page-bg);
   border-radius: 44px;
   box-shadow: 0 0 40px rgba(0, 0, 0, 0.45);
@@ -5670,3 +5672,6 @@ html body .chat-thread-overlay:has(.chat-thread[data-swiping]) ~ .chat-screen .c
   clip-path: inset(0 round 44px);
 }
 .chat-screen.is-behind-thread { isolation: isolate; pointer-events: none; }
+html body .chat-thread-overlay:has(.chat-thread[data-swiping='release']) ~ .chat-screen .chat-main-page {
+  transition: transform 0.2s ease-out;
+}

@@ -23,6 +23,7 @@ export default function useSwipeBack(onClose, enabled = true) {
       el.style.transition = animate ? 'transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1)' : ''
       el.style.transform = ''
       delete el.dataset.swiping
+      document.documentElement.style.removeProperty('--swipe-back-x')
     }
 
     const down = (e) => {
@@ -48,6 +49,7 @@ export default function useSwipeBack(onClose, enabled = true) {
         el.dataset.swiping = '1'
       }
       el.style.transform = `translateX(${Math.max(0, dx)}px)`
+      document.documentElement.style.setProperty('--swipe-back-x', `${Math.max(0, dx)}px`)
     }
 
     const up = (e) => {
@@ -61,6 +63,8 @@ export default function useSwipeBack(onClose, enabled = true) {
       if (dx > el.clientWidth * CLOSE_FRACTION || velocity > CLOSE_VELOCITY) {
         el.style.transition = 'transform 0.2s ease-out'
         el.style.transform = 'translateX(100%)'
+        el.dataset.swiping = 'release'
+        document.documentElement.style.setProperty('--swipe-back-x', `${el.clientWidth}px`)
         setTimeout(() => closeRef.current?.(), 200)
       } else {
         reset(true)
