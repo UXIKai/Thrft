@@ -1319,12 +1319,12 @@ export default function ProfileScreen({
   const setBackX = (x) => {
     const { col, bar } = backParts()
     if (col) col.style.transform = `translateX(${x}px)`
-    if (bar) bar.style.translate = `${x}px 0`
+    if (bar) bar.style.transform = `translateX(calc(-50% + ${x}px))`
   }
   const clearBack = () => {
     const { col, bar } = backParts()
     if (col) col.style.transform = ''
-    if (bar) bar.style.translate = ''
+    if (bar) bar.style.transform = ''
     stageEl?.classList.remove('is-settings-peek', 'is-settings-dragging', 'is-settings-backdrag')
     stageEl?.style.removeProperty('--settings-p')
     setSettingsPeek(false)
