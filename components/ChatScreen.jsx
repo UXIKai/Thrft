@@ -3055,14 +3055,6 @@ export default function ChatScreen({
           </button>
           <button
             type="button"
-            className={`chat-list-quick-btn is-bare${!imagesOnly && !requestsView && !activeChat && !composer ? ' is-on' : ''}`}
-            onClick={() => { if (composer) closeComposer(); setImagesOnly(false); setRequestsView(false); setActiveChatId(null); setFriendsClicked(true) }}
-          >
-            <svg className="chat-ico" viewBox="0 0 24 24" aria-hidden width="20" height="20" fill="currentColor"><circle cx="12" cy="8" r="3.5" /><path d="M5.500 20c0-3.600 2.900-6 6.500-6s6.500 2.400 6.500 6z" /></svg>
-            <span>Friends</span>
-          </button>
-          <button
-            type="button"
             className={`chat-list-quick-btn is-bare${requestsView ? ' is-on' : ''}`}
             aria-pressed={requestsView}
             onClick={() => { if (composer) closeComposer(); setImagesOnly(false); setActiveChatId(null); setRequestsView(true) }}
@@ -3202,6 +3194,14 @@ export default function ChatScreen({
             onClick={() => { setActiveNowOpen(false); setMobileNavOpen((open) => !open) }}
           >
             <ToggleIcon />
+          </button>
+          <button
+            type="button"
+            className="chat-sidebar-control is-bare chat-page-friends"
+            aria-label="Friends"
+            onClick={() => { setActiveNowOpen(false); setMobileNavOpen(false); if (composer) closeComposer(); setImagesOnly(false); setRequestsView(false); setActiveChatId(null); setFriendsClicked(true) }}
+          >
+            <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden fill="currentColor"><circle cx="9" cy="8" r="3.2" /><path d="M2.500 19.500c0-3.300 2.800-5.500 6.500-5.500s6.500 2.200 6.500 5.500z" /><circle cx="16.500" cy="9" r="2.600" /><path d="M16.500 14c3 0 5 1.800 5 4.500h-4.200c-.1-1.800-.8-3.200-2-4.200.4-.2.800-.3 1.200-.3z" /></svg>
           </button>
           {peopleSearchOpen && !imagesOnly && !requestsView && !composer && (
             <input

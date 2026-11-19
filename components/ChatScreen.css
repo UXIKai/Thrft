@@ -5445,6 +5445,13 @@ html body .chat-thread-scroll > .chat-thread-body {
     width: 36px;
     height: 36px;
   }
+  html body .chat-main-header .chat-page-friends {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 36px;
+    height: 36px;
+  }
   html body .chat-screen .chat-main-header .chat-friends-find.is-in-header {
     display: block;
   }
