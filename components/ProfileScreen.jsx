@@ -521,8 +521,12 @@ export default function ProfileScreen({
   function addComment(url) {
     const text = commentDraft.trim()
     if (!text) return
-    patchFlags((f) => ({ comments: { ...f.comments, [url]: [...(f.comments[url] || []), text] } }))
+    patchFlags((f) => ({ comments: { ...f.comments, [url]: [...commentsOf(url), { t: text }] } }))
     setCommentDraft('')
+  }
+  const commentsOf = (url) => (flags.comments[url] || []).map((c) => (typeof c === 'string' ? { t: c } : c))
+  function patchComment(url, index, patch) {
+    patchFlags((f) => ({ comments: { ...f.comments, [url]: commentsOf(url).map((c, i) => (i === index ? { ...c, ...patch } : c)) } }))
   }
   const [draftPhoto, setDraftPhoto] = useState('')
   const [draftCaption, setDraftCaption] = useState('')
@@ -1585,16 +1589,35 @@ export default function ProfileScreen({
           {captions[viewPhoto] ? (
             <p className="pf-viewer-caption"><strong>{postName}</strong> {captions[viewPhoto]}</p>
           ) : null}
-          {metaOf(viewPhoto).noComments && <p className="pf-viewer-note">Comments are turned off</p>}
-          {commentsOpen && !metaOf(viewPhoto).noComments && (
-            <div className="pf-viewer-comments">
-              {(flags.comments[viewPhoto] || []).map((text, i) => (
-                <p key={i} className="pf-viewer-caption"><strong>{postName}</strong> {text}</p>
-              ))}
-              <form className="pf-viewer-comment-form" onSubmit={(e) => { e.preventDefault(); addComment(viewPhoto) }}>
-                <input value={commentDraft} onChange={(e) => setCommentDraft(e.target.value)} placeholder="Add a comment…" maxLength={300} />
-                <button type="submit" className="is-bare" disabled={!commentDraft.trim()}>Post</button>
-              </form>
+          {commentsOpen && (
+            <div className="pf-sheet-backdrop" onClick={() => setCommentsOpen(false)}>
+              <div className="pf-sheet pf-comments" role="dialog" aria-label="Comments" onClick={(e) => e.stopPropagation()}>
+                <span className="pf-sheet-grab" aria-hidden="true" />
+                <h3 className="pf-comments-title">Comments</h3>
+                <div className="pf-comments-list">
+                  {commentsOf(viewPhoto).every((c) => c.h) && <p className="pf-viewer-note">{metaOf(viewPhoto).noComments ? 'Comments are turned off' : 'No comments yet'}</p>}
+                  {commentsOf(viewPhoto).map((c, i) => c.h ? null : (
+                    <div className="pf-comment" key={i}>
+                      {avatarUrl ? <img className="pf-viewer-avatar" src={avatarUrl} alt="" /> : <span className="pf-viewer-avatar" aria-hidden="true" />}
+                      <div className="pf-comment-body">
+                        <p><strong>{postName}</strong> {c.t}</p>
+                        <div className="pf-comment-links">
+                          <button type="button" className="is-bare" onClick={() => setCommentDraft(`@${postName} `)}>Reply</button>
+                          <button type="button" className="is-bare" onClick={() => patchComment(viewPhoto, i, { h: true })}>Hide</button>
+                        </div>
+                      </div>
+                      <button type="button" className={`pf-comment-like is-bare${c.l ? ' is-liked' : ''}`} aria-label="Like comment" aria-pressed={!!c.l} onClick={() => patchComment(viewPhoto, i, { l: !c.l })}>
+                        <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden fill={c.l ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round"><path d="M12 20.500s-7.500-4.600-7.500-10.200A4.300 4.300 0 0 1 12 7.600a4.300 4.300 0 0 1 7.500 2.700c0 5.600-7.500 10.200-7.500 10.200z" /></svg>
+                      </button>
+                    </div>
+                  ))}
+                </div>
+                <form className="pf-viewer-comment-form" onSubmit={(e) => { e.preventDefault(); addComment(viewPhoto) }}>
+                  {avatarUrl ? <img className="pf-viewer-avatar" src={avatarUrl} alt="" /> : <span className="pf-viewer-avatar" aria-hidden="true" />}
+                  <input value={commentDraft} disabled={!!metaOf(viewPhoto).noComments} onChange={(e) => setCommentDraft(e.target.value)} placeholder={metaOf(viewPhoto).noComments ? 'Comments are turned off' : 'Add a comment…'} maxLength={300} />
+                  <button type="submit" className="is-bare" disabled={!commentDraft.trim() || !!metaOf(viewPhoto).noComments}>Post</button>
+                </form>
+              </div>
             </div>
           )}
           {postMenuOpen && (
