@@ -1444,6 +1444,14 @@ export default function ProfileScreen({
               </span>
             )}
           </p>
+          <button
+            type="button"
+            className="profile-photos-jump is-bare is-on pf-name-link"
+            aria-label="Links"
+            onClick={() => openProfileEditor('Links')}
+          >
+            <LinkIcon />
+          </button>
         </div>
         {(account?.username || userProfile?.username) && (
           <button type="button" className="profile-handle is-bare" onClick={() => onOpenAccountPage?.()}>
@@ -1489,14 +1497,6 @@ export default function ProfileScreen({
               onClick={() => setProfileView('closet')}
             >
               <ShirtIcon />
-            </button>
-            <button
-              type="button"
-              className="profile-photos-jump is-bare is-on"
-              aria-label="Links"
-              onClick={() => openProfileEditor('Links')}
-            >
-              <LinkIcon />
             </button>
           </div>
         </div>

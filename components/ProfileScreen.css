@@ -3599,3 +3599,5 @@ html body .app-column.is-profile-wide .profile-screen .profile-menu-btn.profile-
 .profile-screen .profile-identity .profile-social-cell { flex: none; flex-direction: row; align-items: baseline; gap: 4px; }
 .profile-screen .profile-identity .profile-social-n { font-size: 1rem; }
 .profile-screen .profile-identity .profile-social-l { font-size: 0.8rem; }
+.profile-screen .profile-name-row { display: flex; align-items: center; gap: 4px; }
+.profile-screen .pf-name-link { flex: none; width: 32px; height: 32px; }
