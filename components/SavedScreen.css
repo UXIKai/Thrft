@@ -1312,8 +1312,9 @@ html body .saved-view-tab.is-on { opacity: 1; background: rgba(127, 127, 127, 0.
 .saved-photos-grid img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
 .saved-photos-grid p { grid-column: 1 / -1; text-align: center; opacity: 0.6; }
 
-/* Tabs sit a little lower; the + shares their line */
-html body .saved-page-header { margin-top: 14px; margin-bottom: 12px; }
-html body .saved-page-header .saved-fab { top: 0; }
-html body .saved-fav-brands.is-fab-open { margin-top: 62px; }
+/* Tabs on the top line; the + and the search bar sit beneath them */
+html body .saved-page-header { margin-top: 14px; margin-bottom: 56px; }
+html body .saved-page-header .saved-fab { top: 46px; }
+html body .saved-page-header .saved-inline-search { top: 46px; transform: translateX(-50%); }
+html body .saved-fav-brands.is-fab-open { margin-top: 108px; }
 html body .saved-fav-brands.is-fab-open.is-expanded:has(.saved-brands-empty) { margin-top: 16px; }
