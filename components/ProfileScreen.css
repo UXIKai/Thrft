@@ -3859,3 +3859,29 @@ html body .profile-screen .profile-card .section-pager {
   background: transparent;
   box-shadow: none;
 }
+
+/* Lines under the section name instead of arrows; the current one is highlighted */
+html body .profile-screen .section-pager,
+html body .profile-screen .profile-card .section-pager { flex-direction: column; gap: 2px; }
+.section-pager-bars { display: flex; gap: 6px; justify-content: center; }
+html body .profile-screen .section-pager-bar {
+  width: 26px;
+  height: 14px;
+  padding: 0;
+  background: none;
+  border: 0;
+  position: relative;
+}
+html body .profile-screen .section-pager-bar::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 6px;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  opacity: 0.28;
+  transition: opacity 0.2s, height 0.2s, top 0.2s;
+}
+html body .profile-screen .section-pager-bar.is-active::after { opacity: 1; height: 3px; top: 5.5px; }

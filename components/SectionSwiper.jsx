@@ -105,15 +105,6 @@ export default function SectionSwiper({
         onClickCapture={onClickCapture}
         onContextMenu={(e) => e.preventDefault()}
       >
-        <button
-          type="button"
-          className="section-pager-arrow is-bare"
-          aria-label="Previous section"
-          disabled={index === 0}
-          onClick={() => go(index - 1)}
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M15 5l-7 7 7 7" /></svg>
-        </button>
         <div ref={drum} className="section-pager-drum" data-no-section-swipe aria-hidden="true" onScroll={onDrumScroll}>
           {sections.map(({ id, label: name }) => (
             <span key={id} className="section-pager-label">
@@ -121,15 +112,18 @@ export default function SectionSwiper({
             </span>
           ))}
         </div>
-        <button
-          type="button"
-          className="section-pager-arrow is-bare"
-          aria-label="Next section"
-          disabled={index === sections.length - 1}
-          onClick={() => go(index + 1)}
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M9 5l7 7-7 7" /></svg>
-        </button>
+        <div className="section-pager-bars" role="group" aria-label={label}>
+          {sections.map(({ id, label: name }, i) => (
+            <button
+              key={id}
+              type="button"
+              className={`section-pager-bar is-bare${i === index ? ' is-active' : ''}`}
+              aria-label={name}
+              aria-current={i === index ? 'true' : undefined}
+              onClick={() => go(i)}
+            />
+          ))}
+        </div>
       </div>
       {open &&
         createPortal(
