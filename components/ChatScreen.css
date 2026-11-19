@@ -5537,7 +5537,8 @@ html body .chat-screen .chat-friends-drawer {
   overflow-y: auto;
   background: var(--page-bg);
   border-left: 1px solid var(--edge-ink, rgba(255, 255, 255, 0.12));
-  animation: chat-friends-drawer-in 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  animation: chat-friends-drawer-in 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+  box-shadow: -12px 0 40px rgba(0, 0, 0, 0.35);
 }
 @keyframes chat-friends-drawer-in { from { transform: translateX(100%); } to { transform: none; } }
 .chat-friends-drawer-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
@@ -5576,3 +5577,6 @@ html body .chat-screen:not(.is-desktop) .chat-friends-tabs[aria-label='Message r
   transform: none !important;
   flex: 0 0 auto !important;
 }
+
+html body .chat-screen.is-desktop { transition: padding-right 0.28s cubic-bezier(0.2, 0.8, 0.2, 1); }
+html body .chat-screen.is-desktop.is-friends-open { padding-right: calc(16px + min(380px, 90vw)); }
