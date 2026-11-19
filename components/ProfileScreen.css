@@ -3664,3 +3664,6 @@ html body .profile-screen .profile-identity .profile-social { right: 18px; botto
 html body .profile-screen .profile-identity .pf-x-head .pf-user-avatar-wrap { margin-left: -3px; }
 html body .profile-screen .pf-top-actions { top: 14px; right: calc(var(--pf-pad-x) + 8px); }
 html body .app-column.is-profile-wide .profile-screen .pf-top-actions { top: 20px; right: 22px; }
+
+/* Avatar rises beside the buttons instead of sitting below a tall gap */
+html body .profile-screen .profile-identity .pf-x-head { padding-top: 30px; }
