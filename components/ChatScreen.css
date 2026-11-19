@@ -5605,3 +5605,5 @@ html body .chat-screen.is-desktop::before {
   transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 html body .chat-screen.is-desktop.is-sidebar-collapsed::before { transform: translateX(-100%); }
+
+.chat-friends-active-aside-title .chat-online-count { margin-left: 10px; font-size: 1rem; font-weight: 600; opacity: 0.6; }

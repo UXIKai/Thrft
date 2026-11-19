@@ -839,7 +839,7 @@ export default function ChatScreen({
       const shown = new Set(list.map((n) => n.toLowerCase()))
       list = [...list, ...allMemberNames.filter((n) => !shown.has(String(n).toLowerCase()))]
     }
-    const counts = { all: friends.length, pending: 0, suggestions: allMemberNames.filter((n) => !friendKeys.has(String(n).toLowerCase())).length }
+    const counts = { online: 0, all: friends.length, pending: 0, suggestions: allMemberNames.filter((n) => !friendKeys.has(String(n).toLowerCase())).length }
     return { list, title: titles[friendsTab], empty: empty[friendsTab], counts }
   }, [friends, friendsTab, friendsQuery, allMemberNames])
 
@@ -2965,8 +2965,7 @@ export default function ChatScreen({
 
   const onlinePanel = (
     <aside className={`chat-friends-active${activeNowOpen ? '' : ' is-collapsed'}`} aria-label="Online" hidden={!activeNowOpen && onlineDragP === null}>
-      {(activeNowOpen || onlineDragP !== null) && <h3 className="chat-friends-active-aside-title">Online</h3>}
-      {(activeNowOpen || onlineDragP !== null) && <p className="chat-friends-active-empty">It's quiet for now…</p>}
+      {(activeNowOpen || onlineDragP !== null) && <h3 className="chat-friends-active-aside-title">Online<span className="chat-online-count">{friendsView.counts.online}</span></h3>}
     </aside>
   )
 
