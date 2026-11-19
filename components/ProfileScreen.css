@@ -3853,9 +3853,9 @@ html body .profile-screen .profile-card .section-pager {
   box-shadow: 0 4px 14px light-dark(rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.25));
 }
 
-/* Card is 50% opaque so the background shows through */
+/* Card is 80% opaque so the background shows through */
 html body .profile-screen .profile-card .profile-identity,
 html body .profile-screen .profile-card .section-pager {
-  background: color-mix(in srgb, var(--page-bg) 50%, transparent);
+  background: color-mix(in srgb, var(--page-bg) 80%, transparent);
   box-shadow: none;
 }
