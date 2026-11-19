@@ -5651,4 +5651,3 @@ html body .chat-screen.is-desktop.is-sidebar-collapsed::before { transform: tran
 .chat-thread-overlay:has(.chat-thread[data-swiping]) > .chat-page-atmosphere { display: none; }
 .chat-thread[data-swiping] { background: var(--page-bg); box-shadow: -12px 0 30px rgba(0, 0, 0, 0.35); }
 .chat-screen.is-behind-thread { isolation: isolate; }
-.chat-thread-overlay .chat-thread { touch-action: pan-y; }
