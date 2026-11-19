@@ -1305,7 +1305,7 @@ export default function ProfileScreen({
       setSettingsInstant(true)
       setSettingsOpen(true)
       endPeek()
-    }, 260)
+    }, 290)
   }
   // Dragging Settings right slides the page card and nav bar back in from the left, following the finger
   const settingsBackDrag = useRef(null)
@@ -1385,10 +1385,7 @@ export default function ProfileScreen({
     stageEl.classList.remove('is-settings-committing', 'is-settings-dragging')
     stageEl.classList.add('is-settings-peek')
     setPeek(0)
-    requestAnimationFrame(() => requestAnimationFrame(() => {
-      setPeek(1)
-      peekTimer.current = setTimeout(commitPeek, 300)
-    }))
+    requestAnimationFrame(() => requestAnimationFrame(commitPeek))
   }
   const cancelPeek = () => {
     stageEl?.classList.remove('is-settings-dragging')
