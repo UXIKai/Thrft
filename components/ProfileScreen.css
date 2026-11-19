@@ -3660,3 +3660,7 @@ html body .profile-screen .profile-identity {
   box-shadow: 0 4px 14px light-dark(rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.25));
 }
 html body .profile-screen .profile-identity .profile-social { right: 16px; bottom: 21px; }
+
+/* Card starts level with the share/menu pill instead of rising above it */
+html body .profile-screen .profile-identity { margin-top: 17px; }
+html body .profile-screen .profile-identity .pf-x-head { padding-top: 73px; }
