@@ -18,7 +18,7 @@ import ClosetNumberLookup from './ClosetNumberLookup.jsx'
 import { LISTING_BRANDS, LISTING_CATEGORIES } from '../listingCatalog.js'
 import { createListing, fetchMyListings, fetchSellerSalesStats, formatListingPrice, isValidListingPrice, updateMyListing } from '../listings.js'
 import { uploadCreatorArtwork, uploadProductPhoto } from '../artworkStorage.js'
-import { compressImage, readCaptions, readProfileMedia, storeImage, writeCaption, writeProfileMedia } from '../profileMedia.js'
+import { compressImage, readCaptions, readPostMeta, readProfileMedia, storeImage, writeCaption, writePostMeta, writeProfileMedia } from '../profileMedia.js'
 import { getSupabase, isSupabaseConfigured } from '../supabase.js'
 import BrandGlobe from './BrandGlobe.jsx'
 import GiveBack from './GiveBack.jsx'
@@ -474,7 +474,22 @@ export default function ProfileScreen({
   const postInputRef = useRef(null)
   const [profileView, setProfileView] = useState('closet')
   const [composeOpen, setComposeOpen] = useState(false)
-  const [postMenuOpen, setPostMenuOpen] = useState(false)
+  const [postMenuOpen, setPostMenuOpen] = useState(false) // false | 'menu' | 'edit' | 'adjust'
+  const [editCaption, setEditCaption] = useState('')
+  const [showArchived, setShowArchived] = useState(false)
+  const [postMeta, setPostMeta] = useState(() => readPostMeta(mediaOwner))
+  const metaOf = (url) => postMeta[url] || {}
+  const archivedCount = media.photos.filter((u) => postMeta[u]?.archived).length
+  const gridPhotos = media.photos
+    .filter((u) => !!postMeta[u]?.archived === showArchived)
+    .sort((a, b) => (postMeta[b]?.pinned ? 1 : 0) - (postMeta[a]?.pinned ? 1 : 0))
+  function updateMeta(url, patch) {
+    setPostMeta((prev) => {
+      const next = { ...prev, [url]: { ...prev[url], ...patch } }
+      writePostMeta(mediaOwner, next)
+      return next
+    })
+  }
   const [likes, setLikes] = useState(() => {
     try { return JSON.parse(localStorage.getItem('thrft-profile-likes') || '[]') } catch { return [] }
   })
@@ -498,7 +513,7 @@ export default function ProfileScreen({
     window.addEventListener('thrft:stylst-add', add)
     return () => window.removeEventListener('thrft:stylst-add', add)
   }, [profileView])
-  useEffect(() => { setMedia(readProfileMedia(mediaOwner)); setCaptions(readCaptions(mediaOwner)) }, [mediaOwner])
+  useEffect(() => { setMedia(readProfileMedia(mediaOwner)); setCaptions(readCaptions(mediaOwner)); setPostMeta(readPostMeta(mediaOwner)) }, [mediaOwner])
   const [closetPeople, setClosetPeople] = useState(null)
   const [closetPickOpen, setClosetPickOpen] = useState(false)
   const [closetPickQuery, setClosetPickQuery] = useState('')
@@ -1463,12 +1478,18 @@ export default function ProfileScreen({
           </div>
         )}
         <div className="pf-photos-grid">
-          {media.photos.map((url, i) => (
+          {gridPhotos.map((url, i) => (
             <button key={url.slice(-40) + i} type="button" className="pf-photo-tile is-bare" aria-label="View photo" onClick={() => setViewPhoto(url)}>
-              <img src={url} alt="" loading="lazy" />
+              <img src={url} alt="" loading="lazy" style={{ objectPosition: `${metaOf(url).fx ?? 50}% ${metaOf(url).fy ?? 50}%` }} />
+              {metaOf(url).pinned ? <span className="pf-photo-pin" aria-label="Pinned">📌</span> : null}
             </button>
           ))}
         </div>
+        {archivedCount > 0 && (
+          <button type="button" className="pf-archive-toggle is-bare" onClick={() => setShowArchived((o) => !o)}>
+            {showArchived ? 'Back to posts' : `Archived (${archivedCount})`}
+          </button>
+        )}
       </section>
       {composeOpen && (
         <div className="pf-compose" role="dialog" aria-label="New photo">
@@ -1507,14 +1528,11 @@ export default function ProfileScreen({
           <div className="pf-viewer-head">
             {avatarUrl ? <img className="pf-viewer-avatar" src={avatarUrl} alt="" /> : <span className="pf-viewer-avatar" aria-hidden="true" />}
             <span className="pf-viewer-name">{postName}</span>
-            <button type="button" className="pf-viewer-menu is-bare" aria-label="Post options" aria-expanded={postMenuOpen} onClick={() => setPostMenuOpen((o) => !o)}>
+            <button type="button" className="pf-viewer-menu is-bare" aria-label="Post options" aria-expanded={!!postMenuOpen} onClick={() => setPostMenuOpen('menu')}>
               <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M4 9h16M4 15h10" /></svg>
             </button>
-            {postMenuOpen && (
-              <button type="button" className="pf-viewer-delete is-bare" onClick={() => { setPostMenuOpen(false); removePhoto(viewPhoto) }}>Delete post</button>
-            )}
           </div>
-          <img className="pf-viewer-photo" src={viewPhoto} alt="" />
+          <img className="pf-viewer-photo" src={viewPhoto} alt="" style={{ objectPosition: `${metaOf(viewPhoto).fx ?? 50}% ${metaOf(viewPhoto).fy ?? 50}%` }} />
           <div className="pf-viewer-actions">
             <button type="button" className={`pf-viewer-act is-bare${likes.includes(viewPhoto) ? ' is-liked' : ''}`} aria-label="Like" aria-pressed={likes.includes(viewPhoto)} onClick={() => toggleLike(viewPhoto)}>
               <svg width="28" height="28" viewBox="0 0 24 24" aria-hidden fill={likes.includes(viewPhoto) ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round"><path d="M12 20.5s-7.500-4.600-7.500-10.200A4.300 4.300 0 0 1 12 7.600a4.300 4.300 0 0 1 7.500 2.700c0 5.600-7.500 10.200-7.500 10.200z" /></svg>
@@ -1523,9 +1541,53 @@ export default function ProfileScreen({
               <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M21 4 3 11l7 3 3 7z" /></svg>
             </button>
           </div>
+          {!metaOf(viewPhoto).hideLikes && (
+            <p className="pf-viewer-likes">{likes.includes(viewPhoto) ? '1 like' : '0 likes'}</p>
+          )}
           {captions[viewPhoto] ? (
             <p className="pf-viewer-caption"><strong>{postName}</strong> {captions[viewPhoto]}</p>
           ) : null}
+          {metaOf(viewPhoto).noComments && <p className="pf-viewer-note">Comments are turned off</p>}
+          {postMenuOpen && (
+            <div className="pf-sheet-backdrop" onClick={() => setPostMenuOpen(false)}>
+              <div className="pf-sheet" role="menu" onClick={(e) => e.stopPropagation()}>
+                <span className="pf-sheet-grab" aria-hidden="true" />
+                {postMenuOpen === 'menu' && (
+                  <>
+                    <button type="button" role="menuitem" className="pf-sheet-row is-bare" onClick={() => { setEditCaption(captions[viewPhoto] || ''); setPostMenuOpen('edit') }}>Edit</button>
+                    <button type="button" role="menuitem" className="pf-sheet-row is-bare" onClick={() => setPostMenuOpen('adjust')}>Adjust preview</button>
+                    <button type="button" role="menuitem" className="pf-sheet-row is-bare" onClick={() => { updateMeta(viewPhoto, { archived: !metaOf(viewPhoto).archived }); setPostMenuOpen(false); setViewPhoto(null) }}>{metaOf(viewPhoto).archived ? 'Unarchive' : 'Archive'}</button>
+                    <button type="button" role="menuitem" className="pf-sheet-row is-bare" onClick={() => { updateMeta(viewPhoto, { hideLikes: !metaOf(viewPhoto).hideLikes }); setPostMenuOpen(false) }}>{metaOf(viewPhoto).hideLikes ? 'Unhide like count' : 'Hide like count'}</button>
+                    <button type="button" role="menuitem" className="pf-sheet-row is-bare" onClick={() => { updateMeta(viewPhoto, { pinned: !metaOf(viewPhoto).pinned }); setPostMenuOpen(false) }}>{metaOf(viewPhoto).pinned ? 'Unpin from profile' : 'Pin to profile'}</button>
+                    <button type="button" role="menuitem" className="pf-sheet-row is-bare" onClick={() => { updateMeta(viewPhoto, { noComments: !metaOf(viewPhoto).noComments }); setPostMenuOpen(false) }}>{metaOf(viewPhoto).noComments ? 'Turn on commenting' : 'Turn off commenting'}</button>
+                    <button type="button" role="menuitem" className="pf-sheet-row is-danger is-bare" onClick={() => { setPostMenuOpen(false); removePhoto(viewPhoto) }}>Delete post</button>
+                  </>
+                )}
+                {postMenuOpen === 'edit' && (
+                  <div className="pf-sheet-form">
+                    <textarea className="pf-compose-caption" rows={4} maxLength={500} value={editCaption} placeholder="Write a caption…" onChange={(e) => setEditCaption(e.target.value)} />
+                    <button type="button" className="pf-sheet-row is-bare" onClick={() => {
+                      const caption = editCaption.trim()
+                      writeCaption(mediaOwner, viewPhoto, caption)
+                      setCaptions((c) => { const next = { ...c }; if (caption) next[viewPhoto] = caption; else delete next[viewPhoto]; return next })
+                      setPostMenuOpen(false)
+                    }}>Save</button>
+                  </div>
+                )}
+                {postMenuOpen === 'adjust' && (
+                  <div className="pf-sheet-form">
+                    <label className="pf-sheet-slider">Left / right
+                      <input type="range" min="0" max="100" value={metaOf(viewPhoto).fx ?? 50} onChange={(e) => updateMeta(viewPhoto, { fx: Number(e.target.value) })} />
+                    </label>
+                    <label className="pf-sheet-slider">Up / down
+                      <input type="range" min="0" max="100" value={metaOf(viewPhoto).fy ?? 50} onChange={(e) => updateMeta(viewPhoto, { fy: Number(e.target.value) })} />
+                    </label>
+                    <button type="button" className="pf-sheet-row is-bare" onClick={() => setPostMenuOpen(false)}>Done</button>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       )}
 

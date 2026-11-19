@@ -75,3 +75,20 @@ export function writeCaption(owner, url, caption) {
     // The photo is saved; only its caption is lost.
   }
 }
+
+export function readPostMeta(owner) {
+  try {
+    const map = JSON.parse(localStorage.getItem(key(owner, 'postmeta')) || '{}')
+    return map && typeof map === 'object' ? map : {}
+  } catch {
+    return {}
+  }
+}
+
+export function writePostMeta(owner, map) {
+  try {
+    localStorage.setItem(key(owner, 'postmeta'), JSON.stringify(map))
+  } catch {
+    // Settings are optional; the post itself is already saved.
+  }
+}
