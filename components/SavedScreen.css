@@ -1312,8 +1312,8 @@ html body .saved-view-tab.is-on { opacity: 1; background: rgba(127, 127, 127, 0.
 .saved-photos-grid img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
 .saved-photos-grid p { grid-column: 1 / -1; text-align: center; opacity: 0.6; }
 
-/* Tabs take the top line; the + sits on the line beneath them */
-html body .saved-page-header { margin-bottom: 48px; }
-html body .saved-page-header .saved-fab { top: 42px; }
-html body .saved-fav-brands.is-fab-open { margin-top: 104px; }
+/* Tabs sit a little lower; the + shares their line */
+html body .saved-page-header { margin-top: 14px; margin-bottom: 12px; }
+html body .saved-page-header .saved-fab { top: 0; }
+html body .saved-fav-brands.is-fab-open { margin-top: 62px; }
 html body .saved-fav-brands.is-fab-open.is-expanded:has(.saved-brands-empty) { margin-top: 16px; }
