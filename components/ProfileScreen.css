@@ -2768,7 +2768,7 @@
   width: 100%;
   aspect-ratio: 1;
   object-fit: contain;
-  background: #000;
+  background: transparent;
 }
 
 .closet-tile-fallback {
