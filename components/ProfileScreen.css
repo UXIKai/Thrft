@@ -3770,3 +3770,5 @@ html body .profile-screen .profile-card .pf-photos,
 html body .profile-screen .profile-card .profile-spaces-inline {
   padding-inline: 12px;
 }
+
+html body .profile-screen .profile-card { margin-inline: -8px; }
