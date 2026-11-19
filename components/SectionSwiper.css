@@ -4,11 +4,28 @@
   flex-direction: column;
   align-items: center;
   margin: 6px 0 4px;
-  touch-action: pan-y;
   color: light-dark(#000, #fff);
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   user-select: none;
+}
+
+.section-pager-drum {
+  display: flex;
+  width: 100%;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  padding-inline: calc(50% - 60px);
+  box-sizing: border-box;
+  touch-action: pan-x;
+}
+.section-pager-drum::-webkit-scrollbar { display: none; }
+.section-pager-drum .section-pager-label {
+  flex: 0 0 120px;
+  text-align: center;
+  scroll-snap-align: center;
+  scroll-snap-stop: always;
 }
 
 .section-pager-label {

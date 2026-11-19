@@ -10,6 +10,7 @@ import './SectionSwiper.css'
  */
 const HOLD_MS = 450
 const HOLD_SLOP_PX = 10
+const ITEM_PX = 120
 
 export default function SectionSwiper({
   sections,
@@ -28,7 +29,39 @@ export default function SectionSwiper({
     count: sections.length,
     onChange: (i) => onChange(sections[i].id),
   })
-  const { label: currentLabel } = sections[index]
+
+  const drum = useRef(null)
+  const settle = useRef(0)
+  const paintDrum = () => {
+    const el = drum.current
+    if (!el) return
+    const pos = el.scrollLeft / ITEM_PX
+    Array.from(el.children).forEach((child, i) => {
+      const d = Math.min(2, Math.abs(i - pos))
+      child.style.opacity = String(1 - d * 0.42)
+      child.style.transform = `scale(${1 - d * 0.18})`
+    })
+  }
+  const onDrumScroll = () => {
+    paintDrum()
+    window.clearTimeout(settle.current)
+    settle.current = window.setTimeout(() => {
+      const el = drum.current
+      if (!el) return
+      const i = Math.max(0, Math.min(sections.length - 1, Math.round(el.scrollLeft / ITEM_PX)))
+      if (i !== index) {
+        navigator.vibrate?.(8)
+        onChange(sections[i].id)
+      }
+    }, 110)
+  }
+  useEffect(() => {
+    const el = drum.current
+    if (!el) return
+    if (Math.abs(el.scrollLeft - index * ITEM_PX) > 1) el.scrollTo({ left: index * ITEM_PX, behavior: 'smooth' })
+    paintDrum()
+  }, [index])
+  useEffect(() => () => window.clearTimeout(settle.current), [])
 
   const hold = useRef({ timer: 0, x: 0, y: 0, fired: false })
   const cancelHold = () => {
@@ -36,10 +69,7 @@ export default function SectionSwiper({
     hold.current.timer = 0
   }
   useEffect(() => cancelHold, [])
-  const drag = useRef(null)
-  const swiped = useRef(false)
   const onPointerDown = (e) => {
-    if (e.isPrimary) drag.current = { id: e.pointerId, x: e.clientX, y: e.clientY }
     if (!onHold || (e.pointerType === 'mouse' && e.button !== 0)) return
     const h = hold.current
     cancelHold()
@@ -53,30 +83,12 @@ export default function SectionSwiper({
       onHold(id)
     }, HOLD_MS)
   }
-  const onPointerUp = (e) => {
-    cancelHold()
-    const d = drag.current
-    drag.current = null
-    if (!d || d.id !== e.pointerId) return
-    const dx = e.clientX - d.x
-    if (Math.abs(dx) < 30 || Math.abs(dx) < Math.abs(e.clientY - d.y) * 1.5) return
-    const next = index + (dx < 0 ? 1 : -1)
-    if (next < 0 || next >= sections.length) return
-    swiped.current = true
-    window.setTimeout(() => { swiped.current = false }, 0)
-    go(next)
-  }
   const onPointerMove = (e) => {
     const h = hold.current
     if (h.timer && Math.hypot(e.clientX - h.x, e.clientY - h.y) > HOLD_SLOP_PX) cancelHold()
   }
   // A hold must not also count as a tap on a dot.
   const onClickCapture = (e) => {
-    if (swiped.current) {
-      e.preventDefault()
-      e.stopPropagation()
-      return
-    }
     if (!hold.current.fired) return
     hold.current.fired = false
     e.preventDefault()
@@ -105,15 +117,19 @@ export default function SectionSwiper({
         onKeyDown={onKeyDown}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
-        onPointerUp={onPointerUp}
-        onPointerCancel={() => { cancelHold(); drag.current = null }}
+        onPointerUp={cancelHold}
+        onPointerCancel={cancelHold}
         onPointerLeave={cancelHold}
         onClickCapture={onClickCapture}
         onContextMenu={onHold ? (e) => e.preventDefault() : undefined}
       >
-        <span className="section-pager-label" aria-hidden="true">
-          {currentLabel}
-        </span>
+        <div ref={drum} className="section-pager-drum" aria-hidden="true" onScroll={onDrumScroll}>
+          {sections.map(({ id, label: name }) => (
+            <span key={id} className="section-pager-label">
+              {name}
+            </span>
+          ))}
+        </div>
         <div className="section-pager-dots">
           {sections.map(({ id, label: name }, i) => (
             <button
