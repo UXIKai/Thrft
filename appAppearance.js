@@ -180,8 +180,8 @@ function syncColorScheme() {
     if (container.id !== 'none') {
       scheme = relativeLuminance(shade(container.rgb)) > 0.3 ? 'light' : 'dark'
     } else if (bg.id !== 'none' && currentBg === 'none') {
-      // Effect off: the page is the flat chosen colour whatever the mode
-      scheme = relativeLuminance(bg.rgb) > 0.179 ? 'light' : 'dark'
+      // Effect off: the page is the flat chosen colour whatever the mode, drawn under the stage's 20% dim
+      scheme = relativeLuminance(bg.rgb.map((c) => c * 0.8)) > 0.179 ? 'light' : 'dark'
     } else if (bg.id !== 'none' && !matchBackgroundColor) {
       const lifts = [0.58, 0.3, 0.12].map((amount) => liftRgb(bg.rgb, amount))
       const wash = [0, 1, 2].map((i) => Math.round(lastVoidRgb[i] * 0.5 + (lifts[0][i] + lifts[1][i] + lifts[2][i]) / 3 * 0.5))
