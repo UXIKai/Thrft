@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { acquireMockupCutout } from '../mockupCutouts.js'
+import { acquireMockupCutout, isBypassUrl } from '../mockupCutouts.js'
 
 // Temporary on-screen badge so a device without a console can see why removal failed.
 function showCutoutError(message) {
@@ -14,7 +14,9 @@ function showCutoutError(message) {
   badge.textContent = `Background removal failed: ${message} (tap to dismiss)`
 }
 
-export default function ProductPhoto({ src, cutout = false, ...props }) {
+export default function ProductPhoto({ src, cutout: wantsCutout = false, ...props }) {
+  // Shopify/Printful photos are already transparent PNGs: render the URL on first paint.
+  const cutout = wantsCutout && !isBypassUrl(src)
   const ref = useRef(null)
   const [result, setResult] = useState(null)
   const [failedSrc, setFailedSrc] = useState(null)

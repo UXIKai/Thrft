@@ -137,6 +137,15 @@ export function parseProductPage(html, pageUrl, base) {
   return { products: mapped, links: [...links] }
 }
 
+// Flags products whose synced photo is not a PNG so a missed Shopify upload is easy to find.
+export function warnNonPngPhotos(products) {
+  const stale = products.filter((product) => {
+    try { return !/\.png$/i.test(new URL(product.photo_url).pathname) } catch { return true }
+  })
+  stale.forEach((product) => console.warn(`Shopify product still has a non-PNG photo: "${product.title}" ${product.photo_url || '(none)'} (${product.external_url})`))
+  return stale
+}
+
 export async function collectExternalProducts(websiteUrl, get = fetchPublicHttps) {
   const input = publicHttpsUrl(websiteUrl)
   const first = await get(`${input.origin}/products.json?limit=250&page=1`)
@@ -159,6 +168,7 @@ export async function collectExternalProducts(websiteUrl, get = fetchPublicHttps
       page = next.products
     }
     if (new Set(products.map((product) => product.external_url)).size !== products.length) fail('Catalog contains duplicate product URLs')
+    warnNonPngPhotos(products)
     return { products, complete: true, origin: base }
   }
   if (![200, 403, 404, 405, 410].includes(first.status)) fail(`Product catalog returned HTTP ${first.status}`)

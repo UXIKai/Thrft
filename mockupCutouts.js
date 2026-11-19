@@ -71,7 +71,7 @@ async function fetchMockup(url) {
 }
 
 // Shopify/Printful images are served as native PNGs: pass straight through, no processing.
-function isBypassUrl(url) {
+export function isBypassUrl(url) {
   try {
     const parsed = new URL(url, globalThis.location?.href)
     return parsed.searchParams.get('raw') === '1' ||
