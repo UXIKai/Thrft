@@ -78,6 +78,17 @@ export default function StylstBoard({ onOpenProduct }) {
   const [menu, setMenu] = useState(null) // null | 'add' | 'catalogs'
   const [catalogs, setCatalogs] = useState(loadCatalogs)
 
+  const root = useRef(null)
+  useEffect(() => {
+    const open = (e) => {
+      if (!root.current || root.current.offsetParent === null) return
+      e.detail.handled = true
+      setMenu('add')
+    }
+    window.addEventListener('thrft:stylst-add', open)
+    return () => window.removeEventListener('thrft:stylst-add', open)
+  }, [])
+
   useEffect(() => {
     let active = true
     fetchStoreProducts().then((products) => { if (active) setStore(products) }).catch(() => {})
@@ -154,11 +165,8 @@ export default function StylstBoard({ onOpenProduct }) {
   }
 
   return (
-    <div className="stylst" data-no-section-swipe>
+    <div className="stylst" ref={root} data-no-section-swipe>
       <div className="stylst-bar">
-        <button type="button" className="stylst-shuffle is-bare" aria-label="Add a clothing item or brand catalog" aria-expanded={menu !== null} onClick={() => setMenu((m) => (m ? null : 'add'))}>
-          <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M12 5v14M5 12h14" /></svg>
-        </button>
         <button type="button" className="stylst-shuffle is-bare" aria-label="Pick an outfit for me" onClick={shuffle}>
           <RefreshIcon />
         </button>
@@ -179,6 +187,7 @@ export default function StylstBoard({ onOpenProduct }) {
         <div className="stylst-pick" role="group" aria-label="Add to Stylst">
           <button type="button" className="stylst-pick-btn is-bare" onClick={() => { setMenu(null); fileInput.current?.click() }}>Add photo</button>
           <button type="button" className="stylst-pick-btn is-bare" onClick={() => setMenu('catalogs')}>Add brand catalog</button>
+          <button type="button" className="stylst-pick-btn is-bare" onClick={() => setMenu(null)}>Cancel</button>
         </div>
       )}
       {menu === 'catalogs' && (

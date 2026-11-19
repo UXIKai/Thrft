@@ -208,6 +208,11 @@ export default function App() {
   const tapShuriken = () => {
     if (shurikenTapTimer.current) {
       cancelShurikenTap()
+      if (tab === 'profile') {
+        const detail = { handled: false }
+        window.dispatchEvent(new CustomEvent('thrft:stylst-add', { detail }))
+        if (detail.handled) return
+      }
       setAtBottom(false)
       if (tabBarRef.current) tabBarRef.current.openCreate()
       else {
