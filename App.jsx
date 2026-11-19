@@ -1,3 +1,4 @@
+import { startPresence, stopPresence } from './presence.js'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import AccountPage from './components/AccountPage.jsx'
 import AtmosphereFlow from './components/AtmosphereFlow.jsx'
@@ -143,6 +144,10 @@ export default function App() {
     fetchProfile().then((profile) => setUserProfile((prev) => ({ ...prev, ...profile }))).catch(() => {})
   }, [])
   const [account, setAccount] = useState(null)
+  useEffect(() => {
+    startPresence(account?.id)
+    return () => stopPresence()
+  }, [account?.id])
   const [userProfile, setUserProfile] = useState({
     email: '',
     displayName: '',

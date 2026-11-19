@@ -2,6 +2,7 @@ import { Fragment, useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal, flushSync } from 'react-dom'
 import { fetchFollowing, fetchSaved, searchAccounts, setFollowingAccount } from '../api.js'
 import { isSupabaseConfigured } from '../supabase.js'
+import { onlineCount, subscribePresence } from '../presence.js'
 import BrandGlobe from './BrandGlobe.jsx'
 import StageSlot from './StageSlot.jsx'
 import AtmosphereFlow from './AtmosphereFlow.jsx'
@@ -600,6 +601,8 @@ export default function ChatScreen({
   const [navDragP, setNavDragP] = useState(null)
   const navDragRef = useRef(null)
   const [onlineDragP, setOnlineDragP] = useState(null)
+  const [onlineNow, setOnlineNow] = useState(onlineCount)
+  useEffect(() => subscribePresence(setOnlineNow), [])
   const [memberDraft, setMemberDraft] = useState('')
   const [menuId, setMenuId] = useState(null)
   const [dmRenaming, setDmRenaming] = useState(false)
@@ -839,7 +842,7 @@ export default function ChatScreen({
       const shown = new Set(list.map((n) => n.toLowerCase()))
       list = [...list, ...allMemberNames.filter((n) => !shown.has(String(n).toLowerCase()))]
     }
-    const counts = { online: 0, all: friends.length, pending: 0, suggestions: allMemberNames.filter((n) => !friendKeys.has(String(n).toLowerCase())).length }
+    const counts = { all: friends.length, pending: 0, suggestions: allMemberNames.filter((n) => !friendKeys.has(String(n).toLowerCase())).length }
     return { list, title: titles[friendsTab], empty: empty[friendsTab], counts }
   }, [friends, friendsTab, friendsQuery, allMemberNames])
 
@@ -2965,7 +2968,7 @@ export default function ChatScreen({
 
   const onlinePanel = (
     <aside className={`chat-friends-active${activeNowOpen ? '' : ' is-collapsed'}`} aria-label="Online" hidden={!activeNowOpen && onlineDragP === null}>
-      {(activeNowOpen || onlineDragP !== null) && <h3 className="chat-friends-active-aside-title">Online<span className="chat-online-count">{friendsView.counts.online}</span></h3>}
+      {(activeNowOpen || onlineDragP !== null) && <h3 className="chat-friends-active-aside-title">Online<span className="chat-online-count">{onlineNow}</span></h3>}
     </aside>
   )
 
