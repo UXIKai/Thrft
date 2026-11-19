@@ -3696,6 +3696,10 @@ html body .stage.is-post-open > .nav-toggle {
 
 /* Shrinks while scrolling down, like Instagram's bar */
 .tab-bar { transform-origin: 50% 100%; }
-html body .stage > .tab-bar.tab-bar.tab-bar:not(.is-collapsed) { transition: scale 0.28s cubic-bezier(0.2, 0.9, 0.3, 1); }
-html body .stage > .tab-bar.tab-bar.tab-bar.is-compact { scale: 0.78; }
-html body .stage.is-settings-peek > .tab-bar.tab-bar.tab-bar.is-compact { scale: 1; }
+/* --nav-shrink (0..1) follows the scroll; translate cancels the sideways drift scale causes on translateX(-50%) */
+html body .stage > .tab-bar.tab-bar.tab-bar:not(.is-collapsed) {
+  scale: calc(1 - 0.22 * var(--nav-shrink, 0));
+  translate: calc(var(--nav-shift, 0px) - 50% * 0.22 * var(--nav-shrink, 0)) 0;
+  transition: scale 0.12s linear, translate 0.3s cubic-bezier(0.22, 0.9, 0.3, 1), opacity 0.2s ease;
+}
+html body .stage.is-settings-peek > .tab-bar.tab-bar.tab-bar:not(.is-collapsed) { scale: 1; translate: var(--nav-shift, 0px) 0; }

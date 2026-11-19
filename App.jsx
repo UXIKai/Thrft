@@ -286,24 +286,24 @@ export default function App() {
       window.removeEventListener('keydown', onKey)
     }
   }, [shurikenMenuOpen])
-  const [navCompact, setNavCompact] = useState(false)
-  // Like Instagram: the bar shrinks while scrolling down and returns on scroll up.
+  // Like Instagram: the bar shrinks as you pull down the page and grows back as you scroll up.
   useEffect(() => {
     const el = scrollRef.current
-    if (!el) return undefined
+    const stage = stageRef.current
+    if (!el || !stage) return undefined
     let last = el.scrollTop
+    let p = 0
+    const apply = () => stage.style.setProperty('--nav-shrink', p.toFixed(3))
     const onScroll = () => {
       const top = el.scrollTop
-      const delta = top - last
-      if (top < 24) setNavCompact(false)
-      else if (delta > 6) setNavCompact(true)
-      else if (delta < -6) setNavCompact(false)
-      if (Math.abs(delta) > 6) last = top
+      p = top < 24 ? 0 : Math.min(1, Math.max(0, p + (top - last) / 220))
+      last = top
+      apply()
     }
+    apply()
     el.addEventListener('scroll', onScroll, { passive: true })
-    return () => el.removeEventListener('scroll', onScroll)
+    return () => { el.removeEventListener('scroll', onScroll); stage.style.removeProperty('--nav-shrink') }
   }, [tab])
-  useEffect(() => setNavCompact(false), [tab])
   const [navTab, setNavTab] = useState(tab)
   // Reset before mounting the next page, not as an animated visibility change afterward.
   if (navTab !== tab) {
@@ -985,7 +985,7 @@ export default function App() {
       </div>
 
       {shurikenMenuOpen && <HomeRadialMenu bagCount={bagCount} onPick={pickShurikenMenu} onClose={() => setShurikenMenuOpen(false)} />}
-      {signedIn && showNav && <TabBar ref={tabBarRef} compact={navCompact} collapsed={atBottom || homeIdle} active={tab} directions={tab === 'home' ? [
+      {signedIn && showNav && <TabBar ref={tabBarRef} collapsed={atBottom || homeIdle} active={tab} directions={tab === 'home' ? [
         homeSegment !== 'leaderboard',
         homeSegment === 'store',
         true,
