@@ -3592,7 +3592,7 @@ html body .app-column.is-profile-wide .profile-screen .profile-menu-btn.profile-
 /* Icon buttons above Following/Followers, bottom-right, level with the @handle; photo and name sit lower */
 .profile-screen .profile-identity { position: relative; }
 .profile-screen .profile-identity .pf-x-head { padding-top: 84px; }
-.profile-screen .profile-identity .profile-social { position: absolute; right: 0; bottom: 0; width: auto; margin: 0; display: grid; grid-template-columns: auto auto; justify-content: end; align-items: baseline; column-gap: 16px; row-gap: 6px; }
+.profile-screen .profile-identity .profile-social { position: absolute; right: 0; bottom: 8px; width: auto; margin: 0; display: grid; grid-template-columns: auto auto; justify-content: end; align-items: baseline; column-gap: 16px; row-gap: 6px; }
 .profile-screen .profile-identity .profile-view-toggle { grid-row: 1; grid-column: 1 / -1; justify-self: end; margin: 0; }
 .profile-screen .profile-identity .profile-social-cell { grid-row: 2; }
 .profile-screen .profile-identity .profile-social-rule { display: none; }
