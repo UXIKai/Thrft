@@ -1305,9 +1305,15 @@ html body .saved-grid.market-product-grid { padding: 0; }
 html body .market-card.is-selected .market-card-photo { border-color: light-dark(#000, #fff); }
 
 .saved-screen [hidden] { display: none !important; }
-.saved-view-tabs { display: flex; justify-content: center; gap: 8px; margin: 8px 0 0; position: relative; z-index: 31; }
-html body .saved-view-tab { padding: 8px 16px; border-radius: 999px; font: 600 0.85rem var(--pf, inherit); letter-spacing: 0.06em; text-transform: uppercase; color: inherit; opacity: 0.5; }
+.saved-view-tabs { display: flex; justify-content: flex-start; gap: 4px; margin: 0 auto 0 0; position: relative; z-index: 31; }
+html body .saved-view-tab { padding: 8px 12px; border-radius: 999px; font: 600 0.85rem var(--pf, inherit); letter-spacing: 0.06em; text-transform: uppercase; color: inherit; opacity: 0.5; }
 html body .saved-view-tab.is-on { opacity: 1; background: rgba(127, 127, 127, 0.22); }
 .saved-photos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 12px; }
 .saved-photos-grid img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
 .saved-photos-grid p { grid-column: 1 / -1; text-align: center; opacity: 0.6; }
+
+/* Tabs take the top line; the + sits on the line beneath them */
+html body .saved-page-header { margin-bottom: 48px; }
+html body .saved-page-header .saved-fab { top: 42px; }
+html body .saved-fav-brands.is-fab-open { margin-top: 104px; }
+html body .saved-fav-brands.is-fab-open.is-expanded:has(.saved-brands-empty) { margin-top: 16px; }

@@ -657,6 +657,20 @@ export default function SavedScreen({
     <section className="saved-screen" aria-label="Liked">
       <header className="saved-page-header">
         <span className="saved-header-spacer" aria-hidden />
+        <div className="saved-view-tabs" role="tablist" aria-label="Liked">
+          {[['products', 'Products'], ['brands', 'Brands'], ['photos', 'Photos']].map(([id, label]) => (
+            <button
+              key={id}
+              type="button"
+              role="tab"
+              aria-selected={likedView === id}
+              className={`saved-view-tab is-bare${likedView === id ? ' is-on' : ''}`}
+              onClick={() => setLikedView(id)}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
 <div className={`saved-fab${fabOpen ? ' is-open' : ''}${selectMode ? ' is-selecting' : ''}`}>
         <button
           type="button"
@@ -766,20 +780,6 @@ export default function SavedScreen({
           </div>
         )}
       </header>
-      <div className="saved-view-tabs" role="tablist" aria-label="Liked">
-        {[['products', 'Products'], ['brands', 'Brands'], ['photos', 'Photos']].map(([id, label]) => (
-          <button
-            key={id}
-            type="button"
-            role="tab"
-            aria-selected={likedView === id}
-            className={`saved-view-tab is-bare${likedView === id ? ' is-on' : ''}`}
-            onClick={() => setLikedView(id)}
-          >
-            {label}
-          </button>
-        ))}
-      </div>
       <div
         ref={brandRowRef}
         hidden={likedView !== 'brands'}
