@@ -3623,7 +3623,7 @@ html body .profile-screen .pf-top-actions .profile-menu-btn {
   width: 44px !important; height: 44px !important; padding: 0 !important; display: grid !important; place-items: center !important;
 }
 html body .profile-screen .pf-top-actions .profile-menu-btn svg { width: 24px !important; height: 24px !important; display: block; }
-html body .app-column.is-profile-wide .profile-screen .pf-top-actions { top: 12px; right: 14px; }
+html body .app-column.is-profile-wide .profile-screen .pf-top-actions { top: 22px; right: 20px; }
 
 /* Icon buttons above Following/Followers, bottom-right, level with the @handle; photo and name sit lower */
 .profile-screen .profile-identity { position: relative; }
@@ -3638,14 +3638,11 @@ html body .app-column.is-profile-wide .profile-screen .pf-top-actions { top: 12p
 .profile-screen .profile-name-row { display: flex; align-items: center; gap: 4px; }
 .profile-screen .pf-name-link { flex: none; width: 32px; height: 32px; }
 
-/* Share and menu buttons share one opaque pill, like the navigation bar */
+/* Share and menu buttons sit inside the profile card */
 html body .profile-screen .pf-top-actions {
-  position: absolute; top: 6px; right: calc(var(--pf-pad-x) - 8px); z-index: 7;
-  display: flex; align-items: center; padding: 2px 4px;
-  border-radius: 999px;
-  border: 1px solid light-dark(rgba(0, 0, 0, 0.3), rgba(255, 255, 255, 0.08));
-  background: var(--page-bg);
-  box-shadow: 0 4px 14px light-dark(rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.25));
+  position: absolute; top: 16px; right: calc(var(--pf-pad-x) + 6px); z-index: 7;
+  display: flex; align-items: center; padding: 0;
+  border: 0; background: none; box-shadow: none;
 }
 
 .profile-screen .section-pager { touch-action: pan-y; }
@@ -3660,7 +3657,3 @@ html body .profile-screen .profile-identity {
   box-shadow: 0 4px 14px light-dark(rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.25));
 }
 html body .profile-screen .profile-identity .profile-social { right: 16px; bottom: 21px; }
-
-/* Card starts level with the share/menu pill instead of rising above it */
-html body .profile-screen .profile-identity { margin-top: 17px; }
-html body .profile-screen .profile-identity .pf-x-head { padding-top: 73px; }
