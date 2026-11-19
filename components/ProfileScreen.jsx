@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { createPortal } from 'react-dom'
+import { createPortal, flushSync } from 'react-dom'
 import AtmosphereFlow from './AtmosphereFlow.jsx'
 import {
   connectProvider,
@@ -1302,8 +1302,11 @@ export default function ProfileScreen({
     stageEl?.classList.add('is-settings-committing')
     clearTimeout(peekTimer.current)
     peekTimer.current = setTimeout(() => {
-      setSettingsInstant(true)
-      setSettingsOpen(true)
+      // Commit Settings before the card is released, or the profile flashes for a frame
+      flushSync(() => {
+        setSettingsInstant(true)
+        setSettingsOpen(true)
+      })
       endPeek()
     }, 290)
   }
