@@ -1381,9 +1381,9 @@ html body .saved-view-tabs.is-open .saved-view-rail-inner .saved-view-tab.is-on 
 
 /* Heart pinned right with the + inside the container; the tabs grow leftwards across the page */
 html body .saved-view-tabs {
-  left: auto;
-  right: 12px;
-  transform: translateY(-50%);
+  left: 50%;
+  right: auto;
+  transform: translate(-50%, -50%);
   max-width: calc(100% - 24px);
   flex-direction: row;
 }
