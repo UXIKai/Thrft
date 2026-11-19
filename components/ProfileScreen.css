@@ -3660,7 +3660,7 @@ html body .profile-screen .profile-identity .profile-social { right: 16px; botto
 
 /* Even 18px inset on every edge of the card */
 html body .profile-screen .profile-identity { padding: 14px 18px 12px; }
-html body .profile-screen .profile-identity .profile-social { right: 18px; bottom: 19px; }
+html body .profile-screen .profile-identity .profile-social { right: 18px; bottom: 14px; }
 html body .profile-screen .profile-identity .pf-x-head .pf-user-avatar-wrap { margin-left: -3px; }
 html body .profile-screen .pf-top-actions { top: 14px; right: calc(var(--pf-pad-x) + 8px); }
 html body .app-column.is-profile-wide .profile-screen .pf-top-actions { top: 20px; right: 22px; }
