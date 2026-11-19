@@ -130,22 +130,6 @@ export default function SectionSwiper({
             </span>
           ))}
         </div>
-        <div className="section-pager-dots">
-          {sections.map(({ id, label: name }, i) => (
-            <button
-              key={id}
-              type="button"
-              role="tab"
-              id={`${idPrefix}-${id}-tab`}
-              aria-label={name}
-              aria-selected={i === index}
-              aria-controls={controls}
-              tabIndex={i === index ? 0 : -1}
-              className={`section-pager-dot is-bare${i === index ? ' is-active' : ''}`}
-              onClick={() => go(i)}
-            />
-          ))}
-        </div>
       </div>
       <div ref={ref} className={`section-swipe ${className}`.trim()}>
         {children}
