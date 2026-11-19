@@ -1,3 +1,4 @@
+import FollowIcon from './FollowIcon.jsx'
 import { createPortal } from 'react-dom'
 import { useEffect, useState } from 'react'
 import { fetchAccountPage, initialsFromName, setFollowingAccount } from '../api.js'
@@ -149,10 +150,11 @@ export default function AccountPage({
                       type="button"
                       className="account-page-follow"
                       aria-pressed={Boolean(account.following)}
+                      aria-label={account.following ? 'Following' : 'Follow'}
                       disabled={followBusy}
                       onClick={toggleFollow}
                     >
-                      {account.following ? 'Following' : 'Follow'}
+                      <FollowIcon following={Boolean(account.following)} />
                     </button>
                   )}
                   {onMessage && (

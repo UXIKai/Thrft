@@ -1,3 +1,4 @@
+import FollowIcon from './FollowIcon.jsx'
 import { createPortal } from 'react-dom'
 import { useEffect, useMemo, useState } from 'react'
 import { fetchFollowList, initialsFromName, setFollowingAccount } from '../api.js'
@@ -81,8 +82,8 @@ export default function FollowListSheet({ username, type: initialType, onClose, 
               </span>
             </button>
             {!a.isSelf && (
-              <button type="button" className="follow-page-action" onClick={() => toggleFollow(a)}>
-                {a.following ? 'Following' : 'Follow'}
+              <button type="button" className="follow-page-action" aria-label={a.following ? 'Following' : 'Follow'} onClick={() => toggleFollow(a)}>
+                <FollowIcon following={Boolean(a.following)} />
               </button>
             )}
           </li>
