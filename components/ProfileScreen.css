@@ -3559,3 +3559,14 @@ html body .pf-sheet .pf-sheet-row.is-danger { color: #ff5a4d; border-bottom: 0; 
 .pf-sheet-form { display: flex; flex-direction: column; gap: 12px; }
 .pf-sheet-slider { display: flex; flex-direction: column; gap: 6px; font-size: 0.85rem; }
 .pf-sheet-slider input { width: 100%; }
+
+.pf-viewer-photo-wrap { position: relative; line-height: 0; touch-action: manipulation; }
+.pf-heart-pop { position: absolute; left: 50%; top: 50%; margin: -48px 0 0 -48px; color: #fff; pointer-events: none; filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.45)); animation: pf-heart-pop 0.7s ease-out forwards; }
+@keyframes pf-heart-pop { 0% { transform: scale(0.4); opacity: 0; } 25% { transform: scale(1.15); opacity: 1; } 70% { transform: scale(1); opacity: 1; } 100% { transform: scale(1); opacity: 0; } }
+.pf-viewer-act.is-on { color: #7fe0d6; }
+.pf-viewer-act.pf-viewer-save { margin-left: auto; }
+.pf-viewer-comments { padding: 4px 0; }
+.pf-viewer-comment-form { display: flex; gap: 8px; padding: 8px 16px; }
+.pf-viewer-comment-form input { flex: 1; min-width: 0; padding: 10px 14px; border-radius: 999px; border: 1px solid rgba(127, 127, 127, 0.4); background: rgba(127, 127, 127, 0.12); color: inherit; font: inherit; }
+.pf-viewer-comment-form button { color: inherit; font-weight: 700; padding: 0 10px; }
+.pf-viewer-comment-form button:disabled { opacity: 0.4; }
