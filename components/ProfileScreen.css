@@ -3240,6 +3240,16 @@
     border-radius: inherit;
     pointer-events: none;
   }
+  html body .stage.is-settings-peek > .tab-bar {
+    translate: calc(var(--settings-p, 0) * min(80vw, 340px) * -1) 0;
+    transition: translate 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  html body .stage.is-settings-dragging > .tab-bar {
+    transition: none;
+  }
+  html body .stage.is-settings-committing > .tab-bar {
+    translate: -110vw 0;
+  }
   html body .stage.is-settings-dragging > .app-column {
     transition: none;
   }
