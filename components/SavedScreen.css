@@ -1318,3 +1318,13 @@ html body .saved-page-header .saved-fab { top: 46px; }
 html body .saved-page-header .saved-inline-search { top: 46px; transform: translateX(-50%); }
 html body .saved-fav-brands.is-fab-open { margin-top: 108px; }
 html body .saved-fav-brands.is-fab-open.is-expanded:has(.saved-brands-empty) { margin-top: 16px; }
+
+/* Opaque pill like the navigation bar */
+html body .saved-view-tabs {
+  padding: 4px;
+  border-radius: 999px;
+  border: 1px solid light-dark(rgba(0, 0, 0, 0.3), rgba(255, 255, 255, 0.08));
+  background: var(--page-bg);
+  box-shadow: 0 4px 14px light-dark(rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.25));
+}
+html body .saved-view-tab.is-on { background: light-dark(rgba(0, 0, 0, 0.08), rgba(255, 255, 255, 0.12)); }
