@@ -3444,3 +3444,45 @@ html body .app-column.is-profile-wide .profile-screen .profile-top-btn.is-share 
 .pf-post { width: 100%; align-self: center; }
 .pf-post-head { padding: 10px 14px; font: 700 0.9rem var(--pf); color: var(--pf-ink); }
 .profile-photo-view:has(.pf-post) { padding: 0; }
+
+.pf-compose {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: max(12px, env(safe-area-inset-top, 0px)) 16px 24px;
+  overflow-y: auto;
+  background: var(--page-bg);
+  color: light-dark(#000, #fff);
+}
+.pf-compose-top { display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 520px; }
+.pf-compose-back { width: 40px; height: 40px; display: grid; place-items: center; color: inherit; }
+.pf-compose-post { padding: 8px 18px; border-radius: 999px; font-weight: 700; color: inherit; background: rgba(127, 127, 127, 0.22); }
+.pf-compose-post:disabled { opacity: 0.4; }
+html body .pf-compose .pf-compose-square {
+  display: grid;
+  place-items: center;
+  width: min(100%, 520px);
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 16px;
+  color: inherit;
+  background: rgba(127, 127, 127, 0.16);
+  border: 1px dashed rgba(127, 127, 127, 0.5);
+}
+.pf-compose-square img { width: 100%; height: 100%; object-fit: cover; }
+.pf-compose-caption {
+  width: min(100%, 520px);
+  box-sizing: border-box;
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(127, 127, 127, 0.4);
+  background: rgba(127, 127, 127, 0.12);
+  color: inherit;
+  font: inherit;
+  resize: none;
+}
+.pf-post-caption { margin: 0; padding: 10px 14px 14px; text-align: left; white-space: pre-wrap; word-break: break-word; }

@@ -55,3 +55,23 @@ export function compressImage(file, maxSize = 600, square = false) {
     img.src = url
   })
 }
+
+export function readCaptions(owner) {
+  try {
+    const map = JSON.parse(localStorage.getItem(key(owner, 'captions')) || '{}')
+    return map && typeof map === 'object' ? map : {}
+  } catch {
+    return {}
+  }
+}
+
+export function writeCaption(owner, url, caption) {
+  const map = readCaptions(owner)
+  if (caption) map[url] = caption
+  else delete map[url]
+  try {
+    localStorage.setItem(key(owner, 'captions'), JSON.stringify(map))
+  } catch {
+    // The photo is saved; only its caption is lost.
+  }
+}

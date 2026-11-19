@@ -18,7 +18,7 @@ import ClosetNumberLookup from './ClosetNumberLookup.jsx'
 import { LISTING_BRANDS, LISTING_CATEGORIES } from '../listingCatalog.js'
 import { createListing, fetchMyListings, fetchSellerSalesStats, formatListingPrice, isValidListingPrice, updateMyListing } from '../listings.js'
 import { uploadCreatorArtwork, uploadProductPhoto } from '../artworkStorage.js'
-import { compressImage, readProfileMedia, storeImage, writeProfileMedia } from '../profileMedia.js'
+import { compressImage, readCaptions, readProfileMedia, storeImage, writeCaption, writeProfileMedia } from '../profileMedia.js'
 import { getSupabase, isSupabaseConfigured } from '../supabase.js'
 import BrandGlobe from './BrandGlobe.jsx'
 import GiveBack from './GiveBack.jsx'
@@ -468,20 +468,25 @@ export default function ProfileScreen({
   const [followSheet, setFollowSheet] = useState(null)
   const mediaOwner = account?.username || userProfile?.username || account?.id || ''
   const [media, setMedia] = useState(() => readProfileMedia(mediaOwner))
+  const [captions, setCaptions] = useState(() => readCaptions(mediaOwner))
   const [viewPhoto, setViewPhoto] = useState(null)
   const postInputRef = useRef(null)
   const [profileView, setProfileView] = useState('closet')
+  const [composeOpen, setComposeOpen] = useState(false)
+  const [draftPhoto, setDraftPhoto] = useState('')
+  const [draftCaption, setDraftCaption] = useState('')
+  const [posting, setPosting] = useState(false)
   useEffect(() => {
     // Double-tapping the shuriken adds a photo while the photos grid is showing.
     if (profileView === 'closet') return undefined
     const add = (e) => {
       e.detail.handled = true
-      postInputRef.current?.click()
+      setComposeOpen(true)
     }
     window.addEventListener('thrft:stylst-add', add)
     return () => window.removeEventListener('thrft:stylst-add', add)
   }, [profileView])
-  useEffect(() => { setMedia(readProfileMedia(mediaOwner)) }, [mediaOwner])
+  useEffect(() => { setMedia(readProfileMedia(mediaOwner)); setCaptions(readCaptions(mediaOwner)) }, [mediaOwner])
   const [closetPeople, setClosetPeople] = useState(null)
   const [closetPickOpen, setClosetPickOpen] = useState(false)
   const [closetPickQuery, setClosetPickQuery] = useState('')
@@ -1002,15 +1007,39 @@ export default function ProfileScreen({
     }
   }
 
+  function closeComposer() {
+    setComposeOpen(false)
+    setDraftPhoto('')
+    setDraftCaption('')
+  }
+
   async function onMediaPicked(file) {
     if (!file || !file.type?.startsWith('image/')) return
     try {
-      const url = await storeImage(await compressImage(file, 1080, true))
+      setDraftPhoto(await compressImage(file, 1080, true))
+    } catch (error) {
+      window.alert(error?.message || 'Could not read that photo')
+    }
+  }
+
+  async function submitPost() {
+    if (!draftPhoto || posting) return
+    setPosting(true)
+    try {
+      const url = await storeImage(draftPhoto)
       const photos = [url, ...media.photos]
       writeProfileMedia(mediaOwner, 'photos', photos)
+      const caption = draftCaption.trim()
+      if (caption) {
+        writeCaption(mediaOwner, url, caption)
+        setCaptions((c) => ({ ...c, [url]: caption }))
+      }
       setMedia((m) => ({ ...m, photos }))
+      closeComposer()
     } catch (error) {
       window.alert(error?.message || 'Could not save your photo')
+    } finally {
+      setPosting(false)
     }
   }
 
@@ -1418,7 +1447,7 @@ export default function ProfileScreen({
         {media.photos.length === 0 && (
           <div className="pf-photos-empty">
             <p>Share photos</p>
-            <button type="button" className="pf-photos-empty-btn is-bare" onClick={() => postInputRef.current?.click()}>Add your first photo</button>
+            <button type="button" className="pf-photos-empty-btn is-bare" onClick={() => setComposeOpen(true)}>Add your first photo</button>
           </div>
         )}
         <div className="pf-photos-grid">
@@ -1429,6 +1458,29 @@ export default function ProfileScreen({
           ))}
         </div>
       </section>
+      {composeOpen && (
+        <div className="pf-compose" role="dialog" aria-label="New photo">
+          <div className="pf-compose-top">
+            <button type="button" className="pf-compose-back is-bare" aria-label="Back" onClick={closeComposer}>
+              <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 5l-7 7 7 7" /></svg>
+            </button>
+            <button type="button" className="pf-compose-post is-bare" disabled={!draftPhoto || posting} onClick={submitPost}>Post</button>
+          </div>
+          <button type="button" className="pf-compose-square is-bare" aria-label={draftPhoto ? 'Change photo' : 'Choose a photo'} onClick={() => postInputRef.current?.click()}>
+            {draftPhoto
+              ? <img src={draftPhoto} alt="" />
+              : <svg width="44" height="44" viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"><path d="M12 5v14M5 12h14" /></svg>}
+          </button>
+          <textarea
+            className="pf-compose-caption"
+            placeholder="Write a caption…"
+            maxLength={500}
+            rows={4}
+            value={draftCaption}
+            onChange={(e) => setDraftCaption(e.target.value)}
+          />
+        </div>
+      )}
       {viewPhoto && (
         <div className="profile-photo-view" role="dialog" aria-label="Photo" onClick={() => setViewPhoto(null)}>
           <div className="pf-post" onClick={(e) => e.stopPropagation()}>
@@ -1436,6 +1488,7 @@ export default function ProfileScreen({
               <span className="pf-post-name">{account?.username || userProfile?.username || userProfile?.displayName || 'Me'}</span>
             </div>
             <img className="pf-photo-full" src={viewPhoto} alt="" />
+            {captions[viewPhoto] ? <p className="pf-post-caption">{captions[viewPhoto]}</p> : null}
           </div>
           <button type="button" className="pf-photo-delete is-bare" onClick={(e) => { e.stopPropagation(); removePhoto(viewPhoto) }}>
             Delete
