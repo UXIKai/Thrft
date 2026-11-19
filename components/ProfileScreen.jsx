@@ -1234,15 +1234,6 @@ export default function ProfileScreen({
       >
         <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 15V3M7.5 7.5 12 3l4.5 4.5M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7" /></svg>
       </button>
-      <button
-        type="button"
-        className="profile-menu-btn profile-top-btn is-link is-bare"
-        aria-label="Links"
-        onMouseDown={holdScroll}
-        onClick={() => openProfileEditor('Links')}
-      >
-        <LinkIcon />
-      </button>
       <section
         className="profile-identity"
         aria-label="Account"
@@ -1392,6 +1383,14 @@ export default function ProfileScreen({
               onClick={() => setProfileView('closet')}
             >
               <ShirtIcon />
+            </button>
+            <button
+              type="button"
+              className="profile-photos-jump is-bare is-on"
+              aria-label="Links"
+              onClick={() => openProfileEditor('Links')}
+            >
+              <LinkIcon />
             </button>
           </div>
         </div>

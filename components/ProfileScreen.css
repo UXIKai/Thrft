@@ -3422,8 +3422,7 @@ html body .profile-screen .profile-username-link:hover { text-decoration: none !
 .profile-screen .profile-identity .profile-name-row .profile-links-btn { margin: 0; flex: none; }
 .profile-screen .profile-identity .profile-name-row { flex-wrap: nowrap; }
 
-.profile-screen .profile-top-btn.is-link { right: calc(var(--pf-pad-x) + 36px); }
-.profile-screen .profile-top-btn.is-share { right: calc(var(--pf-pad-x) + 80px); }
+.profile-screen .profile-top-btn.is-share { right: calc(var(--pf-pad-x) + 36px); }
 .profile-screen .profile-top-btn .profile-links-btn,
 .profile-screen .profile-top-btn svg { width: 22px; height: 22px; }
 
@@ -3437,3 +3436,4 @@ html body .profile-screen .profile-username-link:hover { text-decoration: none !
 .profile-screen .profile-photos-jump svg { width: 24px; height: 24px; }
 .profile-screen .profile-photos-jump.is-on { opacity: 1; }
 .profile-screen [hidden] { display: none !important; }
+.profile-screen .profile-photos-jump .profile-links-btn, .profile-screen .profile-photos-jump svg { width: 24px; height: 24px; }
