@@ -3426,10 +3426,11 @@ export default function ChatScreen({
                   </button>
                 </div>
               </nav>
+              {!isDesktop && (
               <div className="chat-friends-body">
               {friendsPanel}
-              {isDesktop && onlinePanel}
               </div>
+              )}
             </div>
           )}
         </section>
