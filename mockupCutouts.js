@@ -1,4 +1,10 @@
-const CACHE_NAME = 'thrft-mockup-cutouts-v5'
+const CACHE_NAME = 'thrft-mockup-cutouts-v6'
+// Brand product feeds already ship clean product shots, so they are shown as-is.
+const BRAND_FEED_HOST = /(^|\.)(printful\.com|printful-assets\.com|shopify\.com|shopifycdn\.com)$/i
+
+function isBrandFeedUrl(url) {
+  try { return BRAND_FEED_HOST.test(new URL(url, globalThis.location?.href).hostname) } catch { return false }
+}
 let worker
 let idleTimer
 
@@ -51,6 +57,7 @@ async function cacheWrite(url, image) {
 }
 
 async function processMockup(url) {
+  if (isBrandFeedUrl(url)) return url
   const response = await fetch(url, { mode: 'cors', signal: AbortSignal.timeout(20000) })
   if (!response.ok) throw new Error(`Could not load mockup (${response.status})`)
   const image = await response.blob()
