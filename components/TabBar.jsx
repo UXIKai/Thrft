@@ -16,7 +16,7 @@ const TABS = [
   { id: 'profile', label: 'Profile' },
 ]
 
-function TabContent({ tab, collapsed = false, compact = false, directions }) {
+function TabContent({ tab, collapsed = false, directions }) {
   return (
     <span className="tab-text">
       {tab.id === 'design' ? (
@@ -31,7 +31,7 @@ const CREATE_OPTIONS = [
   { id: 'market', label: 'Market', Icon: StallIcon },
 ]
 
-export default function TabBar({ ref, active = 'home', onChange, onCreate, onShurikenTap, onShurikenHold, quickCreateSegment = null, collapsed = false, directions }) {
+export default function TabBar({ ref, active = 'home', onChange, onCreate, onShurikenTap, onShurikenHold, quickCreateSegment = null, collapsed = false, compact = false, directions }) {
   const [createOpen, setCreateOpen] = useState(false)
   const [createClosing, setCreateClosing] = useState(false)
   const [stageEl, setStageEl] = useState(null)
