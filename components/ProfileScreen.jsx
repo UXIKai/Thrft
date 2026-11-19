@@ -1883,16 +1883,18 @@ export default function ProfileScreen({
                               loading="lazy"
                               draggable="false"
                             />
+                            <span role="button" tabIndex={0} className="profile-product-delete" aria-label={`Delete ${p.title || 'item'}`}
+                              aria-disabled={Boolean(listingAction)}
+                              onClick={(event) => { event.stopPropagation(); changeOwnedListing(p, spaceTab) }}
+                              onKeyDown={(event) => { if (event.key === 'Enter') { event.stopPropagation(); changeOwnedListing(p, spaceTab) } }}>
+                              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden>
+                                <path fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+                                  d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3" />
+                              </svg>
+                            </span>
                         </span>
                         <span className="profile-product-name">{p.title}</span>
                         <span className="profile-product-price">{p.price || '—'}</span>
-                      </button>
-                      <button type="button" className="profile-product-delete is-bare" aria-label={`Delete ${p.title || 'item'}`}
-                        disabled={Boolean(listingAction)} onClick={() => changeOwnedListing(p, spaceTab)}>
-                        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden>
-                          <path fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
-                            d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3" />
-                        </svg>
                       </button>
                       <div className="profile-product-actions">
                         <label className="profile-product-action">
