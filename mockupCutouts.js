@@ -1,4 +1,4 @@
-const CACHE_NAME = 'thrft-mockup-cutouts-v8'
+const CACHE_NAME = 'thrft-mockup-cutouts-v9'
 // Only photos that are already PNGs skip removal; a .jpg/.jpeg from any feed is always processed.
 function isPngUrl(url) {
   try { return /\.png$/i.test(new URL(url, globalThis.location?.href).pathname) } catch { return false }

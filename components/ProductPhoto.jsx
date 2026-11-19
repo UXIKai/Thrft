@@ -1,6 +1,19 @@
 import { useEffect, useRef, useState } from 'react'
 import { acquireMockupCutout } from '../mockupCutouts.js'
 
+// Temporary on-screen badge so a device without a console can see why removal failed.
+function showCutoutError(message) {
+  let badge = document.getElementById('cutout-debug-badge')
+  if (!badge) {
+    badge = document.createElement('div')
+    badge.id = 'cutout-debug-badge'
+    badge.style.cssText = 'position:fixed;left:8px;right:8px;bottom:90px;z-index:99999;padding:8px 10px;border-radius:10px;background:#b00020;color:#fff;font:12px/1.3 system-ui;word-break:break-word'
+    badge.onclick = () => badge.remove()
+    document.body.appendChild(badge)
+  }
+  badge.textContent = `Background removal failed: ${message} (tap to dismiss)`
+}
+
 export default function ProductPhoto({ src, cutout = false, ...props }) {
   const ref = useRef(null)
   const [result, setResult] = useState(null)
@@ -25,6 +38,7 @@ export default function ProductPhoto({ src, cutout = false, ...props }) {
         if (!active || request !== currentRequest) return
         console.error('Could not remove product photo background:', error)
         failed = true
+        showCutoutError(error?.message || String(error))
         setResult({ src, error: error?.message || String(error) })
       })
     }
