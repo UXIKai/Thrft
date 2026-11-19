@@ -17,6 +17,7 @@ const ROWS = [
   { id: 'shoes', label: 'Shoes', add: 'Sneakers', categories: ['Shoes', 'Sneakers', 'Boots'] },
 ]
 
+const IMPORTED_KEY = 'thrft-stylst-imported'
 const CATALOGS_KEY = 'thrft-stylst-catalogs'
 const catalogKey = (p) => String(p.creatorId || p.accountId || p.brandId || p.brandName || '')
 
@@ -69,6 +70,15 @@ function updateDrum(track, tick) {
 }
 
 /** Outfit builder: swipe each row to try pieces together, or shuffle for a random outfit. */
+function loadImported() {
+  try {
+    const map = JSON.parse(localStorage.getItem(IMPORTED_KEY) || '{}')
+    return map && typeof map === 'object' && !Array.isArray(map) ? map : {}
+  } catch {
+    return {}
+  }
+}
+
 export default function StylstBoard({ onOpenProduct }) {
   const [closet, setCloset] = useState(() => fetchClosetItems())
   const [store, setStore] = useState([])
@@ -77,6 +87,8 @@ export default function StylstBoard({ onOpenProduct }) {
   const [pending, setPending] = useState(null)
   const [menu, setMenu] = useState(null) // null | 'add' | 'catalogs'
   const [catalogs, setCatalogs] = useState(loadCatalogs)
+  const [imported, setImported] = useState(loadImported) // closet item id -> row id
+  const [importing, setImporting] = useState(null) // closet item awaiting a row choice
 
   const root = useRef(null)
   useEffect(() => {
@@ -97,7 +109,9 @@ export default function StylstBoard({ onOpenProduct }) {
 
   // Product photos get their background removed on display.
   const items = useMemo(() => [
-    ...closet.map((item) => ({ ...item, key: `c-${item.id}`, label: item.brand || '', cutout: true })),
+    ...closet.map((item) => ({
+      ...item, key: `c-${item.id}`, label: item.brand || '', cutout: true, row: imported[item.id],
+    })),
     ...store.filter((p) => catalogs.includes(catalogKey(p))).map((p) => ({
       key: `s-${p.id}`,
       product: p,
@@ -107,7 +121,7 @@ export default function StylstBoard({ onOpenProduct }) {
       imageUrl: p.mockupUrls?.[0] || p.photoUrl,
       cutout: true,
     })),
-  ], [closet, store, catalogs])
+  ], [closet, store, catalogs, imported])
 
   const brands = useMemo(() => {
     const map = new Map()
@@ -139,7 +153,8 @@ export default function StylstBoard({ onOpenProduct }) {
 
   function rowItems(row) {
     const wanted = row.categories.map((c) => c.toLowerCase())
-    return items.filter((item) => item.imageUrl && wanted.includes(String(item.category).toLowerCase()))
+    return items.filter((item) => item.imageUrl &&
+      (item.row ? item.row === row.id : wanted.includes(String(item.category).toLowerCase())))
   }
 
   function shuffle() {
@@ -156,6 +171,15 @@ export default function StylstBoard({ onOpenProduct }) {
     } catch (error) {
       window.alert(error?.message || 'Could not add that piece')
     }
+  }
+
+  function importFromCloset(item, rowId) {
+    setImported((prev) => {
+      const next = { ...prev, [item.id]: rowId }
+      try { localStorage.setItem(IMPORTED_KEY, JSON.stringify(next)) } catch { /* storage full */ }
+      return next
+    })
+    setImporting(null)
   }
 
   function savePending(row) {
@@ -189,8 +213,29 @@ export default function StylstBoard({ onOpenProduct }) {
       {menu === 'add' && (
         <div className="stylst-pick" role="group" aria-label="Add to Stylst">
           <button type="button" className="stylst-pick-btn is-bare" onClick={() => { setMenu(null); fileInput.current?.click() }}>Add photo</button>
+          <button type="button" className="stylst-pick-btn is-bare" onClick={() => { setCloset(fetchClosetItems()); setMenu('closet') }}>Add from closet</button>
           <button type="button" className="stylst-pick-btn is-bare" onClick={() => setMenu('catalogs')}>Add brand catalog</button>
           <button type="button" className="stylst-pick-btn is-bare" onClick={() => setMenu(null)}>Cancel</button>
+        </div>
+      )}
+      {menu === 'closet' && !importing && (
+        <div className="stylst-pick" role="group" aria-label="Closet">
+          {closet.filter((item) => item.imageUrl).length === 0 && <span className="stylst-pick-empty">Your closet is empty</span>}
+          {closet.filter((item) => item.imageUrl).map((item) => (
+            <button key={item.id} type="button" className="stylst-pick-btn is-bare" onClick={() => setImporting(item)}>
+              {imported[item.id] ? '✓ ' : ''}{item.title || [item.brand, item.category].filter(Boolean).join(' ') || 'Item'}
+            </button>
+          ))}
+          <button type="button" className="stylst-pick-btn is-bare" onClick={() => setMenu(null)}>Done</button>
+        </div>
+      )}
+      {menu === 'closet' && importing && (
+        <div className="stylst-pick" role="group" aria-label="Which row?">
+          <img src={importing.imageUrl} alt="" />
+          {ROWS.map((row) => (
+            <button key={row.id} type="button" className="stylst-pick-btn is-bare" onClick={() => importFromCloset(importing, row.id)}>{row.label}</button>
+          ))}
+          <button type="button" className="stylst-pick-btn is-bare" onClick={() => setImporting(null)}>Back</button>
         </div>
       )}
       {menu === 'catalogs' && (
