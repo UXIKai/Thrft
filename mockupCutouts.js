@@ -1,4 +1,4 @@
-const CACHE_NAME = 'thrft-mockup-cutouts-v9'
+const CACHE_NAME = 'thrft-mockup-cutouts-v10'
 // Only photos that are already PNGs skip removal; a .jpg/.jpeg from any feed is always processed.
 function isPngUrl(url) {
   try { return /\.png$/i.test(new URL(url, globalThis.location?.href).pathname) } catch { return false }
@@ -70,8 +70,17 @@ async function fetchMockup(url) {
   return fetch(`/api/brands/proxy?url=${encodeURIComponent(url)}`, { ...options, signal: AbortSignal.timeout(20000) })
 }
 
+// Shopify/Printful images are served as native PNGs: pass straight through, no processing.
+function isBypassUrl(url) {
+  try {
+    const parsed = new URL(url, globalThis.location?.href)
+    return parsed.searchParams.get('raw') === '1' ||
+      /(^|\.)(shopify\.com|myshopify\.com|shopifycdn\.com|printful\.com)$/.test(parsed.hostname.toLowerCase())
+  } catch { return false }
+}
+
 async function processMockup(url) {
-  if (isPngUrl(url)) return url
+  if (isPngUrl(url) || isBypassUrl(url)) return url
   const response = await fetchMockup(url)
   if (!response.ok) throw new Error(`Could not load mockup (${response.status})`)
   const image = await response.blob()

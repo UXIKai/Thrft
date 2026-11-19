@@ -84,12 +84,16 @@ export function externalVariantLabel(variant) {
     .filter(Boolean).join(' / ') || 'Default'
 }
 
+export function isBypassHost(url) {
+  try { return /(^|\.)(shopify\.com|myshopify\.com|shopifycdn\.com|printful\.com)$/.test(new URL(url).hostname.toLowerCase()) } catch { return false }
+}
+
 export function mapCreatorProduct(row) {
   const variants = storedPrintfulVariants(row)
   const external = isExternalProduct(row)
   const brand = STORE_BRAND_ROWS.find((entry) =>
     entry.name.toLowerCase() === String(row.brand || '').trim().toLowerCase())
-  const photo = external && row.photo_url ? `/api/brands/image?id=${encodeURIComponent(row.id)}&v=${encodeURIComponent(row.external_synced_at || '')}` :
+  const photo = external && row.photo_url ? `/api/brands/image?id=${encodeURIComponent(row.id)}${isBypassHost(row.photo_url) ? '&raw=1' : ''}&v=${encodeURIComponent(row.external_synced_at || '')}` :
     row.photo_url || row.mockup_urls?.[0] || ''
   const hasPrice = row.price != null && String(row.price).trim() !== '' && Number.isFinite(Number(row.price))
   let price = hasPrice ? usdPrice.format(Number(row.price)) : 'Price unavailable'
