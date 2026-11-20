@@ -6057,3 +6057,10 @@ html body .chat-screen.is-desktop:not(.is-sidebar-collapsed)::before {
   from { opacity: 0; transform: scale(0.9); }
   to { opacity: 1; transform: scale(1); }
 }
+
+/* The Images card gives way to the chats / Online panels instead of showing through them */
+.chat-images-gallery { transition: opacity 0.2s ease; }
+.chat-screen.is-mobile-nav-open .chat-images-gallery,
+.chat-screen.is-online-open .chat-images-gallery { opacity: calc(1 - var(--nav-p, 1) * 1.5 - var(--online-p, 0) * 1.5); }
+.chat-screen.is-mobile-nav-open:not(.is-nav-dragging) .chat-images-gallery,
+.chat-screen.is-online-open:not(.is-nav-dragging) .chat-images-gallery { visibility: hidden; opacity: 0; }
