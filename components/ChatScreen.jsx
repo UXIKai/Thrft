@@ -3666,7 +3666,18 @@ export default function ChatScreen({
               const chat = chats.find((row) => row.id === menuId)
               if (!chat) return null
               return (
-                <section className="chat-hold-preview" aria-label={`Preview of ${chat.title}`}>
+                <section
+                  className="chat-hold-preview"
+                  aria-label={`Open ${chat.title}`}
+                  role="button"
+                  tabIndex={0}
+                  onClick={(e) => {
+                    const stack = e.currentTarget.closest('.chat-hold-stack')
+                    if (stack?.classList.contains('is-opening')) return
+                    stack?.classList.add('is-opening')
+                    window.setTimeout(() => openThread(chat), 240)
+                  }}
+                >
                   <div className="chat-hold-frame" aria-hidden>
                     <div className="atmosphere chat-page-atmosphere"><AtmosphereFlow /></div>
                     <div className="chat-thread">

@@ -5786,3 +5786,8 @@ html body .chat-hold-action.is-hot {
   border-radius: 16px;
 }
 html body .chat-hold-menu { touch-action: none; }
+
+html body .chat-hold-stack .chat-hold-preview { cursor: pointer; transition: transform 0.24s cubic-bezier(0.2, 0.8, 0.2, 1), border-radius 0.24s ease; }
+html body .chat-hold-stack .chat-hold-menu { transition: opacity 0.15s ease, transform 0.24s ease; }
+html body .chat-hold-stack.is-opening .chat-hold-preview { transform: scale(1.1); border-radius: 0; }
+html body .chat-hold-stack.is-opening .chat-hold-menu { opacity: 0; transform: translateY(24px); pointer-events: none; }
