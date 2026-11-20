@@ -6009,3 +6009,18 @@ html body .chat-search-modal .chat-search-modal-list {
     padding-right: 0;
   }
 }
+@media (min-width: 720px) and (min-height: 500px) {
+  html body .chat-screen.is-desktop.is-sidebar-collapsed::before { display: none; }
+  html body .chat-screen.is-sidebar-collapsed > .chat-pins-section {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    height: 100vh;
+    height: 100dvh;
+    margin: 0;
+    padding: 12px 4px 12px 4px;
+    border-right: 1px solid light-dark(rgba(0, 0, 0, 0.18), rgba(255, 255, 255, 0.22));
+  }
+  html body .chat-screen.is-sidebar-collapsed .chat-sidebar-header { padding: 0; margin: 0; }
+}
