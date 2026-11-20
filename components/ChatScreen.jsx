@@ -3438,8 +3438,8 @@ export default function ChatScreen({
                   id="chat-people-search"
                   type="search"
                   className="chat-top-search"
-                  aria-label={friendsClicked ? 'Search people' : 'Search chats'}
-                  placeholder={friendsClicked ? 'Search people' : 'Search chats'}
+                  aria-label={friendsClicked ? 'Search friends' : 'Search chats'}
+                  placeholder={friendsClicked ? 'Search friends' : 'Search chats'}
                   autoComplete="off"
                   spellCheck={false}
                   value={friendsClicked ? friendsQuery : query}
