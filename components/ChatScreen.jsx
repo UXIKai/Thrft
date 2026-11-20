@@ -3247,7 +3247,7 @@ export default function ChatScreen({
             >
               <svg viewBox="0 0 24 24" aria-hidden>
                 <rect x="3" y="4" width="18" height="16" rx="3" fill="none" stroke="currentColor" strokeWidth="1.7" />
-                <path d="M9 4v16" fill="none" stroke="currentColor" strokeWidth="1.7" />
+                <path d={sidebarCollapsed ? "M9 4v16" : "M15 4v16"} fill="none" stroke="currentColor" strokeWidth="1.7" />
               </svg>
             </button>
           )}
