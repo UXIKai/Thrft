@@ -3835,11 +3835,11 @@ html body .market-chips.is-holding .market-chips-search { pointer-events: none; 
 html body .stage .tab-bar .tab-pill,
 html body .stage .tab-bar.is-dragging .tab-pill,
 html body .stage .tab-bar.is-pressed .tab-pill {
-  width: 17.4%;
-  left: calc(var(--tab-i, 0) * 19.08% + 3.14%);
+  width: 21.6%;
+  left: calc(var(--tab-i, 0) * 19.08% + 1.04%);
 }
 html body .tab-bar .tab-lens-inner {
-  width: 574.71%;
-  padding-inline: 13.22%;
-  left: calc((var(--tab-i, 0) * 19.08% + 3.14%) * -5.747);
+  width: 462.96%;
+  padding-inline: 10.65%;
+  left: calc((var(--tab-i, 0) * 19.08% + 1.04%) * -4.63);
 }
