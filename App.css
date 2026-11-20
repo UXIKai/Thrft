@@ -3903,6 +3903,7 @@ html body .stage > .tab-bar.tab-bar.tab-bar.is-pressed:not(#_):not(#_) {
 .logo-splash .splash-mark { animation: splash-logo-in 0.6s ease both; }
 @keyframes splash-logo-in { from { opacity: 0; scale: 0.94; } to { opacity: 1; scale: 1; } }
 
-/* The launch splash never blocks the nav bar: it stays visible and tappable above the splash */
+/* The nav bar stays hidden during the launch splash and fades in as the splash leaves */
 .logo-splash { pointer-events: none; }
-html body .stage:has(> .logo-splash) > .tab-bar { z-index: 61; }
+html body .stage > .tab-bar { transition: opacity 0.6s ease; }
+html body .stage:has(> .logo-splash:not(.is-leaving)) > .tab-bar { opacity: 0 !important; pointer-events: none; }
