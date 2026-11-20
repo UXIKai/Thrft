@@ -1905,15 +1905,12 @@ html[data-app-color='none'][data-moonlight='on'] body .settings-icon-tile:not(#_
   background: color-mix(in srgb, var(--page-bg, #000) 70%, transparent) !important;
 }
 
-/* Nav: slimmer dark capsule with a fine light rim; the selection is a soft filled pill with no outline */
+/* Nav: slimmer dark capsule with no outline; the selection is a soft filled pill with no outline */
 html body .stage > .tab-bar.tab-bar.tab-bar {
   --tab-height-reduction: 8px;
   background: light-dark(rgba(235, 235, 232, 0.7), rgba(12, 14, 16, 0.72)) !important;
-  border: 1px solid light-dark(rgba(0, 0, 0, 0.16), rgba(255, 255, 255, 0.2)) !important;
-  box-shadow:
-    inset 0 1px 0 light-dark(rgba(0, 0, 0, 0.12), rgba(255, 255, 255, 0.28)),
-    inset 0 -1px 0 light-dark(rgba(0, 0, 0, 0.08), rgba(255, 255, 255, 0.16)),
-    0 6px 18px rgba(0, 0, 0, 0.28) !important;
+  border: 1px solid transparent !important;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28) !important;
 }
 html body .stage > .tab-bar.tab-bar.tab-bar .tab-pill,
 html body .stage > .tab-bar.tab-bar.tab-bar.is-dragging .tab-pill,
