@@ -3273,18 +3273,6 @@ export default function ChatScreen({
                     <PinIcon className="chat-row-action-ico" />
                   </button>
                   )}
-                  <button
-                    type="button"
-                    className="chat-row-action is-bare"
-                    aria-label={`More for ${chat.title}`}
-                    ref={(el) => {
-                      if (el) dotsRefs.current.set(chat.id, el)
-                      else dotsRefs.current.delete(chat.id)
-                    }}
-                    onClick={() => openRowMenu(chat)}
-                  >
-                    <DotsIcon />
-                  </button>
                 </span>
               )}
             </li>
@@ -3641,7 +3629,7 @@ export default function ChatScreen({
                 </section>
               )
             })()}
-          <div className="chat-hold-menu" role="menu" aria-label="Chat actions" hidden={!menuPos.dropdown}>
+          <div className="chat-hold-menu" role="menu" aria-label="Chat actions">
             {(() => {
               const chat = chats.find((row) => row.id === menuId)
               if (!chat) return null
