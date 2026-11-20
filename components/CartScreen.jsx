@@ -272,9 +272,14 @@ export default function CartScreen({
                     ? bag.formatMoney(item.price)
                     : item.price}
                 </span>
-                {isExternalProduct(item) && <p className="cart-line-price">
-                  {selectedExternalVariants(item)?.map((variant) => externalVariantLabel(variant)).join(', ')}
-                </p>}
+                {(() => {
+                  if (!isExternalProduct(item)) return null
+                  const label = (selectedExternalVariants(item) || [])
+                    .map((variant) => externalVariantLabel(variant))
+                    .filter((text) => !/^default( title)?$/i.test(text))
+                    .join(', ')
+                  return label ? <p className="cart-line-price">{label}</p> : null
+                })()}
                 {true ? (
                   <div className="cart-line-qty">
                     <button type="button" className="cart-line-act is-bare" aria-label="Fewer" onClick={() => (item.qty <= 1 ? remove(item.id) : setQty(item, item.qty - 1))}>
