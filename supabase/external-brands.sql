@@ -272,7 +272,7 @@ begin
     fee := round(processing::numeric * (cumulative + subtotal + shipping) / new.amount_total)
       - round(processing::numeric * cumulative / new.amount_total);
     cumulative := cumulative + subtotal + shipping;
-    platform := round(subtotal::numeric * 0.10);
+    platform := round(subtotal::numeric * 0.02);
     insert into public.external_brand_payouts (
       order_id, brand_id, creator_id, item_subtotal, shipping_amount, platform_fee, stripe_processing_fee, net_payout
     ) values (

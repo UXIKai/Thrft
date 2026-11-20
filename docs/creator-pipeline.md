@@ -153,11 +153,11 @@ whose buyer, currency and total match the server snapshot are accepted.
 External paid item revenue (excluding shipping) contributes to the Leaderboard;
 Settings → Orders → Sales shows orders, delivery addresses, payout breakdowns and sync status.
 
-There is **no monthly seller fee**. The Thrft fee is 10% of item subtotal.
+There is **no monthly seller fee**. The Thrft fee is 2% of item subtotal.
 Processing is the requested formula, `round(0.029 * total_charged + $0.30)`,
 not a reconciliation of Stripe's actual balance-transaction fees.
 Amounts are rounded to the nearest cent; payout is
-`max(0, item_subtotal - round(10% * item_subtotal) + shipping - processing)`.
+`max(0, item_subtotal - round(2% * item_subtotal) + shipping - processing)`.
 For mixed/multi-brand carts, allocate the single session processing fee by each
 brand's items plus shipping as a share of the total charged, in brand-ID order
 using differences of rounded cumulative shares so cents are conserved. The
