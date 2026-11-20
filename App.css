@@ -3830,3 +3830,16 @@ html body .market-chips.is-open .market-chip.is-active {
 }
 html body .market-chips.is-holding .market-chips-search { pointer-events: none; user-select: none; -webkit-user-select: none; }
 .hold-focus-proxy { position: absolute; left: 0; top: 0; width: 1px; height: 1px; opacity: 0; border: 0; padding: 0; pointer-events: none; font-size: 16px; caret-color: transparent; }
+
+/* Selection pill sized to one tab slot so it never overlaps a neighbour */
+html body .stage .tab-bar .tab-pill,
+html body .stage .tab-bar.is-dragging .tab-pill,
+html body .stage .tab-bar.is-pressed .tab-pill {
+  width: 17.4%;
+  left: calc(var(--tab-i, 0) * 19.08% + 3.14%);
+}
+html body .tab-bar .tab-lens-inner {
+  width: 574.71%;
+  padding-inline: 13.22%;
+  left: calc((var(--tab-i, 0) * 19.08% + 3.14%) * -5.747);
+}
