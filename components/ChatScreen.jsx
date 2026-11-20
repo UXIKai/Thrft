@@ -1833,6 +1833,7 @@ export default function ChatScreen({
           centerX: window.innerWidth / 2,
           centered: true,
           context: true,
+          rowY: row ? row.getBoundingClientRect().top + row.offsetHeight / 2 : window.innerHeight / 2,
         })
         setMenuId(chatId)
       }, 520),
@@ -3679,7 +3680,7 @@ export default function ChatScreen({
           <button type="button" className="chat-dm-portal-scrim" aria-label="Dismiss chat actions" onClick={closeMenus} />
           <div
             className="chat-hold-stack"
-            style={menuPos.dropdown ? { top: menuPos.top, left: menuPos.left, transform: 'none', width: 'auto', animation: 'none' } : undefined}
+            style={menuPos.dropdown ? { top: menuPos.top, left: menuPos.left, transform: 'none', width: 'auto', animation: 'none' } : { '--hold-dy': `${(menuPos.rowY ?? window.innerHeight / 2) - window.innerHeight / 2}px` }}
           >
             {!menuPos.dropdown && (() => {
               const chat = chats.find((row) => row.id === menuId)
