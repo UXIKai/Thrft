@@ -1792,6 +1792,20 @@ export default function ChatScreen({
 
   function cancelRowPress() {
     window.clearTimeout(longPressRef.current.timer)
+    longPressRef.current.row?.classList.remove('is-pressing')
+  }
+
+  // iOS Safari has no vibrate(); toggling a switch input gives a native haptic tick
+  function hapticTick() {
+    navigator.vibrate?.(15)
+    try {
+      const label = document.createElement('label')
+      label.style.cssText = 'position:fixed;opacity:0;pointer-events:none;top:0;left:0'
+      label.innerHTML = '<input type="checkbox" switch>'
+      document.body.appendChild(label)
+      label.click()
+      window.setTimeout(() => label.remove(), 60)
+    } catch { /* haptics unavailable */ }
   }
 
   function moveRowPress(e) {
@@ -1803,11 +1817,16 @@ export default function ChatScreen({
     if (e.button !== 0) return
     cancelRowPress()
     longPressFiredRef.current = false
+    const row = e.currentTarget.closest('li')
+    row?.classList.add('is-pressing')
     longPressRef.current = {
       x: e.clientX,
       y: e.clientY,
+      row,
       timer: window.setTimeout(() => {
         longPressFiredRef.current = true
+        row?.classList.remove('is-pressing')
+        hapticTick()
         setMenuPos({
           top: window.innerHeight / 2,
           right: 0,

@@ -5791,3 +5791,17 @@ html body .chat-hold-stack .chat-hold-preview { cursor: pointer; transition: tra
 html body .chat-hold-stack .chat-hold-menu { transition: opacity 0.15s ease, transform 0.24s ease; }
 html body .chat-hold-stack.is-opening .chat-hold-preview { transform: scale(1.1); border-radius: 0; }
 html body .chat-hold-stack.is-opening .chat-hold-menu { opacity: 0; transform: translateY(24px); pointer-events: none; }
+
+html body .chat-row-wrap { transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.5s ease; }
+html body .chat-row-wrap.is-pressing {
+  transform: scale(1.05);
+  position: relative;
+  z-index: 3;
+  border-radius: 24px;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.5);
+}
+@keyframes chat-hold-reveal {
+  0% { opacity: 0; scale: 0.88; }
+  60% { opacity: 1; scale: 1.02; }
+  100% { opacity: 1; scale: 1; }
+}
