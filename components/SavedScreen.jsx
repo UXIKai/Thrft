@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { MAP_X, MAP_Y } from './TabBar.jsx'
-import { fetchSaved, recordInterest, saveSavedItems } from '../api.js'
+import { fetchSaved, fetchStoreProducts, recordInterest, saveSavedItems } from '../api.js'
 import { recordProductInterest, recordSearchHistory } from '../forYou.js'
 import { brandLogoUrl } from '../brandLogos.js'
 import { LISTING_BRANDS } from '../listingCatalog.js'
@@ -373,6 +373,31 @@ export default function SavedScreen({
     try { return JSON.parse(localStorage.getItem('thrft-profile-flags') || '{}').likes || [] } catch { return [] }
   }, [likedView])
   const brandRowRef = useRef(null)
+  const [activeBrand, setActiveBrand] = useState(null)
+  const [brandProducts, setBrandProducts] = useState({ status: 'idle', items: [] })
+  const [brandCategory, setBrandCategory] = useState('all')
+
+  function toggleBrandProducts(id, name) {
+    if (activeBrand?.id === id) { setActiveBrand(null); return }
+    setActiveBrand({ id, name })
+    setBrandCategory('all')
+  }
+  useEffect(() => {
+    if (!activeBrand) return undefined
+    let alive = true
+    setBrandProducts({ status: 'loading', items: [] })
+    fetchStoreProducts({ brand: activeBrand.name, brandId: String(activeBrand.id) })
+      .then((items) => alive && setBrandProducts({ status: 'ready', items }))
+      .catch(() => alive && setBrandProducts({ status: 'error', items: [] }))
+    return () => { alive = false }
+  }, [activeBrand])
+  const brandCategories = useMemo(
+    () => [...new Set(brandProducts.items.map((p) => p.clothingType).filter(Boolean))],
+    [brandProducts.items],
+  )
+  const shownBrandProducts = brandProducts.items.filter(
+    (p) => brandCategory === 'all' || p.clothingType === brandCategory,
+  )
   const [brandPill, setBrandPill] = useState(null)
   const [pillActive, setPillActive] = useState(false)
   const dragRef = useRef(null)
@@ -444,7 +469,7 @@ export default function SavedScreen({
     if (!el) return
     const id = el.dataset.brandId
     if (selectMode) toggleSelected(`brand-${id}`)
-    else onOpenBrand?.(id, el.dataset.brandName)
+    else toggleBrandProducts(id, el.dataset.brandName)
   }
   function movePillTo(el) {
     if (!el) return
@@ -840,13 +865,14 @@ export default function SavedScreen({
               <button
                 key={`brand-${brand.id}`}
                 type="button"
-                className={`saved-item${selectedKeys.includes(`brand-${brand.id}`) ? ' is-selected' : ''}`}
+                className={`saved-item${selectedKeys.includes(`brand-${brand.id}`) ? ' is-selected' : ''}${activeBrand?.id === brand.id ? ' is-open' : ''}`}
+                aria-pressed={activeBrand?.id === brand.id}
                 data-brand-id={brand.id}
                 data-brand-name={brand.name}
                 onClick={(e) => {
                   if (e.detail !== 0) return
                   if (selectMode) toggleSelected(`brand-${brand.id}`)
-                  else onOpenBrand?.(brand.id, brand.name)
+                  else toggleBrandProducts(brand.id, brand.name)
                 }}
                 aria-label={`${brand.name} listings`}
               >
@@ -854,6 +880,38 @@ export default function SavedScreen({
               </button>
             ))}
       </div>
+      {likedView === 'brands' && activeBrand && (
+        <div className="saved-brand-products">
+          {brandCategories.length > 0 && (
+            <nav className="saved-brand-cats" aria-label={`${activeBrand.name} categories`}>
+              {['all', ...brandCategories].map((cat) => (
+                <button key={cat} type="button" className={`saved-brand-cat is-bare${brandCategory === cat ? ' is-active' : ''}`} onClick={() => setBrandCategory(cat)}>
+                  {cat === 'all' ? 'All' : cat}
+                </button>
+              ))}
+            </nav>
+          )}
+          {brandProducts.status === 'loading' && <p role="status">Loading products...</p>}
+          {brandProducts.status === 'error' && <p role="alert">Could not load products.</p>}
+          {brandProducts.status === 'ready' && !shownBrandProducts.length && <p role="status">No products yet.</p>}
+          <div className="saved-grid is-products market-product-grid">
+            {shownBrandProducts.map((item) => {
+              const photo = item.photoUrl || item.imageUrl || item.image_url || ''
+              return (
+                <div key={item.id} className="market-card">
+                  <button type="button" className="market-card-open" onClick={() => onOpenProduct?.({ ...item, detailVariant: 'store' })} aria-label={item.title || item.brandName || 'Product'}>
+                    <span className="market-card-photo" aria-hidden>
+                      {photo && photo !== 'placeholder' ? <ProductPhoto src={photo} cutout={hasProductCutout(item)} alt="" loading="lazy" draggable="false" /> : null}
+                    </span>
+                    <span className="market-card-name">{item.title || item.brandName}</span>
+                    {item.price ? <span className="market-card-price">{item.price}</span> : null}
+                  </button>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      )}
       {likedView === 'photos' && (
         <div className="saved-photos-grid">
           {likedPhotos.length === 0 && <p role="status">No liked photos yet.</p>}

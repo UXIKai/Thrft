@@ -1458,3 +1458,11 @@ html body .saved-view-tabs .saved-fab-item :is(.saved-fab-btn, .saved-filter-btn
   width: 36px;
   height: 36px;
 }
+
+/* Favorite brand products: categories line, then full-width grid */
+.saved-brand-products { width: 100%; padding: 0 12px 120px; }
+.saved-brand-cats { display: flex; gap: 8px; overflow-x: auto; padding: 8px 0 12px; border-bottom: 1px solid var(--edge-ink, rgba(255,255,255,0.18)); margin-bottom: 12px; scrollbar-width: none; }
+.saved-brand-cats::-webkit-scrollbar { display: none; }
+html body .saved-brand-cats .saved-brand-cat { flex: none; padding: 6px 14px; border-radius: 999px; background: transparent; border: 0; color: inherit; opacity: 0.6; text-transform: capitalize; font: inherit; }
+html body .saved-brand-cats .saved-brand-cat.is-active { opacity: 1; background: rgba(255,255,255,0.14); }
+.saved-brand-products .saved-grid { width: 100%; }
