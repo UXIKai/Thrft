@@ -374,6 +374,7 @@ export default function SavedScreen({
   }, [likedView])
   const brandRowRef = useRef(null)
   const [activeBrand, setActiveBrand] = useState(null)
+  const [scrollToBrandId, setScrollToBrandId] = useState(null)
   const [brandProducts, setBrandProducts] = useState({ status: 'idle', items: [] })
   const [brandCategory, setBrandCategory] = useState('all')
 
@@ -643,6 +644,17 @@ export default function SavedScreen({
     setQuery('')
   }
 
+  useEffect(() => {
+    if (scrollToBrandId == null) return undefined
+    const t = setTimeout(() => {
+      const el = [...(brandRowRef.current?.querySelectorAll('.saved-item') || [])]
+        .find((n) => n.dataset.brandId === String(scrollToBrandId))
+      el?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' })
+      setScrollToBrandId(null)
+    }, 60)
+    return () => clearTimeout(t)
+  }, [scrollToBrandId, favoriteBrandCards])
+
   function addBrandFromGlobe(brandId) {
     const brand =
       BRAND_CATALOG.find((b) => b.id === brandId) ||
@@ -667,6 +679,10 @@ export default function SavedScreen({
 
     persistFavored(next)
     closeGlobe()
+    setLikedView('brands')
+    setActiveBrand({ id: brand.id, name: brand.name })
+    setBrandCategory('all')
+    setScrollToBrandId(brand.id)
   }
 
   function onPlusClick() {

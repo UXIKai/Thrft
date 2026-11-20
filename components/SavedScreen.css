@@ -1478,3 +1478,11 @@ html body .saved-brand-cats .saved-brand-cat.is-active { opacity: 1; background:
     padding: 0 0 calc(150px + env(safe-area-inset-bottom, 0px));
   }
 }
+
+@media (min-width: 720px) {
+  html body .saved-brand-products { overflow-y: auto; scrollbar-width: none; }
+  html body .saved-brand-products .saved-grid.market-product-grid {
+    grid-template-columns: repeat(auto-fill, minmax(clamp(200px, 22vw, 320px), 1fr));
+    gap: 24px 20px;
+  }
+}
