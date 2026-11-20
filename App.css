@@ -3728,3 +3728,5 @@ html body .stage > .tab-bar.tab-bar.tab-bar { background: var(--container-bg) !i
 html body .saved-view-tabs.saved-view-tabs { background: var(--container-bg); }
 html body .chat-menu { background: color-mix(in srgb, light-dark(#e9e9e9, #2f2f2f) 80%, transparent); }
 html body .chat-hold-stack .chat-hold-menu { background: color-mix(in srgb, light-dark(#e9e9e9, #232326) 80%, transparent); }
+
+html body .home-scroll.is-row-page > .wordmark-wrap { display: none; }
