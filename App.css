@@ -3915,4 +3915,16 @@ html body .stage > .tab-bar.tab-bar.tab-bar.is-pressed:not(#_):not(#_) {
   place-items: center;
 }
 .logo-splash .atmosphere { z-index: 0; }
-.logo-splash .wordmark { position: relative; z-index: 1; }
+.logo-splash {
+  width: 100vw;
+  height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.logo-splash .wordmark {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  padding-left: 0.16em; /* offsets trailing letter-spacing so the word is truly centred */
+}
