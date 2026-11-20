@@ -3484,6 +3484,7 @@ html body .chat-menu {
 }
 
 .chat-new-tabs {
+  order: 1;
   display: grid;
   grid-template-columns: 1fr 1fr;
   justify-items: center;

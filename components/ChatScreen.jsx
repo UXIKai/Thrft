@@ -2905,29 +2905,6 @@ export default function ChatScreen({
                   )}
                 </div>
               )}
-              <div className="chat-new-tabs" role="tablist">
-                <button
-                  type="button"
-                  role="tab"
-                  aria-selected={createTab === 'people'}
-                  aria-label="Find friends and new people"
-                  className={`chat-new-tab is-bare${createTab === 'people' ? ' is-on' : ''}`}
-                  onClick={() => switchCreateTab('people')}
-                >
-                  <PersonIcon />
-                </button>
-                <button
-                  type="button"
-                  role="tab"
-                  aria-selected={createTab === 'group'}
-                  aria-label="Create group chat"
-                  className={`chat-new-tab is-bare${createTab === 'group' ? ' is-on' : ''}`}
-                  onClick={() => switchCreateTab('group')}
-                >
-                  <PeopleIcon />
-                </button>
-              </div>
-
               <div className="chat-new-panel">
                 {createTab === 'group' && groupNameStep ? (
                   <>
@@ -3032,6 +3009,28 @@ export default function ChatScreen({
                     </ul>
                   </>
                 )}
+              </div>
+              <div className="chat-new-tabs" role="tablist">
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={createTab === 'people'}
+                  aria-label="Find friends and new people"
+                  className={`chat-new-tab is-bare${createTab === 'people' ? ' is-on' : ''}`}
+                  onClick={() => switchCreateTab('people')}
+                >
+                  <PersonIcon />
+                </button>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={createTab === 'group'}
+                  aria-label="Create group chat"
+                  className={`chat-new-tab is-bare${createTab === 'group' ? ' is-on' : ''}`}
+                  onClick={() => switchCreateTab('group')}
+                >
+                  <PeopleIcon />
+                </button>
               </div>
             </div>
   ) : null
