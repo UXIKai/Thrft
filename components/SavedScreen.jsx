@@ -764,12 +764,18 @@ export default function SavedScreen({
         <div className="saved-fab-item" style={{ '--i': 1 }}>
           <button
             type="button"
-            className={`saved-fab-btn${selectMode ? ' is-on' : ''}`}
-            aria-label={selectMode ? 'Cancel select' : 'Select'}
+            className={`saved-fab-btn${selectMode ? ' is-danger' : ''}`}
+            aria-label={selectMode ? (selectedKeys.length ? 'Delete selected' : 'Cancel select') : 'Select'}
             aria-pressed={selectMode}
+            disabled={selectMode && savingSaved}
             tabIndex={0}
             onClick={(e) => {
               e.currentTarget.blur()
+              if (selectMode) {
+                if (selectedKeys.length) deleteSelected()
+                else setSelectMode(false)
+                return
+              }
               setSelectMode(true)
               setSelectedKeys([])
               setLikedTabsOpen(false)
@@ -778,7 +784,10 @@ export default function SavedScreen({
             }}
           >
             {selectMode ? (
-              <svg viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M6 6l12 12M18 6L6 18" /></svg>
+              <>
+                <FilterTrashIcon />
+                {selectedKeys.length > 0 ? <span className="saved-select-count">{selectedKeys.length}</span> : null}
+              </>
             ) : (
               <CheckCircleIcon />
             )}
@@ -803,21 +812,6 @@ export default function SavedScreen({
             <svg viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M12 5v14M5 12h14" /></svg>
           </button>
         </div>
-        {selectMode ? (
-        <div className="saved-fab-item" style={{ '--i': 3 }}>
-            <button
-              type="button"
-              className="saved-fab-btn is-danger"
-              aria-label="Delete selected"
-              disabled={!selectedKeys.length || savingSaved}
-              tabIndex={0}
-              onClick={(e) => { e.currentTarget.blur(); deleteSelected() }}
-            >
-              <FilterTrashIcon />
-              {selectedKeys.length > 0 ? <span className="saved-select-count">{selectedKeys.length}</span> : null}
-            </button>
-        </div>
-        ) : null}
         </div>
       </div>
         </div>
