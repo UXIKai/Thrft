@@ -326,6 +326,7 @@ export default function ProductRows({
   const [chipQuery, setChipQuery] = useState('')
   const [chipHoldDown, setChipHoldDown] = useState(false)
   const chipsRef = useRef(null)
+  const chipProxyRef = useRef(null)
   const chipHold = useRef({ timer: 0, x: 0, y: 0, fired: false })
   const [openRow, setOpenRow] = useState(null)
 
@@ -363,6 +364,7 @@ export default function ProductRows({
     h.y = e.clientY
     h.fired = false
     window.clearTimeout(h.timer)
+    chipProxyRef.current?.focus({ preventScroll: true })
     h.timer = window.setTimeout(() => {
       h.fired = true
       setChipHoldDown(true)
@@ -374,11 +376,13 @@ export default function ProductRows({
     if (h.timer && Math.hypot(e.clientX - h.x, e.clientY - h.y) > 8) {
       window.clearTimeout(h.timer)
       h.timer = 0
+      chipProxyRef.current?.blur()
     }
   }
   function chipsPointerEnd() {
     window.clearTimeout(chipHold.current.timer)
     chipHold.current.timer = 0
+    if (!chipHold.current.fired) chipProxyRef.current?.blur()
   }
 
   useEffect(() => {
@@ -529,6 +533,7 @@ export default function ProductRows({
           onPointerCancel={chipsPointerEnd}
           onContextMenu={(e) => e.preventDefault()}
         >
+          <input ref={chipProxyRef} className="hold-focus-proxy" type="text" inputMode="search" aria-hidden="true" tabIndex={-1} readOnly={false} autoComplete="off" autoCorrect="off" />
           {chipsOpen && (
             <input
               className="market-chips-search"

@@ -3829,3 +3829,4 @@ html body .market-chips.is-open .market-chip.is-active {
   letter-spacing: 0.02em;
 }
 html body .market-chips.is-holding .market-chips-search { pointer-events: none; user-select: none; -webkit-user-select: none; }
+.hold-focus-proxy { position: absolute; left: 0; top: 0; width: 1px; height: 1px; opacity: 0; border: 0; padding: 0; pointer-events: none; font-size: 16px; caret-color: transparent; }
