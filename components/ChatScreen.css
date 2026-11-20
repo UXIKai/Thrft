@@ -5785,3 +5785,4 @@ html body .chat-hold-action.is-hot {
   background: light-dark(rgba(0, 0, 0, 0.1), rgba(255, 255, 255, 0.14)) !important;
   border-radius: 16px;
 }
+html body .chat-hold-menu { touch-action: none; }

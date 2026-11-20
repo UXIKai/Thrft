@@ -1735,6 +1735,7 @@ export default function ChatScreen({
   useEffect(() => {
     if (!menuId || !menuPos?.context || menuPos.dropdown) return undefined
     let glide = true
+    let synthetic = false
     let hot = null
     const setHot = (el) => {
       if (hot === el) return
@@ -1752,17 +1753,32 @@ export default function ChatScreen({
     const onUp = () => {
       const el = hot
       setHot(null)
-      if (glide && el) el.click()
+      if (glide && el) {
+        synthetic = true
+        el.click()
+        synthetic = false
+      }
       glide = false
     }
     const onCancel = () => { setHot(null); glide = false }
-    const onDown = () => { glide = false; setHot(null) }
+    const onDown = (e) => {
+      const el = e.target.closest?.('.chat-hold-action')
+      glide = Boolean(el)
+      setHot(el || null)
+    }
+    // Selection happens on release, so swallow the browser's own click on the menu
+    const onClick = (e) => {
+      if (synthetic || !e.target.closest?.('.chat-hold-menu')) return
+      e.stopPropagation()
+      e.preventDefault()
+    }
     const onTouchMove = (e) => { if (glide && e.cancelable) e.preventDefault() }
     window.addEventListener('pointermove', onMove)
     window.addEventListener('pointerup', onUp)
     window.addEventListener('pointercancel', onCancel)
     window.addEventListener('pointerdown', onDown)
     window.addEventListener('touchmove', onTouchMove, { passive: false })
+    window.addEventListener('click', onClick, true)
     return () => {
       setHot(null)
       window.removeEventListener('pointermove', onMove)
@@ -1770,6 +1786,7 @@ export default function ChatScreen({
       window.removeEventListener('pointercancel', onCancel)
       window.removeEventListener('pointerdown', onDown)
       window.removeEventListener('touchmove', onTouchMove)
+      window.removeEventListener('click', onClick, true)
     }
   }, [menuId, menuPos])
 
