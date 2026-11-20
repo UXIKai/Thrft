@@ -727,7 +727,6 @@ export default function SavedScreen({
             </div>
           </div>
           <div className={`saved-pill-search${searchOpen ? ' is-open' : ''}`} ref={searchWrapRef} aria-hidden={!searchOpen}>
-            <SearchIcon />
             <input
               id="saved-search-input"
               type="text"
