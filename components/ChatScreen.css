@@ -5926,3 +5926,12 @@ html body .chat-new-card .chat-new-field .chat-new-input:focus-visible {
   box-shadow: none !important;
   border: 0 !important;
 }
+html body .chat-new-card .chat-new-bottom {
+  display: grid;
+  grid-template-columns: 40px 1fr 40px;
+  align-items: center;
+  margin-top: auto;
+}
+html body .chat-new-card .chat-new-bottom .chat-new-tabs { grid-column: 2; }
+html body .chat-new-card .chat-new-bottom .chat-new-back:first-child { grid-column: 1; justify-self: start; }
+html body .chat-new-card .chat-new-bottom .chat-new-tabs ~ .chat-new-back { grid-column: 3; justify-self: end; }

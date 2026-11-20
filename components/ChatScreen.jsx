@@ -2885,26 +2885,6 @@ export default function ChatScreen({
 
   const newChatPanel = composer?.mode === 'create' ? (
     <div className="chat-new-card">
-              {!groupNameStep && (
-                <div className="chat-new-top">
-                  <button type="button" className="chat-new-back is-bare" aria-label="Back to chats" onClick={closeComposer}>
-                    <BackIcon />
-                  </button>
-                  {createQuery.trim() && (createTab === 'group' ? draftMembers.length > 0 : createPick) && (
-                    <button
-                      type="button"
-                      className="chat-new-back is-bare"
-                      aria-label={createTab === 'group' ? `Done, ${draftMembers.length} selected` : `Message ${createPick}`}
-                      onClick={() => {
-                        if (createTab === 'group') { setGroupNameStep(true); setDraftName(''); setCreateQuery('') }
-                        else startChatWithUser(createPick)
-                      }}
-                    >
-                      <svg viewBox="0 0 24 24" aria-hidden><path d="m5 12.5 4.5 4.5L19 7.5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                    </button>
-                  )}
-                </div>
-              )}
               <div className="chat-new-panel">
                 {createTab === 'group' && groupNameStep ? (
                   <>
@@ -3010,6 +2990,11 @@ export default function ChatScreen({
                   </>
                 )}
               </div>
+              <div className="chat-new-bottom">
+                {!groupNameStep && <>
+                  <button type="button" className="chat-new-back is-bare" aria-label="Back to chats" onClick={closeComposer}>
+                    <BackIcon />
+                  </button></>}
               <div className="chat-new-tabs" role="tablist">
                 <button
                   type="button"
@@ -3031,6 +3016,21 @@ export default function ChatScreen({
                 >
                   <PeopleIcon />
                 </button>
+              </div>
+                {!groupNameStep && <>
+                  {createQuery.trim() && (createTab === 'group' ? draftMembers.length > 0 : createPick) && (
+                    <button
+                      type="button"
+                      className="chat-new-back is-bare"
+                      aria-label={createTab === 'group' ? `Done, ${draftMembers.length} selected` : `Message ${createPick}`}
+                      onClick={() => {
+                        if (createTab === 'group') { setGroupNameStep(true); setDraftName(''); setCreateQuery('') }
+                        else startChatWithUser(createPick)
+                      }}
+                    >
+                      <svg viewBox="0 0 24 24" aria-hidden><path d="m5 12.5 4.5 4.5L19 7.5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                    </button>
+                  )}</>}
               </div>
             </div>
   ) : null
