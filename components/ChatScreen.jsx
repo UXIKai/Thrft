@@ -3174,6 +3174,7 @@ export default function ChatScreen({
           </button>
         </nav>
         <ul className="chat-list">
+          {filtered.all.some((c) => c.pinned) && (
           <li className="chat-folder-head">
             <button
               type="button"
@@ -3187,6 +3188,7 @@ export default function ChatScreen({
               </svg>
             </button>
           </li>
+          )}
           {filtered.all.map((chat, index) => (
             <Fragment key={chat.id}>
             {!(pinnedCollapsed && chat.pinned) && (
@@ -3254,6 +3256,7 @@ export default function ChatScreen({
               </button>
               {!pinsMode && (
                 <span className="chat-row-actions">
+                  {chat.pinned && (
                   <button
                     type="button"
                     className="chat-row-action is-bare"
@@ -3262,6 +3265,7 @@ export default function ChatScreen({
                   >
                     <PinIcon className="chat-row-action-ico" />
                   </button>
+                  )}
                   <button
                     type="button"
                     className="chat-row-action is-bare"
