@@ -3828,3 +3828,4 @@ html body .market-chips.is-open .market-chip.is-active {
   font-size: 0.74rem;
   letter-spacing: 0.02em;
 }
+html body .market-chips.is-holding .market-chips-search { pointer-events: none; user-select: none; -webkit-user-select: none; }

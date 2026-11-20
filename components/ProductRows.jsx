@@ -324,6 +324,7 @@ export default function ProductRows({
   const [chip, setChip] = useState('all')
   const [chipsOpen, setChipsOpen] = useState(false)
   const [chipQuery, setChipQuery] = useState('')
+  const [chipHoldDown, setChipHoldDown] = useState(false)
   const chipsRef = useRef(null)
   const chipHold = useRef({ timer: 0, x: 0, y: 0, fired: false })
   const [openRow, setOpenRow] = useState(null)
@@ -341,6 +342,17 @@ export default function ProductRows({
   }, [chipsOpen])
 
   useEffect(() => {
+    if (!chipHoldDown) return undefined
+    const up = () => setChipHoldDown(false)
+    window.addEventListener('pointerup', up)
+    window.addEventListener('pointercancel', up)
+    return () => {
+      window.removeEventListener('pointerup', up)
+      window.removeEventListener('pointercancel', up)
+    }
+  }, [chipHoldDown])
+
+  useEffect(() => {
     if (!chipsOpen) setChipQuery('')
   }, [chipsOpen])
 
@@ -353,6 +365,7 @@ export default function ProductRows({
     window.clearTimeout(h.timer)
     h.timer = window.setTimeout(() => {
       h.fired = true
+      setChipHoldDown(true)
       setChipsOpen(true)
     }, 420)
   }
@@ -507,7 +520,7 @@ export default function ProductRows({
         {!marketItems.length && status !== 'error' && <p role="status">{status === 'loading' ? 'Loading products...' : 'No Market products found.'}</p>}
         <div
           ref={chipsRef}
-          className={`market-chips${chipsOpen ? ' is-open' : ''}`}
+          className={`market-chips${chipsOpen ? ' is-open' : ''}${chipHoldDown ? ' is-holding' : ''}`}
           role="tablist"
           aria-label="Market filters"
           onPointerDown={chipsPointerDown}
@@ -519,7 +532,17 @@ export default function ProductRows({
           {chipsOpen && (
             <input
               className="market-chips-search"
-              type="search"
+              type="text"
+              inputMode="search"
+              enterKeyHint="search"
+              autoComplete="off"
+              autoCorrect="off"
+              autoCapitalize="off"
+              spellCheck={false}
+              name="thrft_filter_search"
+              data-lpignore="true"
+              data-1p-ignore="true"
+              data-form-type="other"
               autoFocus
               placeholder="Search"
               aria-label="Search filters"

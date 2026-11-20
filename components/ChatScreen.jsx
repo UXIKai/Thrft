@@ -3455,8 +3455,16 @@ export default function ChatScreen({
               {peopleSearchOpen ? (
                 <input
                   id="chat-people-search"
-                  type="search"
+                  type="text"
+                  inputMode="search"
+                  enterKeyHint="search"
                   className="chat-top-search"
+                  autoCorrect="off"
+                  autoCapitalize="off"
+                  name="thrft_top_search"
+                  data-lpignore="true"
+                  data-1p-ignore="true"
+                  data-form-type="other"
                   aria-label={friendsClicked ? 'Search friends' : 'Search chats'}
                   placeholder={friendsClicked ? 'Search friends' : 'Search chats'}
                   autoComplete="off"
