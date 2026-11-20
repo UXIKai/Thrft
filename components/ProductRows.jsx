@@ -323,7 +323,51 @@ export default function ProductRows({
   const [status, setStatus] = useState('loading')
   const [error, setError] = useState('')
   const [chip, setChip] = useState('all')
+  const [chipsOpen, setChipsOpen] = useState(false)
+  const [chipQuery, setChipQuery] = useState('')
+  const chipsRef = useRef(null)
+  const chipHold = useRef({ timer: 0, x: 0, y: 0, fired: false })
   const [openRow, setOpenRow] = useState(null)
+
+  useEffect(() => {
+    if (!chipsOpen) return undefined
+    const away = (e) => { if (!chipsRef.current?.contains(e.target)) setChipsOpen(false) }
+    const esc = (e) => { if (e.key === 'Escape') setChipsOpen(false) }
+    document.addEventListener('pointerdown', away)
+    document.addEventListener('keydown', esc)
+    return () => {
+      document.removeEventListener('pointerdown', away)
+      document.removeEventListener('keydown', esc)
+    }
+  }, [chipsOpen])
+
+  useEffect(() => {
+    if (!chipsOpen) setChipQuery('')
+  }, [chipsOpen])
+
+  function chipsPointerDown(e) {
+    if (chipsOpen || (e.pointerType === 'mouse' && e.button !== 0)) return
+    const h = chipHold.current
+    h.x = e.clientX
+    h.y = e.clientY
+    h.fired = false
+    window.clearTimeout(h.timer)
+    h.timer = window.setTimeout(() => {
+      h.fired = true
+      setChipsOpen(true)
+    }, 420)
+  }
+  function chipsPointerMove(e) {
+    const h = chipHold.current
+    if (h.timer && Math.hypot(e.clientX - h.x, e.clientY - h.y) > 8) {
+      window.clearTimeout(h.timer)
+      h.timer = 0
+    }
+  }
+  function chipsPointerEnd() {
+    window.clearTimeout(chipHold.current.timer)
+    chipHold.current.timer = 0
+  }
 
   useEffect(() => {
     onRowPageChange?.(Boolean(openRow))
@@ -462,15 +506,46 @@ export default function ProductRows({
         {error && <p role="alert">{error}</p>}
         {savedError && <p role="alert">{savedError}</p>}
         {!marketItems.length && status !== 'error' && <p role="status">{status === 'loading' ? 'Loading products...' : 'No Market products found.'}</p>}
-        <div className="market-chips" role="tablist" aria-label="Market filters">
-          {ALL_CHIPS.map((c) => (
+        <div
+          ref={chipsRef}
+          className={`market-chips${chipsOpen ? ' is-open' : ''}`}
+          role="tablist"
+          aria-label="Market filters"
+          onPointerDown={chipsPointerDown}
+          onPointerMove={chipsPointerMove}
+          onPointerUp={chipsPointerEnd}
+          onPointerCancel={chipsPointerEnd}
+          onContextMenu={(e) => e.preventDefault()}
+        >
+          {chipsOpen && (
+            <input
+              className="market-chips-search"
+              type="search"
+              autoFocus
+              placeholder="Search"
+              aria-label="Search filters"
+              value={chipQuery}
+              onChange={(e) => setChipQuery(e.target.value)}
+            />
+          )}
+          {(chipsOpen && chipQuery.trim()
+            ? ALL_CHIPS.filter((c) => c.label.toLowerCase().includes(chipQuery.trim().toLowerCase()))
+            : ALL_CHIPS
+          ).map((c) => (
             <button
               key={c.id}
               type="button"
               role="tab"
               aria-selected={chip === c.id}
               className={`market-chip${chip === c.id ? ' is-active' : ''}`}
-              onClick={() => setChip(c.id)}
+              onClick={() => {
+                if (chipHold.current.fired) {
+                  chipHold.current.fired = false
+                  return
+                }
+                setChip(c.id)
+                setChipsOpen(false)
+              }}
             >
               {c.label}
             </button>

@@ -3768,3 +3768,39 @@ html body .market-chips .market-chip.is-active {
   html body .market-product-feed .market-chips { padding: 3px; margin: 0 0 18px; gap: 0; }
   html body .market-product-feed .market-chips .market-chip { height: 40px; padding: 0 18px; }
 }
+
+/* Hold the filter pill: it grows downward with a search field on top and every filter below */
+html body .market-chips { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
+html body .market-chips.is-open {
+  flex-wrap: wrap;
+  align-content: flex-start;
+  width: calc(100% - 32px);
+  max-height: min(62vh, 520px);
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 8px;
+  gap: 2px 0;
+  border-radius: 26px;
+  animation: market-chips-open 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+  transform-origin: top center;
+}
+@keyframes market-chips-open {
+  from { max-height: 44px; opacity: 0.9; }
+  to { max-height: min(62vh, 520px); opacity: 1; }
+}
+html body .market-chips .market-chips-search {
+  flex: 0 0 100%;
+  height: 40px;
+  margin: 0 0 6px;
+  padding: 0 16px;
+  box-sizing: border-box;
+  border-radius: 999px;
+  border: 1px solid light-dark(rgba(0, 0, 0, 0.3), rgba(255, 255, 255, 0.12));
+  background: light-dark(rgba(0, 0, 0, 0.05), rgba(255, 255, 255, 0.06));
+  color: var(--ink, light-dark(#000, #fff));
+  font: 500 16px var(--font-sans);
+  outline: none;
+  user-select: text;
+  -webkit-user-select: text;
+}
+html body .market-chips.is-open .market-chip { flex: 0 0 auto; }
