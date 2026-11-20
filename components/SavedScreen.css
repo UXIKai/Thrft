@@ -1605,3 +1605,9 @@ html body .saved-view-tabs.is-select-on .saved-fab-btn.is-danger .saved-select-c
   font-size: 14px;
   color: inherit;
 }
+
+/* Empty select: a clean centred circle */
+html body .saved-view-tabs.is-select-on .saved-fab .saved-fab-items { width: 100%; gap: 0; justify-content: center; }
+html body .saved-view-tabs.is-select-on .saved-fab .saved-fab-item.saved-fab-item:first-child { width: 100%; }
+html body .saved-view-tabs.is-select-on .saved-fab-btn.is-danger { width: 100%; height: 100%; padding: 0; }
+html body .saved-view-tabs.is-select-on .saved-fab-btn.is-danger svg { width: 20px; height: 20px; flex: 0 0 auto; }
