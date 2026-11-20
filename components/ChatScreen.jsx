@@ -1731,6 +1731,48 @@ export default function ChatScreen({
 
   useEffect(() => () => window.clearTimeout(longPressRef.current.timer), [])
 
+  // Finger still down from the hold: glide over actions to highlight, release to choose
+  useEffect(() => {
+    if (!menuId || !menuPos?.context || menuPos.dropdown) return undefined
+    let glide = true
+    let hot = null
+    const setHot = (el) => {
+      if (hot === el) return
+      hot?.classList.remove('is-hot')
+      hot = el
+      if (el) {
+        el.classList.add('is-hot')
+        navigator.vibrate?.(5)
+      }
+    }
+    const onMove = (e) => {
+      if (!glide) return
+      setHot(document.elementFromPoint(e.clientX, e.clientY)?.closest('.chat-hold-action') || null)
+    }
+    const onUp = () => {
+      const el = hot
+      setHot(null)
+      if (glide && el) el.click()
+      glide = false
+    }
+    const onCancel = () => { setHot(null); glide = false }
+    const onDown = () => { glide = false; setHot(null) }
+    const onTouchMove = (e) => { if (glide && e.cancelable) e.preventDefault() }
+    window.addEventListener('pointermove', onMove)
+    window.addEventListener('pointerup', onUp)
+    window.addEventListener('pointercancel', onCancel)
+    window.addEventListener('pointerdown', onDown)
+    window.addEventListener('touchmove', onTouchMove, { passive: false })
+    return () => {
+      setHot(null)
+      window.removeEventListener('pointermove', onMove)
+      window.removeEventListener('pointerup', onUp)
+      window.removeEventListener('pointercancel', onCancel)
+      window.removeEventListener('pointerdown', onDown)
+      window.removeEventListener('touchmove', onTouchMove)
+    }
+  }, [menuId, menuPos])
+
   function cancelRowPress() {
     window.clearTimeout(longPressRef.current.timer)
   }
