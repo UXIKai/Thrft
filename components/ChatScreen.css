@@ -6029,3 +6029,7 @@ html body .chat-new-card .chat-new-field:has(:focus-visible) {
 }
 html body .chat-new-card .chat-new-field:has(input[inputmode='search'])::before { display: none !important; }
 html body .chat-new-card .chat-new-field input[inputmode='search'] { padding-left: 0 !important; }
+
+html body .chat-screen.is-desktop:not(.is-sidebar-collapsed)::before {
+  background: var(--container-bg, light-dark(rgba(70, 70, 70, 0.8), rgba(0, 0, 0, 0.8))) !important;
+}
