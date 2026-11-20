@@ -1614,3 +1614,12 @@ html body .saved-view-tabs.is-select-on .saved-fab-btn.is-danger svg { width: 20
 
 /* Number first, then the minus */
 html body .saved-view-tabs.is-select-on .saved-fab-btn.is-danger .saved-select-count { order: -1; }
+html body .saved-view-tabs.is-select-on .saved-fab-btn.is-danger .saved-select-count {
+  display: grid;
+  place-items: center;
+  height: 20px;
+  line-height: 20px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+html body .saved-view-tabs.is-select-on .saved-fab-btn.is-danger { gap: 6px; }
