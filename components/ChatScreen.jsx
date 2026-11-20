@@ -614,6 +614,18 @@ export default function ChatScreen({
   const [peopleSearchOpen, setPeopleSearchOpen] = useState(false)
   const searchBarRef = useRef(null)
   const topHold = useRef({ timer: 0, x: 0, y: 0, fired: false })
+  const [holdSide, setHoldSide] = useState(null)
+  const [holdDown, setHoldDown] = useState(false)
+  useEffect(() => {
+    if (!holdDown) return undefined
+    const up = () => { setHoldDown(false); setHoldSide(null) }
+    window.addEventListener('pointerup', up)
+    window.addEventListener('pointercancel', up)
+    return () => {
+      window.removeEventListener('pointerup', up)
+      window.removeEventListener('pointercancel', up)
+    }
+  }, [holdDown])
   function openPeopleSearch(side) {
     setRequestsView(false)
     setActiveChatId(null)
@@ -3411,7 +3423,7 @@ export default function ChatScreen({
           </button>
           {!composer && !imagesOnly && (
             <div
-              className={`chat-top-switch${peopleSearchOpen ? ' is-searching' : ''}`}
+              className={`chat-top-switch${peopleSearchOpen ? ' is-searching' : ''}${holdDown ? ' is-holding' : ''}`}
               role="tablist"
               aria-label="Chat sections"
               onPointerDown={(e) => {
@@ -3422,14 +3434,19 @@ export default function ChatScreen({
                 h.fired = false
                 const side = e.target.closest?.('[data-side]')?.dataset.side
                 window.clearTimeout(h.timer)
-                h.timer = window.setTimeout(() => { h.fired = true; openPeopleSearch(side) }, 420)
+                setHoldSide(side || null)
+                h.timer = window.setTimeout(() => {
+                  h.fired = true
+                  setHoldDown(true)
+                  openPeopleSearch(side)
+                }, 420)
               }}
               onPointerMove={(e) => {
                 const h = topHold.current
-                if (h.timer && Math.hypot(e.clientX - h.x, e.clientY - h.y) > 8) { window.clearTimeout(h.timer); h.timer = 0 }
+                if (h.timer && Math.hypot(e.clientX - h.x, e.clientY - h.y) > 8) { window.clearTimeout(h.timer); h.timer = 0; setHoldSide(null) }
               }}
-              onPointerUp={() => { window.clearTimeout(topHold.current.timer); topHold.current.timer = 0 }}
-              onPointerCancel={() => { window.clearTimeout(topHold.current.timer); topHold.current.timer = 0 }}
+              onPointerUp={() => { window.clearTimeout(topHold.current.timer); topHold.current.timer = 0; if (!topHold.current.fired) setHoldSide(null) }}
+              onPointerCancel={() => { window.clearTimeout(topHold.current.timer); topHold.current.timer = 0; setHoldSide(null) }}
               onContextMenu={(e) => e.preventDefault()}
               onClickCapture={(e) => {
                 if (topHold.current.fired) { topHold.current.fired = false; e.stopPropagation(); e.preventDefault() }
@@ -3451,8 +3468,8 @@ export default function ChatScreen({
                 />
               ) : (
                 <>
-              <button type="button" role="tab" data-side="chats" aria-selected={!friendsClicked && !requestsView} className={`chat-top-pill is-bare${!friendsClicked && !requestsView ? ' is-active' : ''}`} onClick={() => { setRequestsView(false); setFriendsClicked(false); setActiveChatId(null) }}>Chats</button>
-              <button type="button" role="tab" data-side="friends" aria-selected={friendsClicked && !requestsView} className={`chat-top-pill is-bare${friendsClicked && !requestsView ? ' is-active' : ''}`} onClick={() => { setRequestsView(false); setActiveChatId(null); setFriendsClicked(true) }}>Friends</button>
+              <button type="button" role="tab" data-side="chats" aria-selected={!friendsClicked && !requestsView} className={`chat-top-pill is-bare${(holdSide ? holdSide === 'chats' : !friendsClicked && !requestsView) ? ' is-active' : ''}`} onClick={() => { setRequestsView(false); setFriendsClicked(false); setActiveChatId(null) }}>Chats</button>
+              <button type="button" role="tab" data-side="friends" aria-selected={friendsClicked && !requestsView} className={`chat-top-pill is-bare${(holdSide ? holdSide === 'friends' : friendsClicked && !requestsView) ? ' is-active' : ''}`} onClick={() => { setRequestsView(false); setActiveChatId(null); setFriendsClicked(true) }}>Friends</button>
                 </>
               )}
             </div>

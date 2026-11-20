@@ -5895,3 +5895,17 @@ html body .chat-main-header .chat-top-search {
   user-select: text;
   -webkit-user-select: text;
 }
+
+/* Hold feedback: the highlight slides to the held side, and the new field ignores the still-down finger */
+html body .chat-main-header .chat-top-pill {
+  transition: background-color 0.18s ease, opacity 0.18s ease;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+html body .chat-main-header .chat-top-switch.is-holding .chat-top-search {
+  pointer-events: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+html body .chat-main-header .chat-top-switch { touch-action: manipulation; }
