@@ -1528,3 +1528,7 @@ html body .saved-view-tabs .saved-fab.is-open { width: 112px; }
 html body .saved-view-tabs .saved-fab.is-open.is-selecting { width: 112px; }
 html body .saved-view-tabs .saved-fab .saved-fab-items { left: 0; right: auto; }
 html body .saved-view-tabs .saved-fab .saved-fab-item.saved-fab-item { transform: none; opacity: 1; }
+
+/* The icon of the button that opened something goes away while it's open */
+html body .saved-view-tabs.is-open .saved-view-heart svg,
+html body .saved-view-tabs .saved-fab.is-searching .saved-fab-btn[aria-label="Search liked"] svg { opacity: 0; }
