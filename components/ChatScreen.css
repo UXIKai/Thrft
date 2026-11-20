@@ -5991,3 +5991,21 @@ html body .chat-search-modal .chat-search-modal-list {
   min-height: 0;
   overflow-y: auto;
 }
+@media (min-width: 720px) and (min-height: 500px) {
+  html body .chat-screen.is-sidebar-collapsed > .chat-pins-section {
+    top: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    padding: 12px 10px 12px 12px;
+    background: var(--container-bg);
+    border-right: 1px solid light-dark(rgba(0, 0, 0, 0.12), rgba(255, 255, 255, 0.14));
+  }
+  html body .chat-screen.is-sidebar-collapsed .chat-rail {
+    background: transparent !important;
+    border-right: 0;
+    margin-right: 0;
+    padding-right: 0;
+  }
+}

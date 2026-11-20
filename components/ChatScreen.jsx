@@ -3272,9 +3272,6 @@ export default function ChatScreen({
             <button type="button" className="chat-rail-btn" data-tip="Pinned" aria-label="Pinned" onClick={() => { setPinnedCollapsed(false); setSidebarCollapsed(false) }}>
               <PinIcon className="chat-ico" />
             </button>
-            <button type="button" className="chat-rail-btn" data-tip="Recents" aria-label="Recents" onClick={() => setSidebarCollapsed(false)}>
-              <svg className="chat-ico" viewBox="0 0 24 24" aria-hidden><path d="M12 4.500c-4.400 0-8 3-8 6.800 0 1.700.7 3.200 1.900 4.400L5 19.500l4.200-1.400c.9.300 1.800.4 2.800.4 4.400 0 8-3 8-6.800S16.400 4.500 12 4.500z" fill="none" stroke="currentColor" strokeWidth="1.700" strokeLinejoin="round" /></svg>
-            </button>
             <button type="button" className="chat-rail-btn" data-tip="Images" aria-label="Images" onClick={() => { if (composer) closeComposer(); setImagesOnly(true) }}>
               <GalleryIcon />
             </button>
