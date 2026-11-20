@@ -5805,3 +5805,9 @@ html body .chat-row-wrap.is-pressing {
   60% { opacity: 1; scale: 1.02; }
   100% { opacity: 1; scale: 1; }
 }
+
+@keyframes chat-hold-reveal {
+  from { opacity: 0; scale: 0.94; }
+  to { opacity: 1; scale: 1; }
+}
+html body .chat-hold-stack { animation: chat-hold-reveal 0.28s cubic-bezier(0.22, 1, 0.36, 1) both; }
