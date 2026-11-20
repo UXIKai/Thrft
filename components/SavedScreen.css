@@ -1486,3 +1486,29 @@ html body .saved-brand-cats .saved-brand-cat.is-active { opacity: 1; background:
     gap: 24px 20px;
   }
 }
+
+/* Search opens inside the pill: the field grows out between the heart and the close ×; the × is the + rotated */
+.saved-pill-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+  width: 0;
+  padding: 0;
+  overflow: hidden;
+  opacity: 0;
+  color: light-dark(#111, #fff);
+  transition: width 0.32s cubic-bezier(0.2, 0.8, 0.2, 1), padding 0.32s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.2s ease;
+}
+.saved-pill-search.is-open { width: min(52vw, 220px); padding: 0 6px 0 8px; opacity: 1; }
+.saved-pill-search .saved-dock-ico { width: 16px; height: 16px; flex: 0 0 auto; }
+.saved-pill-search input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+}
+html body .saved-view-tabs .saved-fab.is-searching .saved-fab-toggle svg { transform: rotate(135deg); }
