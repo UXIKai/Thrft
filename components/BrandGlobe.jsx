@@ -575,6 +575,7 @@ function BrandGlobeView({
   searchPlusLabel = 'Add',
   /** Replace the full-width bar with round search + plus buttons; search reveals the bar. */
   dockButtons = false,
+  onDockBarClose = null,
   /** Tight ring around the seat — group-chat members globe. */
   compact = false,
   /** Type / small lists — stay near the seat; expand only as items grow. */
@@ -1796,7 +1797,7 @@ function BrandGlobeView({
               onClick={(event) => {
                 event.stopPropagation()
                 setDockPlusSpin(true)
-                window.setTimeout(() => { setDockPlusSpin(false); onSearchPlus?.() }, 240)
+                window.setTimeout(() => { setDockPlusSpin(false); onSearchPlus?.(); setDockSearchOpen(true) }, 240)
               }}>
               <span className={`brand-globe-dock-spin${dockPlusSpin ? ' is-spun' : ''}`}><GlobePlusIcon /></span>
             </button>
@@ -1816,11 +1817,12 @@ function BrandGlobeView({
                   event.stopPropagation()
                   if (dockButtons) {
                     onSearchChange('')
+                    onDockBarClose?.()
                     setDockSearchOpen(false)
                   } else onClose?.()
                 }}
               >
-                {typeof onSearchConfirm === 'function' ? (
+                {typeof onSearchConfirm === 'function' && !dockButtons ? (
                   <GlobePeopleIcon />
                 ) : (
                   <GlobeBackIcon />
