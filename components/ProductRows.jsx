@@ -368,6 +368,7 @@ export default function ProductRows({
     h.timer = window.setTimeout(() => {
       h.fired = true
       setChipHoldDown(true)
+      chipProxyRef.current?.setAttribute('inputmode', 'search')
       setChipsOpen(true)
     }, 420)
   }
@@ -376,13 +377,13 @@ export default function ProductRows({
     if (h.timer && Math.hypot(e.clientX - h.x, e.clientY - h.y) > 8) {
       window.clearTimeout(h.timer)
       h.timer = 0
-      chipProxyRef.current?.blur()
+      chipProxyRef.current?.blur(); chipProxyRef.current?.setAttribute('inputmode', 'none')
     }
   }
   function chipsPointerEnd() {
     window.clearTimeout(chipHold.current.timer)
     chipHold.current.timer = 0
-    if (!chipHold.current.fired) chipProxyRef.current?.blur()
+    if (!chipHold.current.fired) chipProxyRef.current?.blur(); chipProxyRef.current?.setAttribute('inputmode', 'none')
   }
 
   useEffect(() => {
@@ -533,7 +534,7 @@ export default function ProductRows({
           onPointerCancel={chipsPointerEnd}
           onContextMenu={(e) => e.preventDefault()}
         >
-          <input ref={chipProxyRef} className="hold-focus-proxy" type="text" inputMode="search" aria-hidden="true" tabIndex={-1} readOnly={false} autoComplete="off" autoCorrect="off" />
+          <input ref={chipProxyRef} className="hold-focus-proxy" type="text" inputMode="none" aria-hidden="true" tabIndex={-1} readOnly={false} autoComplete="off" autoCorrect="off" />
           {chipsOpen && (
             <input
               className="market-chips-search"

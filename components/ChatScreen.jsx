@@ -3440,21 +3440,22 @@ export default function ChatScreen({
                 h.timer = window.setTimeout(() => {
                   h.fired = true
                   setHoldDown(true)
+                  topProxyRef.current?.setAttribute('inputmode', 'search')
                   openPeopleSearch(side)
                 }, 420)
               }}
               onPointerMove={(e) => {
                 const h = topHold.current
-                if (h.timer && Math.hypot(e.clientX - h.x, e.clientY - h.y) > 8) { window.clearTimeout(h.timer); h.timer = 0; setHoldSide(null); topProxyRef.current?.blur() }
+                if (h.timer && Math.hypot(e.clientX - h.x, e.clientY - h.y) > 8) { window.clearTimeout(h.timer); h.timer = 0; setHoldSide(null); topProxyRef.current?.blur(); topProxyRef.current?.setAttribute('inputmode', 'none') }
               }}
-              onPointerUp={() => { window.clearTimeout(topHold.current.timer); topHold.current.timer = 0; if (!topHold.current.fired) { setHoldSide(null); topProxyRef.current?.blur() } }}
-              onPointerCancel={() => { window.clearTimeout(topHold.current.timer); topHold.current.timer = 0; setHoldSide(null); topProxyRef.current?.blur() }}
+              onPointerUp={() => { window.clearTimeout(topHold.current.timer); topHold.current.timer = 0; if (!topHold.current.fired) { setHoldSide(null); topProxyRef.current?.blur(); topProxyRef.current?.setAttribute('inputmode', 'none') } }}
+              onPointerCancel={() => { window.clearTimeout(topHold.current.timer); topHold.current.timer = 0; setHoldSide(null); topProxyRef.current?.blur(); topProxyRef.current?.setAttribute('inputmode', 'none') }}
               onContextMenu={(e) => e.preventDefault()}
               onClickCapture={(e) => {
                 if (topHold.current.fired) { topHold.current.fired = false; e.stopPropagation(); e.preventDefault() }
               }}
             >
-              <input ref={topProxyRef} className="hold-focus-proxy" type="text" inputMode="search" aria-hidden="true" tabIndex={-1} readOnly={false} autoComplete="off" autoCorrect="off" />
+              <input ref={topProxyRef} className="hold-focus-proxy" type="text" inputMode="none" aria-hidden="true" tabIndex={-1} readOnly={false} autoComplete="off" autoCorrect="off" />
               {peopleSearchOpen ? (
                 <input
                   id="chat-people-search"
