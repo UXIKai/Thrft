@@ -1651,17 +1651,29 @@ html body .saved-empty-msg { width: 100%; box-sizing: border-box; align-self: ce
 html body .saved-empty-msg { white-space: nowrap; text-align: center; }
 
 html body .saved-photos-card {
-  width: 100%; box-sizing: border-box; margin: 16px 0 0; padding: 10px;
-  border-radius: 22px; height: auto;
-  background: color-mix(in srgb, var(--page-bg) 50%, transparent);
-  -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px);
+  flex: 1 1 auto; min-height: 0; overflow-y: auto; box-sizing: border-box;
+  margin: 16px -16px 0; padding: 0 0 120px; width: auto; border-radius: 0;
+  background: none; -webkit-backdrop-filter: none; backdrop-filter: none;
 }
-html body .saved-photos-card .saved-photos-grid { margin-top: 0; width: 100%; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
-html body .saved-photo-btn { display: block; padding: 0; border: 0; border-radius: 12px; overflow: hidden; background: none; cursor: pointer; min-width: 0; }
-html body .saved-photo-btn img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
+html body .saved-photos-card .saved-photos-grid { margin-top: 0; width: 100%; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2px; }
+html body .saved-photo-btn { display: block; padding: 0; border: 0; border-radius: 0; overflow: hidden; background: none; cursor: pointer; min-width: 0; }
+html body .saved-photo-btn img { width: 100%; aspect-ratio: 1 / 1.02; object-fit: cover; display: block; }
 @media (min-width: 720px) { html body .saved-photos-card .saved-photos-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
-.saved-photo-lightbox {
-  position: fixed; inset: 0; z-index: 90; display: grid; place-items: center; padding: 20px;
-  background: rgba(0, 0, 0, 0.85);
+.saved-post {
+  position: fixed; inset: 0; z-index: 90; display: flex; flex-direction: column;
+  background: var(--page-bg); color: #fff;
 }
-.saved-photo-lightbox img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 14px; }
+.saved-post-top {
+  position: relative; display: flex; align-items: center; justify-content: center;
+  padding: calc(max(8px, env(safe-area-inset-top, 0px)) + 8px) 16px 12px;
+}
+.saved-post-top h2 { margin: 0; font-size: 17px; font-weight: 700; }
+html body .saved-post-back {
+  position: absolute; left: 16px; bottom: 4px; width: 44px; height: 44px; border-radius: 50%;
+  display: grid; place-items: center; padding: 0; border: 0; color: #fff;
+  background: rgba(255, 255, 255, 0.12);
+}
+.saved-post-back svg { width: 24px; height: 24px; }
+.saved-post-scroll { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
+.saved-post-img { width: 100%; max-height: 70vh; object-fit: contain; display: block; margin-top: 14px; }
+.saved-post-actions { display: flex; padding: 14px 16px; }

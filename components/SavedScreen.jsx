@@ -923,8 +923,19 @@ export default function SavedScreen({
         </div>
       )}
       {photoOpen && (
-        <div className="saved-photo-lightbox" role="dialog" aria-modal="true" onClick={() => setPhotoOpen(null)}>
-          <img src={photoOpen} alt="" />
+        <div className="saved-post" role="dialog" aria-modal="true" aria-label="Post">
+          <div className="saved-post-top">
+            <button type="button" className="saved-post-back is-bare" aria-label="Back" onClick={() => setPhotoOpen(null)}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 5l-7 7 7 7" /></svg>
+            </button>
+            <h2>Post</h2>
+          </div>
+          <div className="saved-post-scroll">
+            <img className="saved-post-img" src={photoOpen} alt="" />
+            <div className="saved-post-actions">
+              <svg viewBox="0 0 24 24" width="30" height="30" fill="#ff3040" aria-label="Liked"><path d="M12 21s-8.5-5.2-8.5-11.2A4.8 4.8 0 0 1 12 7a4.8 4.8 0 0 1 8.5 2.8C20.5 15.8 12 21 12 21z" /></svg>
+            </div>
+          </div>
         </div>
       )}
       <div className="saved-grid is-products market-product-grid" hidden={likedView !== 'products'}>
