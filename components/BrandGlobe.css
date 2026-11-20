@@ -948,3 +948,15 @@ html body .brand-globe-dock-actions .brand-globe-dock-round {
   animation: brand-globe-capsule-grow 0.34s cubic-bezier(0.22, 1, 0.36, 1) both;
   overflow: hidden;
 }
+
+/* Type / category globes: 80% opaque background with the live page effect showing through the middle circle */
+html body .brand-globe.is-dock:not(.is-color-picker):not(.is-brand-picker) .brand-globe-scrim {
+  background: var(--container-bg);
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, transparent min(58px, 15.8vw), #000 min(59px, 16vw));
+  mask-image: radial-gradient(circle at 50% 50%, transparent min(58px, 15.8vw), #000 min(59px, 16vw));
+}
+
+html body .brand-globe.is-dock:not(.is-color-picker):not(.is-brand-picker) .brand-globe-center-hole,
+html body .brand-globe.is-dock:not(.is-color-picker):not(.is-brand-picker) .brand-globe-stage.is-choosing .brand-globe-center-hole {
+  background: transparent;
+}
