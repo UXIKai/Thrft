@@ -971,9 +971,9 @@ html body .brand-globe.is-dock:not(.is-color-picker) .brand-globe-stage.is-choos
   --hole-hue: rgb(var(--atmosphere-effect-b-rgb, var(--bg-color-rgb, 120, 120, 120)));
   background: radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0.8) 62%, rgba(0, 0, 0, 0.97) 100%);
   box-shadow:
-    0 0 0 1px color-mix(in srgb, var(--hole-hue) 85%, transparent),
-    0 0 8px 2px color-mix(in srgb, var(--hole-hue) 55%, transparent),
-    0 0 28px 9px color-mix(in srgb, var(--hole-hue) 22%, transparent),
+    0 0 0 1px color-mix(in srgb, var(--hole-hue) 45%, transparent),
+    0 0 6px 1px color-mix(in srgb, var(--hole-hue) 25%, transparent),
+    0 0 20px 5px color-mix(in srgb, var(--hole-hue) 10%, transparent),
     0 0 70px 26px rgba(0, 0, 0, 0.55),
     inset 0 0 22px 6px rgba(0, 0, 0, 0.9);
 }
@@ -982,12 +982,13 @@ html body .brand-globe.is-dock:not(.is-color-picker) .brand-globe-stage.is-choos
 html body .brand-globe.is-dock:not(.is-color-picker) .brand-globe-center-hole::before {
   content: '';
   position: absolute;
-  inset: -30%;
+  inset: -12%;
   border-radius: 50%;
   background: conic-gradient(from 200deg, color-mix(in srgb, rgb(var(--atmosphere-effect-b-rgb, var(--bg-color-rgb, 120, 120, 120))) 20%, transparent), color-mix(in srgb, rgb(var(--atmosphere-effect-b-rgb, var(--bg-color-rgb, 120, 120, 120))) 70%, transparent) 25%, color-mix(in srgb, rgb(var(--atmosphere-effect-b-rgb, var(--bg-color-rgb, 120, 120, 120))) 15%, transparent) 50%, color-mix(in srgb, rgb(var(--atmosphere-effect-b-rgb, var(--bg-color-rgb, 120, 120, 120))) 50%, transparent) 80%, color-mix(in srgb, rgb(var(--atmosphere-effect-b-rgb, var(--bg-color-rgb, 120, 120, 120))) 20%, transparent));
-  -webkit-mask-image: radial-gradient(circle, transparent 60%, #000 66%, transparent 74%);
-  mask-image: radial-gradient(circle, transparent 60%, #000 66%, transparent 74%);
-  filter: blur(1.5px);
+  -webkit-mask-image: radial-gradient(circle, transparent 82%, #000 86%, transparent 90%);
+  mask-image: radial-gradient(circle, transparent 82%, #000 86%, transparent 90%);
+  filter: blur(1px);
+  opacity: 0.45;
   pointer-events: none;
 }
 
