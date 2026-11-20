@@ -3641,7 +3641,7 @@ export default function ChatScreen({
                 </section>
               )
             })()}
-          <div className="chat-hold-menu" role="menu" aria-label="Chat actions">
+          <div className="chat-hold-menu" role="menu" aria-label="Chat actions" hidden={!menuPos.dropdown}>
             {(() => {
               const chat = chats.find((row) => row.id === menuId)
               if (!chat) return null
