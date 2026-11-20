@@ -1623,3 +1623,23 @@ html body .saved-view-tabs.is-select-on .saved-fab-btn.is-danger .saved-select-c
   font-variant-numeric: tabular-nums;
 }
 html body .saved-view-tabs.is-select-on .saved-fab-btn.is-danger { gap: 6px; }
+
+/* Select mode: an x marker on the top-left corner of each product */
+html body .market-card { position: relative; }
+html body .market-card-x {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  z-index: 3;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: light-dark(#111, #fff);
+  background: var(--page-bg);
+  border: 1px solid light-dark(rgba(0, 0, 0, 0.3), rgba(255, 255, 255, 0.25));
+  pointer-events: none;
+}
+html body .market-card-x svg { width: 12px; height: 12px; }
+html body .market-card.is-selected .market-card-x { color: #fff; background: #e5484d; border-color: #e5484d; }

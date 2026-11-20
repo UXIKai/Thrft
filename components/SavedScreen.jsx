@@ -938,6 +938,11 @@ export default function SavedScreen({
                     onClick={() => (selectMode ? toggleSelected(`item-${item.id}`) : onOpenProduct?.(item))}
                     aria-label={item.title || item.brandName || 'Saved item'}
                   >
+                    {selectMode ? (
+                      <span className="market-card-x" aria-hidden>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M6 6l12 12M18 6L6 18" /></svg>
+                      </span>
+                    ) : null}
                     <span className="market-card-photo" aria-hidden>
                       {showPhoto ? <ProductPhoto src={photo} cutout={hasProductCutout(item)}
                         alt="" loading="lazy" draggable="false" /> : null}
