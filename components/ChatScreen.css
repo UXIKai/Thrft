@@ -5835,3 +5835,11 @@ html body .chat-row-wrap.is-menu-open:focus-within { background: transparent; }
 html body .chat-row-wrap.is-menu-open .chat-row,
 html body .chat-row-wrap.is-menu-open .chat-row:focus,
 html body .chat-row-wrap.is-menu-open .chat-row:active { background: transparent; outline: none; box-shadow: none; }
+
+html body .chat-friends-tab-group .chat-friends-tab {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  white-space: nowrap;
+}
