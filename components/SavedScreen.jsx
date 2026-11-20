@@ -368,6 +368,15 @@ export default function SavedScreen({
   const [brandsOpen, setBrandsOpen] = useState(true)
   const [likedView, setLikedView] = useState('products') // products | brands | photos
   const [likedTabsOpen, setLikedTabsOpen] = useState(false)
+  useEffect(() => {
+    if (!likedTabsOpen) return undefined
+    const dismiss = (event) => {
+      if (event.target.closest?.('.saved-view-tabs')) return
+      setLikedTabsOpen(false)
+    }
+    document.addEventListener('pointerdown', dismiss, true)
+    return () => document.removeEventListener('pointerdown', dismiss, true)
+  }, [likedTabsOpen])
   const likedPhotos = useMemo(() => {
     if (likedView !== 'photos') return []
     try { return JSON.parse(localStorage.getItem('thrft-profile-flags') || '{}').likes || [] } catch { return [] }
@@ -735,7 +744,7 @@ export default function SavedScreen({
                   tabIndex={likedTabsOpen ? 0 : -1}
                   aria-selected={likedView === id}
                   className={`saved-view-tab is-bare${likedView === id ? ' is-on' : ''}`}
-                  onClick={() => { setLikedView(id); setLikedTabsOpen(false) }}
+                  onClick={() => setLikedView(id)}
                 >
                   {label}
                 </button>
