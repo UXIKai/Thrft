@@ -889,3 +889,33 @@ html body .brand-globe:is(.is-color-picker, .is-brand-picker) > .brand-globe-col
 html body .stage .brand-globe:is(.is-color-picker, .is-brand-picker) :is(.atmosphere-flow, .atmosphere-phantom, .atmosphere-smoke) {
   display: block;
 }
+
+.brand-globe-dock-actions {
+  position: absolute;
+  left: 50%;
+  bottom: calc(14px + max(env(safe-area-inset-bottom, 0px), var(--kb-height, 0px)));
+  transform: translateX(-50%);
+  display: flex;
+  gap: 18px;
+  z-index: 30;
+  pointer-events: auto;
+}
+
+html body .brand-globe-dock-actions .brand-globe-dock-round {
+  box-sizing: border-box;
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  padding: 0;
+  border-radius: 50%;
+  border: 1.5px solid light-dark(#111, #fff);
+  background: var(--container-bg) !important;
+  color: light-dark(#111, #fff);
+  cursor: pointer;
+}
+
+.brand-globe-dock-round svg {
+  width: 22px;
+  height: 22px;
+}

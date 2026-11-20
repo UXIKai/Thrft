@@ -573,6 +573,8 @@ function BrandGlobeView({
   /** Right-side + — same chrome as Chat / Favorites dock. */
   onSearchPlus = null,
   searchPlusLabel = 'Add',
+  /** Replace the full-width bar with round search + plus buttons; search reveals the bar. */
+  dockButtons = false,
   /** Tight ring around the seat — group-chat members globe. */
   compact = false,
   /** Type / small lists — stay near the seat; expand only as items grow. */
@@ -591,6 +593,7 @@ function BrandGlobeView({
   const [searchStageSize, setSearchStageSize] = useState(null)
   const centerInputRef = useRef(null)
   const searchPointerRef = useRef(false)
+  const [dockSearchOpen, setDockSearchOpen] = useState(false)
   const centerSearchAvailable = showBrandLogos && typeof onSearchChange === 'function'
 
   function openCenterSearch() {
@@ -1243,7 +1246,7 @@ function BrandGlobeView({
     )
     const inStage = stageRef.current?.contains(event.target)
     if (!inStage && !searchInput) return
-    if (event.target?.closest?.('.brand-globe-search-row, .brand-globe-search') && !searchInput)
+    if (event.target?.closest?.('.brand-globe-search-row, .brand-globe-search, .brand-globe-dock-actions') && !searchInput)
       return
     searchPointerRef.current = Boolean(searchInput)
     if (searchInput) {
@@ -1407,7 +1410,7 @@ function BrandGlobeView({
         onClose?.()
         return
       }
-      if (event.type !== 'pointercancel' && !movedRef.current && !searchPointerRef.current && !event.target?.closest?.('.brand-globe-search-row, .brand-globe-brand-back, .brand-globe-close')) {
+      if (event.type !== 'pointercancel' && !movedRef.current && !searchPointerRef.current && !event.target?.closest?.('.brand-globe-search-row, .brand-globe-dock-actions, .brand-globe-brand-back, .brand-globe-close')) {
         const rect = stageRef.current?.getBoundingClientRect()
         const slots = slotsRef.current
         if (rect && slots.length) {
@@ -1780,6 +1783,19 @@ function BrandGlobeView({
           >
             <GlobeBackIcon />
           </button>
+        ) : typeof onSearchChange === 'function' && dockButtons && !dockSearchOpen ? (
+          <div className="brand-globe-dock-actions">
+            <button type="button" className="brand-globe-dock-round" aria-label="Search"
+              onClick={(event) => { event.stopPropagation(); setDockSearchOpen(true) }}>
+              <svg viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <circle cx="10.5" cy="10.5" r="6" /><path d="m15 15 5 5" />
+              </svg>
+            </button>
+            <button type="button" className="brand-globe-dock-round" aria-label={searchPlusLabel}
+              onClick={(event) => { event.stopPropagation(); onSearchPlus?.() }}>
+              <GlobePlusIcon />
+            </button>
+          </div>
         ) : typeof onSearchChange === 'function' ? (
           <div
             className={`brand-globe-search-row${
@@ -1793,7 +1809,10 @@ function BrandGlobeView({
                 aria-label="Back"
                 onClick={(event) => {
                   event.stopPropagation()
-                  onClose?.()
+                  if (dockButtons) {
+                    onSearchChange('')
+                    setDockSearchOpen(false)
+                  } else onClose?.()
                 }}
               >
                 {typeof onSearchConfirm === 'function' ? (

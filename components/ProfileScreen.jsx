@@ -2845,6 +2845,12 @@ export default function ProfileScreen({
             searchValue={closetGlobeQuery}
             onSearchChange={setClosetGlobeQuery}
             searchPlaceholder=""
+            dockButtons
+            searchPlusLabel="Add to closet by product number"
+            onSearchPlus={() => {
+              setClosetGlobePhase('exit')
+              setClosetLookupOpen(true)
+            }}
             onSelect={(id) => {
               if (closetGlobe === 'type') setClosetType(id)
               else setClosetBrand(id)
