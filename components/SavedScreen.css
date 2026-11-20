@@ -1643,3 +1643,5 @@ html body .market-card-x {
 }
 html body .market-card-x svg { width: 12px; height: 12px; }
 html body .market-card.is-selected .market-card-x { color: #fff; background: #e5484d; border-color: #e5484d; }
+
+html body .saved-empty-msg { text-align: center; margin: 40px auto 0; max-width: 100%; }

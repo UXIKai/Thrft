@@ -922,7 +922,7 @@ export default function SavedScreen({
       <div className="saved-grid is-products market-product-grid" hidden={likedView !== 'products'}>
         {savedLoading && <p role="status">Loading saved products...</p>}
         {savedError && <p role="alert">{savedError}</p>}
-        {!savedLoading && !savedError && !visibleItems.length && <p role="status">No saved products yet.</p>}
+        {!savedLoading && !savedError && !visibleItems.length && <p role="status" className="saved-empty-msg">No saved products yet.</p>}
         {visibleItems.map((item) => {
               const photo =
                 item.photoUrl || item.imageUrl || item.image_url || ''
