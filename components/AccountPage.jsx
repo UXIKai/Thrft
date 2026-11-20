@@ -38,6 +38,7 @@ export default function AccountPage({
   const [products, setProducts] = useState([])
   const [followBusy, setFollowBusy] = useState(false)
   const [followSheet, setFollowSheet] = useState(null)
+  const [section, setSection] = useState('store')
 
   useEffect(() => {
     setStageEl(document.querySelector('.stage'))
@@ -192,8 +193,12 @@ export default function AccountPage({
                 onClose={() => setFollowSheet(null)} onOpenAccount={onOpenAccount} />
             )}
 
-            <h2 className="account-page-section-label">Store</h2>
-            {products.length === 0 ? (
+            <div className="account-page-sections" role="tablist" aria-label="Sections">
+              {[['store', 'Store'], ['market', 'Market'], ['photos', 'Photos']].map(([id, label]) => (
+                <button key={id} type="button" role="tab" aria-selected={section === id} className={`account-page-section-btn is-bare${section === id ? ' is-active' : ''}`} onClick={() => setSection(id)}>{label}</button>
+              ))}
+            </div>
+            {section !== 'store' ? null : products.length === 0 ? (
               <p className="account-page-muted">
                 {isOwn ? 'Post a product from Create (+).' : 'No products yet.'}
               </p>
