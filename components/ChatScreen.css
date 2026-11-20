@@ -5971,3 +5971,6 @@ html body .chat-new-card .chat-new-field .chat-new-input {
   appearance: none;
 }
 html body .chat-new-card .chat-new-field input[inputmode='search'] { padding-left: 42px !important; }
+html body .chat-new-card .chat-new-field {
+  background: var(--container-bg, light-dark(rgba(70, 70, 70, 0.8), rgba(0, 0, 0, 0.8))) !important;
+}
