@@ -6080,3 +6080,11 @@ html body .chat-images-gallery .chat-images-card {
   width: 100%; max-width: none; height: 100%; max-height: none; box-sizing: border-box;
   border-radius: 0; padding: 18px 16px 120px; animation: none;
 }
+
+/* Mobile new chat fills the screen */
+html body .chat-screen:not(.is-desktop) .chat-new-screen.is-overlay,
+html body .stage .chat-new-screen.is-overlay { padding: 0; place-items: stretch; }
+html body .chat-new-screen.is-overlay .chat-new-card {
+  width: 100%; max-width: none; height: 100%; max-height: none; margin: 0; box-sizing: border-box;
+  border-radius: 0; border: 0; padding: calc(max(8px, env(safe-area-inset-top, 0px)) + 56px) 16px 96px;
+}
