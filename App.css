@@ -2111,12 +2111,6 @@ html body .tab-bar.is-pressed .tab-pill::before {
   --tab-height-reduction: -5px;
 }
 
-@media (min-width: 720px) {
-  .tab-bar {
-    --tab-extra-width: 18px;
-    --tab-height-reduction: 30px;
-  }
-}
 
 .tab-bar .tab-icon,
 .tab-bar .tab-lens-item .tab-icon {
@@ -2400,11 +2394,6 @@ html body .tab-bar .tab-lens-inner {
   left: calc((var(--tab-i, 0) * 19.08% + 1.04%) * -4.63);
 }
 
-/* Desktop bar hugs the pill like Instagram: same proportions as the phone bar, just smaller */
-@media (min-width: 720px) {
-  html body .stage > .tab-bar { width: min(300px, calc(100% - 6px)); }
-}
-
 /* Pages that cover the nav (checkout, product, pickers) must not let hover bring it back */
 html body .stage.is-nav-autohide.is-nav-near.is-overlay-open .tab-bar,
 html body .stage.is-nav-autohide.is-nav-near.is-product-open .tab-bar,
@@ -2414,21 +2403,6 @@ html body .stage.is-nav-autohide.is-nav-near.is-home-search-open .tab-bar {
   opacity: 0;
   pointer-events: none;
   visibility: hidden;
-}
-
-/* Desktop nav: dark glass with a faint rim like Instagram, no bright white highlight */
-@media (min-width: 720px) {
-  html body .stage > .tab-bar,
-  html:not([data-moonlight='on']) body .stage > .tab-bar {
-    background: light-dark(rgba(255, 255, 255, 0.8), rgba(18, 19, 22, 0.8)) !important;
-    background-image: none !important;
-    border: 1px solid light-dark(rgba(0, 0, 0, 0.06), rgba(255, 255, 255, 0.07)) !important;
-    box-shadow: 0 4px 14px light-dark(rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.25)) !important;
-    backdrop-filter: blur(20px) saturate(140%) !important;
-    -webkit-backdrop-filter: blur(20px) saturate(140%) !important;
-  }
-  html body .stage > .tab-bar::before,
-  html body .stage > .tab-bar::after { content: none !important; display: none !important; }
 }
 
 /* Light glass bar with a clear selection lens. */
@@ -2939,14 +2913,6 @@ html body .home-radial .home-radial-btn:active {
     height: 46px;
     padding: 0 22px;
     font-size: 1rem;
-  }
-  html body .stage > .tab-bar,
-  html:not([data-moonlight='on']) body .stage > .tab-bar {
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-    background: light-dark(#fff, #000) !important;
-    border: 1px solid var(--glass-border) !important;
-    box-shadow: none !important;
   }
 }
 @media (hover: hover) {
@@ -3485,15 +3451,9 @@ html body .stage .home-radial .home-radial-btn:not(#_):not(#_):not(#_) {
 
 /* Desktop: bigger nav bar, smaller toggle above it, Settings in the window's corner */
 @media (min-width: 900px) {
-  html body .stage > .tab-bar.tab-bar:not(#_) { scale: 1.5; transform-origin: 0 100%; }
   html body .stage > .nav-toggle:not(#_),
   html body .home-scroll:not(.is-home-idle) .wordmark-wrap > .home-segment-slider:not(#_) {
     scale: 1;
-    bottom: calc(var(--nav-bottom) + 108px);
-  }
-  html body .stage.is-nav-hidden > .nav-toggle:not(#_),
-  html body .stage.is-nav-hidden .home-scroll:not(.is-home-idle) .wordmark-wrap > .home-segment-slider:not(#_) {
-    bottom: calc(var(--nav-bottom) - 4px);
   }
   html body .stage > .nav-toggle:active:not(#_) { scale: 0.88; }
   .app-column.is-profile-wide { width: 100%; }
