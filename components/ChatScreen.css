@@ -5935,3 +5935,39 @@ html body .chat-new-card .chat-new-bottom {
 html body .chat-new-card .chat-new-bottom .chat-new-tabs { grid-column: 2; }
 html body .chat-new-card .chat-new-bottom .chat-new-back:first-child { grid-column: 1; justify-self: start; }
 html body .chat-new-card .chat-new-bottom .chat-new-tabs ~ .chat-new-back { grid-column: 3; justify-self: end; }
+html body .chat-new-card .chat-new-field {
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  box-shadow: none !important;
+  outline: none !important;
+}
+html body .chat-new-card .chat-new-field,
+html body .chat-new-card .chat-new-field:focus-within,
+html body .chat-new-card .chat-new-field:has(:focus),
+html body .chat-new-card .chat-new-field:has(:focus-visible) {
+  border-color: rgba(255, 255, 255, 0.14) !important;
+}
+html body .chat-new-card .chat-new-field:has(input[inputmode='search'])::before {
+  content: '';
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  width: 16px;
+  height: 16px;
+  transform: translateY(-50%);
+  opacity: 0.7;
+  pointer-events: none;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='10.5' cy='10.5' r='6'/%3E%3Cpath d='m15 15 5 5'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='10.5' cy='10.5' r='6'/%3E%3Cpath d='m15 15 5 5'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+html body .chat-new-card .chat-new-field .chat-new-input {
+  text-align: left !important;
+  padding-left: 18px !important;
+  -webkit-appearance: none;
+  appearance: none;
+}
+html body .chat-new-card .chat-new-field input[inputmode='search'] { padding-left: 42px !important; }
