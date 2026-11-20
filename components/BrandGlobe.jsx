@@ -1523,7 +1523,7 @@ function BrandGlobeView({
     onSelect?.(brand.id)
   }
 
-  const lensed = isDock && !previewColors && !showBrandLogos
+  const lensed = isDock && !previewColors
   const seatTint = previewColors && focusBrand?.id ? colorHex(focusBrand.id) : null
   const previewScheme = seatTint ? colorSchemeForHex(seatTint) : null
   const originStyle = {

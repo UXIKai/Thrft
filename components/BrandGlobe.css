@@ -950,14 +950,14 @@ html body .brand-globe-dock-actions .brand-globe-dock-round {
 }
 
 /* Type / category globes: 80% opaque background with the live page effect showing through the middle circle */
-html body .brand-globe.is-dock:not(.is-color-picker):not(.is-brand-picker) .brand-globe-scrim {
+html body .brand-globe.is-dock:not(.is-color-picker) .brand-globe-scrim {
   background: var(--container-bg);
   -webkit-mask-image: radial-gradient(circle at 50% 50%, transparent min(58px, 15.8vw), #000 min(59px, 16vw));
   mask-image: radial-gradient(circle at 50% 50%, transparent min(58px, 15.8vw), #000 min(59px, 16vw));
 }
 
-html body .brand-globe.is-dock:not(.is-color-picker):not(.is-brand-picker) .brand-globe-center-hole,
-html body .brand-globe.is-dock:not(.is-color-picker):not(.is-brand-picker) .brand-globe-stage.is-choosing .brand-globe-center-hole {
+html body .brand-globe.is-dock:not(.is-color-picker) .brand-globe-center-hole,
+html body .brand-globe.is-dock:not(.is-color-picker) .brand-globe-stage.is-choosing .brand-globe-center-hole {
   background: transparent;
 }
 
@@ -966,8 +966,8 @@ html body .brand-globe.is-dock:not(.is-color-picker):not(.is-brand-picker) .bran
   to { transform: rotate(360deg); }
 }
 
-html body .brand-globe.is-dock:not(.is-color-picker):not(.is-brand-picker) .brand-globe-center-hole,
-html body .brand-globe.is-dock:not(.is-color-picker):not(.is-brand-picker) .brand-globe-stage.is-choosing .brand-globe-center-hole {
+html body .brand-globe.is-dock:not(.is-color-picker) .brand-globe-center-hole,
+html body .brand-globe.is-dock:not(.is-color-picker) .brand-globe-stage.is-choosing .brand-globe-center-hole {
   --hole-hue: rgb(var(--atmosphere-effect-b-rgb, var(--bg-color-rgb, 120, 120, 120)));
   background: radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0.8) 62%, rgba(0, 0, 0, 0.97) 100%);
   box-shadow:
@@ -979,7 +979,7 @@ html body .brand-globe.is-dock:not(.is-color-picker):not(.is-brand-picker) .bran
 }
 
 /* Lensed echo of the background bent into a faint ring just outside the shadow */
-html body .brand-globe.is-dock:not(.is-color-picker):not(.is-brand-picker) .brand-globe-center-hole::before {
+html body .brand-globe.is-dock:not(.is-color-picker) .brand-globe-center-hole::before {
   content: '';
   position: absolute;
   inset: -30%;
@@ -989,4 +989,9 @@ html body .brand-globe.is-dock:not(.is-color-picker):not(.is-brand-picker) .bran
   mask-image: radial-gradient(circle, transparent 60%, #000 66%, transparent 74%);
   filter: blur(1.5px);
   pointer-events: none;
+}
+
+html body .brand-globe.is-dock.is-brand-picker .brand-globe-stage:not(.has-focus) .brand-globe-focus {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.8);
 }
