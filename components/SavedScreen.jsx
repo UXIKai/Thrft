@@ -765,6 +765,7 @@ export default function SavedScreen({
                 e.currentTarget.blur()
                 setFabOpen(false)
                 if (searchOpen) { setSearchOpen(false); setQuery(''); return }
+                setLikedTabsOpen(false)
                 setSearchOpen(true)
                 window.setTimeout(() => document.getElementById('saved-search-input')?.focus({ preventScroll: true }), 0)
               }}
@@ -784,6 +785,7 @@ export default function SavedScreen({
               e.currentTarget.blur()
               setSelectMode(true)
               setSelectedKeys([])
+              setLikedTabsOpen(false)
               setSearchOpen(false)
               setQuery('')
             }}
@@ -805,6 +807,9 @@ export default function SavedScreen({
             onClick={(e) => {
               e.currentTarget.blur()
               setFabOpen(false)
+              setLikedTabsOpen(false)
+              setSearchOpen(false)
+              setQuery('')
               openGlobe()
             }}
           >
