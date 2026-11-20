@@ -5858,3 +5858,9 @@ html body .chat-screen .chat-friends-panel,
 html body .chat-screen .chat-rail {
   background: var(--container-bg) !important;
 }
+
+/* Inside a chat: bubbles and compose bar at 80% opacity */
+html body .chat-screen .chat-thread-bubble:not(.is-image),
+html body .chat-screen .chat-compose-box {
+  background: var(--container-bg) !important;
+}
