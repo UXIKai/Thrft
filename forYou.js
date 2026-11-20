@@ -271,6 +271,7 @@ export function buildPersonalizedRows({
       id: theme.id,
       name: theme.name,
       category: theme.category,
+      brandId: theme.brandId,
       products: ranked,
     }
   })

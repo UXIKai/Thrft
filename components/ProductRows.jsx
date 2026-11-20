@@ -248,9 +248,17 @@ function CrawlRow({ row, rowIndex, onOpenProduct, onHoldRow, market = false, lik
 }
 
 /** Full page for one Store brand, with each live listing shown once. */
-function StoreRowPage({ row, onBack, onOpenProduct }) {
+function StoreRowPage({ row, onBack, onOpenProduct, favoredBrands = [], onFavoredBrandsChange }) {
   const ref = useRef(null)
   const products = [...new Map((row.products || []).map((product) => [product.id, product])).values()]
+  const brandId = row.brandId || products[0]?.brandId || ''
+  const liked = Boolean(brandId) && favoredBrands.map(String).includes(String(brandId))
+  const showCategory = row.category && !/^(from your|for you|liked brand)/i.test(row.category)
+  function toggleBrandLike() {
+    if (!brandId || !onFavoredBrandsChange) return
+    const rest = favoredBrands.filter((id) => String(id) !== String(brandId))
+    onFavoredBrandsChange(liked ? rest : [brandId, ...rest])
+  }
   useLayoutEffect(() => {
     const page = ref.current?.closest('.home-scroll')
     if (page) page.scrollTop = 0
@@ -268,9 +276,13 @@ function StoreRowPage({ row, onBack, onOpenProduct }) {
         <div className="store-row-page-title">
           {products[0]?.brandLogoUrl && <img className="store-row-page-logo" src={products[0].brandLogoUrl} alt="" />}
           <h2>{row.name}</h2>
-          {row.category ? <p>{row.category}</p> : null}
+          {showCategory ? <p>{row.category}</p> : null}
         </div>
-        <span className="store-row-page-spacer" aria-hidden />
+        {brandId ? (
+          <button type="button" className={`store-row-page-heart is-bare${liked ? ' is-on' : ''}`} aria-pressed={liked} aria-label={liked ? 'Remove from favorite brands' : 'Add to favorite brands'} onClick={toggleBrandLike}>
+            <svg viewBox="0 0 24 24" aria-hidden><path d="M12 20.5s-7.5-4.6-7.5-10A4.4 4.4 0 0 1 12 7.8a4.4 4.4 0 0 1 7.5 2.7c0 5.4-7.5 10-7.5 10Z" fill={liked ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" /></svg>
+          </button>
+        ) : <span className="store-row-page-spacer" aria-hidden />}
       </header>
       <div className="store-row-list">
         {Array.from({ length: Math.ceil(products.length / 5) }, (_, i) => products.slice(i * 5, i * 5 + 5)).map((chunk, i) => (
@@ -299,6 +311,7 @@ export default function ProductRows({
   forYouRefresh = 0,
   feedRefresh = 0,
   favoredBrands = [],
+  onFavoredBrandsChange,
   clothingSizes = {},
   brandSizes = {},
   savedProductIds = [],
@@ -481,7 +494,7 @@ export default function ProductRows({
   }
 
   if (openRow) {
-    return <StoreRowPage row={openRow} onBack={() => setOpenRow(null)} onOpenProduct={onOpenProduct} />
+    return <StoreRowPage row={openRow} onBack={() => setOpenRow(null)} onOpenProduct={onOpenProduct} favoredBrands={favoredBrands} onFavoredBrandsChange={onFavoredBrandsChange} />
   }
 
   if (status === 'loading' && !rows.length) {

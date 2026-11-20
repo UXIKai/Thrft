@@ -741,6 +741,7 @@ export default function App() {
               forYouRefresh={forYouRefresh}
               feedRefresh={feedRefresh}
               favoredBrands={userProfile?.favoredBrands || []}
+              onFavoredBrandsChange={(next) => handleSaveProfile({ favoredBrands: next })}
               clothingSizes={userProfile?.clothingSizes || {}}
               brandSizes={userProfile?.brandSizes || {}}
               savedProductIds={userProfile?.savedProductIds || []}

@@ -3719,3 +3719,6 @@ html body .stage.is-settings-peek > .tab-bar.tab-bar.tab-bar:not(.is-collapsed) 
     aspect-ratio: 118 / 142;
   }
 }
+
+html body .store-row-page-heart { width: 40px; height: 40px; display: grid; place-items: center; padding: 0; border: 0; background: none; box-shadow: none; color: var(--ink); }
+html body .store-row-page-heart svg { width: 22px; height: 22px; }
