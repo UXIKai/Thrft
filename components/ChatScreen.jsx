@@ -3550,6 +3550,7 @@ export default function ChatScreen({
           {isDesktop && newChatPanel ? (
             <div className="chat-new-screen">{newChatPanel}</div>
           ) : imagesOnly ? (
+            isDesktop ? (
             <div className="chat-images-gallery">
             <div className="chat-images-card">
               <h2 className="chat-images-title">Images <span className="chat-images-count">{allChatImages.length}</span></h2>
@@ -3568,6 +3569,28 @@ export default function ChatScreen({
               ) : null}
             </div>
             </div>
+            ) : (
+              <StageSlot>
+            <div className="chat-images-gallery is-fullscreen">
+            <div className="chat-images-card">
+              <h2 className="chat-images-title">Images <span className="chat-images-count">{allChatImages.length}</span></h2>
+              {allChatImages.length ? (
+                <div className="chat-images-grid">
+                  {allChatImages.map((m) => (
+                    <img
+                      key={`${m.chatId}-${m.id}`}
+                      className="chat-images-item"
+                      src={m.imageUrl}
+                      alt={m.fileName || 'Photo'}
+                      loading="lazy"
+                    />
+                  ))}
+                </div>
+              ) : null}
+            </div>
+            </div>
+              </StageSlot>
+            )
           ) : requestsView && !activeChat ? (
             <div className="chat-friends-empty">
               <nav className="chat-friends-tabs" aria-label="Message requests">

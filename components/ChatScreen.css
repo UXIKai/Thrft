@@ -6102,3 +6102,7 @@ html body .chat-new-card .chat-new-field { justify-content: center; }
 html body .chat-new-card .chat-new-field .chat-new-input,
 html body .chat-new-card .chat-new-field input[inputmode='search'] { text-align: center !important; padding-left: 0 !important; padding-right: 0 !important; }
 html body .chat-new-card .chat-new-field .chat-new-input::placeholder { text-align: center; }
+
+html body .stage > .chat-images-gallery.is-fullscreen,
+html body .chat-images-gallery.is-fullscreen { position: fixed; inset: 0; z-index: 0; height: auto; width: auto; padding: 0; }
+html body .chat-images-gallery.is-fullscreen .chat-images-card { background: color-mix(in srgb, var(--page-bg) 50%, transparent); }
