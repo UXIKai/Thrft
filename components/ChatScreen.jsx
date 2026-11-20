@@ -3504,8 +3504,11 @@ export default function ChatScreen({
                 />
               ) : (
                 <>
-              <button type="button" role="tab" data-side="chats" hidden={requestsView} aria-selected={!friendsClicked && !requestsView} className={`chat-top-pill is-bare${(holdSide ? holdSide === 'chats' : !friendsClicked && !requestsView) ? ' is-active' : ''}`} onClick={() => { setRequestsView(false); setFriendsClicked(false); setActiveChatId(null) }}>Chats</button>
-              <button type="button" role="tab" data-side="friends" hidden={requestsView} aria-selected={friendsClicked && !requestsView} className={`chat-top-pill is-bare${(holdSide ? holdSide === 'friends' : friendsClicked && !requestsView) ? ' is-active' : ''}`} onClick={() => { setRequestsView(false); setActiveChatId(null); setFriendsClicked(true) }}>Friends</button>
+              <button type="button" role="tab" data-side="chats" hidden={requestsView && !isDesktop} aria-selected={!friendsClicked && !requestsView} className={`chat-top-pill is-bare${(holdSide ? holdSide === 'chats' : !friendsClicked && !requestsView) ? ' is-active' : ''}`} onClick={() => { setRequestsView(false); setFriendsClicked(false); setActiveChatId(null) }}>Chats</button>
+              <button type="button" role="tab" data-side="friends" hidden={requestsView && !isDesktop} aria-selected={friendsClicked && !requestsView} className={`chat-top-pill is-bare${(holdSide ? holdSide === 'friends' : friendsClicked && !requestsView) ? ' is-active' : ''}`} onClick={() => { setRequestsView(false); setActiveChatId(null); setFriendsClicked(true) }}>Friends</button>
+                  {requestsView && !isDesktop && [['requests', 'Requests'], ['spam', 'Spam']].map(([id, label]) => (
+                    <button key={id} type="button" role="tab" aria-selected={requestsTab === id} className={`chat-top-pill is-bare${requestsTab === id ? ' is-active' : ''}`} onClick={() => setRequestsTab(id)}>{label}</button>
+                  ))}
                 </>
               )}
             </div>
