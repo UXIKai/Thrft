@@ -3284,7 +3284,9 @@ export default function ChatScreen({
         className="chat-section chat-list-section"
         aria-label="Chats"
         onClick={(e) => {
-          if (!isDesktop && e.target.closest('.chat-list-quick-btn, .chat-row')) setMobileNavOpen(false)
+          if (!e.target.closest('.chat-list-quick-btn, .chat-row')) return
+          if (isDesktop) setSidebarCollapsed(true)
+          else setMobileNavOpen(false)
         }}
       >
         <nav className="chat-list-quick" aria-label="Quick actions">
