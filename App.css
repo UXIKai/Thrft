@@ -3722,3 +3722,9 @@ html body .stage.is-settings-peek > .tab-bar.tab-bar.tab-bar:not(.is-collapsed) 
 
 html body .store-row-page-heart { width: 40px; height: 40px; display: grid; place-items: center; padding: 0; border: 0; background: none; box-shadow: none; color: var(--ink); }
 html body .store-row-page-heart svg { width: 22px; height: 22px; }
+
+/* Floating containers: 80% opaque */
+html body .stage > .tab-bar.tab-bar.tab-bar { background: var(--container-bg) !important; }
+html body .saved-view-tabs.saved-view-tabs { background: var(--container-bg); }
+html body .chat-menu { background: color-mix(in srgb, light-dark(#e9e9e9, #2f2f2f) 80%, transparent); }
+html body .chat-hold-stack .chat-hold-menu { background: color-mix(in srgb, light-dark(#e9e9e9, #232326) 80%, transparent); }
