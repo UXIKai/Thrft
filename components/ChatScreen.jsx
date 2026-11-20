@@ -3701,27 +3701,9 @@ export default function ChatScreen({
                   <div className="chat-hold-frame" aria-hidden>
                     <div className="atmosphere chat-page-atmosphere"><AtmosphereFlow /></div>
                     <div className="chat-thread">
-                      <header className="chat-thread-top">
-                        <span className="chat-top-btn"><BackIcon /></span>
-                        <span className="chat-thread-heading" />
-                        <span className="chat-top-btn" />
-                      </header>
-                      <div className="chat-thread-hero">
-                        <span className="chat-thread-avatar">
-                          <PersonAvatar className="person-avatar-fill" username={chat.kind === 'dm' ? usernameForName(chat.title) : ''} initials={chat.initials} />
-                        </span>
-                        <span className="chat-thread-name">{chat.title}</span>
-                      </div>
                       <div className="chat-thread-scroll">
                         <div className="chat-thread-body">
                           {chat.messages.length ? chat.messages.map(renderBubble) : <p className="chat-thread-empty">Message {chat.title}</p>}
-                        </div>
-                      </div>
-                      <div className="chat-compose">
-                        <div className="chat-compose-box">
-                          <span className="chat-compose-plus"><PlusIcon /></span>
-                          <span className="chat-compose-input" />
-                          <span className="chat-compose-send"><SendIcon /></span>
                         </div>
                       </div>
                     </div>
