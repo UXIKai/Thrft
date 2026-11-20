@@ -1072,6 +1072,7 @@ export default function ChatScreen({
     setCreateTab('people')
     setCreateQuery('')
     setComposer({ mode: 'create' })
+    setSearchOpen(false)
     setMenuId(null)
     setMenuPos(null)
     setQuery('')
@@ -3225,7 +3226,7 @@ export default function ChatScreen({
             aria-expanded={searchOpen}
             onClick={() => {
               setMobileNavOpen(false)
-              flushSync(() => setSearchOpen(true))
+              flushSync(() => { if (composer?.mode === 'create') closeComposer(); setSearchOpen(true) })
               document.getElementById('chat-search-input')?.focus({ preventScroll: true })
             }}
           >
@@ -3262,7 +3263,7 @@ export default function ChatScreen({
               data-tip="Search"
               aria-label="Search"
               onClick={() => {
-                flushSync(() => setSearchOpen(true))
+                flushSync(() => { if (composer?.mode === 'create') closeComposer(); setSearchOpen(true) })
                 document.getElementById('chat-search-input')?.focus({ preventScroll: true })
               }}
             >
