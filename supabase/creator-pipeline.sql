@@ -101,3 +101,43 @@ as $$
 $$;
 revoke all on function public.claim_creator_fulfillment(text) from public, anon, authenticated;
 grant execute on function public.claim_creator_fulfillment(text) to service_role;
+
+-- Prepaid UPS labels for sold Market items, keyed by listing ID (one entry per seller item).
+alter table public.creator_checkout_orders
+  add column if not exists market_labels jsonb not null default '{}'::jsonb;
+
+-- Reserves a label slot so a double tap cannot buy two labels. Stale reservations expire after 2 minutes.
+create or replace function public.reserve_market_label(order_id uuid, product_key text)
+returns boolean
+language plpgsql security definer set search_path = public
+as $$
+declare reserved integer;
+begin
+  update public.creator_checkout_orders o
+  set market_labels = o.market_labels || jsonb_build_object(product_key,
+    jsonb_build_object('pendingSince', now()))
+  where o.id = order_id
+    and (not o.market_labels ? product_key
+      or (not (o.market_labels -> product_key) ? 'labelUrl'
+        and coalesce((o.market_labels -> product_key ->> 'pendingSince')::timestamptz, now() - interval '1 day')
+          < now() - interval '2 minutes'));
+  get diagnostics reserved = row_count;
+  return reserved > 0;
+end;
+$$;
+
+-- Saves a purchased label, or clears the reservation when label is null.
+create or replace function public.set_market_label(order_id uuid, product_key text, label jsonb)
+returns void
+language sql security definer set search_path = public
+as $$
+  update public.creator_checkout_orders o
+  set market_labels = case when label is null then o.market_labels - product_key
+    else o.market_labels || jsonb_build_object(product_key, label) end
+  where o.id = order_id;
+$$;
+
+revoke all on function public.reserve_market_label(uuid, text) from public, anon, authenticated;
+revoke all on function public.set_market_label(uuid, text, jsonb) from public, anon, authenticated;
+grant execute on function public.reserve_market_label(uuid, text) to service_role;
+grant execute on function public.set_market_label(uuid, text, jsonb) to service_role;

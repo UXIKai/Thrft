@@ -145,7 +145,8 @@ function fixture() {
         : json({ error: { message: 'Order not found' } }, 404)
       if (url.pathname === '/orders/9001' && method === 'GET') return json({ result: draft })
       if (url.pathname === '/orders' && method === 'POST') {
-        draft = { id: 9001, status: 'draft', external_id: body.external_id }
+        draft = { id: 9001, status: url.searchParams.get('confirm') === 'true' ? 'pending' : 'draft',
+          external_id: body.external_id }
         return json({ result: draft })
       }
     }
@@ -345,6 +346,7 @@ test('paid Market orders retain the Stripe delivery address and reject multiple 
   assert.equal(order.items[0].source, 'market')
   assert.equal(order.recipient.address1, '1 Test Road')
   assert.equal(order.payment_status, 'paid')
+  assert.equal(f.tables.listings[0].status, 'sold')
 })
 
 test('member pages exist without products and report real follow relationships', async () => {
@@ -465,7 +467,7 @@ test('owned artwork → mockups → published product → trusted checkout → o
   assert.equal((await request('/api/webhooks/stripe', { method: 'POST', ...paid, token: null })).status, 200)
   const orders = f.calls.filter((call) => call.url.pathname === '/orders')
   assert.equal(orders.length, 1)
-  assert.equal(orders[0].url.searchParams.get('confirm'), 'false')
+  assert.equal(orders[0].url.searchParams.get('confirm'), 'true')
   assert.equal(orders[0].body.recipient.zip, '90001')
   assert.deepEqual(orders[0].body.items, [{ variant_id: 4011, quantity: 2,
     files: [{ type: 'front', url: artwork }] }])

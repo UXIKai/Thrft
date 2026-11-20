@@ -4,7 +4,7 @@
  */
 import { createHmac, timingSafeEqual } from 'node:crypto'
 import { checkoutStore } from './server/supabaseStore.js'
-import { createOrder, getOrder, getShippingRates } from './printful.js'
+import { createOrder, getOrder, getShippingRates, confirmOrder } from './printful.js'
 import { storedPrintfulVariants } from './creatorProducts.js'
 import { resolveExternalItems, externalShipping } from './server/externalCheckout.js'
 import { syncExternalShopifyOrders } from './server/shopifySync.js'
@@ -253,7 +253,7 @@ function recipientFromSession(session) {
 }
 
 export async function fulfillPaidCheckout(session, {
-  store = checkoutStore, printful = { createOrder, getOrder }, shopifySync = syncExternalShopifyOrders,
+  store = checkoutStore, printful = { createOrder, getOrder, confirmOrder }, shopifySync = syncExternalShopifyOrders,
 } = {}) {
   if (session.payment_status !== 'paid') return { fulfilled: false, paymentStatus: session.payment_status }
   const saved = await store.getOrder(session.id)
@@ -262,6 +262,10 @@ export async function fulfillPaidCheckout(session, {
       session.metadata?.customerId !== saved.creator_customer_id) {
     fail('Paid checkout does not match its saved order', 409)
   }
+  // Reserve one-of-a-kind resale listings the moment payment lands so nobody else can buy them.
+  const marketIds = [...new Set(saved.items.filter((item) => item.source === 'market' && item.productId)
+    .map((item) => item.productId))]
+  if (marketIds.length) await store.markListingsSold(marketIds)
   if (saved.items.some((item) => item.externalBrandId)) {
     // Recording payment triggers the atomic, unique per-brand payout ledger.
     const paid = await store.updateOrder(session.id, {
@@ -300,7 +304,7 @@ export async function fulfillPaidCheckout(session, {
     }
     if (!draft) {
       draft = await printful.createOrder({
-        externalId, confirm: false, shipping: order.shipping_rate?.id,
+        externalId, confirm: true, shipping: order.shipping_rate?.id,
         recipient: order.recipient ? { ...order.recipient, email: session.customer_details?.email || '' }
           : recipientFromSession(session),
         items: printable.map((item) => ({
@@ -309,7 +313,9 @@ export async function fulfillPaidCheckout(session, {
         })),
       })
     }
-    if (!draft.id) throw new Error('Printful did not return a draft order ID')
+    if (!draft.id) throw new Error('Printful did not return an order ID')
+    // A draft left over from an earlier unconfirmed submission still has to be sent for fulfillment.
+    if (draft.status === 'draft' && printful.confirmOrder) draft = await printful.confirmOrder(draft.id)
     return await store.updateOrder(session.id, {
       payment_status: 'paid', fulfillment_status: 'draft', printful_order_id: draft.id,
       recipient: order.recipient || recipientFromSession(session),

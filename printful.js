@@ -80,10 +80,10 @@ export const estimateOrderCosts = ({ recipient, items }) =>
   printful('/orders/estimate-costs', { method: 'POST', body: { recipient, items } })
 
 /**
- * Create an order. Pass `confirm: true` to submit it for fulfillment immediately;
- * otherwise it stays a draft.
+ * Create an order. Orders are confirmed (submitted for fulfillment) immediately;
+ * pass `confirm: false` to leave one as a draft.
  */
-export const createOrder = ({ recipient, items, externalId, shipping, confirm = false }) =>
+export const createOrder = ({ recipient, items, externalId, shipping, confirm = true }) =>
   printful('/orders', {
     method: 'POST',
     body: { external_id: externalId, recipient, items, ...(shipping ? { shipping } : {}) },

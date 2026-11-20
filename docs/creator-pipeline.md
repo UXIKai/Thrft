@@ -4,7 +4,7 @@
 
 The browser uses `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY`.
 The API uses `SUPABASE_SERVICE_ROLE_KEY`, `PRINTFUL_API_TOKEN`, and
-`STRIPE_SECRET_KEY`. Never prefix server secrets with `VITE_`.
+`STRIPE_SECRET_KEY` (plus `SHIPPO_API_KEY` for Market UPS labels). Never prefix server secrets with `VITE_`.
 
 1. Run `supabase/creator-pipeline.sql` in the Supabase SQL Editor. The public
    **Thrft** bucket and its Storage SELECT/INSERT policies do not create these
@@ -206,11 +206,30 @@ service. Ordinary, non-Printful items retain their existing checkout behavior;
 mixed carts quote Printful shipping only for printable items, plus each external
 brand's flat shipping rate.
 
-Only a verified **paid** Stripe session creates a Printful order with
-`confirm=false`. It remains a **draft**: no automatic Printful confirmation or
-production charge. Mixed carts include only printable items in the Printful
-draft. Manufacturing costs are not added separately; creators must account for
-them in retail pricing and review/confirm drafts before Printful can ship.
+Only a verified **paid** Stripe session creates a Printful order, with
+`confirm=true`, so it is submitted for fulfillment automatically and Printful
+charges your account for production and shipping. `fulfillment_status` stays
+`draft` until a shipment arrives. A leftover unconfirmed draft from an earlier
+attempt is confirmed on retry. Mixed carts include only printable items.
+Manufacturing costs are not added separately; creators must account for them in
+retail pricing.
+
+Market resale listings are one-of-a-kind: the moment a paid Stripe session is
+verified (`checkout.session.completed` or `async_payment_succeeded`), each
+Market listing in it is set to `sold`, so it disappears from the feed and cannot
+be bought again.
+
+### Market UPS labels (Shippo)
+
+Set the server-only `SHIPPO_API_KEY` and rerun `supabase/creator-pipeline.sql`
+and `supabase/orders.sql` (adds `market_labels` plus the `reserve_market_label`
+and `set_market_label` functions). `POST /api/shipping/create-ups-label` (seller
+auth) takes `{ orderId, itemIndex, fromAddress, parcel: { weightLb } }`, buys the
+cheapest domestic UPS service (Ground preferred) through Shippo with the buyer's
+Stripe delivery address, and stores the tracking number, label PDF URL, and
+tracking link in `creator_checkout_orders.market_labels[listingId]`. The seller
+sees it under Settings → Orders → Sales. Labels are billed to your Shippo
+account; a reservation prevents double purchases. US addresses only.
 
 Verified `package_shipped` events update `fulfillment_status` to
 `partially_shipped` or `shipped` and save `tracking_number`, `tracking_url`, and

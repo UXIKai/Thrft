@@ -10,6 +10,7 @@ import { createCheckoutSession, estimateCheckout, getCheckoutSession, handleStri
 import { searchPublicAccounts, fetchPublicAccount, setFollowing, fetchFollowing, listFollows, fetchSocialProfile, saveSocialProfile,
   fetchSocialSaved, saveSocialSaved, fetchLeaderboard } from './socialStore.js'
 import { fetchOrders } from './orders.js'
+import { createUpsLabel } from './shippo.js'
 import { collectExternalProducts } from './externalBrands.js'
 import { fetchPublicHttps, publicHttpsUrl } from './publicHttps.js'
 import { websiteDomain, requireVerifiedDomain, createVerificationChallenge, verifyDomain } from './brandVerification.js'
@@ -152,7 +153,7 @@ async function saveMockupImages(db, task, urls) {
 
 export function isCreatorApiPath(path) {
   return path.startsWith('/api/creator/') || path.startsWith('/api/printful/') ||
-    path.startsWith('/api/checkout/') || path.startsWith('/api/brands/') ||
+    path.startsWith('/api/checkout/') || path.startsWith('/api/brands/') || path.startsWith('/api/shipping/') ||
     ['/api/webhooks/stripe', '/api/webhooks/printful'].includes(path)
 }
 
@@ -251,6 +252,8 @@ export async function handleCreatorApi(req, res) {
       send(res, 200, await importExternalBrand(user, await readBody(req), db))
     } else if (path === '/api/creator/me/orders' && req.method === 'GET') {
       send(res, 200, { items: await fetchOrders(user.id, url.searchParams.get('kind')) })
+    } else if (path === '/api/shipping/create-ups-label' && req.method === 'POST') {
+      send(res, 200, await createUpsLabel(user.id, await readBody(req), { db }))
     } else if (path === '/api/creator/me/profile' && req.method === 'GET') {
       send(res, 200, await fetchSocialProfile(user))
     } else if (path === '/api/creator/me/profile' && req.method === 'PUT') {

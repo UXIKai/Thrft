@@ -1,6 +1,19 @@
 import { getAdminSupabase } from './supabaseStore.js'
 import { getOrder } from '../printful.js'
 
+const httpsOrNull = (value) => (/^https:\/\//i.test(value || '') ? value : null)
+
+function marketLabelFields(row, item) {
+  const label = row.market_labels?.[String(item.productId)]
+  return {
+    labelOrderId: row.order_id, labelItemIndex: row.item_index,
+    upsLabel: label?.labelUrl ? {
+      trackingNumber: label.trackingNumber, labelUrl: httpsOrNull(label.labelUrl),
+      trackingUrl: httpsOrNull(label.trackingUrl), service: label.service || '',
+    } : null,
+  }
+}
+
 export async function fetchOrders(userId, kind, { db = getAdminSupabase(), fetchPrintful = getOrder } = {}) {
   if (!['purchases', 'sales'].includes(kind)) {
     throw Object.assign(new Error('Choose purchases or sales'), { status: 400 })
@@ -68,6 +81,7 @@ export async function fetchOrders(userId, kind, { db = getAdminSupabase(), fetch
       tracking,
       margin: kind === 'sales' && printable && Number.isInteger(item.baseAmount)
         ? (item.unitAmount - item.baseAmount) * item.quantity : null,
+      ...(kind === 'sales' && row.source === 'market' ? marketLabelFields(row, item) : {}),
       ...(kind === 'sales' && item.externalBrandId ? {
         externalOrderId: row.order_id,
         recipient: recipients.get(row.order_id),

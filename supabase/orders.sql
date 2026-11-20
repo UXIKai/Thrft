@@ -7,7 +7,8 @@ select o.id as order_id, o.creator_customer_id as buyer_id, o.created_at,
   coalesce(item.value->>'creatorId', bp.creator_id::text, l.seller_id::text) as seller_id,
   coalesce(item.value->>'source',
     case when bp.id is not null or item.value->>'printfulVariantId' is not null then 'store'
-      when l.id is not null then 'market' else 'unknown' end) as source
+      when l.id is not null then 'market' else 'unknown' end) as source,
+  o.market_labels
 from public.creator_checkout_orders o
 cross join lateral jsonb_array_elements(o.items) with ordinality as item(value, ordinality)
 left join public.brand_products bp on bp.id::text = item.value->>'productId'

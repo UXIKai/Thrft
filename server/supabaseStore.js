@@ -83,6 +83,10 @@ export const checkoutStore = {
     if (patch.fulfillment_status === 'partially_shipped') query = query.neq('fulfillment_status', 'shipped')
     return checked(await query.select().maybeSingle())
   },
+  async markListingsSold(ids) {
+    checked(await getAdminSupabase().from('listings').update({ status: 'sold' })
+      .in('id', ids).eq('status', 'available'))
+  },
   async claimOrder(id) {
     const rows = checked(await getAdminSupabase().rpc('claim_creator_fulfillment', { session_id: id }))
     return rows?.[0] || null
