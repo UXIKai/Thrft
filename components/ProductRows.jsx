@@ -303,11 +303,11 @@ function StoreRowPage({ row, onBack, onOpenProduct, favoredBrands = [], onFavore
  */
 // The first product load is covered by the logo over the chosen background
 let splashClaimed = false
-function LogoSplash() {
+function LogoSplash({ leaving = false }) {
   const stage = document.querySelector('.stage')
   if (!stage) return null
   return createPortal(
-    <div className="logo-splash" role="status" aria-label="Loading">
+    <div className={`logo-splash${leaving ? ' is-leaving' : ''}`} role="status" aria-label="Loading">
       <div className="atmosphere" aria-hidden="true"><AtmosphereFlow /></div>
       <p className="splash-mark">Thrft<span className="splash-dot" aria-hidden="true">●</span></p>
     </div>,
@@ -366,7 +366,23 @@ export default function ProductRows({
     Promise.race([Promise.all(work), limit]).then(() => { if (alive) setPhotosReady(true) })
     return () => { alive = false }
   }, [status, launchSplash, listings])
-  const splashOn = launchSplash && (status === 'loading' || !photosReady)
+  // Splash lasts at least ~3s: logo fades in, holds, then the whole splash fades out
+  const [minDone, setMinDone] = useState(!launchSplash)
+  const [splashLeaving, setSplashLeaving] = useState(false)
+  const [splashGone, setSplashGone] = useState(!launchSplash)
+  useEffect(() => {
+    if (!launchSplash) return undefined
+    const id = setTimeout(() => setMinDone(true), 2400)
+    return () => clearTimeout(id)
+  }, [launchSplash])
+  const splashReady = status !== 'loading' && photosReady && minDone
+  useEffect(() => {
+    if (!launchSplash || !splashReady) return undefined
+    setSplashLeaving(true)
+    const id = setTimeout(() => setSplashGone(true), 600)
+    return () => clearTimeout(id)
+  }, [launchSplash, splashReady])
+  const splashOn = launchSplash && !splashGone
   const [chipsOpen, setChipsOpen] = useState(false)
   const [chipQuery, setChipQuery] = useState('')
   const [chipHoldDown, setChipHoldDown] = useState(false)
@@ -616,7 +632,7 @@ export default function ProductRows({
   if (segment === 'market') {
     return (
       <section className="product-feed market-product-feed" id="home-product-panel" role="tabpanel" aria-labelledby="home-market-tab" aria-busy={status === 'loading'}>
-        {splashOn && <LogoSplash />}
+        {splashOn && <LogoSplash leaving={splashLeaving} />}
         {error && <p role="alert">{error}</p>}
         {savedError && <p role="alert">{savedError}</p>}
         {!marketItems.length && status === 'ready' && <p role="status" className="feed-empty">No Market products found.</p>}
@@ -719,14 +735,14 @@ export default function ProductRows({
   if (status === 'loading' && !rows.length) {
     return (
       <section className="product-feed" id="home-product-panel" role="tabpanel" aria-labelledby={`home-${segment}-tab`} aria-busy="true">
-        {splashOn && <LogoSplash />}
+        {splashOn && <LogoSplash leaving={splashLeaving} />}
       </section>
     )
   }
 
   return (
     <section className="product-feed" id="home-product-panel" role="tabpanel" aria-labelledby={`home-${segment}-tab`}>
-      {splashOn && <LogoSplash />}
+      {splashOn && <LogoSplash leaving={splashLeaving} />}
       {error && <p role="alert">{error}</p>}
       {savedError && <p role="alert">{savedError}</p>}
       {!rows.length && status === 'ready' && <p role="status" className="feed-empty">No Store products found.</p>}
