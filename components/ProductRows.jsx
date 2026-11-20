@@ -320,6 +320,7 @@ function LogoSplash({ leaving = false }) {
 
 export default function ProductRows({
   segment = 'store',
+  prefsReady = true,
   onOpenProduct,
   onRowPageChange,
   clothingType = 'all',
@@ -346,29 +347,8 @@ export default function ProductRows({
   useEffect(() => {
     splashClaimed = true
   }, [])
-  // Hold the splash until the first screenful of photos (and their cutouts) is ready, so everything appears together
   const [photosReady, setPhotosReady] = useState(!launchSplash)
-  useEffect(() => {
-    if (!launchSplash || status === 'loading') return undefined
-    let alive = true
-    const work = (Array.isArray(listings) ? listings : []).slice(0, 30).map((product) => {
-      const src = product.photoUrl || product.image_url
-      if (!src || src === 'placeholder') return Promise.resolve()
-      if (hasProductCutout(product) && !isBypassUrl(src)) {
-        const request = acquireMockupCutout(src)
-        return request.promise.catch(() => {}).finally(() => request.release())
-      }
-      return new Promise((resolve) => {
-        const img = new Image()
-        img.onload = resolve
-        img.onerror = resolve
-        img.src = src
-      })
-    })
-    const limit = new Promise((resolve) => setTimeout(resolve, 5000))
-    Promise.race([Promise.all(work), limit]).then(() => { if (alive) setPhotosReady(true) })
-    return () => { alive = false }
-  }, [status, launchSplash, listings])
+  const [savedLoaded, setSavedLoaded] = useState(false)
   // Splash lasts at least ~1.5s: logo fades in, holds, then the whole splash fades out
   const [minDone, setMinDone] = useState(!launchSplash)
   const [splashLeaving, setSplashLeaving] = useState(false)
@@ -378,7 +358,7 @@ export default function ProductRows({
     const id = setTimeout(() => setMinDone(true), 900)
     return () => clearTimeout(id)
   }, [launchSplash])
-  const splashReady = status !== 'loading' && photosReady && minDone
+  const splashReady = photosReady && minDone
   useEffect(() => {
     if (!launchSplash || !splashReady) return undefined
     setSplashLeaving(true)
@@ -513,11 +493,13 @@ export default function ProductRows({
         if (!alive) return
         setSavedItems(Array.isArray(rows) ? rows : [])
         setSavedError('')
+        setSavedLoaded(true)
       })
       .catch((error) => {
         if (alive) {
           setSavedItems([])
           setSavedError(`Could not load saved products: ${error.message || 'Please try again.'}`)
+          setSavedLoaded(true)
         }
       })
     return () => {
@@ -640,6 +622,37 @@ export default function ProductRows({
     }
     return out
   }, [marketItems])
+
+  useEffect(() => {
+    if (!launchSplash) return undefined
+    const id = setTimeout(() => setPhotosReady(true), 7000)
+    return () => clearTimeout(id)
+  }, [launchSplash])
+  // Hold the splash until the feed's inputs (listings, saved items, profile prefs) are in and the rows that will actually show have their photos, so nothing reorders or pops in afterwards
+  const feedDataReady = status !== 'loading' && savedLoaded && prefsReady
+  useEffect(() => {
+    if (!launchSplash || !feedDataReady) return undefined
+    let alive = true
+    const shown = segment === 'market' ? marketItems : rows.flatMap((row) => row.products || [])
+    const work = shown.slice(0, 30).map((product) => {
+      const src = product.photoUrl || product.image_url
+      if (!src || src === 'placeholder') return Promise.resolve()
+      if (hasProductCutout(product) && !isBypassUrl(src)) {
+        const request = acquireMockupCutout(src)
+        return request.promise.catch(() => {}).finally(() => request.release())
+      }
+      return new Promise((resolve) => {
+        const img = new Image()
+        img.onload = resolve
+        img.onerror = resolve
+        img.src = src
+      })
+    })
+    const limit = new Promise((resolve) => setTimeout(resolve, 5000))
+    Promise.race([Promise.all(work), limit]).then(() => { if (alive) setPhotosReady(true) })
+    return () => { alive = false }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [feedDataReady, launchSplash])
 
   if (segment === 'market') {
     return (

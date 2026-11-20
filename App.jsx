@@ -187,6 +187,7 @@ export default function App() {
   })
   const [savedIds, setSavedIds] = useState([])
   const [preloadedSaved, setPreloadedSaved] = useState(null)
+  const [profileLoaded, setProfileLoaded] = useState(false)
   const [forYouRefresh, setForYouRefresh] = useState(0)
   const [feedRefresh, setFeedRefresh] = useState(0)
   const [cartOpen, setCartOpen] = useState(false)
@@ -471,6 +472,7 @@ export default function App() {
     fetchProfile().then((profile) => {
       if (alive) setUserProfile((prev) => ({ ...prev, ...profile }))
     }).catch((error) => console.error('Could not load member preferences:', error))
+      .finally(() => { if (alive) setProfileLoaded(true) })
     fetchSaved().then((items) => {
       if (!alive) return
       setSavedIds(items.map((item) => item.id))
@@ -740,6 +742,7 @@ export default function App() {
             {homeOpen && homeSegment !== 'leaderboard' && <ProductRows
               key={homeSegment}
               segment={homeSegment}
+              prefsReady={profileLoaded}
               onOpenProduct={handleOpenProduct}
               onRowPageChange={setRowPageOpen}
               clothingType={clothingType}
