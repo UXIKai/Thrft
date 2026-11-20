@@ -743,19 +743,6 @@ export default function SavedScreen({
           <div className={`saved-fab is-open${selectMode ? ' is-selecting' : ''}${searchOpen ? ' is-searching' : ''}`}>
         <div className="saved-fab-items">
         <div className="saved-fab-item" style={{ '--i': 0 }}>
-          {selectMode ? (
-            <button
-              type="button"
-              className="saved-fab-btn is-danger"
-              aria-label="Delete selected"
-              disabled={!selectedKeys.length || savingSaved}
-              tabIndex={0}
-              onClick={(e) => { e.currentTarget.blur(); deleteSelected() }}
-            >
-              <FilterTrashIcon />
-              {selectedKeys.length > 0 ? <span className="saved-select-count">{selectedKeys.length}</span> : null}
-            </button>
-          ) : (
             <button
               type="button"
               className="saved-fab-btn"
@@ -773,7 +760,6 @@ export default function SavedScreen({
             >
               <SearchIcon />
             </button>
-          )}
         </div>
         <div className="saved-fab-item" style={{ '--i': 1 }}>
           <button
@@ -817,6 +803,21 @@ export default function SavedScreen({
             <svg viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M12 5v14M5 12h14" /></svg>
           </button>
         </div>
+        {selectMode ? (
+        <div className="saved-fab-item" style={{ '--i': 3 }}>
+            <button
+              type="button"
+              className="saved-fab-btn is-danger"
+              aria-label="Delete selected"
+              disabled={!selectedKeys.length || savingSaved}
+              tabIndex={0}
+              onClick={(e) => { e.currentTarget.blur(); deleteSelected() }}
+            >
+              <FilterTrashIcon />
+              {selectedKeys.length > 0 ? <span className="saved-select-count">{selectedKeys.length}</span> : null}
+            </button>
+        </div>
+        ) : null}
         </div>
       </div>
         </div>

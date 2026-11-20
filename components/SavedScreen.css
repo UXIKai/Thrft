@@ -1526,7 +1526,7 @@ html body .saved-view-tabs .saved-fab.is-searching .saved-fab-toggle svg { trans
 
 /* Container is just heart, search, select, plus: each button always shows and opens into the pill */
 html body .saved-view-tabs .saved-fab.is-open { width: 112px; }
-html body .saved-view-tabs .saved-fab.is-open.is-selecting { width: 112px; }
+html body .saved-view-tabs .saved-fab.is-open.is-selecting { width: 148px; }
 html body .saved-view-tabs .saved-fab .saved-fab-items { left: 0; right: auto; }
 html body .saved-view-tabs .saved-fab .saved-fab-item.saved-fab-item { transform: none; opacity: 1; }
 
