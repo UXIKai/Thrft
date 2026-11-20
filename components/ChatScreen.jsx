@@ -1757,7 +1757,7 @@ export default function ChatScreen({
           context: true,
         })
         setMenuId(chatId)
-      }, 450),
+      }, 520),
     }
   }
 
@@ -3274,7 +3274,7 @@ export default function ChatScreen({
                       if (el) dotsRefs.current.set(chat.id, el)
                       else dotsRefs.current.delete(chat.id)
                     }}
-                    onClick={() => openRowMenu(chat)}
+                    onClick={() => openMenu(chat.id)}
                   >
                     <DotsIcon />
                   </button>
