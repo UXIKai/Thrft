@@ -5910,3 +5910,19 @@ html body .chat-main-header .chat-top-switch.is-holding .chat-top-search {
   user-select: none;
 }
 html body .chat-main-header .chat-top-switch { touch-action: manipulation; }
+html body .chat-new-card { background: light-dark(rgba(70, 70, 70, 0.8), rgba(0, 0, 0, 0.8)); }
+html body .chat-new-card .chat-new-field,
+html body .chat-new-card .chat-new-field:focus-within,
+html body .chat-new-card .chat-new-field:has(:focus),
+html body .chat-new-card .chat-new-field:has(:focus-visible) {
+  border-color: var(--glass-border) !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+html body .chat-new-card .chat-new-field .chat-new-input,
+html body .chat-new-card .chat-new-field .chat-new-input:focus,
+html body .chat-new-card .chat-new-field .chat-new-input:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+  border: 0 !important;
+}
