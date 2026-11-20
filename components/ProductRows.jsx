@@ -12,7 +12,7 @@ import {
   filterListingsByColor,
   filterListingsByClothingType,
 } from '../listings.js'
-import { hasProductCutout } from '../mockupCutouts.js'
+import { acquireMockupCutout, hasProductCutout, isBypassUrl } from '../mockupCutouts.js'
 import ProductPhoto from './ProductPhoto.jsx'
 import AtmosphereFlow from './AtmosphereFlow.jsx'
 
@@ -343,6 +343,30 @@ export default function ProductRows({
   useEffect(() => {
     splashClaimed = true
   }, [])
+  // Hold the splash until the first screenful of photos (and their cutouts) is ready, so everything appears together
+  const [photosReady, setPhotosReady] = useState(!launchSplash)
+  useEffect(() => {
+    if (!launchSplash || status === 'loading') return undefined
+    let alive = true
+    const work = (Array.isArray(listings) ? listings : []).slice(0, 30).map((product) => {
+      const src = product.photoUrl || product.image_url
+      if (!src || src === 'placeholder') return Promise.resolve()
+      if (hasProductCutout(product) && !isBypassUrl(src)) {
+        const request = acquireMockupCutout(src)
+        return request.promise.catch(() => {}).finally(() => request.release())
+      }
+      return new Promise((resolve) => {
+        const img = new Image()
+        img.onload = resolve
+        img.onerror = resolve
+        img.src = src
+      })
+    })
+    const limit = new Promise((resolve) => setTimeout(resolve, 5000))
+    Promise.race([Promise.all(work), limit]).then(() => { if (alive) setPhotosReady(true) })
+    return () => { alive = false }
+  }, [status, launchSplash, listings])
+  const splashOn = launchSplash && (status === 'loading' || !photosReady)
   const [chipsOpen, setChipsOpen] = useState(false)
   const [chipQuery, setChipQuery] = useState('')
   const [chipHoldDown, setChipHoldDown] = useState(false)
@@ -592,10 +616,10 @@ export default function ProductRows({
   if (segment === 'market') {
     return (
       <section className="product-feed market-product-feed" id="home-product-panel" role="tabpanel" aria-labelledby="home-market-tab" aria-busy={status === 'loading'}>
+        {splashOn && <LogoSplash />}
         {error && <p role="alert">{error}</p>}
         {savedError && <p role="alert">{savedError}</p>}
         {!marketItems.length && status === 'ready' && <p role="status" className="feed-empty">No Market products found.</p>}
-        {status === 'loading' && launchSplash && <LogoSplash />}
         <div ref={chipsSlotRef} className="market-chips-slot" style={chipsOpen && chipsSlotH ? { height: chipsSlotH } : undefined}>
         <div
           ref={chipsRef}
@@ -695,13 +719,14 @@ export default function ProductRows({
   if (status === 'loading' && !rows.length) {
     return (
       <section className="product-feed" id="home-product-panel" role="tabpanel" aria-labelledby={`home-${segment}-tab`} aria-busy="true">
-        {launchSplash && <LogoSplash />}
+        {splashOn && <LogoSplash />}
       </section>
     )
   }
 
   return (
     <section className="product-feed" id="home-product-panel" role="tabpanel" aria-labelledby={`home-${segment}-tab`}>
+      {splashOn && <LogoSplash />}
       {error && <p role="alert">{error}</p>}
       {savedError && <p role="alert">{savedError}</p>}
       {!rows.length && status === 'ready' && <p role="status" className="feed-empty">No Store products found.</p>}
