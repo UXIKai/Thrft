@@ -5730,3 +5730,27 @@ html body .chat-main-header .chat-top-pill.is-active {
 
 html body .chat-desktop-thread .chat-friends-tabs[hidden] { display: none !important; }
 
+
+html body .chat-hold-preview {
+  position: relative;
+  align-self: center;
+  width: calc(100vw * 0.56);
+  height: calc(100dvh * 0.56);
+  flex: 0 0 auto;
+  background: var(--page-bg);
+  border-radius: 24px;
+}
+html body .chat-hold-preview .chat-hold-frame {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100dvh;
+  transform: scale(0.56);
+  transform-origin: top left;
+  overflow: hidden;
+  pointer-events: none;
+  border-radius: 44px;
+}
+html body .chat-hold-frame > .chat-page-atmosphere { position: absolute; inset: 0; z-index: 0; filter: brightness(0.8); }
+html body .chat-hold-frame > .chat-thread { position: relative; z-index: 1; }

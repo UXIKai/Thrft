@@ -1977,6 +1977,56 @@ export default function ChatScreen({
     )
   }
 
+  function renderBubble(msg) {
+    return (
+                <div
+                  key={msg.id}
+                  className={`chat-thread-bubble ${msg.from === 'me' ? 'is-me' : 'is-them'}${
+                    msg.kind && msg.kind !== 'text' ? ` is-${msg.kind}` : ''
+                  }`}
+                >
+                  {msg.kind === 'image' && msg.imageUrl ? (
+                    <img
+                      className="chat-thread-bubble-image"
+                      src={msg.imageUrl}
+                      alt={msg.fileName || 'Photo'}
+                    />
+                  ) : null}
+                  {msg.kind === 'file' ? (
+                    <div className="chat-thread-bubble-file">
+                      <FileAttachIcon />
+                      <span>{msg.fileName || msg.text || 'File'}</span>
+                    </div>
+                  ) : null}
+                  {msg.kind === 'liked' ? (
+                    <div className="chat-thread-bubble-liked">
+                      <HeartAttachIcon />
+                      <span>
+                        {msg.liked?.brandName ||
+                          msg.liked?.title ||
+                          msg.text ||
+                          'Liked item'}
+                      </span>
+                    </div>
+                  ) : null}
+                  {msg.kind === 'friend' ? (
+                    <div className="chat-thread-bubble-liked">
+                      <PersonAttachIcon />
+                      <span>{msg.text}</span>
+                    </div>
+                  ) : null}
+                  {(!msg.kind || msg.kind === 'text') && msg.text ? (
+                    <p className="chat-thread-bubble-text">{msg.text}</p>
+                  ) : null}
+                  {msg.at ? (
+                    <span className="chat-thread-bubble-time">
+                      {formatMsgTime(msg.at)}
+                    </span>
+                  ) : null}
+                </div>
+    )
+  }
+
   function renderThread() {
     if (!activeChat) return null
     return (
@@ -2057,53 +2107,7 @@ export default function ChatScreen({
                 Message {activeChat.title}
               </p>
             ) : (
-              threadMessages.map((msg) => (
-                <div
-                  key={msg.id}
-                  className={`chat-thread-bubble ${msg.from === 'me' ? 'is-me' : 'is-them'}${
-                    msg.kind && msg.kind !== 'text' ? ` is-${msg.kind}` : ''
-                  }`}
-                >
-                  {msg.kind === 'image' && msg.imageUrl ? (
-                    <img
-                      className="chat-thread-bubble-image"
-                      src={msg.imageUrl}
-                      alt={msg.fileName || 'Photo'}
-                    />
-                  ) : null}
-                  {msg.kind === 'file' ? (
-                    <div className="chat-thread-bubble-file">
-                      <FileAttachIcon />
-                      <span>{msg.fileName || msg.text || 'File'}</span>
-                    </div>
-                  ) : null}
-                  {msg.kind === 'liked' ? (
-                    <div className="chat-thread-bubble-liked">
-                      <HeartAttachIcon />
-                      <span>
-                        {msg.liked?.brandName ||
-                          msg.liked?.title ||
-                          msg.text ||
-                          'Liked item'}
-                      </span>
-                    </div>
-                  ) : null}
-                  {msg.kind === 'friend' ? (
-                    <div className="chat-thread-bubble-liked">
-                      <PersonAttachIcon />
-                      <span>{msg.text}</span>
-                    </div>
-                  ) : null}
-                  {(!msg.kind || msg.kind === 'text') && msg.text ? (
-                    <p className="chat-thread-bubble-text">{msg.text}</p>
-                  ) : null}
-                  {msg.at ? (
-                    <span className="chat-thread-bubble-time">
-                      {formatMsgTime(msg.at)}
-                    </span>
-                  ) : null}
-                </div>
-              ))
+              threadMessages.map(renderBubble)
             )}
           </div>
         </div>
@@ -3604,27 +3608,33 @@ export default function ChatScreen({
               if (!chat) return null
               return (
                 <section className="chat-hold-preview" aria-label={`Preview of ${chat.title}`}>
-                  <header className="chat-hold-preview-heading">{chat.title}</header>
-                  <div
-                    className="chat-hold-preview-messages"
-                    ref={(el) => {
-                      if (el) el.scrollTop = el.scrollHeight
-                    }}
-                  >
-                    {chat.messages.length ? chat.messages.slice(-12).map((msg) => (
-                      <div key={msg.id} className={`chat-thread-bubble ${msg.from === 'me' ? 'is-me' : 'is-them'}`}>
-                        {msg.kind === 'image' && msg.imageUrl ? (
-                          <img className="chat-thread-bubble-image" src={msg.imageUrl} alt={msg.fileName || 'Photo'} />
-                        ) : (
-                          <p className="chat-thread-bubble-text">
-                            {msg.kind === 'file' ? msg.fileName || msg.text : msg.text}
-                          </p>
-                        )}
-                        {msg.at ? <span className="chat-thread-bubble-time">{formatMsgTime(msg.at)}</span> : null}
+                  <div className="chat-hold-frame" aria-hidden>
+                    <div className="atmosphere chat-page-atmosphere"><AtmosphereFlow /></div>
+                    <div className="chat-thread">
+                      <header className="chat-thread-top">
+                        <span className="chat-top-btn"><BackIcon /></span>
+                        <span className="chat-thread-heading" />
+                        <span className="chat-top-btn" />
+                      </header>
+                      <div className="chat-thread-hero">
+                        <span className="chat-thread-avatar">
+                          <PersonAvatar className="person-avatar-fill" username={chat.kind === 'dm' ? usernameForName(chat.title) : ''} initials={chat.initials} />
+                        </span>
+                        <span className="chat-thread-name">{chat.title}</span>
                       </div>
-                    )) : (
-                      <p className="chat-thread-empty">Message {chat.title}</p>
-                    )}
+                      <div className="chat-thread-scroll">
+                        <div className="chat-thread-body">
+                          {chat.messages.length ? chat.messages.map(renderBubble) : <p className="chat-thread-empty">Message {chat.title}</p>}
+                        </div>
+                      </div>
+                      <div className="chat-compose">
+                        <div className="chat-compose-box">
+                          <span className="chat-compose-plus"><PlusIcon /></span>
+                          <span className="chat-compose-input" />
+                          <span className="chat-compose-send"><SendIcon /></span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </section>
               )
