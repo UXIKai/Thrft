@@ -16,7 +16,6 @@ import {
   readBackgroundEffectStyle,
   applyBackgroundPhoto,
   readBackgroundPhoto,
-  applyBarTransparency,
   applyUiScale,
   applyContainerEdge,
   readContainerEdge,
@@ -30,7 +29,6 @@ import {
   readBgColor,
   readCustomBgColorHex,
   readCustomColorHex,
-  readBarTransparency,
   readPalette,
   rememberRecentColor,
   setPaletteSlot,
@@ -870,9 +868,6 @@ export default function SettingsScreen({
   const [uiScale, setUiScale] = useState(() => readUiScale())
   const [containerEdge, setContainerEdge] = useState(() => readContainerEdge())
   const [brightness, setBrightness] = useState(() => readBrightness())
-  const [barTransparency, setBarTransparency] = useState(() =>
-    readBarTransparency(),
-  )
   const [sheet, setSheet] = useState(null)
   const [brandShippingOpen, setBrandShippingOpen] = useState(false)
   const [sheetDraft, setSheetDraft] = useState({})
@@ -1824,28 +1819,6 @@ export default function SettingsScreen({
 
         <Section label="Size and glass" className="is-sliders">
           <div className="settings-block settings-slider-block">
-                <div
-                  className="settings-glass-slider"
-                  style={{ '--pull': barTransparency / 100 }}
-                >
-                  <input
-                    className="settings-slider"
-                    type="range"
-                    min={0}
-                    max={100}
-                    value={barTransparency}
-                    onChange={(e) => {
-                      const next = Number(e.target.value)
-                      setBarTransparency(next)
-                      applyBarTransparency(next)
-                    }}
-                    aria-label="Container glass from Opaque to Clear"
-                  />
-                  <div className="settings-slider-ends">
-                    <span>Opaque</span>
-                    <span>Clear</span>
-                  </div>
-                </div>
                 <div
                   className="settings-glass-slider"
                   style={{ '--pull': brightness / 100 }}
