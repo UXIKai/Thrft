@@ -3021,8 +3021,8 @@ export default function ChatScreen({
     <input
       type="search"
       className="chat-friends-find is-in-panel"
-      aria-label="Search people"
-      placeholder="Search people"
+      aria-label="Search friends"
+      placeholder="Search friends"
       autoComplete="off"
       spellCheck={false}
       value={friendsQuery}
@@ -3063,9 +3063,6 @@ export default function ChatScreen({
 
   const friendsDrawer = isDesktop && friendsDrawerOpen ? (
     <aside className="chat-friends-drawer" aria-label="Friends">
-      <div className="chat-friends-drawer-head">
-        <h3>Friends</h3>
-      </div>
       <div className="chat-friends-drawer-tabs">
         {[['all', 'Mutual'], ['pending', 'Followers'], ['suggestions', 'Suggestions']].map(([id, label]) => (
           <button
