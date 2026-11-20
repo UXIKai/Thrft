@@ -5851,3 +5851,10 @@ html body .chat-friends-tab-group .chat-friends-tab .chat-friends-tab-count {
   line-height: 1;
   text-box: trim-both cap alphabetic;
 }
+
+/* Chats / Friends containers at 80% opacity */
+html body .chat-screen .chat-friends-tab-group,
+html body .chat-screen .chat-friends-panel,
+html body .chat-screen .chat-rail {
+  background: var(--container-bg) !important;
+}
