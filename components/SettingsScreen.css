@@ -2970,9 +2970,14 @@ html body .settings-screen .settings-theme-toggle:not(#_) {
   opacity: 1;
 }
 
-html body .settings-screen .settings-privacy.settings-privacy {
-  background: var(--container-bg) !important;
-  border: 1px solid rgba(255, 255, 255, 0.14) !important;
-  border-radius: 22px !important;
-  box-sizing: border-box;
+.settings-privacy.settings-row {
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+.settings-privacy-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }

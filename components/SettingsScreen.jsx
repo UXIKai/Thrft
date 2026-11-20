@@ -1932,22 +1932,22 @@ export default function SettingsScreen({
         </Section>
 
         <Section label="Following">
-          <button type="button" className="settings-privacy is-bare" aria-pressed={followingPrivate}
+          <button type="button" className="settings-privacy settings-row" aria-pressed={followingPrivate}
             aria-label={`Following is ${followingPrivate ? 'private' : 'public'}. Tap to switch.`}
             onClick={async () => {
               const next = !followingPrivate
               setFollowingPrivate(next)
               try { await onSaveProfile?.({ followingPrivate: next }) } catch { setFollowingPrivate(!next) }
             }}>
-            <span className="settings-privacy-top">
+            <span className="settings-privacy-copy">
               <span className="settings-row-title">Following</span>
-              <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor"
-                strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="5" y="11" width="14" height="9" rx="2" />
-                <path d={followingPrivate ? 'M8 11V8a4 4 0 0 1 8 0v3' : 'M8 11V8a4 4 0 0 1 7.5-1.9'} />
-              </svg>
+              <span className="settings-privacy-state is-on">{followingPrivate ? 'Private' : 'Public'}</span>
             </span>
-            <span className="settings-privacy-state is-on">{followingPrivate ? 'Private' : 'Public'}</span>
+            <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor"
+              strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="5" y="11" width="14" height="9" rx="2" />
+              <path d={followingPrivate ? 'M8 11V8a4 4 0 0 1 8 0v3' : 'M8 11V8a4 4 0 0 1 7.5-1.9'} />
+            </svg>
           </button>
         </Section>
 
