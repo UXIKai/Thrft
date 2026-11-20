@@ -751,7 +751,7 @@ export default function SavedScreen({
           >
             <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M12 5v14M5 12h14" /></svg>
           </button>
-          <div className={`saved-fab is-open${selectMode ? ' is-selecting' : ''}${searchOpen ? ' is-searching' : ''}`} style={selectMode ? { '--sel-w': `${selectedKeys.length ? 44 + String(selectedKeys.length).length * 9 : 40}px` } : undefined}>
+          <div className={`saved-fab is-open${selectMode ? ' is-selecting' : ''}${searchOpen ? ' is-searching' : ''}`} style={selectMode ? { '--sel-w': `${selectedKeys.length ? 64 + String(selectedKeys.length).length * 9 : 72}px` } : undefined}>
         <div className="saved-fab-items">
         <div className="saved-fab-item" style={{ '--i': 0 }}>
           <button

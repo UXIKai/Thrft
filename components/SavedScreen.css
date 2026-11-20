@@ -1586,7 +1586,7 @@ html body .saved-view-tabs.is-select-on .saved-fab .saved-fab-item:last-child {
 html body .saved-view-tabs.is-select-on .saved-fab { width: 40px; }
 
 /* Select mode: pill hugs the trash, with the count beside it */
-html body .saved-view-tabs.is-select-on .saved-fab.is-open.is-selecting { width: var(--sel-w, 40px); }
+html body .saved-view-tabs.is-select-on .saved-fab.is-open.is-selecting { width: var(--sel-w, 72px); }
 html body .saved-view-tabs.is-select-on .saved-fab .saved-fab-item.saved-fab-item:first-child { width: auto; }
 html body .saved-view-tabs.is-select-on .saved-fab-btn.is-danger {
   width: auto;
