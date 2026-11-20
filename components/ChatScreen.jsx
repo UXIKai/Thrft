@@ -1770,7 +1770,14 @@ export default function ChatScreen({
       closeMenus()
       return
     }
-    setMenuPos({
+    const row = dotsRefs.current.get(chat.id)?.closest('li')?.getBoundingClientRect()
+    const width = Math.min(320, window.innerWidth - 32)
+    setMenuPos(row ? {
+      top: Math.min(row.bottom + 4, window.innerHeight - 270),
+      left: Math.max(16, Math.min(row.left + 12, window.innerWidth - width - 16)),
+      context: true,
+      dropdown: true,
+    } : {
       top: window.innerHeight / 2,
       right: 0,
       centerX: window.innerWidth / 2,
@@ -3274,7 +3281,7 @@ export default function ChatScreen({
                       if (el) dotsRefs.current.set(chat.id, el)
                       else dotsRefs.current.delete(chat.id)
                     }}
-                    onClick={() => openMenu(chat.id)}
+                    onClick={() => openRowMenu(chat)}
                   >
                     <DotsIcon />
                   </button>
@@ -3600,8 +3607,11 @@ export default function ChatScreen({
       {menuId && menuPos?.context && createPortal(
         <div className="chat-dm-portal chat-hold-portal">
           <button type="button" className="chat-dm-portal-scrim" aria-label="Dismiss chat actions" onClick={closeMenus} />
-          <div className="chat-hold-stack">
-            {(() => {
+          <div
+            className="chat-hold-stack"
+            style={menuPos.dropdown ? { top: menuPos.top, left: menuPos.left, transform: 'none', width: 'auto', animation: 'none' } : undefined}
+          >
+            {!menuPos.dropdown && (() => {
               const chat = chats.find((row) => row.id === menuId)
               if (!chat) return null
               return (
