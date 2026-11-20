@@ -110,17 +110,20 @@ export default function ExternalBrandShipping({ onBack }) {
       <span aria-hidden="true" />
     </header>
     <div className="glass-overlay-body external-shipping-body">
-      <dl className="external-shipping-terms">
-        <div><dt>Thrft fee</dt><dd>2% of item sales</dd></div>
-        <div><dt>Monthly fee</dt><dd>None</dd></div>
-        <div><dt>Processing</dt><dd>2.9% of total charged + $0.30</dd></div>
-        <div><dt>Your payout</dt><dd>Item sales × 98% + shipping − processing</dd></div>
-      </dl>
-      <p className="external-shipping-note">One flat shipping rate per brand; $0 means free shipping. Shared checkouts split the processing fee proportionally, and payouts are manual.</p>
       {loading && <p role="status">Loading brands…</p>}
       {error && <p role="alert">{error}</p>}
       {!loading && !error && !brands.length && <p>No verified stores yet. Import a brand website from Create to sync its catalog here.</p>}
       {brands.map((brand) => <ShippingBrand key={brand.id} brand={brand} />)}
+      <details className="external-shipping-fees">
+        <summary>Fees</summary>
+        <dl className="external-shipping-terms">
+          <div><dt>Thrft fee</dt><dd>2% of item sales</dd></div>
+          <div><dt>Monthly fee</dt><dd>None</dd></div>
+          <div><dt>Processing</dt><dd>2.9% of total charged + $0.30</dd></div>
+          <div><dt>Your payout</dt><dd>Item sales × 98% + shipping − processing</dd></div>
+        </dl>
+        <p className="external-shipping-note">One flat shipping rate per brand; $0 means free shipping. Shared checkouts split the processing fee proportionally, and payouts are manual.</p>
+      </details>
     </div>
   </section>
 }
