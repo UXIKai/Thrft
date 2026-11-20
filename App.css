@@ -3828,7 +3828,3 @@ html body .market-chips.is-open .market-chip.is-active {
   font-size: 0.74rem;
   letter-spacing: 0.02em;
 }
-html body .market-chips.is-open .market-chip.is-active {
-  background: light-dark(rgba(0, 0, 0, 0.08), rgba(255, 255, 255, 0.12)) !important;
-  border-radius: 999px;
-}
