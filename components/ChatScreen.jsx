@@ -614,9 +614,10 @@ export default function ChatScreen({
   const [peopleSearchOpen, setPeopleSearchOpen] = useState(false)
   const searchBarRef = useRef(null)
   const topHold = useRef({ timer: 0, x: 0, y: 0, fired: false })
-  function openPeopleSearch() {
+  function openPeopleSearch(side) {
     setRequestsView(false)
     setActiveChatId(null)
+    if (side) setFriendsClicked(side === 'friends')
     flushSync(() => setPeopleSearchOpen(true))
     document.getElementById('chat-people-search')?.focus({ preventScroll: true })
   }
@@ -3419,8 +3420,9 @@ export default function ChatScreen({
                 h.x = e.clientX
                 h.y = e.clientY
                 h.fired = false
+                const side = e.target.closest?.('[data-side]')?.dataset.side
                 window.clearTimeout(h.timer)
-                h.timer = window.setTimeout(() => { h.fired = true; openPeopleSearch() }, 420)
+                h.timer = window.setTimeout(() => { h.fired = true; openPeopleSearch(side) }, 420)
               }}
               onPointerMove={(e) => {
                 const h = topHold.current
@@ -3449,8 +3451,8 @@ export default function ChatScreen({
                 />
               ) : (
                 <>
-              <button type="button" role="tab" aria-selected={!friendsClicked && !requestsView} className={`chat-top-pill is-bare${!friendsClicked && !requestsView ? ' is-active' : ''}`} onClick={() => { setRequestsView(false); setFriendsClicked(false); setActiveChatId(null) }}>Chats</button>
-              <button type="button" role="tab" aria-selected={friendsClicked && !requestsView} className={`chat-top-pill is-bare${friendsClicked && !requestsView ? ' is-active' : ''}`} onClick={() => { setRequestsView(false); setActiveChatId(null); setFriendsClicked(true) }}>Friends</button>
+              <button type="button" role="tab" data-side="chats" aria-selected={!friendsClicked && !requestsView} className={`chat-top-pill is-bare${!friendsClicked && !requestsView ? ' is-active' : ''}`} onClick={() => { setRequestsView(false); setFriendsClicked(false); setActiveChatId(null) }}>Chats</button>
+              <button type="button" role="tab" data-side="friends" aria-selected={friendsClicked && !requestsView} className={`chat-top-pill is-bare${friendsClicked && !requestsView ? ' is-active' : ''}`} onClick={() => { setRequestsView(false); setActiveChatId(null); setFriendsClicked(true) }}>Friends</button>
                 </>
               )}
             </div>
