@@ -303,6 +303,9 @@ function StoreRowPage({ row, onBack, onOpenProduct, favoredBrands = [], onFavore
  */
 // The first product load is covered by the logo over the chosen background
 let splashClaimed = false
+// Last fetched feed per segment: switching back shows it instantly while a fresh copy loads
+const feedCache = {}
+const loadFeed = (segment) => (segment === 'market' ? fetchAvailableListings({ limit: 240 }) : fetchStoreProducts())
 function LogoSplash({ leaving = false }) {
   const stage = document.querySelector('.stage')
   if (!stage) return null
@@ -331,11 +334,11 @@ export default function ProductRows({
   brandSizes = {},
   savedProductIds = [],
 }) {
-  const [listings, setListings] = useState([])
+  const [listings, setListings] = useState(() => feedCache[segment] || [])
   const [savedItems, setSavedItems] = useState([])
   const [savedError, setSavedError] = useState('')
   const savingSaved = useRef(false)
-  const [status, setStatus] = useState('loading')
+  const [status, setStatus] = useState(() => (feedCache[segment] ? 'ready' : 'loading'))
   const [error, setError] = useState('')
   const [chip, setChip] = useState('all')
   // Only the very first feed of an app launch gets the splash, never a segment switch or return to Home
@@ -524,17 +527,26 @@ export default function ProductRows({
 
   useEffect(() => {
     let alive = true
-    setStatus('loading')
+    if (!feedCache[segment]) setStatus('loading')
     setError('')
     setOpenRow(null)
-    const request = segment === 'market'
-      ? fetchAvailableListings({ limit: 240 })
-      : fetchStoreProducts()
-    request
+    const other = segment === 'market' ? 'store' : 'market'
+    loadFeed(segment)
       .then((rows) => {
         if (!alive) return
+        feedCache[segment] = rows
         setListings(rows)
         setStatus('ready')
+        // Preload the other segment so switching never waits
+        if (!feedCache[other]) {
+          loadFeed(other).then((otherRows) => {
+            feedCache[other] = otherRows
+            otherRows.slice(0, 30).forEach((product) => {
+              const src = product.photoUrl || product.image_url
+              if (src && src !== 'placeholder' && !hasProductCutout(product)) new Image().src = src
+            })
+          }).catch(() => {})
+        }
       })
       .catch((err) => {
         if (!alive) return

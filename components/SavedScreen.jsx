@@ -336,6 +336,7 @@ function SavedBrandLogo({ name }) {
 
 export default function SavedScreen({
   onBack,
+  preloadedItems = null,
   onOpenProduct,
   onOpenBrand,
   favoredBrands = [],
@@ -343,8 +344,8 @@ export default function SavedScreen({
   onForYouRefresh,
   savedRefresh = 0,
 }) {
-  const [items, setItems] = useState([])
-  const [savedLoading, setSavedLoading] = useState(true)
+  const [items, setItems] = useState(() => (Array.isArray(preloadedItems) ? preloadedItems : []))
+  const [savedLoading, setSavedLoading] = useState(() => !Array.isArray(preloadedItems))
   const [savedError, setSavedError] = useState('')
   const [savingSaved, setSavingSaved] = useState(false)
   const [query, setQuery] = useState('')

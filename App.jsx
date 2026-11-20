@@ -186,6 +186,7 @@ export default function App() {
     },
   })
   const [savedIds, setSavedIds] = useState([])
+  const [preloadedSaved, setPreloadedSaved] = useState(null)
   const [forYouRefresh, setForYouRefresh] = useState(0)
   const [feedRefresh, setFeedRefresh] = useState(0)
   const [cartOpen, setCartOpen] = useState(false)
@@ -471,7 +472,14 @@ export default function App() {
       if (alive) setUserProfile((prev) => ({ ...prev, ...profile }))
     }).catch((error) => console.error('Could not load member preferences:', error))
     fetchSaved().then((items) => {
-      if (alive) setSavedIds(items.map((item) => item.id))
+      if (!alive) return
+      setSavedIds(items.map((item) => item.id))
+      setPreloadedSaved(items)
+      // Warm the image cache so the Liked page opens with photos already there
+      items.slice(0, 40).forEach((item) => {
+        const src = item.photoUrl || item.image_url
+        if (src && src !== 'placeholder') new Image().src = src
+      })
     }).catch((error) => console.error('Could not load saved products:', error))
     return () => { alive = false }
   }, [signedIn, account?.id, forYouRefresh])
@@ -778,6 +786,7 @@ export default function App() {
 
         {tab === 'saved' && (
           <SavedScreen
+            preloadedItems={preloadedSaved}
             onBack={() => setTab('home')}
             onOpenProduct={setActiveProduct}
             onOpenBrand={(brandId, brandName) =>
