@@ -3455,6 +3455,7 @@ export default function ChatScreen({
                 </>
               )}
             </div>
+          )}
         </div>
       )}
       {!isDesktop && !activeChatId && !imagesOnly && !requestsView && !friendsClicked && !composer && !peopleSearchOpen && (
