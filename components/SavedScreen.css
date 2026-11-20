@@ -1466,3 +1466,15 @@ html body .saved-view-tabs .saved-fab-item :is(.saved-fab-btn, .saved-filter-btn
 html body .saved-brand-cats .saved-brand-cat { flex: none; padding: 6px 14px; border-radius: 999px; background: transparent; border: 0; color: inherit; opacity: 0.6; text-transform: capitalize; font: inherit; }
 html body .saved-brand-cats .saved-brand-cat.is-active { opacity: 1; background: rgba(255,255,255,0.14); }
 .saved-brand-products .saved-grid { width: 100%; }
+
+.saved-brand-products { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; padding: 0 0 0; }
+.saved-brand-products .saved-grid { margin-top: 0; }
+@media (min-width: 720px) {
+  .saved-brand-products { width: 100%; }
+  html body .saved-brand-products .saved-grid.market-product-grid {
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 28px 20px;
+    width: 100%;
+    padding: 0 0 calc(150px + env(safe-area-inset-bottom, 0px));
+  }
+}
