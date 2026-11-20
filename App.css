@@ -3883,3 +3883,25 @@ html body .stage > .tab-bar.tab-bar.is-dragging .tab-pill,
 html body .stage > .tab-bar.tab-bar.is-pressed .tab-pill {
   transition: none;
 }
+
+/* The bar itself folds inward toward the shuriken when it collapses and spreads back out when it opens */
+html body .stage > .tab-bar.tab-bar.tab-bar:not(.is-create-open, .is-create-closing):not(#_):not(#_) {
+  clip-path: inset(-40px -40px -40px -40px);
+  transition:
+    clip-path 0.38s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease,
+    --tab-i 0.6s cubic-bezier(0.25, 1.05, 0.4, 1),
+    transform 0.55s cubic-bezier(0.22, 0.9, 0.3, 1),
+    scale 0.12s linear,
+    translate 0.3s cubic-bezier(0.22, 0.9, 0.3, 1),
+    opacity 0.2s ease !important;
+}
+html body .stage > .tab-bar.tab-bar.tab-bar.is-collapsed:not(#_):not(#_) {
+  clip-path: inset(-40px calc(50% - 34px) -40px calc(50% - 34px));
+}
+html body .stage > .tab-bar.tab-bar.tab-bar.is-dragging:not(#_):not(#_),
+html body .stage > .tab-bar.tab-bar.tab-bar.is-pressed:not(#_):not(#_) {
+  transition: none !important;
+}
