@@ -1649,3 +1649,19 @@ html body .saved-empty-msg { text-align: center; margin: 40px auto 0; max-width:
 html body .saved-empty-msg { width: 100%; box-sizing: border-box; align-self: center; justify-self: center; grid-column: 1 / -1; margin: 40px 0 0; }
 
 html body .saved-empty-msg { white-space: nowrap; text-align: center; }
+
+html body .saved-photos-card {
+  width: 100%; box-sizing: border-box; margin: 16px 0 0; padding: 10px;
+  border-radius: 22px; height: auto;
+  background: color-mix(in srgb, var(--page-bg) 50%, transparent);
+  -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px);
+}
+html body .saved-photos-card .saved-photos-grid { margin-top: 0; width: 100%; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+html body .saved-photo-btn { display: block; padding: 0; border: 0; border-radius: 12px; overflow: hidden; background: none; cursor: pointer; min-width: 0; }
+html body .saved-photo-btn img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
+@media (min-width: 720px) { html body .saved-photos-card .saved-photos-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
+.saved-photo-lightbox {
+  position: fixed; inset: 0; z-index: 90; display: grid; place-items: center; padding: 20px;
+  background: rgba(0, 0, 0, 0.85);
+}
+.saved-photo-lightbox img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 14px; }
