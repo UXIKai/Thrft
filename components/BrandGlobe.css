@@ -896,21 +896,29 @@ html body .stage .brand-globe:is(.is-color-picker, .is-brand-picker) :is(.atmosp
   bottom: calc(14px + max(env(safe-area-inset-bottom, 0px), var(--kb-height, 0px)));
   transform: translateX(-50%);
   display: flex;
-  gap: 18px;
+  align-items: center;
+  padding: 3px;
+  border-radius: 999px;
+  border: 1px solid light-dark(rgba(0, 0, 0, 0.3), rgba(255, 255, 255, 0.08));
+  background: var(--container-bg);
+  box-shadow: 0 4px 14px light-dark(rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.25));
   z-index: 30;
   pointer-events: auto;
 }
 
 html body .brand-globe-dock-actions .brand-globe-dock-round {
-  box-sizing: border-box;
   display: grid;
   place-items: center;
-  width: 52px;
-  height: 52px;
+  width: 44px;
+  height: 36px;
   padding: 0;
-  border-radius: 50%;
-  border: 1.5px solid light-dark(#111, #fff);
-  background: var(--container-bg) !important;
+  border: none !important;
+  outline: none !important;
+  border-radius: 0;
+  background: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
   color: light-dark(#111, #fff);
   cursor: pointer;
 }
@@ -918,4 +926,25 @@ html body .brand-globe-dock-actions .brand-globe-dock-round {
 .brand-globe-dock-round svg {
   width: 22px;
   height: 22px;
+}
+
+.brand-globe-dock-spin {
+  display: grid;
+  place-items: center;
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.brand-globe-dock-spin.is-spun {
+  transform: rotate(135deg);
+}
+
+/* The capsule widens into the full search bar */
+@keyframes brand-globe-capsule-grow {
+  from { width: 98px; opacity: 0.6; }
+  to { width: var(--dock-bar-width); opacity: 1; }
+}
+
+.brand-globe-panel.is-dock .brand-globe-search-row.is-from-capsule {
+  animation: brand-globe-capsule-grow 0.34s cubic-bezier(0.22, 1, 0.36, 1) both;
+  overflow: hidden;
 }

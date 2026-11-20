@@ -594,6 +594,7 @@ function BrandGlobeView({
   const centerInputRef = useRef(null)
   const searchPointerRef = useRef(false)
   const [dockSearchOpen, setDockSearchOpen] = useState(false)
+  const [dockPlusSpin, setDockPlusSpin] = useState(false)
   const centerSearchAvailable = showBrandLogos && typeof onSearchChange === 'function'
 
   function openCenterSearch() {
@@ -1792,13 +1793,17 @@ function BrandGlobeView({
               </svg>
             </button>
             <button type="button" className="brand-globe-dock-round" aria-label={searchPlusLabel}
-              onClick={(event) => { event.stopPropagation(); onSearchPlus?.() }}>
-              <GlobePlusIcon />
+              onClick={(event) => {
+                event.stopPropagation()
+                setDockPlusSpin(true)
+                window.setTimeout(() => { setDockPlusSpin(false); onSearchPlus?.() }, 240)
+              }}>
+              <span className={`brand-globe-dock-spin${dockPlusSpin ? ' is-spun' : ''}`}><GlobePlusIcon /></span>
             </button>
           </div>
         ) : typeof onSearchChange === 'function' ? (
           <div
-            className={`brand-globe-search-row${
+            className={`brand-globe-search-row${dockButtons ? ' is-from-capsule' : ''}${
               typeof onSearchConfirm === 'function' ? ' has-confirm' : ''
             }`}
           >
