@@ -859,9 +859,6 @@ export default function SavedScreen({
             style={brandPill ? { transform: `translate(${brandPill.left - 6}px, ${brandPill.top - 6}px)`, width: brandPill.width + 12, height: brandPill.height + 12 } : { opacity: 0 }}
           />
         )}
-        {favoriteBrandCards.length === 0 && (
-          <span className="saved-brands-empty">No liked brands yet</span>
-        )}
         {favoriteBrandCards.map((brand) => (
               <button
                 key={`brand-${brand.id}`}
@@ -922,7 +919,6 @@ export default function SavedScreen({
       <div className="saved-grid is-products market-product-grid" hidden={likedView !== 'products'}>
         {savedLoading && <p role="status">Loading saved products...</p>}
         {savedError && <p role="alert">{savedError}</p>}
-        {!savedLoading && !savedError && !visibleItems.length && <p role="status" className="saved-empty-msg">No saved products yet.</p>}
         {visibleItems.map((item) => {
               const photo =
                 item.photoUrl || item.imageUrl || item.image_url || ''
