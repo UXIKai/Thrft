@@ -613,6 +613,14 @@ export default function ChatScreen({
   const [searchOpen, setSearchOpen] = useState(false)
   const [peopleSearchOpen, setPeopleSearchOpen] = useState(false)
   const searchBarRef = useRef(null)
+  const topHold = useRef({ timer: 0, x: 0, y: 0, fired: false })
+  function openPeopleSearch() {
+    setRequestsView(false)
+    setActiveChatId(null)
+    setFriendsClicked(true)
+    flushSync(() => setPeopleSearchOpen(true))
+    document.getElementById('chat-people-search')?.focus({ preventScroll: true })
+  }
   useEffect(() => {
     if (!searchOpen) return undefined
     const dismiss = (event) => {
@@ -3180,6 +3188,7 @@ export default function ChatScreen({
       >
         <div className="chat-sidebar-header">
           <h1 className="chat-sidebar-title" aria-label="Chats" />
+          {isDesktop && (
           <button
             type="button"
             className="chat-sidebar-control is-bare"
@@ -3187,17 +3196,13 @@ export default function ChatScreen({
             aria-expanded={searchOpen}
             onClick={() => {
               setMobileNavOpen(false)
-              if (isDesktop) {
-                flushSync(() => setSearchOpen(true))
-                document.getElementById('chat-search-input')?.focus({ preventScroll: true })
-                return
-              }
-              flushSync(() => setPeopleSearchOpen(true))
-              document.getElementById('chat-people-search')?.focus({ preventScroll: true })
+              flushSync(() => setSearchOpen(true))
+              document.getElementById('chat-search-input')?.focus({ preventScroll: true })
             }}
           >
             <SearchIcon />
           </button>
+          )}
           {isDesktop && (
             <button
               type="button"
@@ -3405,26 +3410,51 @@ export default function ChatScreen({
             <ToggleIcon />
           </button>
           {!composer && !imagesOnly && (
-            <div className="chat-top-switch" role="tablist" aria-label="Chat sections">
+            <div
+              className={`chat-top-switch${peopleSearchOpen ? ' is-searching' : ''}`}
+              role="tablist"
+              aria-label="Chat sections"
+              onPointerDown={(e) => {
+                if (peopleSearchOpen) return
+                const h = topHold.current
+                h.x = e.clientX
+                h.y = e.clientY
+                h.fired = false
+                window.clearTimeout(h.timer)
+                h.timer = window.setTimeout(() => { h.fired = true; openPeopleSearch() }, 420)
+              }}
+              onPointerMove={(e) => {
+                const h = topHold.current
+                if (h.timer && Math.hypot(e.clientX - h.x, e.clientY - h.y) > 8) { window.clearTimeout(h.timer); h.timer = 0 }
+              }}
+              onPointerUp={() => { window.clearTimeout(topHold.current.timer); topHold.current.timer = 0 }}
+              onPointerCancel={() => { window.clearTimeout(topHold.current.timer); topHold.current.timer = 0 }}
+              onContextMenu={(e) => e.preventDefault()}
+              onClickCapture={(e) => {
+                if (topHold.current.fired) { topHold.current.fired = false; e.stopPropagation(); e.preventDefault() }
+              }}
+            >
+              {peopleSearchOpen ? (
+                <input
+                  id="chat-people-search"
+                  type="search"
+                  className="chat-top-search"
+                  aria-label="Search people"
+                  placeholder="Search people"
+                  autoComplete="off"
+                  spellCheck={false}
+                  value={friendsQuery}
+                  onChange={(e) => setFriendsQuery(e.target.value)}
+                  onBlur={() => { if (!friendsQuery.trim()) setPeopleSearchOpen(false) }}
+                  onKeyDown={(e) => { if (e.key === 'Escape') { setFriendsQuery(''); setPeopleSearchOpen(false) } }}
+                />
+              ) : (
+                <>
               <button type="button" role="tab" aria-selected={!friendsClicked && !requestsView} className={`chat-top-pill is-bare${!friendsClicked && !requestsView ? ' is-active' : ''}`} onClick={() => { setRequestsView(false); setFriendsClicked(false); setActiveChatId(null) }}>Chats</button>
               <button type="button" role="tab" aria-selected={friendsClicked && !requestsView} className={`chat-top-pill is-bare${friendsClicked && !requestsView ? ' is-active' : ''}`} onClick={() => { setRequestsView(false); setActiveChatId(null); setFriendsClicked(true) }}>Friends</button>
+                </>
+              )}
             </div>
-          )}
-          {peopleSearchOpen && !imagesOnly && !requestsView && !composer && (
-            <input
-              id="chat-people-search"
-              type="search"
-              className="chat-friends-find is-in-header"
-              aria-label="Search people"
-              placeholder="Search people"
-              autoComplete="off"
-              spellCheck={false}
-              value={friendsQuery}
-              onChange={(e) => setFriendsQuery(e.target.value)}
-              onBlur={() => { if (!friendsQuery.trim()) setPeopleSearchOpen(false) }}
-              onKeyDown={(e) => { if (e.key === 'Escape') { setFriendsQuery(''); setPeopleSearchOpen(false) } }}
-            />
-          )}
         </div>
       )}
       {!isDesktop && !activeChatId && !imagesOnly && !requestsView && !friendsClicked && !composer && !peopleSearchOpen && (

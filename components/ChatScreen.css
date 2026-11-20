@@ -5864,3 +5864,34 @@ html body .chat-screen .chat-thread-bubble:not(.is-image),
 html body .chat-screen .chat-compose-box {
   background: var(--container-bg) !important;
 }
+
+/* Hold Chats/Friends: the two-button container becomes the search bar */
+html body .chat-main-header .chat-top-switch {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+html body .chat-main-header .chat-top-switch.is-searching {
+  width: min(calc(100% - 110px), 360px);
+  box-sizing: border-box;
+  animation: chat-top-search-grow 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes chat-top-search-grow {
+  from { width: 190px; }
+}
+html body .chat-main-header .chat-top-search {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 36px;
+  padding: 0 16px;
+  border: 0 !important;
+  border-radius: 999px;
+  background: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+  color: inherit;
+  font: inherit;
+  font-size: 16px;
+  user-select: text;
+  -webkit-user-select: text;
+}
