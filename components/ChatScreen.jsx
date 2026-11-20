@@ -3165,14 +3165,6 @@ export default function ChatScreen({
           </button>
           <button
             type="button"
-            className={`chat-list-quick-btn is-bare${friendsClicked && !requestsView && !imagesOnly ? ' is-on' : ''}`}
-            onClick={() => { if (composer) closeComposer(); setImagesOnly(false); setRequestsView(false); setActiveChatId(null); setFriendsClicked(true) }}
-          >
-            <svg className="chat-ico" viewBox="0 0 24 24" aria-hidden width="20" height="20" fill="currentColor"><circle cx="9" cy="8" r="3.2" /><path d="M2.500 19.500c0-3.300 2.800-5.500 6.500-5.500s6.500 2.200 6.500 5.500z" /><circle cx="16.500" cy="9" r="2.600" /><path d="M16.500 14c3 0 5 1.800 5 4.500h-4.200c-.1-1.800-.8-3.200-2-4.200.4-.2.800-.3 1.200-.3z" /></svg>
-            <span>Friends</span>
-          </button>
-          <button
-            type="button"
             className={`chat-list-quick-btn is-bare${requestsView ? ' is-on' : ''}`}
             aria-pressed={requestsView}
             onClick={() => { if (composer) closeComposer(); setImagesOnly(false); setActiveChatId(null); setRequestsView(true) }}
@@ -3317,8 +3309,8 @@ export default function ChatScreen({
           </button>
           {!composer && !imagesOnly && (
             <div className="chat-top-switch" role="tablist" aria-label="Chat sections">
+              <button type="button" role="tab" aria-selected={!friendsClicked && !requestsView} className={`chat-top-pill is-bare${!friendsClicked && !requestsView ? ' is-active' : ''}`} onClick={() => { setRequestsView(false); setFriendsClicked(false); setActiveChatId(null) }}>Chats</button>
               <button type="button" role="tab" aria-selected={friendsClicked && !requestsView} className={`chat-top-pill is-bare${friendsClicked && !requestsView ? ' is-active' : ''}`} onClick={() => { setRequestsView(false); setActiveChatId(null); setFriendsClicked(true) }}>Friends</button>
-              <button type="button" role="tab" aria-selected={requestsView} className={`chat-top-pill is-bare${requestsView ? ' is-active' : ''}`} onClick={() => { setActiveChatId(null); setFriendsClicked(false); setRequestsView(true) }}>Requests</button>
             </div>
           )}
           {peopleSearchOpen && !imagesOnly && !requestsView && !composer && (
