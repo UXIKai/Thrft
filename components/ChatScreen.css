@@ -6073,3 +6073,10 @@ html body .chat-screen:not(.is-desktop) .chat-friends-tabs[aria-label='Message r
 html body .chat-screen:not(.is-desktop) .chat-friends-tabs[aria-label='Message requests'] + .chat-friends-body .chat-friends-panel {
   background: none !important; border: 0 !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
 }
+
+/* Images fills the screen below the header */
+html body .chat-images-gallery { display: block; padding: 0; height: 100%; }
+html body .chat-images-gallery .chat-images-card {
+  width: 100%; max-width: none; height: 100%; max-height: none; box-sizing: border-box;
+  border-radius: 0; padding: 18px 16px 120px; animation: none;
+}
