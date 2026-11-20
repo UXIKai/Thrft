@@ -1523,6 +1523,7 @@ function BrandGlobeView({
     onSelect?.(brand.id)
   }
 
+  const lensed = isDock && !previewColors && !showBrandLogos
   const seatTint = previewColors && focusBrand?.id ? colorHex(focusBrand.id) : null
   const previewScheme = seatTint ? colorSchemeForHex(seatTint) : null
   const originStyle = {
@@ -1637,7 +1638,23 @@ function BrandGlobeView({
                   0,
                   1,
                 )
-                const scale = showBrandLogos ? zoom : 1 + proximity * 0.06
+                let scale = showBrandLogos ? zoom : 1 + proximity * 0.06
+                // Gravitational lensing: apparent positions are pushed outward and smeared around the hole.
+                let lx = x
+                let ly = y
+                let warp = ''
+                let lensFade = 1
+                if (lensed) {
+                  const r = Math.hypot(x, y) || 1
+                  const einstein = Math.max(seatPx * 1.15, 64)
+                  const apparent = 0.5 * (r + Math.sqrt(r * r + 4 * einstein * einstein))
+                  lx = (x / r) * apparent
+                  ly = (y / r) * apparent
+                  const pull = clamp(1 - (apparent - seatPx) / (einstein * 2.2), 0, 1)
+                  const deg = (Math.atan2(ly, lx) * 180) / Math.PI
+                  warp = ` rotate(${deg.toFixed(1)}deg) scale(${(1 - 0.28 * pull).toFixed(3)}, ${(1 + 0.7 * pull).toFixed(3)}) rotate(${(-deg).toFixed(1)}deg)`
+                  lensFade = 1 - 0.55 * pull
+                }
                 return (
                   <span
                     key={brand.id}
@@ -1651,8 +1668,8 @@ function BrandGlobeView({
                     }`}
                     style={{
                       // Flat canvas — no sphere depth fade / clip.
-                      transform: `translate(-50%, -50%) translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) scale(${scale.toFixed(3)})`,
-                      opacity,
+                      transform: `translate(-50%, -50%) translate(${lx.toFixed(1)}px, ${ly.toFixed(1)}px)${warp} scale(${scale.toFixed(3)})`,
+                      opacity: opacity * lensFade,
                       visibility: 'visible',
                       zIndex: 20 + (8 - (ring || 0)),
                     }}

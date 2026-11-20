@@ -978,14 +978,15 @@ html body .brand-globe.is-dock:not(.is-color-picker):not(.is-brand-picker) .bran
     inset 0 0 22px 6px rgba(0, 0, 0, 0.9);
 }
 
+/* Lensed echo of the background bent into a faint ring just outside the shadow */
 html body .brand-globe.is-dock:not(.is-color-picker):not(.is-brand-picker) .brand-globe-center-hole::before {
   content: '';
   position: absolute;
-  inset: -34%;
+  inset: -30%;
   border-radius: 50%;
-  background: conic-gradient(from 0deg, transparent 0%, rgba(255, 255, 255, 0.16) 18%, transparent 40%, rgba(255, 255, 255, 0.08) 62%, transparent 85%);
-  -webkit-mask-image: radial-gradient(circle, transparent 54%, #000 58%, transparent 72%);
-  mask-image: radial-gradient(circle, transparent 54%, #000 58%, transparent 72%);
-  animation: brand-globe-void-spin 14s linear infinite;
+  background: conic-gradient(from 200deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.2) 25%, rgba(255, 255, 255, 0.04) 50%, rgba(255, 255, 255, 0.14) 80%, rgba(255, 255, 255, 0.05));
+  -webkit-mask-image: radial-gradient(circle, transparent 60%, #000 66%, transparent 74%);
+  mask-image: radial-gradient(circle, transparent 60%, #000 66%, transparent 74%);
+  filter: blur(1.5px);
   pointer-events: none;
 }
