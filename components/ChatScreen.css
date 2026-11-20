@@ -6097,3 +6097,8 @@ html body .chat-screen:not(.is-desktop) .chat-images-gallery { position: fixed; 
 html body .chat-screen:not(.is-desktop) .chat-main-header { z-index: 3; }
 html body .chat-images-gallery .chat-images-title { display: flex; justify-content: center; align-items: baseline; gap: 8px; }
 html body .chat-images-count { font-size: 0.8em; opacity: 0.7; font-weight: 500; }
+
+html body .chat-new-card .chat-new-field { justify-content: center; }
+html body .chat-new-card .chat-new-field .chat-new-input,
+html body .chat-new-card .chat-new-field input[inputmode='search'] { text-align: center !important; padding-left: 0 !important; padding-right: 0 !important; }
+html body .chat-new-card .chat-new-field .chat-new-input::placeholder { text-align: center; }
