@@ -3897,13 +3897,6 @@ html body .chat-friends-tabs .chat-friends-pill {
 }
 
 @media (min-width: 720px) and (min-height: 500px) {
-  .chat-screen.is-desktop.is-new-chat {
-    grid-template-columns: 0 minmax(0, 1fr);
-    column-gap: 0;
-  }
-
-  .chat-screen.is-new-chat > .chat-pins-section,
-  .chat-screen.is-new-chat > .chat-list-section,
   .chat-screen.is-new-chat .chat-bottom-dock {
     display: none;
   }

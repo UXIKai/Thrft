@@ -2923,6 +2923,7 @@ export default function ChatScreen({
                         className="chat-new-input"
                         type="text"
                         inputMode="search"
+                        autoFocus
                         name={createTab === 'group' ? 'thrft_group_members_search' : 'thrft_users_search'}
                         autoComplete="off"
                         autoCorrect="off"
