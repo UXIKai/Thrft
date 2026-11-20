@@ -18,7 +18,6 @@ const MARKET_PRODUCTS_PER_ROW = 20
 
 const MARKET_CHIPS = [
   { id: 'all', label: 'All' },
-  { id: 'under10', label: 'Under $10' },
   { id: 'accessories', label: 'Accessories' },
   { id: 'shoes', label: 'Footwear' },
   { id: 'bags', label: 'Bags' },
@@ -527,6 +526,22 @@ export default function ProductRows({
               value={chipQuery}
               onChange={(e) => setChipQuery(e.target.value)}
             />
+          )}
+          {!chipsOpen && (
+            <button
+              type="button"
+              className="market-chip market-chip-search"
+              aria-label="Search filters"
+              onClick={() => {
+                if (chipHold.current.fired) { chipHold.current.fired = false; return }
+                setChipsOpen(true)
+              }}
+            >
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+                <circle cx="11" cy="11" r="6.5" />
+                <path d="m16 16 4.5 4.5" />
+              </svg>
+            </button>
           )}
           {(chipsOpen && chipQuery.trim()
             ? ALL_CHIPS.filter((c) => c.label.toLowerCase().includes(chipQuery.trim().toLowerCase()))

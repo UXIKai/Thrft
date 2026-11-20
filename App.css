@@ -3804,3 +3804,4 @@ html body .market-chips .market-chips-search {
   -webkit-user-select: text;
 }
 html body .market-chips.is-open .market-chip { flex: 0 0 auto; }
+html body .market-chips .market-chip.market-chip-search { display: grid; place-items: center; padding: 0 12px; color: var(--ink, light-dark(#000, #fff)) !important; }
