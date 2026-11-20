@@ -3770,7 +3770,8 @@ html body .market-chips .market-chip.is-active {
 }
 
 /* Hold the filter pill: it grows downward with a search field on top and every filter below */
-html body .market-chips { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
+html body .market-chips { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; touch-action: pan-x; }
+html body .market-chips.is-open { touch-action: pan-y; }
 html body .market-chips.is-open {
   flex-wrap: wrap;
   align-content: flex-start;

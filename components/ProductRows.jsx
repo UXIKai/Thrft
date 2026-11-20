@@ -328,6 +328,8 @@ export default function ProductRows({
   const chipsRef = useRef(null)
   const chipProxyRef = useRef(null)
   const chipHold = useRef({ timer: 0, x: 0, y: 0, fired: false })
+  const chipDrag = useRef({ active: false, base: 0, id: 0 })
+  const [chipsH, setChipsH] = useState(null)
   const [openRow, setOpenRow] = useState(null)
 
   useEffect(() => {
@@ -354,11 +356,15 @@ export default function ProductRows({
   }, [chipHoldDown])
 
   useEffect(() => {
-    if (!chipsOpen) setChipQuery('')
+    if (!chipsOpen) {
+      setChipQuery('')
+      setChipsH(null)
+    }
   }, [chipsOpen])
 
   function chipsPointerDown(e) {
     if (chipsOpen || (e.pointerType === 'mouse' && e.button !== 0)) return
+    chipDrag.current = { active: false, base: e.currentTarget.offsetHeight, id: e.pointerId }
     const h = chipHold.current
     h.x = e.clientX
     h.y = e.clientY
@@ -374,6 +380,21 @@ export default function ProductRows({
   }
   function chipsPointerMove(e) {
     const h = chipHold.current
+    const d = chipDrag.current
+    const dy = e.clientY - h.y
+    if (!d.active && !chipsOpen && h.timer && e.pointerId === d.id && dy > 8 && dy > Math.abs(e.clientX - h.x)) {
+      d.active = true
+      window.clearTimeout(h.timer)
+      h.timer = 0
+      chipProxyRef.current?.blur()
+      e.currentTarget.setPointerCapture?.(e.pointerId)
+      setChipsOpen(true)
+    }
+    if (d.active) {
+      const max = Math.min(window.innerHeight * 0.62, 520)
+      setChipsH(Math.round(Math.max(d.base, Math.min(max, d.base + dy))))
+      return
+    }
     if (h.timer && Math.hypot(e.clientX - h.x, e.clientY - h.y) > 8) {
       window.clearTimeout(h.timer)
       h.timer = 0
@@ -381,6 +402,12 @@ export default function ProductRows({
     }
   }
   function chipsPointerEnd() {
+    const d = chipDrag.current
+    if (d.active) {
+      d.active = false
+      if (chipsH !== null && chipsH < d.base + 40) setChipsOpen(false)
+      return
+    }
     window.clearTimeout(chipHold.current.timer)
     chipHold.current.timer = 0
     if (!chipHold.current.fired) chipProxyRef.current?.blur(); chipProxyRef.current?.setAttribute('inputmode', 'none')
@@ -526,6 +553,7 @@ export default function ProductRows({
         <div
           ref={chipsRef}
           className={`market-chips${chipsOpen ? ' is-open' : ''}${chipHoldDown ? ' is-holding' : ''}`}
+          style={chipsH === null ? undefined : { maxHeight: chipsH, height: chipsH, animation: 'none' }}
           role="tablist"
           aria-label="Market filters"
           onPointerDown={chipsPointerDown}
@@ -549,7 +577,7 @@ export default function ProductRows({
               data-lpignore="true"
               data-1p-ignore="true"
               data-form-type="other"
-              autoFocus
+              autoFocus={chipsH === null}
               placeholder="Search"
               aria-label="Search filters"
               value={chipQuery}
