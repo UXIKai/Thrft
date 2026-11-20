@@ -1559,3 +1559,28 @@ html body .saved-fab-btn.is-danger .saved-select-count {
   background: #e5484d;
   pointer-events: none;
 }
+
+/* Opening a button hides every other button in the pill */
+html body .saved-view-tabs .saved-view-plus,
+html body .saved-view-tabs .saved-view-heart:not(.saved-view-plus),
+html body .saved-view-tabs .saved-fab,
+html body .saved-view-tabs .saved-fab .saved-fab-item.saved-fab-item {
+  transition: width 0.32s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.2s ease, margin 0.32s ease;
+}
+html body .saved-view-tabs.is-open .saved-view-plus,
+html body .saved-view-tabs.is-search-on .saved-view-plus,
+html body .saved-view-tabs.is-select-on .saved-view-plus,
+html body .saved-view-tabs.is-search-on .saved-view-heart:not(.saved-view-plus),
+html body .saved-view-tabs.is-select-on .saved-view-heart:not(.saved-view-plus),
+html body .saved-view-tabs.is-open .saved-fab,
+html body .saved-view-tabs.is-search-on .saved-fab,
+html body .saved-view-tabs.is-select-on .saved-fab .saved-fab-item:first-child {
+  width: 0 !important;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+html body .saved-view-tabs.is-select-on .saved-fab { width: 40px; }

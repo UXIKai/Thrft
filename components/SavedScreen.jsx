@@ -699,7 +699,7 @@ export default function SavedScreen({
     <section className="saved-screen" aria-label="Liked">
       <header className="saved-page-header">
         <span className="saved-header-spacer" aria-hidden />
-        <div className={`saved-view-tabs${likedTabsOpen ? ' is-open' : ''}${fabOpen ? ' is-fab-open' : ''}`}>
+        <div className={`saved-view-tabs${likedTabsOpen ? ' is-open' : ''}${fabOpen ? ' is-fab-open' : ''}${searchOpen ? ' is-search-on' : ''}${selectMode ? ' is-select-on' : ''}`}>
           <button
             type="button"
             ref={plusRef}
