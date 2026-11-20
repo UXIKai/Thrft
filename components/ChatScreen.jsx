@@ -617,7 +617,6 @@ export default function ChatScreen({
   function openPeopleSearch() {
     setRequestsView(false)
     setActiveChatId(null)
-    setFriendsClicked(true)
     flushSync(() => setPeopleSearchOpen(true))
     document.getElementById('chat-people-search')?.focus({ preventScroll: true })
   }
@@ -3439,14 +3438,14 @@ export default function ChatScreen({
                   id="chat-people-search"
                   type="search"
                   className="chat-top-search"
-                  aria-label="Search people"
-                  placeholder="Search people"
+                  aria-label={friendsClicked ? 'Search people' : 'Search chats'}
+                  placeholder={friendsClicked ? 'Search people' : 'Search chats'}
                   autoComplete="off"
                   spellCheck={false}
-                  value={friendsQuery}
-                  onChange={(e) => setFriendsQuery(e.target.value)}
-                  onBlur={() => { if (!friendsQuery.trim()) setPeopleSearchOpen(false) }}
-                  onKeyDown={(e) => { if (e.key === 'Escape') { setFriendsQuery(''); setPeopleSearchOpen(false) } }}
+                  value={friendsClicked ? friendsQuery : query}
+                  onChange={(e) => (friendsClicked ? setFriendsQuery(e.target.value) : setQuery(e.target.value))}
+                  onBlur={() => { if (!(friendsClicked ? friendsQuery : query).trim()) setPeopleSearchOpen(false) }}
+                  onKeyDown={(e) => { if (e.key === 'Escape') { setFriendsQuery(''); setQuery(''); setPeopleSearchOpen(false) } }}
                 />
               ) : (
                 <>
@@ -3458,7 +3457,7 @@ export default function ChatScreen({
           )}
         </div>
       )}
-      {!isDesktop && !activeChatId && !imagesOnly && !requestsView && !friendsClicked && !composer && !peopleSearchOpen && (
+      {!isDesktop && !activeChatId && !imagesOnly && !requestsView && !friendsClicked && !composer && (
         <ul className="chat-home-list" aria-label="Active chats">
           {filtered.all.filter((chat) => chat.preview).map((chat) => (
             <li key={chat.id}>
