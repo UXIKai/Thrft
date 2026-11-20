@@ -5827,3 +5827,11 @@ html body .chat-hold-stack { animation: chat-hold-reveal 0.34s cubic-bezier(0.22
 html body .chat-hold-frame > .chat-thread { height: 100%; display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden; }
 html body .chat-hold-frame .chat-thread-scroll { flex: 0 1 auto; min-height: 0; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; padding-bottom: 16px; }
 html body .chat-hold-frame .chat-thread-body { margin-top: auto; }
+
+/* No row highlight once the hold popup is open */
+html body .chat-row-wrap.is-menu-open,
+html body .chat-row-wrap.is-menu-open:hover,
+html body .chat-row-wrap.is-menu-open:focus-within { background: transparent; }
+html body .chat-row-wrap.is-menu-open .chat-row,
+html body .chat-row-wrap.is-menu-open .chat-row:focus,
+html body .chat-row-wrap.is-menu-open .chat-row:active { background: transparent; outline: none; box-shadow: none; }
