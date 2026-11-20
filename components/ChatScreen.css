@@ -5974,3 +5974,6 @@ html body .chat-new-card .chat-new-field input[inputmode='search'] { padding-lef
 html body .chat-new-card .chat-new-field {
   background: var(--container-bg, light-dark(rgba(70, 70, 70, 0.8), rgba(0, 0, 0, 0.8))) !important;
 }
+html body .chat-search-modal {
+  background: light-dark(rgba(70, 70, 70, 0.8), rgba(0, 0, 0, 0.8)) !important;
+}
