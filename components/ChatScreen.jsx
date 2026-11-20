@@ -3458,7 +3458,7 @@ export default function ChatScreen({
                   {activeNowOpen && <h3 className="chat-friends-active-title">Online</h3>}
                 </div>
               </nav>
-              {!isDesktop && (
+              {!isDesktop && (activeNowOpen || onlineDragP !== null) && (
               <div className="chat-friends-body">
               {friendsPanel}
               </div>
