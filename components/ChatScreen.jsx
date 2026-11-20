@@ -3498,7 +3498,7 @@ export default function ChatScreen({
               ) : (
                 <>
               <button type="button" role="tab" data-side="chats" aria-selected={!friendsClicked && !requestsView} className={`chat-top-pill is-bare${(holdSide ? holdSide === 'chats' : !friendsClicked && !requestsView) ? ' is-active' : ''}`} onClick={() => { setRequestsView(false); setFriendsClicked(false); setActiveChatId(null) }}>Chats</button>
-              <button type="button" role="tab" data-side="friends" aria-selected={friendsClicked && !requestsView} className={`chat-top-pill is-bare${(holdSide ? holdSide === 'friends' : friendsClicked && !requestsView) ? ' is-active' : ''}`} onClick={() => { setRequestsView(false); setActiveChatId(null); setFriendsClicked(true) }}>Friends</button>
+              <button type="button" role="tab" data-side="friends" hidden={requestsView} aria-selected={friendsClicked && !requestsView} className={`chat-top-pill is-bare${(holdSide ? holdSide === 'friends' : friendsClicked && !requestsView) ? ' is-active' : ''}`} onClick={() => { setRequestsView(false); setActiveChatId(null); setFriendsClicked(true) }}>Friends</button>
                 </>
               )}
             </div>

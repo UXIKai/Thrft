@@ -6064,3 +6064,5 @@ html body .chat-screen.is-desktop:not(.is-sidebar-collapsed)::before {
 .chat-screen.is-online-open .chat-images-gallery { opacity: calc(1 - var(--nav-p, 1) * 1.5 - var(--online-p, 0) * 1.5); }
 .chat-screen.is-mobile-nav-open:not(.is-nav-dragging) .chat-images-gallery,
 .chat-screen.is-online-open:not(.is-nav-dragging) .chat-images-gallery { visibility: hidden; opacity: 0; }
+
+html body .chat-top-pill[data-side='friends'][hidden] { display: none !important; }
