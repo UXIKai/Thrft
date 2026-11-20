@@ -960,3 +960,32 @@ html body .brand-globe.is-dock:not(.is-color-picker):not(.is-brand-picker) .bran
 html body .brand-globe.is-dock:not(.is-color-picker):not(.is-brand-picker) .brand-globe-stage.is-choosing .brand-globe-center-hole {
   background: transparent;
 }
+
+/* Black-hole seat: dim thin photon ring, wide faint haze, dark void that drinks the light */
+@keyframes brand-globe-void-spin {
+  to { transform: rotate(360deg); }
+}
+
+html body .brand-globe.is-dock:not(.is-color-picker):not(.is-brand-picker) .brand-globe-center-hole,
+html body .brand-globe.is-dock:not(.is-color-picker):not(.is-brand-picker) .brand-globe-stage.is-choosing .brand-globe-center-hole {
+  --eclipse-color: rgba(255, 255, 255, 0.55);
+  background: radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0.8) 62%, rgba(0, 0, 0, 0.97) 100%);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.5),
+    0 0 6px 1px rgba(255, 255, 255, 0.28),
+    0 0 26px 8px rgba(255, 255, 255, 0.08),
+    0 0 70px 26px rgba(0, 0, 0, 0.55),
+    inset 0 0 22px 6px rgba(0, 0, 0, 0.9);
+}
+
+html body .brand-globe.is-dock:not(.is-color-picker):not(.is-brand-picker) .brand-globe-center-hole::before {
+  content: '';
+  position: absolute;
+  inset: -34%;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, transparent 0%, rgba(255, 255, 255, 0.16) 18%, transparent 40%, rgba(255, 255, 255, 0.08) 62%, transparent 85%);
+  -webkit-mask-image: radial-gradient(circle, transparent 54%, #000 58%, transparent 72%);
+  mask-image: radial-gradient(circle, transparent 54%, #000 58%, transparent 72%);
+  animation: brand-globe-void-spin 14s linear infinite;
+  pointer-events: none;
+}
