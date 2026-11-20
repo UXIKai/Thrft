@@ -1056,6 +1056,7 @@ export default function ChatScreen({
     setMemberGlobeOpen(false)
     setMemberGlobePhase('closed')
     setActiveChatId(chat.id)
+    if (isDesktop) setSidebarCollapsed(true)
     setDraftMessage('')
     openMembersSheet(chat)
   }
@@ -1234,6 +1235,7 @@ export default function ChatScreen({
     setContactSheetOpen(false)
     setPeerProfile(null)
     setActiveChatId(openId)
+    if (isDesktop) setSidebarCollapsed(true)
     setDraftMessage('')
   }
 
@@ -1337,6 +1339,7 @@ export default function ChatScreen({
     setMemberSearch('')
     if (openId) {
       setActiveChatId(openId)
+      if (isDesktop) setSidebarCollapsed(true)
       setDraftMessage('')
     }
   }
