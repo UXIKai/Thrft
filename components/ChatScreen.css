@@ -5977,3 +5977,17 @@ html body .chat-new-card .chat-new-field {
 html body .chat-search-modal {
   background: light-dark(rgba(70, 70, 70, 0.8), rgba(0, 0, 0, 0.8)) !important;
 }
+html body .chat-new-card,
+html body .chat-search-modal {
+  box-sizing: border-box;
+  width: min(100%, 700px);
+  height: min(80vh, 480px);
+  max-height: none;
+}
+html body .chat-new-card .chat-new-list,
+html body .chat-search-modal .chat-search-modal-list {
+  flex: 1 1 auto;
+  height: auto;
+  min-height: 0;
+  overflow-y: auto;
+}
