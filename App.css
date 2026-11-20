@@ -3922,9 +3922,17 @@ html body .stage > .tab-bar.tab-bar.tab-bar.is-pressed:not(#_):not(#_) {
   align-items: center;
   justify-content: center;
 }
-.logo-splash .wordmark {
+.logo-splash .splash-mark {
   position: relative;
   z-index: 1;
   margin: 0;
   padding-left: 0.16em; /* offsets trailing letter-spacing so the word is truly centred */
+  font-family: var(--font-logo);
+  font-weight: 400;
+  font-size: clamp(2.2rem, 9vw, 2.75rem);
+  letter-spacing: 0.16em;
+  line-height: 1;
+  color: var(--ink);
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.45);
 }
+.logo-splash .splash-dot { display: inline-block; margin-left: 0.04em; font-size: 0.5em; letter-spacing: 0; vertical-align: 0.18em; }

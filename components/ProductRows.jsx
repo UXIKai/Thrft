@@ -309,7 +309,7 @@ function LogoSplash() {
   return createPortal(
     <div className="logo-splash" role="status" aria-label="Loading">
       <div className="atmosphere" aria-hidden="true"><AtmosphereFlow /></div>
-      <h1 className="wordmark">Thrft<span className="dot" aria-hidden="true">●</span></h1>
+      <p className="splash-mark">Thrft<span className="splash-dot" aria-hidden="true">●</span></p>
     </div>,
     stage,
   )
