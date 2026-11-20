@@ -3424,29 +3424,29 @@ export default function ChatScreen({
                   {friends.length}
                 </button>
                 <div
-                  className="chat-friends-tab-group"
-                  style={{ '--tab-index': ['all', 'pending', 'suggestions'].indexOf(friendsTab), touchAction: 'pan-y' }}
+                  className="chat-friends-tab-group is-two"
+                  style={{ '--tab-index': Math.max(0, ['all', 'pending'].indexOf(friendsTab)), touchAction: 'pan-y' }}
                   onPointerDown={(e) => {
                     const el = e.currentTarget
                     el.dataset.drag = '1'
                     el.setPointerCapture?.(e.pointerId)
                     const r = el.getBoundingClientRect()
-                    const i = Math.max(0, Math.min(2, Math.floor(((e.clientX - r.left) / r.width) * 3)))
-                    setFriendsTab(['all', 'pending', 'suggestions'][i])
+                    const i = Math.max(0, Math.min(1, Math.floor(((e.clientX - r.left) / r.width) * 2)))
+                    setFriendsTab(['all', 'pending'][i])
                   }}
                   onPointerMove={(e) => {
                     const el = e.currentTarget
                     if (el.dataset.drag !== '1') return
                     const r = el.getBoundingClientRect()
-                    const i = Math.max(0, Math.min(2, Math.floor(((e.clientX - r.left) / r.width) * 3)))
-                    const id = ['all', 'pending', 'suggestions'][i]
+                    const i = Math.max(0, Math.min(1, Math.floor(((e.clientX - r.left) / r.width) * 2)))
+                    const id = ['all', 'pending'][i]
                     if (id !== friendsTab) setFriendsTab(id)
                   }}
                   onPointerUp={(e) => { e.currentTarget.dataset.drag = '0' }}
                   onPointerCancel={(e) => { e.currentTarget.dataset.drag = '0' }}
                 >
                   <span className="chat-friends-pill" aria-hidden />
-                {[['all', 'All'], ['pending', 'Pending'], ['suggestions', 'Suggestions']].map(([id, label]) => (
+                {[['all', 'Active'], ['pending', 'Pending']].map(([id, label]) => (
                   <button
                     key={id}
                     type="button"
