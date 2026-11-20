@@ -3844,3 +3844,16 @@ html body .tab-bar .tab-lens-inner {
   padding-inline: 10.65%;
   left: calc((var(--tab-i, 0) * 19.08% + 1.04%) * -4.63);
 }
+
+/* Empty / loading messages sit in the middle of the screen */
+html body .feed-empty {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  padding: 0 24px;
+  text-align: center;
+  pointer-events: none;
+}

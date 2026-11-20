@@ -566,7 +566,7 @@ export default function ProductRows({
       <section className="product-feed market-product-feed" id="home-product-panel" role="tabpanel" aria-labelledby="home-market-tab" aria-busy={status === 'loading'}>
         {error && <p role="alert">{error}</p>}
         {savedError && <p role="alert">{savedError}</p>}
-        {!marketItems.length && status !== 'error' && <p role="status">{status === 'loading' ? 'Loading products...' : 'No Market products found.'}</p>}
+        {!marketItems.length && status !== 'error' && <p role="status" className="feed-empty">{status === 'loading' ? 'Loading products...' : 'No Market products found.'}</p>}
         <div
           ref={chipsRef}
           className={`market-chips${chipsOpen ? ' is-open' : ''}${chipHoldDown ? ' is-holding' : ''}`}
@@ -664,7 +664,7 @@ export default function ProductRows({
   if (status === 'loading' && !rows.length) {
     return (
       <section className="product-feed" id="home-product-panel" role="tabpanel" aria-labelledby={`home-${segment}-tab`} aria-busy="true">
-        <p role="status">Loading products...</p>
+        <p role="status" className="feed-empty">Loading products...</p>
       </section>
     )
   }
@@ -673,7 +673,7 @@ export default function ProductRows({
     <section className="product-feed" id="home-product-panel" role="tabpanel" aria-labelledby={`home-${segment}-tab`}>
       {error && <p role="alert">{error}</p>}
       {savedError && <p role="alert">{savedError}</p>}
-      {!rows.length && status === 'ready' && <p role="status">No Store products found.</p>}
+      {!rows.length && status === 'ready' && <p role="status" className="feed-empty">No Store products found.</p>}
       {rows.map((row, rowIndex) => (
         <CrawlRow
           key={row.id}
