@@ -366,13 +366,13 @@ export default function ProductRows({
     Promise.race([Promise.all(work), limit]).then(() => { if (alive) setPhotosReady(true) })
     return () => { alive = false }
   }, [status, launchSplash, listings])
-  // Splash lasts at least ~3s: logo fades in, holds, then the whole splash fades out
+  // Splash lasts at least ~1.5s: logo fades in, holds, then the whole splash fades out
   const [minDone, setMinDone] = useState(!launchSplash)
   const [splashLeaving, setSplashLeaving] = useState(false)
   const [splashGone, setSplashGone] = useState(!launchSplash)
   useEffect(() => {
     if (!launchSplash) return undefined
-    const id = setTimeout(() => setMinDone(true), 2400)
+    const id = setTimeout(() => setMinDone(true), 900)
     return () => clearTimeout(id)
   }, [launchSplash])
   const splashReady = status !== 'loading' && photosReady && minDone
