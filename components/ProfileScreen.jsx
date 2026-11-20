@@ -622,6 +622,7 @@ export default function ProfileScreen({
   )
   const [closetSelected, setClosetSelected] = useState(null)
   const [closetLookupOpen, setClosetLookupOpen] = useState(false)
+  const [closetLookupFrom, setClosetLookupFrom] = useState(null)
   const [closetPosting, setClosetPosting] = useState(false)
   const [closetPostError, setClosetPostError] = useState('')
   const [settingsOpen, setSettingsOpen] = useState(false)
@@ -1915,15 +1916,20 @@ export default function ProfileScreen({
                   type="button"
                   className="closet-page-btn is-bare"
                   aria-label="Add to closet by product number"
-                  onClick={() => setClosetLookupOpen(true)}
+                  onClick={() => { setClosetLookupFrom(null); setClosetLookupOpen(true) }}
                 >
                   <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M12 5v14M5 12h14" /></svg>
                 </button>
               </header>
               {closetLookupOpen && <ClosetNumberLookup
                 brands={[...new Set([...LISTING_BRANDS, ...getCustomBrands()])]}
-                onClose={() => setClosetLookupOpen(false)}
+                onClose={() => {
+                  setClosetLookupOpen(false)
+                  if (closetLookupFrom) openClosetGlobe(closetLookupFrom)
+                  setClosetLookupFrom(null)
+                }}
                 onAdded={() => {
+                  setClosetLookupFrom(null)
                   setClosetLookupOpen(false)
                   setClosetItems(fetchClosetItems())
                 }}
@@ -2848,6 +2854,7 @@ export default function ProfileScreen({
             dockButtons
             searchPlusLabel="Add to closet by product number"
             onSearchPlus={() => {
+              setClosetLookupFrom(closetGlobe)
               setClosetGlobePhase('exit')
               setClosetLookupOpen(true)
             }}
