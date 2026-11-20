@@ -1747,7 +1747,7 @@ export default function SettingsScreen({
                       className="settings-palette-edit"
                       aria-label="Edit color palette"
                       title="Edit palette"
-                      onClick={() => setPaletteEditorOpen(true)}
+                      onClick={() => { setPaletteTarget('app'); setPaletteEditorOpen(true) }}
                     >
                       <PencilIcon />
                     </button>
@@ -1790,6 +1790,15 @@ export default function SettingsScreen({
                       )
                     })}
                   </div>
+                  <button
+                    type="button"
+                    className="settings-palette-edit"
+                    aria-label="Edit background palette"
+                    title="Edit background palette"
+                    onClick={() => { setPaletteTarget('bg'); setPaletteEditorOpen(true) }}
+                  >
+                    <PencilIcon />
+                  </button>
                   <span className="settings-photo-wrap">
                     <button
                       type="button"

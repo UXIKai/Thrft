@@ -1925,3 +1925,11 @@ html body .stage > .tab-bar.tab-bar.tab-bar .tab-pill::before,
 html body .stage > .tab-bar.tab-bar.tab-bar .tab-pill::after {
   content: none !important;
 }
+
+/* Palette editor: the chosen palette is clearly highlighted */
+html body .settings-palette-sheet .settings-palette-tabs { gap: 6px; }
+html body .settings-palette-sheet .settings-palette-tab { padding: 6px 14px !important; border-radius: 999px !important; opacity: 0.6; }
+html body .settings-palette-sheet .settings-palette-tab.is-active {
+  opacity: 1;
+  background: light-dark(rgba(0, 0, 0, 0.14), rgba(255, 255, 255, 0.22)) !important;
+}
