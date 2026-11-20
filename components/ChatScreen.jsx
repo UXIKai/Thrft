@@ -59,7 +59,7 @@ function normalizeChat(chat) {
             from: m.from === 'them' ? 'them' : 'me',
             at: Number(m.at) || Date.now(),
           }
-          if (kind === 'image' && typeof m.imageUrl === 'string') {
+          if (kind === 'image' && typeof m.imageUrl === 'string' && !m.imageUrl.startsWith('blob:')) {
             next.imageUrl = m.imageUrl
             next.fileName = String(m.fileName || m.text || 'Photo')
           }
@@ -81,6 +81,25 @@ function normalizeChat(chat) {
 
 function chatsKey(accountId) {
   return accountId ? `${CHATS_KEY}:${accountId}` : CHATS_KEY
+}
+
+// blob: URLs die on reload, so images are stored as downscaled data URLs.
+function fileToDataUrl(file, maxSide = 1280) {
+  return new Promise((resolve, reject) => {
+    const src = URL.createObjectURL(file)
+    const img = new Image()
+    img.onload = () => {
+      const scale = Math.min(1, maxSide / Math.max(img.naturalWidth, img.naturalHeight))
+      const canvas = document.createElement('canvas')
+      canvas.width = Math.max(1, Math.round(img.naturalWidth * scale))
+      canvas.height = Math.max(1, Math.round(img.naturalHeight * scale))
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height)
+      URL.revokeObjectURL(src)
+      resolve(canvas.toDataURL(file.type === 'image/png' ? 'image/png' : 'image/jpeg', 0.82))
+    }
+    img.onerror = () => { URL.revokeObjectURL(src); reject(new Error('Could not read image')) }
+    img.src = src
+  })
 }
 
 function readStoredChats(accountId) {
@@ -1397,7 +1416,7 @@ export default function ChatScreen({
     const text = draftMessage.trim()
     if (!activeChatId) return
     if (pendingImage) {
-      sendImageFile(pendingImage.file, pendingImage.url)
+      sendImageFile(pendingImage.file)
       setPendingImage(null)
     }
     if (!text) return
@@ -1426,9 +1445,10 @@ export default function ChatScreen({
     setPendingImage(null)
   }
 
-  function sendImageFile(file, existingUrl) {
+  async function sendImageFile(file) {
     if (!file || !activeChatId) return
-    const url = existingUrl || URL.createObjectURL(file)
+    let url
+    try { url = await fileToDataUrl(file) } catch { return }
     pushThreadMessage(
       {
         id: `m-${Date.now()}`,
