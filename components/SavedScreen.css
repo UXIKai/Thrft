@@ -1512,3 +1512,12 @@ html body .saved-brand-cats .saved-brand-cat.is-active { opacity: 1; background:
   font: inherit;
 }
 html body .saved-view-tabs .saved-fab.is-searching .saved-fab-toggle svg { transform: rotate(135deg); }
+
+/* Desktop: the Liked grid fills the page like Home */
+@media (min-width: 720px) {
+  html body .saved-screen { padding-left: max(12px, 2vw); padding-right: max(12px, 2vw); }
+  html body .saved-grid.is-products.market-product-grid {
+    grid-template-columns: repeat(auto-fill, minmax(clamp(150px, 12vw, 220px), 1fr));
+    gap: 24px 16px;
+  }
+}

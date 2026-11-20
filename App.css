@@ -128,7 +128,8 @@
 }
 
 @media (min-width: 720px) {
-  .app-column.is-chat-wide {
+  .app-column.is-chat-wide,
+  .app-column.is-saved-wide {
     width: 100%;
   }
 

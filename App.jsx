@@ -665,7 +665,7 @@ export default function App() {
       </div>
 
       <div
-        className={`app-column${tab === 'home' && signedIn ? ' is-home-wide' : ''}${tab === 'chat' ? ' is-chat-wide' : ''}${tab === 'profile' ? ' is-profile-wide' : ''}`}
+        className={`app-column${tab === 'home' && signedIn ? ' is-home-wide' : ''}${tab === 'chat' ? ' is-chat-wide' : ''}${tab === 'profile' ? ' is-profile-wide' : ''}${tab === 'saved' ? ' is-saved-wide' : ''}`}
       >
       {signedIn && (
         <>
