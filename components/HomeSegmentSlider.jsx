@@ -141,6 +141,11 @@ export default function HomeSegmentSlider({ ref, value, onChange, fireSame = fal
       const { onLeaderboard: up, shopIndex: sx } = stateRef.current
       // Pulling down to the Leaderboard only works from the very top of the page.
       clearTimeout(holdRef.current)
+      // The filter bar owns its own downward drag; it must not pull the page to the Leaderboard
+      if (target?.closest?.('.market-chips')) {
+        d = null
+        return
+      }
       // The slider ignores pointer events itself, so hit-test the icon area by position.
       const r = rootRef.current?.getBoundingClientRect()
       const cx = r ? r.left + r.width / 2 : 0

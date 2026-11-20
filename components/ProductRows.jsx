@@ -330,6 +330,7 @@ export default function ProductRows({
   const chipHold = useRef({ timer: 0, x: 0, y: 0, fired: false })
   const chipDrag = useRef({ active: false, base: 0, id: 0 })
   const [chipsH, setChipsH] = useState(null)
+  const [chipsDragging, setChipsDragging] = useState(false)
   const [openRow, setOpenRow] = useState(null)
 
   useEffect(() => {
@@ -388,11 +389,13 @@ export default function ProductRows({
       h.timer = 0
       chipProxyRef.current?.blur()
       e.currentTarget.setPointerCapture?.(e.pointerId)
+      setChipsDragging(true)
       setChipsOpen(true)
     }
     if (d.active) {
       const max = Math.min(window.innerHeight * 0.62, 520)
-      setChipsH(Math.round(Math.max(d.base, Math.min(max, d.base + dy))))
+      d.h = Math.round(Math.max(d.base, Math.min(max, d.base + dy)))
+      setChipsH(d.h)
       return
     }
     if (h.timer && Math.hypot(e.clientX - h.x, e.clientY - h.y) > 8) {
@@ -405,7 +408,21 @@ export default function ProductRows({
     const d = chipDrag.current
     if (d.active) {
       d.active = false
-      if (chipsH !== null && chipsH < d.base + 40) setChipsOpen(false)
+      setChipsDragging(false)
+      // Settle on a row edge so no label is ever cut in half
+      const box = chipsRef.current
+      const max = Math.min(window.innerHeight * 0.62, 520)
+      const edges = [d.base]
+      if (box) {
+        const pad = parseFloat(getComputedStyle(box).paddingBottom) || 0
+        box.querySelectorAll('.market-chips-search, .market-chip').forEach((el) => {
+          const edge = Math.round(el.offsetTop + el.offsetHeight + pad)
+          if (edge <= max + 1 && !edges.includes(edge)) edges.push(edge)
+        })
+      }
+      const snapped = edges.reduce((a, b) => (Math.abs(b - d.h) < Math.abs(a - d.h) ? b : a))
+      if (snapped === d.base) setChipsOpen(false)
+      else setChipsH(snapped)
       return
     }
     window.clearTimeout(chipHold.current.timer)
@@ -553,7 +570,7 @@ export default function ProductRows({
         <div
           ref={chipsRef}
           className={`market-chips${chipsOpen ? ' is-open' : ''}${chipHoldDown ? ' is-holding' : ''}`}
-          style={chipsH === null ? undefined : { maxHeight: chipsH, height: chipsH, animation: 'none' }}
+          style={chipsH === null ? undefined : { maxHeight: chipsH, height: chipsH, animation: 'none', transition: chipsDragging ? 'none' : 'height 0.2s ease, max-height 0.2s ease' }}
           role="tablist"
           aria-label="Market filters"
           onPointerDown={chipsPointerDown}
