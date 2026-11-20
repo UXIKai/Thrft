@@ -1532,3 +1532,9 @@ html body .saved-view-tabs .saved-fab .saved-fab-item.saved-fab-item { transform
 /* The icon of the button that opened something goes away while it's open */
 html body .saved-view-tabs.is-open .saved-view-heart svg,
 html body .saved-view-tabs .saved-fab.is-searching .saved-fab-btn[aria-label="Search liked"] svg { opacity: 0; }
+
+/* Collapse the space of the hidden icon so the pill closes up */
+html body .saved-view-heart { transition: width 0.32s cubic-bezier(0.2, 0.8, 0.2, 1), margin 0.32s cubic-bezier(0.2, 0.8, 0.2, 1); }
+html body .saved-view-tabs.is-open .saved-view-heart { width: 0; overflow: hidden; }
+html body .saved-view-tabs .saved-fab.is-searching:not(.is-selecting) { width: 76px; }
+html body .saved-view-tabs .saved-fab.is-searching:not(.is-selecting) .saved-fab-item:first-child { width: 0; margin: 0; overflow: hidden; }
