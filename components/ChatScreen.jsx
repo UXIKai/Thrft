@@ -1,7 +1,7 @@
 import PersonAvatar from './PersonAvatar.jsx'
 import { Fragment, useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal, flushSync } from 'react-dom'
-import { fetchFollowing, fetchSaved, searchAccounts, setFollowingAccount } from '../api.js'
+import { fetchFollowList, fetchFollowing, fetchMyAccount, fetchSaved, searchAccounts, setFollowingAccount } from '../api.js'
 import { isSupabaseConfigured } from '../supabase.js'
 import { onlineCount, subscribePresence } from '../presence.js'
 import useSwipeBack from './useSwipeBack.js'
@@ -666,6 +666,16 @@ export default function ChatScreen({
     }).catch(() => {})
     return () => { active = false }
   }, [])
+  const [followers, setFollowers] = useState([])
+  useEffect(() => {
+    if (!isSupabaseConfigured()) return
+    let active = true
+    fetchMyAccount()
+      .then((data) => fetchFollowList(data.account.username, 'followers'))
+      .then((list) => { if (active) setFollowers(list.accounts.map((a) => a.username)) })
+      .catch(() => {})
+    return () => { active = false }
+  }, [friends])
   const [groupSelected, setGroupSelected] = useState(false)
   const [memberGlobeOpen, setMemberGlobeOpen] = useState(false)
   const [memberGlobePhase, setMemberGlobePhase] = useState('closed')
@@ -827,17 +837,19 @@ export default function ChatScreen({
     const q = friendsQuery.trim().toLowerCase()
     const match = (name) => !q || name.toLowerCase().includes(q)
     const friendKeys = new Set(friends.map((f) => f.toLowerCase()))
+    const followerKeys = new Set(followers.map((f) => f.toLowerCase()))
+    const mutual = friends.filter((f) => followerKeys.has(f.toLowerCase()))
     const names = {
       online: [],
-      all: friends,
-      pending: [],
+      all: mutual,
+      pending: followers,
       suggestions: allMemberNames.filter((n) => !friendKeys.has(String(n).toLowerCase())),
     }[friendsTab] || []
-    const titles = { online: 'Online', all: 'All friends', pending: 'Pending', suggestions: 'Friend Suggestions' }
+    const titles = { online: 'Online', all: 'Mutual', pending: 'Followers', suggestions: 'Friend Suggestions' }
     const empty = {
       online: 'No friends online right now.',
-      all: 'No friends yet.',
-      pending: 'No pending requests.',
+      all: 'No mutual friends yet.',
+      pending: 'No followers yet.',
       suggestions: 'No suggestions right now.',
     }
     let list = names.filter(match)
@@ -845,9 +857,9 @@ export default function ChatScreen({
       const shown = new Set(list.map((n) => n.toLowerCase()))
       list = [...list, ...allMemberNames.filter((n) => !shown.has(String(n).toLowerCase()))]
     }
-    const counts = { all: friends.length, pending: 0, suggestions: allMemberNames.filter((n) => !friendKeys.has(String(n).toLowerCase())).length }
+    const counts = { all: mutual.length, pending: followers.length, suggestions: allMemberNames.filter((n) => !friendKeys.has(String(n).toLowerCase())).length }
     return { list, title: titles[friendsTab], empty: empty[friendsTab], counts }
-  }, [friends, friendsTab, friendsQuery, allMemberNames])
+  }, [friends, followers, friendsTab, friendsQuery, allMemberNames])
 
   useEffect(() => {
     writeStoredChats(chats, accountId)
@@ -3034,7 +3046,7 @@ export default function ChatScreen({
         <h3>Friends</h3>
       </div>
       <div className="chat-friends-drawer-tabs">
-        {[['all', 'Active'], ['pending', 'Pending'], ['suggestions', 'Suggestions']].map(([id, label]) => (
+        {[['all', 'Mutual'], ['pending', 'Followers'], ['suggestions', 'Suggestions']].map(([id, label]) => (
           <button
             key={id}
             type="button"
@@ -3531,7 +3543,7 @@ export default function ChatScreen({
                   onPointerCancel={(e) => { e.currentTarget.dataset.drag = '0' }}
                 >
                   <span className="chat-friends-pill" aria-hidden />
-                {[['all', 'Active'], ['pending', 'Pending'], ['suggestions', 'Suggestions']].map(([id, label]) => (
+                {[['all', 'Mutual'], ['pending', 'Followers'], ['suggestions', 'Suggestions']].map(([id, label]) => (
                   <button
                     key={id}
                     type="button"
