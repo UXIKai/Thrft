@@ -1911,16 +1911,6 @@ export default function ProfileScreen({
             })()
           ) : (
             <div className="closet-browse">
-              <header className="closet-page-head">
-                <button
-                  type="button"
-                  className="closet-page-btn is-bare"
-                  aria-label="Add to closet by product number"
-                  onClick={() => setClosetLookupOpen(true)}
-                >
-                  <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M12 5v14M5 12h14" /></svg>
-                </button>
-              </header>
               {closetLookupOpen && <ClosetNumberLookup
                 brands={[...new Set([...LISTING_BRANDS, ...getCustomBrands()])]}
                 onClose={() => setClosetLookupOpen(false)}
