@@ -3866,3 +3866,20 @@ html body .market-chips.is-open {
   left: 0;
   z-index: 6;
 }
+
+/* Highlight pill: it grows out once the bar has opened, and shrinks away first when it closes */
+html body .stage > .tab-bar.tab-bar .tab-pill {
+  scale: 1;
+  opacity: 1;
+  transition: scale 0.32s cubic-bezier(0.22, 1, 0.36, 1) 0.2s, opacity 0.18s ease 0.2s;
+}
+html body .stage > .tab-bar.tab-bar.is-collapsed .tab-pill,
+html body .stage > .tab-bar.tab-bar.is-create-open .tab-pill {
+  scale: 0.15;
+  opacity: 0;
+  transition: scale 0.2s cubic-bezier(0.5, 0, 0.75, 0), opacity 0.14s ease;
+}
+html body .stage > .tab-bar.tab-bar.is-dragging .tab-pill,
+html body .stage > .tab-bar.tab-bar.is-pressed .tab-pill {
+  transition: none;
+}
