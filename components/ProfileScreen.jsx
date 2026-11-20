@@ -887,8 +887,11 @@ export default function ProfileScreen({
 
   const closetGlobeItems = useMemo(() => {
     const all = closetGlobe === 'type' ? closetTypeItems : closetBrandItems
-    const q = closetGlobeQuery.trim().toLowerCase()
-    return q ? all.filter((i) => i.label.toLowerCase().includes(q)) : all
+    const norm = (v) => String(v || '').toLowerCase().replace(/[^a-z0-9]+/g, '')
+    const q = norm(closetGlobeQuery)
+    if (!q) return all
+    const hits = all.filter((i) => norm(i.label).includes(q))
+    return [...hits.filter((i) => norm(i.label).startsWith(q)), ...hits.filter((i) => !norm(i.label).startsWith(q))]
   }, [closetGlobe, closetGlobeQuery, closetBrandItems, closetTypeItems])
 
   const visibleClosetItems = useMemo(
@@ -2835,9 +2838,8 @@ export default function ProfileScreen({
             snug={closetGlobe === 'type'}
             searchValue={closetGlobeQuery}
             onSearchChange={setClosetGlobeQuery}
-            searchPlaceholder=""
             dockButtons
-            searchPlaceholder={closetGlobeAdding ? 'New type of item' : ''}
+            searchPlaceholder={closetGlobeAdding ? 'New type of item' : closetGlobe === 'type' ? 'Search types' : 'Search brands'}
             searchPlusLabel="Add a type of item"
             onSearchPlus={closetGlobe === 'type' ? () => setClosetGlobeAdding(true) : undefined}
             onDockBarClose={() => setClosetGlobeAdding(false)}

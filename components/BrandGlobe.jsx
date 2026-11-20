@@ -1848,6 +1848,7 @@ function BrandGlobeView({
               {searchStatus && <p className="brand-globe-search-status" role="status">{searchStatus}</p>}
               <input
                 className="brand-globe-search-input"
+                autoFocus={dockButtons}
                 type="text"
                 inputMode="search"
                 name="thrft_globe_search"
