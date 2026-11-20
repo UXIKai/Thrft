@@ -5843,3 +5843,11 @@ html body .chat-friends-tab-group .chat-friends-tab {
   line-height: 1;
   white-space: nowrap;
 }
+
+/* Trim font ascent/descent so space above and below the glyphs is equal */
+html body .chat-friends-tab-group .chat-friends-tab .chat-friends-tab-label,
+html body .chat-friends-tab-group .chat-friends-tab .chat-friends-tab-count {
+  display: block;
+  line-height: 1;
+  text-box: trim-both cap alphabetic;
+}

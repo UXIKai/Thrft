@@ -3054,7 +3054,7 @@ export default function ChatScreen({
             aria-pressed={friendsTab === id}
             onClick={() => setFriendsTab(id)}
           >
-            {label}<span className="chat-friends-tab-count">{friendsView.counts[id]}</span>
+            <span className="chat-friends-tab-label">{label}</span><span className="chat-friends-tab-count">{friendsView.counts[id]}</span>
           </button>
         ))}
       </div>
@@ -3551,7 +3551,7 @@ export default function ChatScreen({
                     aria-pressed={friendsTab === id}
                     onClick={() => setFriendsTab(id)}
                   >
-                    {label}<span className="chat-friends-tab-count">{friendsView.counts[id]}</span>
+                    <span className="chat-friends-tab-label">{label}</span><span className="chat-friends-tab-count">{friendsView.counts[id]}</span>
                   </button>
                 ))}
                 </div>
