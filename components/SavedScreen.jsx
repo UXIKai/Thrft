@@ -753,6 +753,7 @@ export default function SavedScreen({
               onClick={(e) => { e.currentTarget.blur(); deleteSelected() }}
             >
               <FilterTrashIcon />
+              {selectedKeys.length > 0 ? <span className="saved-select-count">{selectedKeys.length}</span> : null}
             </button>
           ) : (
             <button

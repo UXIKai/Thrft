@@ -1539,3 +1539,23 @@ html body .saved-view-heart { transition: width 0.32s cubic-bezier(0.2, 0.8, 0.2
 html body .saved-view-tabs.is-open .saved-view-heart { width: 0; overflow: hidden; }
 html body .saved-view-tabs .saved-fab.is-searching:not(.is-selecting) { width: 76px; }
 html body .saved-view-tabs .saved-fab.is-searching:not(.is-selecting) .saved-fab-item:first-child { width: 0; margin: 0; overflow: hidden; }
+
+/* Number of selected items on the delete button */
+html body .saved-fab-btn.is-danger { position: relative; overflow: visible; }
+html body .saved-fab-btn.is-danger .saved-select-count {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 9px;
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+  background: #e5484d;
+  pointer-events: none;
+}
