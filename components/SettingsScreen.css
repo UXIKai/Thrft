@@ -2969,3 +2969,10 @@ html body .settings-screen .settings-theme-toggle:not(#_) {
   font-weight: 700;
   opacity: 1;
 }
+
+html body .settings-screen .settings-privacy.settings-privacy {
+  background: var(--container-bg) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  border-radius: 22px !important;
+  box-sizing: border-box;
+}
