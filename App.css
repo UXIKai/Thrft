@@ -3736,17 +3736,18 @@ html body .market-chips {
   width: fit-content;
   max-width: calc(100% - 32px);
   margin: 0 16px 14px;
-  padding: 0 14px;
-  gap: 4px;
+  padding: 3px;
+  gap: 0;
   box-sizing: border-box;
   border-radius: 999px;
   background: var(--container-bg);
-  border: 1px solid var(--glass-border);
+  border: 1px solid light-dark(rgba(0, 0, 0, 0.3), rgba(255, 255, 255, 0.08));
+  box-shadow: 0 4px 14px light-dark(rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.25));
 }
 html body .market-chips .market-chip,
 html body .market-chips .market-chip.is-active {
-  height: 44px;
-  padding: 0 12px;
+  height: 36px;
+  padding: 0 14px;
   background: transparent !important;
   border: 0 !important;
   box-shadow: none !important;
@@ -3764,6 +3765,6 @@ html body .market-chips .market-chip.is-active {
   font-weight: 700;
 }
 @media (min-width: 720px) {
-  html body .market-product-feed .market-chips { padding: 0 14px; margin: 0 0 18px; gap: 4px; }
-  html body .market-product-feed .market-chips .market-chip { height: 46px; padding: 0 14px; }
+  html body .market-product-feed .market-chips { padding: 3px; margin: 0 0 18px; gap: 0; }
+  html body .market-product-feed .market-chips .market-chip { height: 40px; padding: 0 18px; }
 }
