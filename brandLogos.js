@@ -144,7 +144,7 @@ export function brandLogoBackground(name) {
 }
 
 export const BRAND_LOGO_TILE_PX = 42
-const LOGO_CLEARANCE_PX = Math.SQRT2 * BRAND_LOGO_TILE_PX + 20
+const LOGO_CLEARANCE_PX = BRAND_LOGO_TILE_PX + 18
 
 export function packBrandLogoLanes(brands, seatPx = 59) {
   const slots = []
@@ -158,7 +158,7 @@ export function packBrandLogoLanes(brands, seatPx = 59) {
     const count = Math.min(capacity, brands.length - slots.length)
     const step = Math.PI * 2 / count
     for (let i = 0; i < count; i += 1) {
-      slots.push({ lon: (i + (ring % 2) * 0.5) * step, r: radius, ring })
+      slots.push({ lon: i * step, r: radius, ring })
     }
     maxR = radius
     radius += LOGO_CLEARANCE_PX
