@@ -3730,3 +3730,40 @@ html body .chat-menu { background: color-mix(in srgb, light-dark(#e9e9e9, #2f2f2
 html body .chat-hold-stack .chat-hold-menu { background: color-mix(in srgb, light-dark(#e9e9e9, #232326) 80%, transparent); }
 
 html body .home-scroll.is-row-page > .wordmark-wrap { display: none; }
+
+/* Market filters: one shared pill houses the words; no per-button containers */
+html body .market-chips {
+  width: fit-content;
+  max-width: calc(100% - 32px);
+  margin: 0 16px 14px;
+  padding: 0 14px;
+  gap: 4px;
+  box-sizing: border-box;
+  border-radius: 999px;
+  background: var(--container-bg);
+  border: 1px solid var(--glass-border);
+}
+html body .market-chips .market-chip,
+html body .market-chips .market-chip.is-active {
+  height: 44px;
+  padding: 0 12px;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  outline: 0 !important;
+  border-radius: 0;
+  color: color-mix(in srgb, var(--ink, #fff) 45%, transparent) !important;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+html body .market-chips .market-chip.is-active {
+  color: var(--ink, light-dark(#000, #fff)) !important;
+  font-weight: 700;
+}
+@media (min-width: 720px) {
+  html body .market-product-feed .market-chips { padding: 0 14px; margin: 0 0 18px; gap: 4px; }
+  html body .market-product-feed .market-chips .market-chip { height: 46px; padding: 0 14px; }
+}
