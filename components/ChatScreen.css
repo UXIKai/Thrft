@@ -6024,3 +6024,15 @@ html body .chat-search-modal .chat-search-modal-list {
   }
   html body .chat-screen.is-sidebar-collapsed .chat-sidebar-header { padding: 0; margin: 0; }
 }
+
+html body .chat-new-card .chat-new-field,
+html body .chat-new-card .chat-new-field:focus-within,
+html body .chat-new-card .chat-new-field:has(:focus),
+html body .chat-new-card .chat-new-field:has(:focus-visible) {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+html body .chat-new-card .chat-new-field:has(input[inputmode='search'])::before { display: none !important; }
+html body .chat-new-card .chat-new-field input[inputmode='search'] { padding-left: 0 !important; }
