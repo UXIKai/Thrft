@@ -1520,7 +1520,8 @@ html body .saved-view-tabs .saved-fab.is-searching .saved-fab-toggle svg { trans
     grid-template-columns: repeat(6, minmax(0, 1fr));
     gap: 24px 16px;
   }
-  html body .saved-grid.is-products .market-card-price { display: none; }
+  html body .saved-grid.is-products .market-card-price,
+  html body .saved-grid.is-products .market-card-name { display: none; }
 }
 
 /* Container is just heart, search, select, plus: each button always shows and opens into the pill */
