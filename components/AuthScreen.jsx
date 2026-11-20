@@ -4,6 +4,7 @@ import {
   signUpWithPassword,
   signInWithOAuthProvider,
 } from '../auth.js'
+import LegalLinks from './LegalLinks.jsx'
 import './GlassOverlay.css'
 import './AuthScreen.css'
 
@@ -232,6 +233,7 @@ export default function AuthScreen({
             {isSignup ? 'Sign in' : 'Sign up'}
           </button>
         )}
+        <LegalLinks prefix="By continuing you agree to our" />
       </form>
     </div>
   )

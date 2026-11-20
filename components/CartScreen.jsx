@@ -7,6 +7,7 @@ import { cartCount, cartLineTotal, cartTotal, resizeCartItem, selectedExternalVa
 import { externalVariantLabel, isExternalProduct } from '../creatorProducts.js'
 import './GlassOverlay.css'
 import './CartScreen.css'
+import LegalLinks from './LegalLinks.jsx'
 import NavButtonGlyph from './NavButtonGlyph.jsx'
 
 /**
@@ -338,6 +339,7 @@ export default function CartScreen({
               {error}
             </p>
           ) : null}
+          <LegalLinks prefix="By paying you agree to our" />
         </div>
       ) : (
         null

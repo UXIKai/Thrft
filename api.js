@@ -362,6 +362,12 @@ export async function fetchOrders(kind) {
   return data.items
 }
 
+export async function createUpsLabel(payload) {
+  const data = await api('/api/shipping/create-ups-label', { method: 'POST', body: JSON.stringify(payload) })
+  if (!data.label) throw new Error('Invalid label response')
+  return data.label
+}
+
 export async function searchAccounts(query) {
   const data = await api(`/api/${isSupabaseConfigured() ? 'creator/' : ''}accounts?q=${encodeURIComponent(query)}`)
   if (!Array.isArray(data.accounts)) throw new Error('Invalid account search response')

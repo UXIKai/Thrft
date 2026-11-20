@@ -1,10 +1,57 @@
 import { useEffect, useState } from 'react'
-import { fetchOrders } from '../api.js'
+import { createUpsLabel, fetchOrders } from '../api.js'
 import './OrdersScreen.css'
 
 const money = (amount) => new Intl.NumberFormat(undefined, {
   style: 'currency', currency: 'USD',
 }).format(amount / 100)
+
+const FROM_KEY = 'thrft-ship-from'
+const loadFrom = () => {
+  try { return JSON.parse(localStorage.getItem(FROM_KEY)) || {} } catch { return {} }
+}
+const FROM_FIELDS = [['name', 'Full name'], ['street1', 'Street address'], ['street2', 'Apt / suite (optional)'],
+  ['city', 'City'], ['state', 'State (e.g. TX)'], ['zip', 'ZIP code'], ['phone', 'Phone (optional)']]
+
+function UpsLabel({ item, onLabel }) {
+  const [open, setOpen] = useState(false)
+  const [from, setFrom] = useState(loadFrom)
+  const [weight, setWeight] = useState('')
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState('')
+  const label = item.upsLabel
+  if (label) return <div className="orders-label">
+    <a href={label.labelUrl} target="_blank" rel="noopener noreferrer">UPS label (PDF)</a>
+    {label.trackingUrl ? <a href={label.trackingUrl} target="_blank" rel="noopener noreferrer">
+      Tracking: {label.trackingNumber}</a> : <span>Tracking: {label.trackingNumber}</span>}
+  </div>
+  if (!item.labelOrderId) return null
+  const submit = async (event) => {
+    event.preventDefault()
+    setBusy(true)
+    setError('')
+    try {
+      const created = await createUpsLabel({ orderId: item.labelOrderId, itemIndex: item.labelItemIndex,
+        fromAddress: from, parcel: { weightLb: Number(weight) } })
+      try { localStorage.setItem(FROM_KEY, JSON.stringify(from)) } catch { /* ignore */ }
+      onLabel(created)
+    } catch (err) {
+      setError(err.message || 'Could not create label')
+    } finally {
+      setBusy(false)
+    }
+  }
+  if (!open) return <button type="button" className="orders-label-btn" onClick={() => setOpen(true)}>Generate UPS Label</button>
+  return <form className="orders-label-form" onSubmit={submit}>
+    {FROM_FIELDS.map(([key, text]) => <input key={key} value={from[key] || ''} placeholder={text}
+      aria-label={text} required={!text.includes('optional')}
+      onChange={(e) => setFrom({ ...from, [key]: e.target.value })} />)}
+    <input type="number" min="0.1" step="0.1" required value={weight} placeholder="Package weight (lb)"
+      aria-label="Package weight in pounds" onChange={(e) => setWeight(e.target.value)} />
+    {error && <p role="alert">{error}</p>}
+    <button type="submit" className="orders-label-btn" disabled={busy}>{busy ? 'Buying label...' : 'Buy UPS label'}</button>
+  </form>
+}
 
 export default function OrdersScreen({ onBack }) {
   const [tab, setTab] = useState('purchases')
@@ -66,7 +113,8 @@ export default function OrdersScreen({ onBack }) {
                 {tracking.carrier || 'Tracking'}: {tracking.number}
               </a> : <span>{tracking.carrier || 'Tracking'}: {tracking.number}</span>}
             </p>)}
-            {tab === 'sales' && item.source === 'market' && <p>UPS label generation is not available yet.</p>}
+            {tab === 'sales' && item.source === 'market' && <UpsLabel item={item}
+              onLabel={(upsLabel) => setItems((rows) => rows.map((row) => row.id === item.id ? { ...row, upsLabel } : row))} />}
           </div>
         </li>)}
       </ul>

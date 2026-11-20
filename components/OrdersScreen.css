@@ -77,3 +77,8 @@
 .orders-info a {
   color: inherit;
 }
+
+.orders-label, .orders-label-form { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+.orders-label a { color: inherit; text-decoration: underline; }
+.orders-label-form input { padding: 8px 10px; border-radius: 10px; border: 1px solid rgba(255,255,255,.25); background: rgba(255,255,255,.08); color: inherit; font: inherit; }
+.orders-label-btn { align-self: flex-start; padding: 8px 14px; border-radius: 999px; font: inherit; font-weight: 600; }

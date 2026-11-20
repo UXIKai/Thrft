@@ -52,6 +52,7 @@ import {
   brandById,
   brandDisplayName,
 } from '../sizeOptions.js'
+import LegalLinks from './LegalLinks.jsx'
 import './SettingsScreen.css'
 import './GlassOverlay.css'
 
@@ -2017,6 +2018,8 @@ export default function SettingsScreen({
       </div>
 
         {shopTools}
+
+        <LegalLinks />
 
         <p className="settings-footer">ThrfT. v1.0.0</p>
 
