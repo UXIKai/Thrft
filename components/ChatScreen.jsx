@@ -3420,7 +3420,7 @@ export default function ChatScreen({
             renderThread()
           ) : (
             <div className="chat-friends-empty">
-              <nav className={`chat-friends-tabs is-collapsible${friendsTabsOpen ? ' is-tabs-open' : ''}${isDesktop && !friendsClicked ? ' is-desktop-hidden' : ''}`} aria-label="Friends">
+              <nav className={`chat-friends-tabs is-collapsible${friendsTabsOpen ? ' is-tabs-open' : ''}${isDesktop && !friendsClicked ? ' is-desktop-hidden' : ''}`} aria-label="Friends" hidden={!isDesktop && !friendsClicked}>
                 <button
                   type="button"
                   className="chat-friends-label"

@@ -5727,3 +5727,5 @@ html body .chat-main-header .chat-top-pill.is-active {
     transform: none;
   }
 }
+
+html body .chat-desktop-thread .chat-friends-tabs[hidden] { display: none !important; }
