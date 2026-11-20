@@ -133,3 +133,5 @@
 .stage:has(.follow-page) .profile-screen {
   visibility: hidden;
 }
+
+html body .follow-page { background: var(--container-bg); touch-action: pan-y; }

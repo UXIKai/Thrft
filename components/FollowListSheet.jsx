@@ -1,6 +1,6 @@
 import FollowIcon from './FollowIcon.jsx'
 import { createPortal } from 'react-dom'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { fetchFollowList, initialsFromName, setFollowingAccount } from '../api.js'
 import './GlassOverlay.css'
 import './FollowListSheet.css'
@@ -20,6 +20,22 @@ export default function FollowListSheet({ username, type: initialType, onClose, 
   const [query, setQuery] = useState('')
   const [sort, setSort] = useState('default')
   const [sortOpen, setSortOpen] = useState(false)
+  const swipe = useRef(null)
+
+  function swipeStart(event) {
+    const t = event.touches[0]
+    swipe.current = { x: t.clientX, y: t.clientY }
+  }
+  function swipeEnd(event) {
+    const start = swipe.current
+    swipe.current = null
+    if (!start || sortOpen) return
+    const t = event.changedTouches[0]
+    const dx = t.clientX - start.x
+    const dy = t.clientY - start.y
+    if (Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(dy) * 1.5) return
+    setType(dx < 0 ? 'following' : 'followers')
+  }
 
   useEffect(() => {
     const stage = document.querySelector('.stage')
@@ -94,7 +110,8 @@ export default function FollowListSheet({ username, type: initialType, onClose, 
 
   if (!stageEl) return null
   return createPortal(
-    <div className="glass-overlay follow-page" role="dialog" aria-modal="true" aria-label="Followers and following">
+    <div className="glass-overlay follow-page" role="dialog" aria-modal="true" aria-label="Followers and following"
+      onTouchStart={swipeStart} onTouchEnd={swipeEnd}>
       <div className="follow-page-top">
         <button type="button" className="follow-page-back is-bare" aria-label="Back" onClick={onClose}>
           <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor"
