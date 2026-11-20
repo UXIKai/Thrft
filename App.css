@@ -3857,3 +3857,12 @@ html body .feed-empty {
   text-align: center;
   pointer-events: none;
 }
+
+/* The open filter panel floats over the page; the closed bar's space stays reserved */
+.market-chips-slot { position: relative; display: flow-root; }
+html body .market-chips.is-open {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 6;
+}

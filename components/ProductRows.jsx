@@ -326,6 +326,8 @@ export default function ProductRows({
   const [chipQuery, setChipQuery] = useState('')
   const [chipHoldDown, setChipHoldDown] = useState(false)
   const chipsRef = useRef(null)
+  const chipsSlotRef = useRef(null)
+  const [chipsSlotH, setChipsSlotH] = useState(null)
   const chipProxyRef = useRef(null)
   const chipHold = useRef({ timer: 0, x: 0, y: 0, fired: false })
   const chipDrag = useRef({ active: false, base: 0, id: 0 })
@@ -355,6 +357,11 @@ export default function ProductRows({
       window.removeEventListener('pointercancel', up)
     }
   }, [chipHoldDown])
+
+  // Keep the closed bar's footprint so the open panel floats over the page instead of pushing it
+  useLayoutEffect(() => {
+    setChipsSlotH(chipsOpen ? (h) => h : chipsSlotRef.current?.offsetHeight ?? null)
+  }, [chipsOpen])
 
   useEffect(() => {
     if (!chipsOpen) {
@@ -567,6 +574,7 @@ export default function ProductRows({
         {error && <p role="alert">{error}</p>}
         {savedError && <p role="alert">{savedError}</p>}
         {!marketItems.length && status !== 'error' && <p role="status" className="feed-empty">{status === 'loading' ? 'Loading products...' : 'No Market products found.'}</p>}
+        <div ref={chipsSlotRef} className="market-chips-slot" style={chipsOpen && chipsSlotH ? { height: chipsSlotH } : undefined}>
         <div
           ref={chipsRef}
           className={`market-chips${chipsOpen ? ' is-open' : ''}${chipHoldDown ? ' is-holding' : ''}`}
@@ -639,6 +647,7 @@ export default function ProductRows({
               {c.label}
             </button>
           ))}
+        </div>
         </div>
         <div className="market-rows">
           {marketRows.map((row, rowIndex) => (
