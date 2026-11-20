@@ -968,7 +968,7 @@ html body .brand-globe.is-dock:not(.is-color-picker):not(.is-brand-picker) .bran
 
 html body .brand-globe.is-dock:not(.is-color-picker):not(.is-brand-picker) .brand-globe-center-hole,
 html body .brand-globe.is-dock:not(.is-color-picker):not(.is-brand-picker) .brand-globe-stage.is-choosing .brand-globe-center-hole {
-  --hole-hue: rgb(var(--bg-color-rgb, 36, 120, 125));
+  --hole-hue: rgb(var(--atmosphere-effect-b-rgb, var(--bg-color-rgb, 120, 120, 120)));
   background: radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0.8) 62%, rgba(0, 0, 0, 0.97) 100%);
   box-shadow:
     0 0 0 1px color-mix(in srgb, var(--hole-hue) 85%, transparent),
@@ -984,7 +984,7 @@ html body .brand-globe.is-dock:not(.is-color-picker):not(.is-brand-picker) .bran
   position: absolute;
   inset: -30%;
   border-radius: 50%;
-  background: conic-gradient(from 200deg, color-mix(in srgb, rgb(var(--bg-color-rgb, 36, 120, 125)) 20%, transparent), color-mix(in srgb, rgb(var(--bg-color-rgb, 36, 120, 125)) 70%, transparent) 25%, color-mix(in srgb, rgb(var(--bg-color-rgb, 36, 120, 125)) 15%, transparent) 50%, color-mix(in srgb, rgb(var(--bg-color-rgb, 36, 120, 125)) 50%, transparent) 80%, color-mix(in srgb, rgb(var(--bg-color-rgb, 36, 120, 125)) 20%, transparent));
+  background: conic-gradient(from 200deg, color-mix(in srgb, rgb(var(--atmosphere-effect-b-rgb, var(--bg-color-rgb, 120, 120, 120))) 20%, transparent), color-mix(in srgb, rgb(var(--atmosphere-effect-b-rgb, var(--bg-color-rgb, 120, 120, 120))) 70%, transparent) 25%, color-mix(in srgb, rgb(var(--atmosphere-effect-b-rgb, var(--bg-color-rgb, 120, 120, 120))) 15%, transparent) 50%, color-mix(in srgb, rgb(var(--atmosphere-effect-b-rgb, var(--bg-color-rgb, 120, 120, 120))) 50%, transparent) 80%, color-mix(in srgb, rgb(var(--atmosphere-effect-b-rgb, var(--bg-color-rgb, 120, 120, 120))) 20%, transparent));
   -webkit-mask-image: radial-gradient(circle, transparent 60%, #000 66%, transparent 74%);
   mask-image: radial-gradient(circle, transparent 60%, #000 66%, transparent 74%);
   filter: blur(1.5px);
