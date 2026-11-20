@@ -611,6 +611,7 @@ export default function ChatScreen({
   onFollowChange,
   onThreadActiveChange,
   accountId,
+  navTapKey,
   openUser,
   onOpenUserHandled,
 } = {}) {
@@ -685,6 +686,12 @@ export default function ChatScreen({
   const [requestsView, setRequestsView] = useState(false)
   const [activeNowOpen, setActiveNowOpen] = useState(false)
   const [requestsTab, setRequestsTab] = useState('requests')
+  const navTapSeen = useRef(navTapKey)
+  useEffect(() => {
+    if (navTapSeen.current === navTapKey) return
+    navTapSeen.current = navTapKey
+    setRequestsView(false)
+  }, [navTapKey])
   const [composer, setComposer] = useState(null) // null | { mode: 'create'|'edit', chatId? }
   const [draftName, setDraftName] = useState('')
   const [draftMembers, setDraftMembers] = useState([])
@@ -3497,7 +3504,7 @@ export default function ChatScreen({
                 />
               ) : (
                 <>
-              <button type="button" role="tab" data-side="chats" aria-selected={!friendsClicked && !requestsView} className={`chat-top-pill is-bare${(holdSide ? holdSide === 'chats' : !friendsClicked && !requestsView) ? ' is-active' : ''}`} onClick={() => { setRequestsView(false); setFriendsClicked(false); setActiveChatId(null) }}>Chats</button>
+              <button type="button" role="tab" data-side="chats" hidden={requestsView} aria-selected={!friendsClicked && !requestsView} className={`chat-top-pill is-bare${(holdSide ? holdSide === 'chats' : !friendsClicked && !requestsView) ? ' is-active' : ''}`} onClick={() => { setRequestsView(false); setFriendsClicked(false); setActiveChatId(null) }}>Chats</button>
               <button type="button" role="tab" data-side="friends" hidden={requestsView} aria-selected={friendsClicked && !requestsView} className={`chat-top-pill is-bare${(holdSide ? holdSide === 'friends' : friendsClicked && !requestsView) ? ' is-active' : ''}`} onClick={() => { setRequestsView(false); setActiveChatId(null); setFriendsClicked(true) }}>Friends</button>
                 </>
               )}

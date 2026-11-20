@@ -116,6 +116,7 @@ export default function App() {
   const [leaderboardError, setLeaderboardError] = useState('')
   const order = useMemo(() => profiles.map((profile) => profile.id), [profiles])
   const [tab, setTab] = useState('home')
+  const [chatNavTap, setChatNavTap] = useState(0)
   const [createSegment, setCreateSegment] = useState('market')
   const [checkoutError, setCheckoutError] = useState('')
   const [searchSignal, setSearchSignal] = useState(0)
@@ -775,6 +776,7 @@ export default function App() {
           <ChatScreen
             key={account?.id || 'guest'}
             accountId={account?.id}
+            navTapKey={chatNavTap}
             onBack={() => setTab('home')}
             onThreadActiveChange={setChatThreadOpen}
             onOpenAccount={(username) => {
@@ -1016,6 +1018,7 @@ export default function App() {
         clearSearchBackground()
         setTab('design')
       }} onChange={(nextTab) => {
+        if (nextTab === 'chat') setChatNavTap((n) => n + 1)
         if (nextTab !== tab) {
           setHomeBrand(null)
           setClothingType('all')
