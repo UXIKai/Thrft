@@ -3539,6 +3539,7 @@ export default function ChatScreen({
             <div className="chat-new-screen">{newChatPanel}</div>
           ) : imagesOnly ? (
             <div className="chat-images-gallery">
+            <div className="chat-images-card">
               <h2 className="chat-images-title">Images</h2>
               {allChatImages.length ? (
                 <div className="chat-images-grid">
@@ -3555,6 +3556,7 @@ export default function ChatScreen({
               ) : (
                 <p className="chat-desktop-empty">No images yet</p>
               )}
+            </div>
             </div>
           ) : requestsView && !activeChat ? (
             <div className="chat-friends-empty">
