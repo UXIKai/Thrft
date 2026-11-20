@@ -302,10 +302,10 @@ function StoreRowPage({ row, onBack, onOpenProduct, favoredBrands = [], onFavore
  * Market uses a growing three-column grid; Store retains personalized marquees.
  */
 // The first product load is covered by the logo over the chosen background
-let splashSeen = false
+let splashClaimed = false
 function LogoSplash() {
   const stage = document.querySelector('.stage')
-  if (!stage || splashSeen) return null
+  if (!stage) return null
   return createPortal(
     <div className="logo-splash" role="status" aria-label="Loading">
       <div className="atmosphere" aria-hidden="true"><AtmosphereFlow /></div>
@@ -338,9 +338,11 @@ export default function ProductRows({
   const [status, setStatus] = useState('loading')
   const [error, setError] = useState('')
   const [chip, setChip] = useState('all')
+  // Only the very first feed of an app launch gets the splash, never a segment switch or return to Home
+  const [launchSplash] = useState(() => !splashClaimed)
   useEffect(() => {
-    if (status !== 'loading') splashSeen = true
-  }, [status])
+    splashClaimed = true
+  }, [])
   const [chipsOpen, setChipsOpen] = useState(false)
   const [chipQuery, setChipQuery] = useState('')
   const [chipHoldDown, setChipHoldDown] = useState(false)
@@ -593,7 +595,7 @@ export default function ProductRows({
         {error && <p role="alert">{error}</p>}
         {savedError && <p role="alert">{savedError}</p>}
         {!marketItems.length && status === 'ready' && <p role="status" className="feed-empty">No Market products found.</p>}
-        {status === 'loading' && <LogoSplash />}
+        {status === 'loading' && launchSplash && <LogoSplash />}
         <div ref={chipsSlotRef} className="market-chips-slot" style={chipsOpen && chipsSlotH ? { height: chipsSlotH } : undefined}>
         <div
           ref={chipsRef}
@@ -693,7 +695,7 @@ export default function ProductRows({
   if (status === 'loading' && !rows.length) {
     return (
       <section className="product-feed" id="home-product-panel" role="tabpanel" aria-labelledby={`home-${segment}-tab`} aria-busy="true">
-        <LogoSplash />
+        {launchSplash && <LogoSplash />}
       </section>
     )
   }
