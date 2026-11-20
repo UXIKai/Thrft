@@ -6088,3 +6088,7 @@ html body .chat-new-screen.is-overlay .chat-new-card {
   width: 100%; max-width: none; height: 100%; max-height: none; margin: 0; box-sizing: border-box;
   border-radius: 0; border: 0; padding: calc(max(8px, env(safe-area-inset-top, 0px)) + 56px) 16px 96px;
 }
+
+html body .chat-images-gallery .chat-images-title { text-align: center; padding-left: 0; margin: 0 0 16px; }
+html body .chat-images-gallery .chat-images-card { padding-top: calc(max(8px, env(safe-area-inset-top, 0px)) + 56px); }
+html body .chat-images-gallery .chat-desktop-empty { text-align: center; }
