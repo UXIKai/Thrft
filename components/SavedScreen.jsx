@@ -711,22 +711,6 @@ export default function SavedScreen({
         <div className={`saved-view-tabs${likedTabsOpen ? ' is-open' : ''}${fabOpen ? ' is-fab-open' : ''}${searchOpen ? ' is-search-on' : ''}${selectMode ? ' is-select-on' : ''}`}>
           <button
             type="button"
-            ref={plusRef}
-            className="saved-view-heart saved-view-plus is-bare"
-            aria-label="Add brands and products"
-            onClick={(e) => {
-              e.currentTarget.blur()
-              setFabOpen(false)
-              setLikedTabsOpen(false)
-              setSearchOpen(false)
-              setQuery('')
-              openGlobe()
-            }}
-          >
-            <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M12 5v14M5 12h14" /></svg>
-          </button>
-          <button
-            type="button"
             className="saved-view-heart is-bare"
             aria-label={likedTabsOpen ? 'Close liked menu' : 'Open liked menu'}
             aria-expanded={likedTabsOpen}
@@ -751,42 +735,25 @@ export default function SavedScreen({
               ))}
             </div>
           </div>
-          <div className={`saved-pill-search${searchOpen ? ' is-open' : ''}`} ref={searchWrapRef} aria-hidden={!searchOpen}>
-            <input
-              id="saved-search-input"
-              type="text"
-              inputMode="search"
-              autoComplete="off"
-              spellCheck={false}
-              aria-label="Search liked"
-              placeholder="Search"
-              tabIndex={searchOpen ? 0 : -1}
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-            />
-          </div>
+          <button
+            type="button"
+            ref={plusRef}
+            className="saved-view-heart saved-view-plus is-bare"
+            aria-label="Add brands and products"
+            onClick={(e) => {
+              e.currentTarget.blur()
+              setFabOpen(false)
+              setLikedTabsOpen(false)
+              setSearchOpen(false)
+              setQuery('')
+              openGlobe()
+            }}
+          >
+            <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M12 5v14M5 12h14" /></svg>
+          </button>
           <div className={`saved-fab is-open${selectMode ? ' is-selecting' : ''}${searchOpen ? ' is-searching' : ''}`}>
         <div className="saved-fab-items">
         <div className="saved-fab-item" style={{ '--i': 0 }}>
-            <button
-              type="button"
-              className="saved-fab-btn"
-              aria-label="Search liked"
-              aria-expanded={searchOpen}
-              tabIndex={0}
-              onClick={(e) => {
-                e.currentTarget.blur()
-                setFabOpen(false)
-                if (searchOpen) { setSearchOpen(false); setQuery(''); return }
-                setLikedTabsOpen(false)
-                setSearchOpen(true)
-                window.setTimeout(() => document.getElementById('saved-search-input')?.focus({ preventScroll: true }), 0)
-              }}
-            >
-              <SearchIcon />
-            </button>
-        </div>
-        <div className="saved-fab-item" style={{ '--i': 1 }}>
           <button
             type="button"
             className={`saved-fab-btn${selectMode ? ' is-danger' : ''}`}
@@ -818,8 +785,41 @@ export default function SavedScreen({
             )}
           </button>
         </div>
+        <div className="saved-fab-item" style={{ '--i': 1 }}>
+            <button
+              type="button"
+              className="saved-fab-btn"
+              aria-label="Search liked"
+              aria-expanded={searchOpen}
+              tabIndex={0}
+              onClick={(e) => {
+                e.currentTarget.blur()
+                setFabOpen(false)
+                if (searchOpen) { setSearchOpen(false); setQuery(''); return }
+                setLikedTabsOpen(false)
+                setSearchOpen(true)
+                window.setTimeout(() => document.getElementById('saved-search-input')?.focus({ preventScroll: true }), 0)
+              }}
+            >
+              <SearchIcon />
+            </button>
+        </div>
         </div>
       </div>
+          <div className={`saved-pill-search${searchOpen ? ' is-open' : ''}`} ref={searchWrapRef} aria-hidden={!searchOpen}>
+            <input
+              id="saved-search-input"
+              type="text"
+              inputMode="search"
+              autoComplete="off"
+              spellCheck={false}
+              aria-label="Search liked"
+              placeholder="Search"
+              tabIndex={searchOpen ? 0 : -1}
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+          </div>
         </div>
       </header>
       <div
