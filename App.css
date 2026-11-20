@@ -3905,3 +3905,14 @@ html body .stage > .tab-bar.tab-bar.tab-bar.is-dragging:not(#_):not(#_),
 html body .stage > .tab-bar.tab-bar.tab-bar.is-pressed:not(#_):not(#_) {
   transition: none !important;
 }
+
+/* First-load splash: the logo centred over the chosen background */
+.logo-splash {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+}
+.logo-splash .atmosphere { z-index: 0; }
+.logo-splash .wordmark { position: relative; z-index: 1; }
