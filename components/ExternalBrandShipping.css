@@ -50,3 +50,43 @@
   background: var(--glass-clear-tint);
   font: inherit;
 }
+
+/* Refined layout: centered column, tidy fee summary, compact buttons */
+.external-shipping-body {
+  width: min(100%, 560px);
+  margin: 0 auto;
+  box-sizing: border-box;
+  gap: 14px;
+}
+.external-shipping-terms {
+  display: grid;
+  margin: 0;
+  border: 1px solid var(--glass-border);
+  border-radius: 18px;
+  background: var(--container-bg, var(--glass-clear-tint));
+  overflow: hidden;
+}
+.external-shipping-terms > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 16px;
+  font-size: 0.86rem;
+}
+.external-shipping-terms > div + div { border-top: 1px solid var(--glass-border); }
+.external-shipping-terms dt { opacity: 0.6; white-space: nowrap; }
+.external-shipping-terms dd { margin: 0; text-align: right; }
+.external-shipping-note { margin: 0; font-size: 0.8rem; line-height: 1.5; opacity: 0.6; }
+.external-shipping-brand { background: var(--container-bg, var(--glass-clear-tint)); gap: 14px; padding: 18px; }
+.external-shipping-brand h2 { font-size: 1.15rem; }
+.external-shipping-brand > p:first-of-type { margin-top: -10px; font-size: 0.82rem; opacity: 0.6; }
+.external-shipping-brand label { font-size: 0.78rem; letter-spacing: 0.04em; text-transform: uppercase; opacity: 0.85; }
+.external-shipping-brand input { text-transform: none; letter-spacing: 0; box-sizing: border-box; width: 100%; }
+.external-shipping-form.is-section { padding-top: 16px; border-top: 1px solid var(--glass-border); }
+html body .external-shipping-brand .external-shipping-save {
+  justify-self: end;
+  min-width: 140px;
+  padding: 10px 22px;
+  border-radius: 999px;
+  font-weight: 700;
+}

@@ -55,14 +55,14 @@ function ShippingBrand({ brand }) {
     <h2>{brand.name}</h2>
     <p>{brand.domain}</p>
     <BrandCatalogSync brandId={brand.id} disabled={busy} />
-    <form onSubmit={save}>
+    <form className="external-shipping-form" onSubmit={save}>
       <label>Flat shipping rate (USD)
         <input type="text" inputMode="decimal" value={amount} disabled={busy}
           onChange={(event) => { setAmount(event.target.value); setMessage(''); setError('') }} />
       </label>
-      <button type="submit" disabled={busy}>{busy ? 'Saving…' : 'Save rate'}</button>
+      <button type="submit" className="external-shipping-save" disabled={busy}>{busy ? 'Saving…' : 'Save rate'}</button>
     </form>
-    <form onSubmit={(event) => { event.preventDefault(); saveShopify() }}>
+    <form className="external-shipping-form is-section" onSubmit={(event) => { event.preventDefault(); saveShopify() }}>
       <h3>Shopify sync (optional)</h3>
       <p>{connected ? 'Connected. Leave the token blank to keep your current connection.' : 'Not connected.'}</p>
       <label>Shop domain
@@ -75,7 +75,7 @@ function ShippingBrand({ brand }) {
           placeholder={connected ? 'Leave blank to keep existing token' : 'Access token'}
           onChange={(event) => setToken(event.target.value)} />
       </label>
-      <button type="submit" disabled={busy || !shop.trim()}>Save Shopify settings</button>
+      <button type="submit" className="external-shipping-save" disabled={busy || !shop.trim()}>Save Shopify settings</button>
       {connected && <button type="button" disabled={busy} onClick={() => saveShopify(true)}>Disable Shopify sync</button>}
     </form>
     {message && <p role="status">{message}</p>}
@@ -110,7 +110,13 @@ export default function ExternalBrandShipping({ onBack }) {
       <span aria-hidden="true" />
     </header>
     <div className="glass-overlay-body external-shipping-body">
-      <p>One flat shipping rate per brand; $0 means free shipping. Thrft charges a 2% item fee, with no monthly fee. Your payout = item sales × 98% + shipping − processing (2.9% of the total charged + $0.30), with a $0 minimum. Shared checkouts split the processing fee proportionally. Payouts are manual.</p>
+      <dl className="external-shipping-terms">
+        <div><dt>Thrft fee</dt><dd>2% of item sales</dd></div>
+        <div><dt>Monthly fee</dt><dd>None</dd></div>
+        <div><dt>Processing</dt><dd>2.9% of total charged + $0.30</dd></div>
+        <div><dt>Your payout</dt><dd>Item sales × 98% + shipping − processing</dd></div>
+      </dl>
+      <p className="external-shipping-note">One flat shipping rate per brand; $0 means free shipping. Shared checkouts split the processing fee proportionally, and payouts are manual.</p>
       {loading && <p role="status">Loading brands…</p>}
       {error && <p role="alert">{error}</p>}
       {!loading && !error && !brands.length && <p>No verified stores yet. Import a brand website from Create to sync its catalog here.</p>}
