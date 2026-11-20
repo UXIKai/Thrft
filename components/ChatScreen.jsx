@@ -2941,7 +2941,7 @@ export default function ChatScreen({
         <h3>Friends</h3>
       </div>
       <div className="chat-friends-drawer-tabs">
-        {[['all', 'All'], ['pending', 'Pending'], ['suggestions', 'Suggestions']].map(([id, label]) => (
+        {[['all', 'Active'], ['pending', 'Pending'], ['suggestions', 'Suggestions']].map(([id, label]) => (
           <button
             key={id}
             type="button"
@@ -3454,7 +3454,7 @@ export default function ChatScreen({
                   onPointerCancel={(e) => { e.currentTarget.dataset.drag = '0' }}
                 >
                   <span className="chat-friends-pill" aria-hidden />
-                {[['all', 'All'], ['pending', 'Pending'], ['suggestions', 'Suggestions']].map(([id, label]) => (
+                {[['all', 'Active'], ['pending', 'Pending'], ['suggestions', 'Suggestions']].map(([id, label]) => (
                   <button
                     key={id}
                     type="button"

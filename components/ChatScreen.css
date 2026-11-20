@@ -5709,3 +5709,21 @@ html body .chat-main-header .chat-top-pill.is-active {
   background: rgba(255, 255, 255, 0.16);
   opacity: 1;
 }
+
+@media (max-width: 719px), (max-height: 499px) {
+  html body .chat-desktop-thread .chat-friends-tabs.is-collapsible[aria-label='Friends'] {
+    display: flex;
+    justify-content: center;
+    width: auto;
+    margin: 0 12px 10px;
+  }
+  html body .chat-desktop-thread .chat-friends-tabs.is-collapsible[aria-label='Friends'] .chat-friends-tab-group {
+    position: relative;
+    top: auto;
+    left: auto;
+    flex: 1 1 auto;
+    opacity: 1;
+    pointer-events: auto;
+    transform: none;
+  }
+}
