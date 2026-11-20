@@ -748,7 +748,7 @@ export default function ChatScreen({
     if (!attachOpen) setFriendListOpen(false)
   }, [attachOpen])
   const activeChat = chats.find((c) => c.id === activeChatId) || null
-  useEffect(() => { if (activeChatId) setRequestsView(false) }, [activeChatId])
+  useEffect(() => { if (activeChatId) { setRequestsView(false); setFriendsClicked(false) } }, [activeChatId])
   const allChatImages = chats.flatMap((c) =>
     (c.messages || [])
       .filter((m) => m.kind === 'image' && m.imageUrl)
@@ -3307,8 +3307,12 @@ export default function ChatScreen({
           >
             <ToggleIcon />
           </button>
-          {requestsView && !composer && <h2 className="chat-page-title">Message Requests</h2>}
-          {friendsBtn}
+          {!composer && !imagesOnly && (
+            <div className="chat-top-switch" role="tablist" aria-label="Chat sections">
+              <button type="button" role="tab" aria-selected={friendsClicked && !requestsView} className={`chat-top-pill is-bare${friendsClicked && !requestsView ? ' is-active' : ''}`} onClick={() => { setRequestsView(false); setActiveChatId(null); setFriendsClicked(true) }}>Friends</button>
+              <button type="button" role="tab" aria-selected={requestsView} className={`chat-top-pill is-bare${requestsView ? ' is-active' : ''}`} onClick={() => { setActiveChatId(null); setFriendsClicked(false); setRequestsView(true) }}>Requests</button>
+            </div>
+          )}
           {peopleSearchOpen && !imagesOnly && !requestsView && !composer && (
             <input
               id="chat-people-search"
@@ -3326,7 +3330,7 @@ export default function ChatScreen({
           )}
         </div>
       )}
-      {!isDesktop && !activeChatId && !imagesOnly && !requestsView && !composer && !peopleSearchOpen && (
+      {!isDesktop && !activeChatId && !imagesOnly && !requestsView && !friendsClicked && !composer && !peopleSearchOpen && (
         <ul className="chat-home-list" aria-label="Active chats">
           {filtered.all.filter((chat) => chat.preview).map((chat) => (
             <li key={chat.id}>
@@ -3458,7 +3462,7 @@ export default function ChatScreen({
                   {activeNowOpen && <h3 className="chat-friends-active-title">Online</h3>}
                 </div>
               </nav>
-              {!isDesktop && (activeNowOpen || onlineDragP !== null) && (
+              {!isDesktop && (friendsClicked || activeNowOpen || onlineDragP !== null) && (
               <div className="chat-friends-body">
               {friendsPanel}
               </div>
