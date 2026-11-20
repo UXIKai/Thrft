@@ -5811,3 +5811,7 @@ html body .chat-row-wrap.is-pressing {
   to { opacity: 1; scale: 1; }
 }
 html body .chat-hold-stack { animation: chat-hold-reveal 0.28s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+html body .chat-hold-stack { width: 86vw; }
+html body .chat-hold-preview { height: min(52dvh, 460px); }
+html body .chat-hold-preview .chat-hold-frame { --hold-s: 0.86; height: calc(min(52dvh, 460px) / 0.86); }
