@@ -994,3 +994,17 @@ html body .brand-globe.is-dock.is-brand-picker .brand-globe-stage:not(.has-focus
   background: transparent;
   color: rgba(255, 255, 255, 0.8);
 }
+
+/* Distortion ring: smeared, tinted band just outside the light rim, fading outward */
+html body .brand-globe.is-dock:not(.is-color-picker) .brand-globe-center-hole::after {
+  content: '';
+  position: absolute;
+  inset: -22%;
+  border-radius: 50%;
+  background: conic-gradient(from 30deg, color-mix(in srgb, rgb(var(--atmosphere-effect-b-rgb, var(--bg-color-rgb, 120, 120, 120))) 22%, transparent), transparent 18%, color-mix(in srgb, rgb(var(--atmosphere-effect-b-rgb, var(--bg-color-rgb, 120, 120, 120))) 16%, transparent) 40%, transparent 62%, color-mix(in srgb, rgb(var(--atmosphere-effect-b-rgb, var(--bg-color-rgb, 120, 120, 120))) 22%, transparent) 85%, color-mix(in srgb, rgb(var(--atmosphere-effect-b-rgb, var(--bg-color-rgb, 120, 120, 120))) 22%, transparent));
+  -webkit-backdrop-filter: blur(5px) saturate(1.5) brightness(1.15);
+  backdrop-filter: blur(5px) saturate(1.5) brightness(1.15);
+  -webkit-mask-image: radial-gradient(circle, transparent 72%, #000 78%, #000 84%, transparent 98%);
+  mask-image: radial-gradient(circle, transparent 72%, #000 78%, #000 84%, transparent 98%);
+  pointer-events: none;
+}
