@@ -444,16 +444,6 @@ export default function ProductDetail({
       </header>
       <div className="glass-overlay-body product-detail-body">
         {likeError && <p role="alert">{likeError}</p>}
-        {!isMarket && brand && (
-          <button
-            type="button"
-            className="product-detail-brand is-bare"
-            onClick={() => onOpenBrand?.(product.brandId || '', brand)}
-            aria-label={`View ${brand} brand page`}
-          >
-            {brand}
-          </button>
-        )}
         <div className="product-detail-photo">
           {photos.length > 1 ? (
             <ProductSpin count={photos.length} label="Product mockups; drag to rotate">
