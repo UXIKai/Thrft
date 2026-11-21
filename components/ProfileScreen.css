@@ -3856,7 +3856,7 @@ html body .profile-screen .profile-card .section-pager {
 /* Card is 90% opaque */
 html body .profile-screen .profile-card .profile-identity,
 html body .profile-screen .profile-card .section-pager {
-  background: color-mix(in srgb, var(--page-bg) 90%, transparent);
+  background: var(--container-bg);
   box-shadow: none;
 }
 
@@ -3952,7 +3952,7 @@ html body .profile-screen .profile-card .pf-photos:not([hidden]) {
   margin: 0 -28px 14px;
   padding: 8px 16px 16px;
   box-sizing: border-box;
-  background: var(--page-bg);
+  background: var(--container-bg);
   border: 1px solid light-dark(rgba(0, 0, 0, 0.3), rgba(255, 255, 255, 0.08));
   border-top: 0;
   border-radius: 0 0 28px 28px;
@@ -4024,7 +4024,7 @@ html[data-bg-image='none'] body .pf-compose .pf-compose-caption {
     padding: 0 24px 24px;
     min-height: var(--plate-fill, 0px);
     box-sizing: border-box;
-    background: var(--page-bg);
+    background: var(--container-bg);
     border: 1px solid light-dark(rgba(0, 0, 0, 0.3), rgba(255, 255, 255, 0.08));
     border-top: 0;
     border-radius: 0 0 28px 28px;
@@ -4102,7 +4102,7 @@ html[data-bg-image='none'] body .pf-compose .pf-compose-caption {
     inset: 0;
     z-index: -1;
     pointer-events: none;
-    background: var(--page-bg);
+    background: var(--container-bg);
   }
   html[data-bg-image='none'] body .profile-screen:has(:is(.profile-spaces-inline, .pf-photos):not([hidden]))::before {
     background: var(--container-bg);
