@@ -452,7 +452,7 @@ export default function ProductDetail({
             aria-label={`View ${brand} brand page`}
           >
             {isExternal && product.brandLogoUrl && <img className="product-detail-brand-logo" src={product.brandLogoUrl} alt="" />}
-            {brand}
+            {!(isExternal && product.brandLogoUrl) && brand}
           </button>
         )}
         <div className="product-detail-photo">
@@ -471,7 +471,7 @@ export default function ProductDetail({
         {isMarket && (
           <div className="product-detail-market-info">
             <div className="product-detail-market-meta">
-              {brand && <button type="button" className="product-detail-brand is-bare" onClick={() => onOpenBrand?.(product.brandId || '', brand)} aria-label={`View ${brand} brand page`}>{isExternal && product.brandLogoUrl && <img className="product-detail-brand-logo" src={product.brandLogoUrl} alt="" />}{brand}</button>}
+              {brand && <button type="button" className="product-detail-brand is-bare" onClick={() => onOpenBrand?.(product.brandId || '', brand)} aria-label={`View ${brand} brand page`}>{isExternal && product.brandLogoUrl && <img className="product-detail-brand-logo" src={product.brandLogoUrl} alt="" />}{!(isExternal && product.brandLogoUrl) && brand}</button>}
               {product.category && <span>{product.category}</span>}
             </div>
             <p className="product-detail-price">{product.price}</p>
