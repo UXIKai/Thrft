@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { createPortal, flushSync } from 'react-dom'
+import AvatarCropper from './AvatarCropper.jsx'
 import AtmosphereFlow from './AtmosphereFlow.jsx'
 import {
   connectProvider,
@@ -52,30 +53,6 @@ function GalleryIcon() {
       <path fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" d="m4.5 17 4.2-4.2 3 3 3.3-3.8 4.5 5" />
     </svg>
   )
-}
-
-function compressImageFile(file, maxSize = 240) {
-  return new Promise((resolve, reject) => {
-    const url = URL.createObjectURL(file)
-    const img = new Image()
-    img.onload = () => {
-      const scale = Math.min(1, maxSize / Math.max(img.width, img.height))
-      const w = Math.max(1, Math.round(img.width * scale))
-      const h = Math.max(1, Math.round(img.height * scale))
-      const canvas = document.createElement('canvas')
-      canvas.width = w
-      canvas.height = h
-      const ctx = canvas.getContext('2d')
-      ctx.drawImage(img, 0, 0, w, h)
-      URL.revokeObjectURL(url)
-      resolve(canvas.toDataURL('image/jpeg', 0.72))
-    }
-    img.onerror = () => {
-      URL.revokeObjectURL(url)
-      reject(new Error('image_load_failed'))
-    }
-    img.src = url
-  })
 }
 
 function ShirtIcon() {
@@ -766,6 +743,7 @@ export default function ProfileScreen({
   })
   const [salesError, setSalesError] = useState('')
   const [connectBusy, setConnectBusy] = useState('')
+  const [cropFile, setCropFile] = useState(null)
   const [avatarUrl, setAvatarUrl] = useState(() => userProfile?.avatarUrl || '')
   const connections = userProfile?.connections || {
     shopify: { connected: false },
@@ -1214,10 +1192,15 @@ export default function ProfileScreen({
     setViewPhoto(null)
   }
 
-  async function onPhotoPicked(file) {
+  function onPhotoPicked(file) {
     if (!file || !file.type?.startsWith('image/')) return
+    setPhotoSheetOpen(false)
+    setCropFile(file)
+  }
+
+  async function saveCroppedAvatar(dataUrl) {
+    setCropFile(null)
     try {
-      const dataUrl = await compressImageFile(file)
       await onSaveProfile?.({ avatarUrl: dataUrl })
       setAvatarUrl(dataUrl)
       setPhotoSheetOpen(false)
@@ -1722,6 +1705,7 @@ export default function ProfileScreen({
           </button>
         )}
       </section>
+      {cropFile && <AvatarCropper file={cropFile} onCancel={() => setCropFile(null)} onDone={saveCroppedAvatar} />}
       {composeOpen && (
         <div className="pf-compose" role="dialog" aria-label="New photo">
           <div className="pf-compose-top">

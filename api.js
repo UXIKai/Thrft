@@ -246,7 +246,7 @@ export async function saveProfile(patch) {
   }
   if (isSupabaseConfigured()) {
     const profile = await api('/api/creator/me/profile', { method: 'PUT', body: JSON.stringify(patch) })
-    const next = writeLocalProfile({ ...base, ...profile })
+    const next = writeLocalProfile({ ...base, ...profile, ...identity })
     return { profile: next, source: 'supabase' }
   }
   try {
