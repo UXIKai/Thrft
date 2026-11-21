@@ -3263,9 +3263,6 @@ export default function ChatScreen({
         </div>
         {isDesktop && sidebarCollapsed && (
           <nav className="chat-rail" aria-label="Chat shortcuts">
-            <button type="button" className="chat-rail-btn" data-tip="New chat" aria-label="New chat" onClick={() => (composer?.mode === 'create' ? closeComposer() : openCreateGroup())}>
-              <ComposeIcon />
-            </button>
             <button
               type="button"
               className="chat-rail-btn"
@@ -3277,6 +3274,9 @@ export default function ChatScreen({
               }}
             >
               <SearchIcon />
+            </button>
+            <button type="button" className="chat-rail-btn" data-tip="New chat" aria-label="New chat" onClick={() => (composer?.mode === 'create' ? closeComposer() : openCreateGroup())}>
+              <ComposeIcon />
             </button>
             <button type="button" className="chat-rail-btn" data-tip="Pinned" aria-label="Pinned" onClick={() => { setPinnedCollapsed(false); setSidebarCollapsed(false) }}>
               <PinIcon className="chat-ico" />
