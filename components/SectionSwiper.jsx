@@ -113,16 +113,26 @@ export default function SectionSwiper({
           ))}
         </div>
         <div className="section-pager-bars" role="group" aria-label={label}>
-          {sections.map(({ id, label: name }, i) => (
-            <button
-              key={id}
-              type="button"
-              className={`section-pager-bar is-bare${i === index ? ' is-active' : ''}`}
-              aria-label={name}
-              aria-current={i === index ? 'true' : undefined}
-              onClick={() => go(i)}
-            />
-          ))}
+          {[-1, 1].map((dir) => {
+            const target = index + dir
+            const ok = target >= 0 && target < sections.length
+            return (
+              <button
+                key={dir}
+                type="button"
+                className="section-pager-step is-bare"
+                aria-label={ok ? sections[target].label : undefined}
+                aria-hidden={ok ? undefined : 'true'}
+                tabIndex={ok ? 0 : -1}
+                style={ok ? undefined : { visibility: 'hidden' }}
+                onClick={() => go(target)}
+              >
+                <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d={dir < 0 ? 'M15 5l-7 7 7 7' : 'M9 5l7 7-7 7'} />
+                </svg>
+              </button>
+            )
+          })}
         </div>
       </div>
       {open &&

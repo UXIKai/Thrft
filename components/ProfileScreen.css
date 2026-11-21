@@ -4227,3 +4227,20 @@ html body .app-column.is-profile-wide .profile-screen .pf-top-actions {
   html body .profile-screen .profile-card .profile-identity::before,
   html body .profile-screen .profile-card .profile-identity::after { display: none !important; }
 }
+
+/* Section picker: arrows (only the directions you can go) replace the dash bars */
+html body .profile-screen .section-pager-bars {
+  justify-content: space-between;
+  width: min(280px, 80%);
+  margin-inline: auto;
+  gap: 0;
+}
+html body .profile-screen .section-pager-step {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 28px;
+  padding: 0;
+  color: inherit;
+  opacity: 0.85;
+}
