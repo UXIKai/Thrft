@@ -6116,11 +6116,11 @@ html body .chat-images-gallery.is-fullscreen .chat-images-item { border-radius: 
   html body .chat-images-gallery.is-fullscreen .chat-images-grid { grid-template-columns: repeat(10, minmax(0, 1fr)); }
 }
 
-/* Message requests: full-page container at 50% opacity, top included */
+/* Message requests: full-page container, same 90% plate as the other containers, top included */
 html body .stage > .chat-friends-empty.is-requests-full {
   position: fixed; inset: 0; z-index: 0; width: auto; height: auto; max-width: none; margin: 0; box-sizing: border-box;
   padding: calc(env(safe-area-inset-top, 0px) + 12px) 0 120px; border-radius: 0; border: 0;
-  background: color-mix(in srgb, var(--page-bg) 50%, transparent) !important;
+  background: var(--container-bg) !important;
   -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px);
   display: flex; flex-direction: column; align-items: center; overflow-y: auto;
 }
