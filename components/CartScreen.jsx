@@ -14,6 +14,14 @@ import NavButtonGlyph from './NavButtonGlyph.jsx'
  * Marketplace bag — glass overlay, no nested cards.
  * Checkout pays for listed items (never Thrft Premium).
  */
+// Settings stores the address as "street, city, ST zip".
+function parseSavedAddress(value) {
+  if (typeof value !== 'string') return { address1: '', city: '', state_code: '', zip: '' }
+  const [address1 = '', city = '', rest = ''] = value.split(', ')
+  const [state_code = '', ...zip] = rest.split(' ')
+  return { address1, city, state_code, zip: zip.join(' ') }
+}
+
 export default function CartScreen({
   items: itemsProp,
   onClose,
@@ -21,6 +29,7 @@ export default function CartScreen({
   onChange,
   onOpenProduct,
   shippingAddress = '',
+  onSaveAddress,
   onMenuPick,
 }) {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -32,9 +41,10 @@ export default function CartScreen({
   const [error, setError] = useState('')
   const [confirmId, setConfirmId] = useState(null)
   const [shippingOpen, setShippingOpen] = useState(false)
+  const [addressSaved, setAddressSaved] = useState(false)
   const [recipient, setRecipient] = useState(() => ({
-    name: '', address1: typeof shippingAddress === 'string' ? shippingAddress : '',
-    address2: '', city: '', state_code: '', zip: '', country_code: 'US',
+    name: '', ...parseSavedAddress(shippingAddress),
+    address2: '', country_code: 'US',
     ...(shippingAddress && typeof shippingAddress === 'object' ? shippingAddress : {}),
   }))
   const [quote, setQuote] = useState(null)
@@ -228,6 +238,7 @@ export default function CartScreen({
                     setRecipient({ ...recipient, [field]: event.target.value })
                     setQuote(null)
                     setError('')
+                    setAddressSaved(false)
                   }} />
               </label>)}
               {currentQuote && <label>
@@ -239,6 +250,12 @@ export default function CartScreen({
                 </select>
               </label>}
             </fieldset>
+            {onSaveAddress && <button type="button" disabled={busy || addressSaved || !recipient.address1.trim()}
+              onClick={async () => {
+                const { address1, address2, city, state_code, zip } = recipient
+                await onSaveAddress([[address1, address2].filter(Boolean).join(' '), city, `${state_code} ${zip}`.trim()].join(', '))
+                setAddressSaved(true)
+              }}>{addressSaved ? 'Address saved' : 'Save address'}</button>}
             <p>Delivery uses this address. Billing details are entered in Stripe.</p>
             <button type="button" className="is-bare" disabled={busy}
               onClick={() => setShippingOpen(false)}>Back to bag</button>

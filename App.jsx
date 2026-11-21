@@ -871,6 +871,7 @@ export default function App() {
         <CartScreen
           items={cartItems}
           shippingAddress={userProfile?.shippingAddress || ''}
+          onSaveAddress={(shippingAddress) => handleSaveProfile({ shippingAddress })}
           onClose={() => setCartOpen(false)}
           onShowNav={() => { setCartOpen(false); setAtBottom(false) }}
           onMenuPick={(id) => {
