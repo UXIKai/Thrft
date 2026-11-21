@@ -3995,9 +3995,6 @@ html[data-bg-image='none'] body .pf-compose .pf-compose-caption {
   html body .profile-screen .profile-product-list {
     grid-template-columns: repeat(9, minmax(0, 1fr));
     gap: 16px 12px;
-    width: calc(100vw - 48px);
-    max-width: none;
-    margin-inline: calc(50% - 50vw + 24px);
   }
 }
 
@@ -4005,4 +4002,35 @@ html[data-bg-image='none'] body .pf-compose .pf-compose-caption {
 @media (min-width: 720px) {
   html body .profile-screen:has(.pf-photos:not([hidden])) .profile-card .profile-identity { margin-inline: -98px; }
   html body .profile-screen .profile-card .pf-photos:not([hidden]) { margin-inline: -98px; }
+}
+
+/* Desktop: one plate spans the page and holds the header, the section picker and the items below */
+@media (min-width: 720px) {
+  html body .profile-screen:has(.profile-spaces-inline:not([hidden])) .profile-card .profile-identity,
+  html body .profile-screen .profile-card .profile-spaces-inline:not([hidden]) {
+    width: calc(100vw - 48px);
+    max-width: none;
+    box-sizing: border-box;
+    margin-inline: calc(50% - 50vw + 24px);
+  }
+  html body .profile-screen .profile-card .profile-spaces-inline:not([hidden]) {
+    padding: 0 24px 24px;
+    background: var(--page-bg);
+    border: 1px solid light-dark(rgba(0, 0, 0, 0.3), rgba(255, 255, 255, 0.08));
+    border-top: 0;
+    border-radius: 0 0 28px 28px;
+    box-shadow: 0 4px 14px light-dark(rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.25));
+  }
+  html[data-bg-image='none'] body .profile-screen .profile-card .profile-spaces-inline:not([hidden]) {
+    background: var(--container-bg);
+  }
+  html body .profile-screen .profile-card .profile-spaces-inline .section-pager,
+  html[data-bg-image='none'] body .profile-screen .profile-card .profile-spaces-inline .section-pager {
+    margin-inline: 0;
+    background: none;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  html[data-bg-image='none'] body .profile-screen .profile-card .section-pager::after { display: none; }
 }
