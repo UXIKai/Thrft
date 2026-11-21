@@ -3910,7 +3910,7 @@ html[data-bg-image='none'] body .profile-screen .closet-browse-wheels::before {
   content: '';
   position: absolute;
   z-index: -1;
-  top: -40px;
+  top: -12px;
   bottom: -10px;
   left: 50%;
   width: calc(100cqw + 16px);
@@ -3919,3 +3919,11 @@ html[data-bg-image='none'] body .profile-screen .closet-browse-wheels::before {
   border-radius: 0 0 28px 28px;
 }
 html[data-bg-image='none'] body .profile-screen .closet-browse { container-type: inline-size; }
+
+/* Effect off: the tint override for filter bars and pills must not fill the profile panels' buttons */
+html[data-bg-image='none'] .profile-screen {
+  --glass-tint: transparent !important;
+  --glass-clear-tint: transparent !important;
+  --glass-tint-active: transparent !important;
+  --glass-clear-tint-active: transparent !important;
+}
