@@ -634,6 +634,23 @@ export default function ProfileScreen({
       if (ro) ro.disconnect()
     }
   }, [spaceTab, profileView])
+  // Locked at the top: pulling down while already at the top never drags the page
+  useEffect(() => {
+    const root = document.querySelector('.profile-screen')
+    const scroller = root?.closest('.home-scroll')
+    if (!scroller) return undefined
+    let y0 = 0
+    const start = (e) => { y0 = e.touches[0].clientY }
+    const move = (e) => {
+      if (scroller.scrollTop <= 0 && e.touches[0].clientY > y0 && e.cancelable && !e.target.closest?.('[data-no-section-swipe], input, textarea')) e.preventDefault()
+    }
+    scroller.addEventListener('touchstart', start, { passive: true })
+    scroller.addEventListener('touchmove', move, { passive: false })
+    return () => {
+      scroller.removeEventListener('touchstart', start)
+      scroller.removeEventListener('touchmove', move)
+    }
+  }, [])
   const [panelListingTab, setPanelListingTab] = useState('active')
   const [storeProducts, setStoreProducts] = useState([])
   const [marketListings, setMarketListings] = useState([])

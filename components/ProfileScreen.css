@@ -4244,3 +4244,5 @@ html body .profile-screen .section-pager-step {
   color: inherit;
   opacity: 0.85;
 }
+
+.home-scroll:has(.profile-screen) { overscroll-behavior-y: none; }
