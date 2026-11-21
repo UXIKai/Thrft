@@ -4056,8 +4056,10 @@ html[data-bg-image='none'] body .pf-compose .pf-compose-caption {
   html body .profile-screen:has(.pf-photos:not([hidden])) .profile-card .profile-identity {
     padding-inline: calc(18px + var(--plate-wide-x, 0px));
   }
+  /* the Store/Closet header is 64px shorter (name lowered), so lift the counts the same amount here */
   html body .profile-screen:has(.pf-photos:not([hidden])) .profile-card .profile-identity .profile-social {
     right: calc(18px + var(--plate-wide-x, 0px));
+    bottom: calc(14px + 64px);
   }
   html body .profile-screen .profile-card .pf-photos:not([hidden]) {
     margin-bottom: 14px;
