@@ -3927,3 +3927,19 @@ html[data-bg-image='none'] .profile-screen {
   --glass-tint-active: transparent !important;
   --glass-clear-tint-active: transparent !important;
 }
+
+/* Effect off: the Store/Market/Stylst button rows sit on the same plate as the header */
+html[data-bg-image='none'] body .profile-screen .profile-spaces-inline-body { container-type: inline-size; }
+html[data-bg-image='none'] body .profile-screen :is(.profile-listing-tabs.is-panel, .stylst-bar) { position: relative; }
+html[data-bg-image='none'] body .profile-screen :is(.profile-listing-tabs.is-panel, .stylst-bar)::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  top: -12px;
+  bottom: -10px;
+  left: 50%;
+  width: calc(100cqw + 16px);
+  transform: translateX(-50%);
+  background: var(--container-bg);
+  border-radius: 0 0 28px 28px;
+}
