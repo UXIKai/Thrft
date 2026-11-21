@@ -622,6 +622,86 @@ export default function SavedScreen({
     }
   }
 
+  function measurePlusOrigin() {
+    const el = plusRef.current
+    if (!el) return { dx: 0, dy: 140 }
+    const r = el.getBoundingClientRect()
+    const cx = r.left + r.width / 2
+    const cy = r.top + r.height / 2
+    const midX = window.innerWidth / 2
+    const midY = window.innerHeight * 0.46
+    return { dx: cx - midX, dy: cy - midY }
+  }
+
+  function openGlobe() {
+    setGlobeOrigin(measurePlusOrigin())
+    setGlobePhase('enter')
+    window.setTimeout(() => {
+      setGlobePhase((p) => (p === 'enter' ? 'open' : p))
+    }, 480)
+  }
+
+  function closeGlobe() {
+    if (globePhase === 'exit' || globePhase === 'closed') return
+    setGlobeOrigin(measurePlusOrigin())
+    setGlobePhase('exit')
+  }
+
+  function onGlobeExitComplete() {
+    setGlobePhase('closed')
+    setQuery('')
+  }
+
+  useEffect(() => {
+    if (scrollToBrandId == null) return undefined
+    const t = setTimeout(() => {
+      const el = [...(brandRowRef.current?.querySelectorAll('.saved-item') || [])]
+        .find((n) => n.dataset.brandId === String(scrollToBrandId))
+      el?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' })
+      setScrollToBrandId(null)
+    }, 60)
+    return () => clearTimeout(t)
+  }, [scrollToBrandId, favoriteBrandCards])
+
+  function addBrandFromGlobe(brandId) {
+    const brand =
+      BRAND_CATALOG.find((b) => b.id === brandId) ||
+      SIZE_BRANDS.find((b) => b.id === brandId)
+    if (!brand) return
+
+    const next = favoriteBrands.includes(brand.id)
+      ? favoriteBrands
+      : [brand.id, ...favoriteBrands]
+
+    recordInterest({ kind: 'brand', brandId: brand.id, query: brand.name })
+    recordSearchHistory({
+      kind: 'like',
+      brandId: brand.id,
+      brandName: brand.name,
+      query: brand.name,
+    })
+    recordProductInterest(
+      { id: `brand:${brand.id}`, brandId: brand.id, clothingType: '' },
+      5,
+    )
+
+    persistFavored(next)
+    closeGlobe()
+    setLikedView('brands')
+    setActiveBrand({ id: brand.id, name: brand.name })
+    setBrandCategory('all')
+    setScrollToBrandId(brand.id)
+  }
+
+  function onPlusClick() {
+    if (globeOpen) {
+      closeGlobe()
+      return
+    }
+    openGlobe()
+  }
+
+
   const showBrands = browseMode === 'brands'
 
   return (
