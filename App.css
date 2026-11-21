@@ -3860,7 +3860,7 @@ html body .stage > .tab-bar.tab-bar.tab-bar:not(.is-create-open, .is-create-clos
     opacity 0.2s ease !important;
 }
 html body .stage > .tab-bar.tab-bar.tab-bar.is-collapsed:not(#_):not(#_) {
-  clip-path: inset(-40px calc(50% - 52px) -40px calc(50% - 52px));
+  clip-path: inset(-40px calc(50% - 60px) -40px calc(50% - 60px));
 }
 html body .stage > .tab-bar.tab-bar.tab-bar.is-dragging:not(#_):not(#_),
 html body .stage > .tab-bar.tab-bar.tab-bar.is-pressed:not(#_):not(#_) {
