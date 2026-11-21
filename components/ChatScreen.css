@@ -6151,3 +6151,8 @@ html body .stage > .chat-friends-empty.is-requests-full .chat-friends-tab-group.
   width: 220px !important; flex: 0 0 auto !important;
 }
 html body .stage > .chat-friends-empty.is-requests-full .chat-friends-tabs { margin-top: 0 !important; padding-top: 0 !important; }
+
+/* Chats / Friends pill container at 80% */
+html body .chat-main-header .chat-top-switch {
+  background: color-mix(in srgb, var(--page-bg) 80%, transparent);
+}
