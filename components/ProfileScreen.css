@@ -4013,6 +4013,13 @@ html[data-bg-image='none'] body .pf-compose .pf-compose-caption {
     box-sizing: border-box;
     margin-inline: calc(50% - 50vw + 24px);
   }
+  /* Header contents stay where they were: pad by exactly how far the plate grew */
+  html body .profile-screen:has(.profile-spaces-inline:not([hidden])) .profile-card .profile-identity {
+    padding-inline: max(18px, calc(18px + 50vw - 50% - 32px));
+  }
+  html body .profile-screen:has(.profile-spaces-inline:not([hidden])) .profile-card .profile-identity .profile-social {
+    right: max(18px, calc(18px + 50vw - 50% - 32px));
+  }
   html body .profile-screen .profile-card .profile-spaces-inline:not([hidden]) {
     padding: 0 24px 24px;
     background: var(--page-bg);
