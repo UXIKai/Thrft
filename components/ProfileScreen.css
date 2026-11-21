@@ -3990,5 +3990,11 @@ html body .profile-screen:has(.profile-spaces-inline:not([hidden])) .profile-ide
 
 /* Desktop: products sit nine to a row */
 @media (min-width: 720px) {
-  html body .profile-screen .profile-product-list { grid-template-columns: repeat(9, minmax(0, 1fr)); gap: 16px 8px; }
+  html body .profile-screen .profile-product-list {
+    grid-template-columns: repeat(9, minmax(0, 1fr));
+    gap: 16px 12px;
+    width: calc(100vw - 48px);
+    max-width: none;
+    margin-inline: calc(50% - 50vw + 24px);
+  }
 }
