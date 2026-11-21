@@ -114,3 +114,10 @@ html body .brand-profile-heart:active, html body .store-row-page-heart:active { 
   45% { transform: scale(1.35); }
   100% { transform: scale(1); }
 }
+
+/* No empty band above the brand name */
+html body .brand-profile .brand-profile-mark { display: none; }
+html body .brand-profile .brand-profile-body { padding-top: env(safe-area-inset-top, 0px); }
+html body .brand-profile .brand-profile-hero { min-height: 56px; justify-content: center; margin-bottom: 8px; }
+html body .brand-profile .brand-profile-back,
+html body .brand-profile .brand-profile-heart { top: 8px; }
