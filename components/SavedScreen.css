@@ -1680,3 +1680,7 @@ html body .saved-post-back {
 
 /* Brands sit right under the tab buttons (vertical move only) */
 html body .saved-fav-brands:not(.is-fab-open):not(.is-expanded) { margin-top: -44px; }
+
+/* Only the search button remains in the pill, so size it to fit and stay centred */
+html body .saved-view-tabs .saved-fab.is-open { width: 40px; }
+html body .saved-view-tabs .saved-fab.is-open .saved-fab-items { width: 100%; justify-content: center; }
