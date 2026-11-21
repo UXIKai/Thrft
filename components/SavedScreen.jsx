@@ -1,3 +1,4 @@
+import HoldMenu, { useHold } from './HoldMenu.jsx'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { MAP_X, MAP_Y } from './TabBar.jsx'
 import { fetchSaved, fetchStoreProducts, recordInterest, saveSavedItems } from '../api.js'
@@ -424,13 +425,32 @@ export default function SavedScreen({
     })
     return best
   }
+  const holdBrand = useRef({ timer: 0, x: 0, y: 0, fired: false })
+  function cancelBrandHold() {
+    window.clearTimeout(holdBrand.current.timer)
+    holdBrand.current.timer = 0
+  }
+  function openBrandMenu(el, x, y) {
+    holdBrand.current.fired = true
+    dragRef.current = null
+    pointerXRef.current = null
+    stopGlide()
+    setPillActive(false)
+    setHoldMenu({ kind: 'brand', id: el.dataset.brandId, x, y })
+  }
   function onBrandDown(e) {
+    if (e.pointerType === 'mouse' && e.button !== 0) return
     const el = e.target.closest?.('.saved-item')
     if (!el) return
     e.currentTarget.setPointerCapture?.(e.pointerId)
     dragRef.current = el
     movePillTo(el)
     setPillActive(true)
+    cancelBrandHold()
+    holdBrand.current.fired = false
+    holdBrand.current.x = e.clientX
+    holdBrand.current.y = e.clientY
+    holdBrand.current.timer = window.setTimeout(() => openBrandMenu(el, holdBrand.current.x, holdBrand.current.y), 450)
   }
   const pointerXRef = useRef(null)
   const glideRaf = useRef(0)
@@ -463,6 +483,7 @@ export default function SavedScreen({
   }
   useEffect(() => stopGlide, [])
   function onBrandMove(e) {
+    if (holdBrand.current.timer && Math.hypot(e.clientX - holdBrand.current.x, e.clientY - holdBrand.current.y) > 8) cancelBrandHold()
     pointerXRef.current = e.clientX
     if (e.pointerType === 'mouse' || dragRef.current) startGlide()
     if (!dragRef.current) return
@@ -473,23 +494,22 @@ export default function SavedScreen({
     }
   }
   function onBrandUp(e) {
+    cancelBrandHold()
     const el = dragRef.current
     dragRef.current = null
     if (e.pointerType !== 'mouse') { pointerXRef.current = null; stopGlide() }
     if (e.pointerType !== 'mouse') setPillActive(false)
     if (!el) return
     const id = el.dataset.brandId
-    if (selectMode) toggleSelected(`brand-${id}`)
-    else toggleBrandProducts(id, el.dataset.brandName)
+    if (holdBrand.current.fired) { holdBrand.current.fired = false; return }
+    toggleBrandProducts(id, el.dataset.brandName)
   }
   function movePillTo(el) {
     if (!el) return
     setBrandPill({ left: el.offsetLeft, top: el.offsetTop, width: el.offsetWidth, height: el.offsetHeight })
   }
-  const [selectMode, setSelectMode] = useState(false)
-  const [selectedKeys, setSelectedKeys] = useState([])
-  const toggleSelected = (key) =>
-    setSelectedKeys((keys) => (keys.includes(key) ? keys.filter((k) => k !== key) : [...keys, key]))
+  const [holdMenu, setHoldMenu] = useState(null)
+  const holdProduct = useHold((item, pos) => setHoldMenu({ kind: 'item', id: item.id, ...pos }))
   const [browseMode] = useState('brands')
   const [globePhase, setGlobePhase] = useState('closed') // closed | enter | open | exit
   const [globeOrigin, setGlobeOrigin] = useState({ dx: 0, dy: 120 })
@@ -587,120 +607,19 @@ export default function SavedScreen({
     }
   }
 
-  useEffect(() => {
-    if (!selectMode) return undefined
-    const leave = (event) => {
-      if (event.target.closest?.('.saved-item, .market-card, .saved-fab')) return
-      setSelectMode(false)
-      setSelectedKeys([])
-      setFabOpen(false)
+  async function removeSavedItem(id) {
+    if (savingSaved) return
+    setSavingSaved(true)
+    setSavedError('')
+    try {
+      const result = await saveSavedItems(items.filter((it) => String(it.id) !== String(id)))
+      setItems(result.items)
+      onForYouRefresh?.()
+    } catch (error) {
+      setSavedError(error.message || 'Could not remove saved product')
+    } finally {
+      setSavingSaved(false)
     }
-    document.addEventListener('pointerdown', leave)
-    return () => document.removeEventListener('pointerdown', leave)
-  }, [selectMode])
-
-  async function deleteSelected() {
-    if (!selectedKeys.length || savingSaved) return
-    const brandIds = selectedKeys.filter((k) => k.startsWith('brand-')).map((k) => k.slice(6))
-    const itemIds = new Set(selectedKeys.filter((k) => k.startsWith('item-')).map((k) => k.slice(5)))
-    if (itemIds.size) {
-      const nextItems = items.filter((it) => !itemIds.has(String(it.id)))
-      setSavingSaved(true)
-      setSavedError('')
-      try {
-        const result = await saveSavedItems(nextItems)
-        setItems(result.items)
-        onForYouRefresh?.()
-      } catch (error) {
-        setSavedError(error.message || 'Could not remove saved products')
-        return
-      } finally {
-        setSavingSaved(false)
-      }
-    }
-    if (brandIds.length) persistFavored(favoriteBrands.filter((id) => !brandIds.includes(String(id))))
-    setSelectedKeys([])
-    setSelectMode(false)
-    setFabOpen(false)
-  }
-
-  function measurePlusOrigin() {
-    const el = plusRef.current
-    if (!el) return { dx: 0, dy: 140 }
-    const r = el.getBoundingClientRect()
-    const cx = r.left + r.width / 2
-    const cy = r.top + r.height / 2
-    const midX = window.innerWidth / 2
-    const midY = window.innerHeight * 0.46
-    return { dx: cx - midX, dy: cy - midY }
-  }
-
-  function openGlobe() {
-    setGlobeOrigin(measurePlusOrigin())
-    setGlobePhase('enter')
-    window.setTimeout(() => {
-      setGlobePhase((p) => (p === 'enter' ? 'open' : p))
-    }, 480)
-  }
-
-  function closeGlobe() {
-    if (globePhase === 'exit' || globePhase === 'closed') return
-    setGlobeOrigin(measurePlusOrigin())
-    setGlobePhase('exit')
-  }
-
-  function onGlobeExitComplete() {
-    setGlobePhase('closed')
-    setQuery('')
-  }
-
-  useEffect(() => {
-    if (scrollToBrandId == null) return undefined
-    const t = setTimeout(() => {
-      const el = [...(brandRowRef.current?.querySelectorAll('.saved-item') || [])]
-        .find((n) => n.dataset.brandId === String(scrollToBrandId))
-      el?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' })
-      setScrollToBrandId(null)
-    }, 60)
-    return () => clearTimeout(t)
-  }, [scrollToBrandId, favoriteBrandCards])
-
-  function addBrandFromGlobe(brandId) {
-    const brand =
-      BRAND_CATALOG.find((b) => b.id === brandId) ||
-      SIZE_BRANDS.find((b) => b.id === brandId)
-    if (!brand) return
-
-    const next = favoriteBrands.includes(brand.id)
-      ? favoriteBrands
-      : [brand.id, ...favoriteBrands]
-
-    recordInterest({ kind: 'brand', brandId: brand.id, query: brand.name })
-    recordSearchHistory({
-      kind: 'like',
-      brandId: brand.id,
-      brandName: brand.name,
-      query: brand.name,
-    })
-    recordProductInterest(
-      { id: `brand:${brand.id}`, brandId: brand.id, clothingType: '' },
-      5,
-    )
-
-    persistFavored(next)
-    closeGlobe()
-    setLikedView('brands')
-    setActiveBrand({ id: brand.id, name: brand.name })
-    setBrandCategory('all')
-    setScrollToBrandId(brand.id)
-  }
-
-  function onPlusClick() {
-    if (globeOpen) {
-      closeGlobe()
-      return
-    }
-    openGlobe()
   }
 
   const showBrands = browseMode === 'brands'
@@ -709,7 +628,7 @@ export default function SavedScreen({
     <section className="saved-screen" aria-label="Liked">
       <header className="saved-page-header">
         <span className="saved-header-spacer" aria-hidden />
-        <div className={`saved-view-tabs${likedTabsOpen ? ' is-open' : ''}${fabOpen ? ' is-fab-open' : ''}${searchOpen ? ' is-search-on' : ''}${selectMode ? ' is-select-on' : ''}`}>
+        <div className={`saved-view-tabs${likedTabsOpen ? ' is-open' : ''}${fabOpen ? ' is-fab-open' : ''}${searchOpen ? ' is-search-on' : ''}`}>
           <button
             type="button"
             className="saved-view-heart is-bare"
@@ -752,41 +671,9 @@ export default function SavedScreen({
           >
             <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M12 5v14M5 12h14" /></svg>
           </button>
-          <div className={`saved-fab is-open${selectMode ? ' is-selecting' : ''}${searchOpen ? ' is-searching' : ''}`} style={selectMode ? { '--sel-w': `${selectedKeys.length ? 64 + String(selectedKeys.length).length * 9 : 72}px` } : undefined}>
+          <div className={`saved-fab is-open${searchOpen ? ' is-searching' : ''}`}>
         <div className="saved-fab-items">
         <div className="saved-fab-item" style={{ '--i': 0 }}>
-          <button
-            type="button"
-            className={`saved-fab-btn${selectMode ? ' is-danger' : ''}`}
-            aria-label={selectMode ? (selectedKeys.length ? 'Delete selected' : 'Cancel select') : 'Select'}
-            aria-pressed={selectMode}
-            disabled={selectMode && savingSaved}
-            tabIndex={0}
-            onClick={(e) => {
-              e.currentTarget.blur()
-              if (selectMode) {
-                if (selectedKeys.length) deleteSelected()
-                else setSelectMode(false)
-                return
-              }
-              setSelectMode(true)
-              setSelectedKeys([])
-              setLikedTabsOpen(false)
-              setSearchOpen(false)
-              setQuery('')
-            }}
-          >
-            {selectMode ? (
-              <>
-                <svg viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M5 12h14" /></svg>
-                {selectedKeys.length > 0 ? <span className="saved-select-count">{selectedKeys.length}</span> : null}
-              </>
-            ) : (
-              <svg viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M5 12h14" /></svg>
-            )}
-          </button>
-        </div>
-        <div className="saved-fab-item" style={{ '--i': 1 }}>
             <button
               type="button"
               className="saved-fab-btn"
@@ -826,7 +713,7 @@ export default function SavedScreen({
       <div
         ref={brandRowRef}
         hidden={likedView !== 'brands'}
-        className={`saved-fav-brands${fabOpen ? ' is-fab-open' : ''}${selectMode ? ' is-expanded' : ''}${brandsOpen || selectMode ? '' : ' is-collapsed'}`}
+        className={`saved-fav-brands${fabOpen ? ' is-fab-open' : ''}${brandsOpen ? '' : ' is-collapsed'}`}
         aria-label="Favorite brands"
         onPointerOver={(e) => {
           if (e.pointerType !== 'mouse' || dragRef.current) return
@@ -836,10 +723,16 @@ export default function SavedScreen({
           setPillActive(true)
         }}
         onPointerLeave={(e) => { if (!dragRef.current && e.pointerType === 'mouse') { setPillActive(false); pointerXRef.current = null; stopGlide() } }}
+        onContextMenu={(e) => {
+          const el = e.target.closest?.('.saved-item')
+          if (!el) return
+          e.preventDefault()
+          openBrandMenu(el, e.clientX, e.clientY)
+        }}
         onPointerDown={onBrandDown}
         onPointerMove={onBrandMove}
         onPointerUp={onBrandUp}
-        onPointerCancel={() => { dragRef.current = null; pointerXRef.current = null; stopGlide(); setPillActive(false) }}
+        onPointerCancel={() => { cancelBrandHold(); dragRef.current = null; pointerXRef.current = null; stopGlide(); setPillActive(false) }}
       >
         {favoriteBrandCards.length > 0 && brandPill && (
           <svg width="0" height="0" aria-hidden style={{ position: 'absolute' }}>
@@ -864,14 +757,13 @@ export default function SavedScreen({
               <button
                 key={`brand-${brand.id}`}
                 type="button"
-                className={`saved-item${selectedKeys.includes(`brand-${brand.id}`) ? ' is-selected' : ''}${activeBrand?.id === brand.id ? ' is-open' : ''}`}
+                className={`saved-item${activeBrand?.id === brand.id ? ' is-open' : ''}`}
                 aria-pressed={activeBrand?.id === brand.id}
                 data-brand-id={brand.id}
                 data-brand-name={brand.name}
                 onClick={(e) => {
                   if (e.detail !== 0) return
-                  if (selectMode) toggleSelected(`brand-${brand.id}`)
-                  else toggleBrandProducts(brand.id, brand.name)
+                  toggleBrandProducts(brand.id, brand.name)
                 }}
                 aria-label={`${brand.name} listings`}
               >
@@ -949,18 +841,13 @@ export default function SavedScreen({
                 photo !== 'placeholder' &&
                 !/^placeholder$/i.test(photo)
               return (
-                <div key={item.id} className={`market-card${selectedKeys.includes(`item-${item.id}`) ? ' is-selected' : ''}`}>
+                <div key={item.id} className="market-card" {...holdProduct(item)}>
                   <button
                     type="button"
                     className="market-card-open"
-                    onClick={() => (selectMode ? toggleSelected(`item-${item.id}`) : onOpenProduct?.(item))}
+                    onClick={() => onOpenProduct?.(item)}
                     aria-label={item.title || item.brandName || 'Saved item'}
                   >
-                    {selectMode ? (
-                      <span className="market-card-x" aria-hidden>
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M6 6l12 12M18 6L6 18" /></svg>
-                      </span>
-                    ) : null}
                     <span className="market-card-photo" aria-hidden>
                       {showPhoto ? <ProductPhoto src={photo} cutout={hasProductCutout(item)}
                         alt="" loading="lazy" draggable="false" /> : null}
@@ -972,6 +859,16 @@ export default function SavedScreen({
               )
             })}
       </div>
+
+      {holdMenu && (
+        <HoldMenu x={holdMenu.x} y={holdMenu.y} onClose={() => setHoldMenu(null)} actions={[{
+          label: 'Remove',
+          danger: true,
+          onClick: () => (holdMenu.kind === 'brand'
+            ? persistFavored(favoriteBrands.filter((id) => String(id) !== String(holdMenu.id)))
+            : removeSavedItem(holdMenu.id)),
+        }]} />
+      )}
 
       {globePhase !== 'closed' && (
         <BrandGlobe

@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { createPortal, flushSync } from 'react-dom'
+import HoldMenu, { useHold } from './HoldMenu.jsx'
 import AvatarCropper from './AvatarCropper.jsx'
 import AtmosphereFlow from './AtmosphereFlow.jsx'
 import {
@@ -744,6 +745,8 @@ export default function ProfileScreen({
   const [salesError, setSalesError] = useState('')
   const [connectBusy, setConnectBusy] = useState('')
   const [cropFile, setCropFile] = useState(null)
+  const [photoMenu, setPhotoMenu] = useState(null)
+  const holdPhoto = useHold((url, pos) => setPhotoMenu({ url, ...pos }))
   const [avatarUrl, setAvatarUrl] = useState(() => userProfile?.avatarUrl || '')
   const connections = userProfile?.connections || {
     shopify: { connected: false },
@@ -1693,7 +1696,7 @@ export default function ProfileScreen({
         )}
         <div className="pf-photos-grid">
           {gridPhotos.map((url, i) => (
-            <button key={url.slice(-40) + i} type="button" className="pf-photo-tile is-bare" aria-label="View photo" onClick={() => setViewPhoto(url)}>
+            <button key={url.slice(-40) + i} type="button" className="pf-photo-tile is-bare" aria-label="View photo" onClick={() => setViewPhoto(url)} {...holdPhoto(url)}>
               <img src={url} alt="" loading="lazy" style={{ objectPosition: `${metaOf(url).fx ?? 50}% ${metaOf(url).fy ?? 50}%` }} />
               {metaOf(url).pinned ? <span className="pf-photo-pin" aria-label="Pinned">📌</span> : null}
             </button>
@@ -1705,6 +1708,13 @@ export default function ProfileScreen({
           </button>
         )}
       </section>
+      {photoMenu && (
+        <HoldMenu x={photoMenu.x} y={photoMenu.y} onClose={() => setPhotoMenu(null)} actions={[
+          { label: 'Edit', onClick: () => { setEditCaption(captions[photoMenu.url] || ''); setViewPhoto(photoMenu.url); setPostMenuOpen('edit') } },
+          { label: metaOf(photoMenu.url).pinned ? 'Unpin' : 'Pin', onClick: () => updateMeta(photoMenu.url, { pinned: !metaOf(photoMenu.url).pinned }) },
+          { label: 'Delete', danger: true, onClick: () => removePhoto(photoMenu.url) },
+        ]} />
+      )}
       {cropFile && <AvatarCropper file={cropFile} onCancel={() => setCropFile(null)} onDone={saveCroppedAvatar} />}
       {composeOpen && (
         <div className="pf-compose" role="dialog" aria-label="New photo">
