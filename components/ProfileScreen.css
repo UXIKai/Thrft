@@ -3904,14 +3904,14 @@ html[data-bg-image='none'] body .profile-screen .profile-card .section-pager {
 }
 html[data-bg-image='none'] body .profile-screen .profile-card .section-pager {
   border-radius: 0;
-  box-shadow: 0 12px 0 0 var(--container-bg);
+  box-shadow: 0 10px 0 0 var(--container-bg);
 }
 html[data-bg-image='none'] body .profile-screen .closet-browse-wheels { position: relative; }
 html[data-bg-image='none'] body .profile-screen .closet-browse-wheels::before {
   content: '';
   position: absolute;
   z-index: -1;
-  top: -11px;
+  top: 0;
   bottom: -10px;
   left: 50%;
   width: calc(100cqw + 16px);
@@ -3936,7 +3936,7 @@ html[data-bg-image='none'] body .profile-screen :is(.profile-listing-tabs.is-pan
   content: '';
   position: absolute;
   z-index: -1;
-  top: -11px;
+  top: 0;
   bottom: -10px;
   left: 50%;
   width: calc(100cqw + 16px);
