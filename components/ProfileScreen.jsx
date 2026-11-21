@@ -611,7 +611,9 @@ export default function ProfileScreen({
     if (!root) return undefined
     const measure = () => {
       const row = root.querySelector('.closet-browse-wheels, .profile-listing-tabs.is-panel, .stylst-bar')
-      root.style.setProperty('--plate-extra', row ? `${row.offsetHeight + 20}px` : '0px')
+      // the Store/Market tab underline sits flush on the plate's bottom edge
+      const below = row?.matches('.profile-listing-tabs') ? 0 : 10
+      root.style.setProperty('--plate-extra', row ? `${row.offsetHeight + 10 + below}px` : '0px')
     }
     measure()
     const row = root.querySelector('.closet-browse-wheels, .profile-listing-tabs.is-panel, .stylst-bar')
