@@ -92,3 +92,20 @@ export function writePostMeta(owner, map) {
     // Settings are optional; the post itself is already saved.
   }
 }
+
+const AGO_UNITS = [
+  ['year', 365 * 86400],
+  ['month', 30 * 86400],
+  ['day', 86400],
+  ['hour', 3600],
+  ['minute', 60],
+  ['second', 1],
+]
+
+/** "5 seconds ago", "3 hours ago", "2 years ago" – counts up from seconds to years. */
+export function timeAgo(ts, now = Date.now()) {
+  const secs = Math.max(0, Math.floor((now - ts) / 1000))
+  const [name, size] = AGO_UNITS.find(([, n]) => secs >= n) || AGO_UNITS[AGO_UNITS.length - 1]
+  const n = Math.floor(secs / size)
+  return `${n} ${name}${n === 1 ? '' : 's'} ago`
+}

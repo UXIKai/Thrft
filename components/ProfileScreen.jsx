@@ -18,7 +18,7 @@ import ClosetNumberLookup from './ClosetNumberLookup.jsx'
 import { LISTING_BRANDS, LISTING_CATEGORIES } from '../listingCatalog.js'
 import { createListing, fetchMyListings, fetchSellerSalesStats, formatListingPrice, isValidListingPrice, updateMyListing } from '../listings.js'
 import { uploadCreatorArtwork, uploadProductPhoto } from '../artworkStorage.js'
-import { compressImage, readCaptions, readPostMeta, readProfileMedia, storeImage, writeCaption, writePostMeta, writeProfileMedia } from '../profileMedia.js'
+import { compressImage, readCaptions, readPostMeta, readProfileMedia, storeImage, timeAgo, writeCaption, writePostMeta, writeProfileMedia } from '../profileMedia.js'
 import { getSupabase, isSupabaseConfigured } from '../supabase.js'
 import BrandGlobe from './BrandGlobe.jsx'
 import GiveBack from './GiveBack.jsx'
@@ -478,6 +478,13 @@ export default function ProfileScreen({
   const [showArchived, setShowArchived] = useState(false)
   const [postMeta, setPostMeta] = useState(() => readPostMeta(mediaOwner))
   const metaOf = (url) => postMeta[url] || {}
+  const [agoNow, setAgoNow] = useState(() => Date.now())
+  useEffect(() => {
+    if (!viewPhoto) return undefined
+    setAgoNow(Date.now())
+    const t = setInterval(() => setAgoNow(Date.now()), 1000)
+    return () => clearInterval(t)
+  }, [viewPhoto])
   const archivedCount = media.photos.filter((u) => postMeta[u]?.archived).length
   const gridPhotos = media.photos
     .filter((u) => !!postMeta[u]?.archived === showArchived)
@@ -1170,6 +1177,7 @@ export default function ProfileScreen({
       const url = await storeImage(draftPhoto)
       const photos = [url, ...media.photos]
       writeProfileMedia(mediaOwner, 'photos', photos)
+      updateMeta(url, { postedAt: Date.now() })
       const caption = draftCaption.trim()
       if (caption) {
         writeCaption(mediaOwner, url, caption)
@@ -1768,6 +1776,9 @@ export default function ProfileScreen({
           )}
           {captions[viewPhoto] ? (
             <p className="pf-viewer-caption"><strong>{postName}</strong> {captions[viewPhoto]}</p>
+          ) : null}
+          {metaOf(viewPhoto).postedAt ? (
+            <p className="pf-viewer-time">{timeAgo(metaOf(viewPhoto).postedAt, agoNow)}</p>
           ) : null}
           {commentsOpen && (
             createPortal(

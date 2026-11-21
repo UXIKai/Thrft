@@ -3558,6 +3558,7 @@ html body .pf-viewer .pf-viewer-delete {
 .pf-viewer-act { width: 40px; height: 40px; display: grid; place-items: center; color: inherit; }
 .pf-viewer-act.is-liked { color: #ff5a6e; }
 .pf-viewer-caption { margin: 0; padding: 4px 16px; white-space: pre-wrap; word-break: break-word; line-height: 1.45; }
+.pf-viewer-time { margin: 0; padding: 2px 16px 8px; font-size: 0.8rem; opacity: 0.6; }
 
 .pf-viewer-likes { margin: 0; padding: 2px 16px; font-weight: 700; }
 .pf-viewer-note { margin: 0; padding: 6px 16px; font-size: 0.85rem; opacity: 0.6; }
