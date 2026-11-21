@@ -446,8 +446,8 @@ function PriceTagIcon() {
  */
 const SPACE_MODES = [
   { id: 'store', label: 'Store' },
-  { id: 'closet', label: 'Closet' },
   { id: 'market', label: 'Market' },
+  { id: 'closet', label: 'Closet' },
   { id: 'stylst', label: 'Stylst' },
 ]
 
@@ -603,7 +603,7 @@ export default function ProfileScreen({
     setClosetSplit(false)
     setClosetSelected(null)
   }
-  const [spaceTab, setSpaceTab] = useState('closet') // 'store' | 'market' | 'closet' | 'stylst'
+  const [spaceTab, setSpaceTab] = useState('store') // 'store' | 'market' | 'closet' | 'stylst'
 
   // The plate behind the section picker reaches down over the active tab's button row
   useLayoutEffect(() => {
