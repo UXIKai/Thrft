@@ -4149,6 +4149,9 @@ html body .profile-screen .profile-identity .pf-x-head .pf-user-avatar-wrap { ma
     border-radius: 0;
     box-shadow: none;
   }
+  /* Header sits exactly where it does in Store / Closet */
+  html body .profile-screen:has(.pf-photos:not([hidden])) .profile-card .profile-identity { margin-inline: -8px; }
+  html body .profile-screen .profile-card .pf-photos:not([hidden]) { margin-inline: -8px; }
 }
 
 /* Share sits in the left corner, the menu stays in the right corner */
