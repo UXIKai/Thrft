@@ -3967,3 +3967,5 @@ html body .store-row-page-logo-btn .store-row-page-logo { width: 84px; height: 8
 html body .store-row-page-logo-btn { width: 60px; height: 60px; margin: 0 auto; }
 html body .store-row-page-logo-btn .store-row-page-logo { width: 60px; height: 60px; display: block; margin: 0 auto; }
 html body .store-row-page-title { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; }
+html body .home-scroll.is-row-page { padding-top: 0; }
+html body .store-row-page-head { padding-top: env(safe-area-inset-top, 0px); }
