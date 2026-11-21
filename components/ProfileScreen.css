@@ -4008,10 +4008,10 @@ html[data-bg-image='none'] body .pf-compose .pf-compose-caption {
 @media (min-width: 720px) {
   html body .profile-screen:has(.profile-spaces-inline:not([hidden])) .profile-card .profile-identity,
   html body .profile-screen .profile-card .profile-spaces-inline:not([hidden]) {
-    width: calc(100vw - 48px);
+    width: 100vw;
     max-width: none;
     box-sizing: border-box;
-    margin-inline: calc(50% - 50vw + 24px);
+    margin-inline: calc(50% - 50vw);
   }
   /* Header contents stay where they were: pad by exactly how far the plate grew */
   html body .profile-screen:has(.profile-spaces-inline:not([hidden])) .profile-card .profile-identity {
@@ -4048,10 +4048,10 @@ html[data-bg-image='none'] body .pf-compose .pf-compose-caption {
 @media (min-width: 720px) {
   html body .profile-screen:has(.pf-photos:not([hidden])) .profile-card .profile-identity,
   html body .profile-screen .profile-card .pf-photos:not([hidden]) {
-    width: calc(100vw - 48px);
+    width: 100vw;
     max-width: none;
     box-sizing: border-box;
-    margin-inline: calc(50% - 50vw + 24px);
+    margin-inline: calc(50% - 50vw);
   }
   html body .profile-screen:has(.pf-photos:not([hidden])) .profile-card .profile-identity {
     padding-inline: calc(18px + var(--plate-wide-x, 0px));
@@ -4063,5 +4063,21 @@ html[data-bg-image='none'] body .pf-compose .pf-compose-caption {
     margin-bottom: 14px;
     padding: 8px 24px 24px;
     min-height: var(--plate-fill, 0px);
+  }
+}
+
+/* Desktop: the plate is edge to edge, flush with the top and the sides of the page */
+@media (min-width: 720px) {
+  html body .profile-screen:has(:is(.profile-spaces-inline, .pf-photos):not([hidden])) .profile-card .profile-identity {
+    margin-top: 0;
+    border-radius: 0;
+    border-top: 0;
+    border-inline: 0;
+  }
+  html body .profile-screen .profile-card :is(.profile-spaces-inline, .pf-photos):not([hidden]) {
+    border-radius: 0;
+    border-inline: 0;
+    border-bottom: 0;
+    box-shadow: none;
   }
 }

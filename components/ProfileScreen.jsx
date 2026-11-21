@@ -617,12 +617,12 @@ export default function ProfileScreen({
       // desktop: the plate runs down to the nav bar even when the items are short
       const cs = getComputedStyle(root)
       const contentW = root.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight)
-      root.style.setProperty('--plate-wide-x', `${Math.max(0, Math.round((window.innerWidth - 48 - (contentW + 16)) / 2))}px`)
+      root.style.setProperty('--plate-wide-x', `${Math.max(0, Math.round((window.innerWidth - (contentW + 16)) / 2))}px`)
       const sec = root.querySelector('.profile-spaces-inline:not([hidden]), .pf-photos:not([hidden])')
       if (sec) {
         const rootTop = root.getBoundingClientRect().top
         const secTop = sec.getBoundingClientRect().top - rootTop + root.scrollTop
-        root.style.setProperty('--plate-fill', `${Math.max(0, Math.round(window.innerHeight - rootTop - secTop - 96))}px`)
+        root.style.setProperty('--plate-fill', `${Math.max(0, Math.round(window.innerHeight - rootTop - secTop))}px`)
       }
     }
     measure()
