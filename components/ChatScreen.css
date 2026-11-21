@@ -6163,3 +6163,6 @@ html body .chat-screen .chat-friends-panel:not(:has(.chat-friends-list)) {
   border: 0 !important;
   box-shadow: none !important;
 }
+
+html body .chat-friends-active-aside-title,
+html body .chat-friends-active-title { display: flex; align-items: center; justify-content: center; gap: 8px; }

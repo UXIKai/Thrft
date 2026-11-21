@@ -3136,7 +3136,7 @@ export default function ChatScreen({
 
   const onlinePanel = (
     <aside className={`chat-friends-active${activeNowOpen ? '' : ' is-collapsed'}`} aria-label="Online" hidden={!activeNowOpen && onlineDragP === null}>
-      {(activeNowOpen || onlineDragP !== null) && <h3 className="chat-friends-active-aside-title">Online<span className="chat-online-count">{onlineNow}</span></h3>}
+      {(activeNowOpen || onlineDragP !== null) && <h3 className="chat-friends-active-aside-title" aria-label="Online"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden fill="currentColor"><circle cx="12" cy="8" r="4" /><path d="M4 21c0-4.400 3.600-7 8-7s8 2.600 8 7z" /></svg><span className="chat-online-count">{onlineNow}</span></h3>}
     </aside>
   )
 
@@ -3644,7 +3644,7 @@ export default function ChatScreen({
                 ))}
                 </div>
                 <div className={`chat-friends-active-head${activeNowOpen || onlineDragP !== null ? '' : ' is-collapsed'}`}>
-                  {activeNowOpen && <h3 className="chat-friends-active-title">Online</h3>}
+                  {activeNowOpen && <h3 className="chat-friends-active-title" aria-label="Online"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden fill="currentColor"><circle cx="12" cy="8" r="4" /><path d="M4 21c0-4.400 3.600-7 8-7s8 2.600 8 7z" /></svg></h3>}
                 </div>
               </nav>
               {!isDesktop && (friendsClicked || activeNowOpen || onlineDragP !== null) && (
