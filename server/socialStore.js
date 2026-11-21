@@ -48,7 +48,11 @@ export async function fetchPublicAccount(username, viewerId) {
   if (!row) throw Object.assign(new Error('Account not found'), { status: 404 })
   const products = checked(await db.from('brand_products').select('*')
     .eq('creator_id', row.id).eq('status', 'active').order('created_at', { ascending: false }))
-  return { account: { ...accountFromRow(row), isSelf: row.id === viewerId,
+  const prefs = checked(await db.from('creator_profile_preferences').select('preferences')
+    .eq('user_id', row.id).maybeSingle())
+  const photos = Array.isArray(prefs?.preferences?.profilePhotos)
+    ? prefs.preferences.profilePhotos.filter((url) => typeof url === 'string' && /^https:\/\//.test(url)).slice(0, 60) : []
+  return { account: { ...accountFromRow(row), photos, isSelf: row.id === viewerId,
     following: (await followedIds(viewerId, [row.id])).has(row.id) },
   products: products.map(mapCreatorProduct) }
 }
@@ -127,6 +131,11 @@ export async function saveSocialProfile(user, patch) {
       patch.favoredBrands.length > 200 || patch.favoredBrands.some((id) =>
         typeof id !== 'string' || !id || id.length > 80))) {
     throw Object.assign(new Error('Favorite brands are invalid'), { status: 400 })
+  }
+  if (patch.profilePhotos !== undefined && (!Array.isArray(patch.profilePhotos) ||
+      patch.profilePhotos.length > 60 || patch.profilePhotos.some((url) =>
+        typeof url !== 'string' || url.length > 600 || !/^https:\/\//.test(url)))) {
+    throw Object.assign(new Error('Profile photos are invalid'), { status: 400 })
   }
   const db = getAdminSupabase()
   const existing = checked(await db.from('creator_profile_preferences').select('preferences')

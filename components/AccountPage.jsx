@@ -198,7 +198,17 @@ export default function AccountPage({
                 <button key={id} type="button" role="tab" aria-selected={section === id} className={`account-page-section-btn is-bare${section === id ? ' is-active' : ''}`} onClick={() => setSection(id)}>{label}</button>
               ))}
             </div>
-            {section !== 'store' ? null : products.length === 0 ? (
+            {section === 'photos' ? (
+              account.photos?.length ? (
+                <div className="pf-photos-grid">
+                  {account.photos.map((url) => (
+                    <a key={url} className="pf-photo-tile is-bare" href={url} target="_blank" rel="noreferrer" aria-label="View photo">
+                      <img src={url} alt="" loading="lazy" />
+                    </a>
+                  ))}
+                </div>
+              ) : <p className="account-page-muted">No photos yet.</p>
+            ) : section !== 'store' ? null : products.length === 0 ? (
               <p className="account-page-muted">
                 {isOwn ? 'Post a product from Create (+).' : 'No products yet.'}
               </p>

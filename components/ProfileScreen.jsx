@@ -544,6 +544,21 @@ export default function ProfileScreen({
     window.addEventListener('thrft:stylst-add', add)
     return () => window.removeEventListener('thrft:stylst-add', add)
   }, [profileView])
+  const photosSynced = useRef(false)
+  useEffect(() => {
+    if (photosSynced.current || !userProfile) return
+    const remote = Array.isArray(userProfile.profilePhotos) ? userProfile.profilePhotos : []
+    const local = readProfileMedia(mediaOwner).photos
+    const merged = [...local, ...remote.filter((url) => !local.includes(url))]
+    if (merged.length === local.length && merged.length === remote.length) return
+    photosSynced.current = true
+    if (merged.length !== local.length) {
+      writeProfileMedia(mediaOwner, 'photos', merged)
+      setMedia((m) => ({ ...m, photos: merged }))
+    }
+    if (merged.some((url) => !remote.includes(url))) syncPhotos(merged)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userProfile?.profilePhotos, mediaOwner])
   useEffect(() => { setMedia(readProfileMedia(mediaOwner)); setCaptions(readCaptions(mediaOwner)); setPostMeta(readPostMeta(mediaOwner)) }, [mediaOwner])
   const [closetPeople, setClosetPeople] = useState(null)
   const [closetPickOpen, setClosetPickOpen] = useState(false)
@@ -1163,6 +1178,11 @@ export default function ProfileScreen({
     }
   }
 
+  // Uploaded photos are saved to the account so other people can see them.
+  function syncPhotos(photos) {
+    Promise.resolve(onSaveProfile?.({ profilePhotos: photos.filter((url) => /^https:\/\//.test(url)) })).catch(() => {})
+  }
+
   async function submitPost() {
     if (!draftPhoto || posting) return
     setPosting(true)
@@ -1170,6 +1190,7 @@ export default function ProfileScreen({
       const url = await storeImage(draftPhoto)
       const photos = [url, ...media.photos]
       writeProfileMedia(mediaOwner, 'photos', photos)
+      syncPhotos(photos)
       updateMeta(url, { postedAt: Date.now() })
       const caption = draftCaption.trim()
       if (caption) {
@@ -1188,6 +1209,7 @@ export default function ProfileScreen({
   function removePhoto(url) {
     const photos = media.photos.filter((p) => p !== url)
     writeProfileMedia(mediaOwner, 'photos', photos)
+    syncPhotos(photos)
     setMedia((m) => ({ ...m, photos }))
     setViewPhoto(null)
   }
