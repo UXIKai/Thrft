@@ -415,30 +415,6 @@ function EmptyBoxIcon() {
   )
 }
 
-function ActivePulseIcon() {
-  return (
-    <span className="profile-status-pulse" aria-hidden>
-      <span className="profile-status-pulse-ring" />
-      <span className="profile-status-pulse-dot" />
-    </span>
-  )
-}
-
-function PriceTagIcon() {
-  return (
-    <svg className="profile-status-ico" viewBox="0 0 24 24" aria-hidden>
-      <path
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.7"
-        strokeLinejoin="round"
-        strokeLinecap="round"
-        d="M3.6 12.2 12.1 3.7a1.4 1.4 0 0 1 1-.4H20a1.2 1.2 0 0 1 1.2 1.2v6.9a1.4 1.4 0 0 1-.4 1L12.3 20a1.4 1.4 0 0 1-2 0L3.6 14.2a1.4 1.4 0 0 1 0-2z"
-      />
-      <circle cx="16.4" cy="7.6" r="1.35" fill="currentColor" />
-    </svg>
-  )
-}
 
 /**
  * Profile tab — continuous scroll matching thrft-profile-1…4 mockups.
@@ -1881,7 +1857,6 @@ export default function ProfileScreen({
                 className={`profile-listing-tab is-icon ${panelListingTab === 'active' ? 'is-active' : ''}`}
                 onClick={() => setPanelListingTab('active')}
               >
-                <ActivePulseIcon />
                 <span className="profile-listing-tab-label">Active</span>
               </button>
               <button
@@ -1893,7 +1868,6 @@ export default function ProfileScreen({
                 className={`profile-listing-tab is-icon ${panelListingTab === 'sold' ? 'is-active' : ''}`}
                 onClick={() => setPanelListingTab('sold')}
               >
-                <PriceTagIcon />
                 <span className="profile-listing-tab-label">Sold</span>
               </button>
             </div>
