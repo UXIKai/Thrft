@@ -4231,9 +4231,11 @@ html body .app-column.is-profile-wide .profile-screen .pf-top-actions {
 /* Section picker: arrows (only the directions you can go) replace the dash bars */
 html body .profile-screen .section-pager-bars {
   justify-content: space-between;
-  width: min(280px, 80%);
-  margin-inline: auto;
+  width: 190px;
+  margin: -34px auto 0;
   gap: 0;
+  position: relative;
+  z-index: 1;
 }
 html body .profile-screen .section-pager-step {
   display: grid;
