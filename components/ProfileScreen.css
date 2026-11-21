@@ -4160,3 +4160,6 @@ html body .app-column.is-profile-wide .profile-screen .pf-top-actions {
   left: calc(var(--pf-pad-x) + 8px);
   justify-content: space-between;
 }
+
+.profile-listing-tab.is-icon { flex-direction: column; gap: 4px; }
+.profile-listing-tab-label { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.04em; line-height: 1; }

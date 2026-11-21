@@ -1882,6 +1882,7 @@ export default function ProfileScreen({
                 onClick={() => setPanelListingTab('active')}
               >
                 <ActivePulseIcon />
+                <span className="profile-listing-tab-label">Active</span>
               </button>
               <button
                 type="button"
@@ -1893,6 +1894,7 @@ export default function ProfileScreen({
                 onClick={() => setPanelListingTab('sold')}
               >
                 <PriceTagIcon />
+                <span className="profile-listing-tab-label">Sold</span>
               </button>
             </div>
           )}
