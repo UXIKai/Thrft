@@ -199,3 +199,11 @@ html body .account-page-section-btn:first-child { text-align: left; }
 html body .account-page-section-btn:last-child { text-align: right; }
 html body .account-page-section-btn:nth-child(2) { text-align: center; }
 html body .account-page-section-btn.is-active { opacity: 1; }
+
+.follow-icon-mark {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: opacity 0.16s ease, transform 0.22s cubic-bezier(0.3, 1.4, 0.5, 1);
+}
+.account-page-follow { transition: opacity 0.16s ease, transform 0.12s ease; }
+.account-page-follow:active { transform: scale(0.94); }

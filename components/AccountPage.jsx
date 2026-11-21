@@ -75,12 +75,14 @@ export default function AccountPage({
     if (followBusy || !account) return
     const follow = !account.following
     setFollowBusy(true)
+    const before = account
+    setAccount((prev) => ({ ...prev, following: follow }))
     try {
       const result = await setFollowingAccount(account.username, follow)
       setAccount((prev) => ({ ...prev, following: result.following, followerCount: result.followerCount }))
       onFollowChange?.()
     } catch {
-      // The button keeps its previous state when the request fails
+      setAccount(before)
     } finally {
       setFollowBusy(false)
     }
