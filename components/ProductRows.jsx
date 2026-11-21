@@ -297,7 +297,7 @@ function CrawlRow({ row, rowIndex, onOpenProduct, onHoldRow, market = false, lik
 }
 
 /** Full page for one Store brand, with each live listing shown once. */
-function StoreRowPage({ row, onBack, onOpenProduct, favoredBrands = [], onFavoredBrandsChange }) {
+function StoreRowPage({ row, onBack, onOpenProduct, onOpenAccount, favoredBrands = [], onFavoredBrandsChange }) {
   const ref = useRef(null)
   const products = [...new Map((row.products || []).map((product) => [product.id, product])).values()]
   const brandId = row.brandId || products[0]?.brandId || ''
@@ -324,7 +324,12 @@ function StoreRowPage({ row, onBack, onOpenProduct, favoredBrands = [], onFavore
         </button>
         <div className="store-row-page-title">
           {products[0]?.brandLogoUrl
-            ? <img className="store-row-page-logo" src={products[0].brandLogoUrl} alt={row.name} />
+            ? (
+              <button type="button" className="store-row-page-logo-btn is-bare" disabled={!products[0].sellerUsername || !onOpenAccount}
+                aria-label={`View ${row.name} profile`} onClick={() => onOpenAccount?.(products[0].sellerUsername)}>
+                <img className="store-row-page-logo" src={products[0].brandLogoUrl} alt="" />
+              </button>
+            )
             : <h2>{row.name}</h2>}
           {showCategory ? <p>{row.category}</p> : null}
         </div>
@@ -372,6 +377,7 @@ export default function ProductRows({
   prefsReady = true,
   onOpenProduct,
   onRowPageChange,
+  onOpenAccount,
   clothingType = 'all',
   brandId = '',
   colorId = '',
@@ -803,7 +809,7 @@ export default function ProductRows({
   }
 
   if (openRow) {
-    return <StoreRowPage row={openRow} onBack={() => setOpenRow(null)} onOpenProduct={onOpenProduct} favoredBrands={favoredBrands} onFavoredBrandsChange={onFavoredBrandsChange} />
+    return <StoreRowPage row={openRow} onBack={() => setOpenRow(null)} onOpenProduct={onOpenProduct} onOpenAccount={onOpenAccount} favoredBrands={favoredBrands} onFavoredBrandsChange={onFavoredBrandsChange} />
   }
 
   if (status === 'loading' && !rows.length) {

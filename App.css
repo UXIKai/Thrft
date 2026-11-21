@@ -3960,3 +3960,7 @@ html body .tab-bar.is-collapsed:not(.is-create-open):not(.is-create-closing) .ta
 html body .chat-friends-tabs .chat-friends-tab-group:not(#_) { background: var(--container-bg-top); }
 
 .brand-row-track-wrap { touch-action: pan-y; }
+
+html body .store-row-page-logo-btn { display: block; padding: 0; width: 84px; height: 84px; border-radius: 50%; cursor: pointer; }
+html body .store-row-page-logo-btn:disabled { cursor: default; }
+html body .store-row-page-logo-btn .store-row-page-logo { width: 84px; height: 84px; object-fit: cover; }

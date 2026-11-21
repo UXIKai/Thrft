@@ -746,6 +746,7 @@ export default function App() {
               prefsReady={profileLoaded}
               onOpenProduct={handleOpenProduct}
               onRowPageChange={setRowPageOpen}
+              onOpenAccount={(username) => { if (username) setActiveAccount({ username, isOwn: false }) }}
               clothingType={clothingType}
               colorId={homeColor}
               brandId={homeBrand?.id || ''}
