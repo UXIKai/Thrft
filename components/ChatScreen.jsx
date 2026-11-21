@@ -3234,22 +3234,6 @@ export default function ChatScreen({
         <div className="chat-sidebar-header">
           <h1 className="chat-sidebar-title" aria-label="Chats" />
           {isDesktop && (
-          <button
-            type="button"
-            className="chat-sidebar-control is-bare"
-            aria-label="Search conversations"
-            aria-expanded={searchOpen}
-            onClick={() => {
-              setMobileNavOpen(false)
-              if (isDesktop) setSidebarCollapsed(true)
-              flushSync(() => { if (composer?.mode === 'create') closeComposer(); setSearchOpen(true) })
-              document.getElementById('chat-search-input')?.focus({ preventScroll: true })
-            }}
-          >
-            <SearchIcon />
-          </button>
-          )}
-          {isDesktop && (
             <button
               type="button"
               className="chat-sidebar-control is-bare"
@@ -3270,18 +3254,6 @@ export default function ChatScreen({
         </div>
         {isDesktop && sidebarCollapsed && (
           <nav className="chat-rail" aria-label="Chat shortcuts">
-            <button
-              type="button"
-              className="chat-rail-btn"
-              data-tip="Search"
-              aria-label="Search"
-              onClick={() => {
-                flushSync(() => { if (composer?.mode === 'create') closeComposer(); setSearchOpen(true) })
-                document.getElementById('chat-search-input')?.focus({ preventScroll: true })
-              }}
-            >
-              <SearchIcon />
-            </button>
             <button type="button" className="chat-rail-btn" data-tip="New chat" aria-label="New chat" onClick={() => (composer?.mode === 'create' ? closeComposer() : openCreateGroup())}>
               <ComposeIcon />
             </button>
