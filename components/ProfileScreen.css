@@ -4022,6 +4022,8 @@ html[data-bg-image='none'] body .pf-compose .pf-compose-caption {
   }
   html body .profile-screen .profile-card .profile-spaces-inline:not([hidden]) {
     padding: 0 24px 24px;
+    min-height: var(--plate-fill, 0px);
+    box-sizing: border-box;
     background: var(--page-bg);
     border: 1px solid light-dark(rgba(0, 0, 0, 0.3), rgba(255, 255, 255, 0.08));
     border-top: 0;

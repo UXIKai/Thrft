@@ -614,14 +614,23 @@ export default function ProfileScreen({
       // the Store/Market tab underline stays inside the plate, clear of its rounded corners
       const below = row?.matches('.profile-listing-tabs') ? 14 : 10
       root.style.setProperty('--plate-extra', row ? `${row.offsetHeight + 10 + below}px` : '0px')
+      // desktop: the plate runs down to the nav bar even when the items are short
+      const sec = root.querySelector('.profile-spaces-inline')
+      if (sec) {
+        const rootTop = root.getBoundingClientRect().top
+        const secTop = sec.getBoundingClientRect().top - rootTop + root.scrollTop
+        root.style.setProperty('--plate-fill', `${Math.max(0, Math.round(window.innerHeight - rootTop - secTop - 96))}px`)
+      }
     }
     measure()
+    window.addEventListener('resize', measure)
     const row = root.querySelector('.closet-browse-wheels, .profile-listing-tabs.is-panel, .stylst-bar')
     const ro = typeof ResizeObserver === 'function' && row ? new ResizeObserver(measure) : null
     if (ro) ro.observe(row)
     const t = setTimeout(measure, 350)
     return () => {
       clearTimeout(t)
+      window.removeEventListener('resize', measure)
       if (ro) ro.disconnect()
     }
   }, [spaceTab, profileView])
