@@ -3913,12 +3913,14 @@ html body .tab-bar:not(.is-collapsed):not(.is-create-open):not(.is-create-closin
 html body .tab-bar:not(.is-collapsed):not(.is-create-open):not(.is-create-closing) .tab-items .tab-item.is-create::before {
   content: '';
   position: absolute;
-  inset: 0;
+  top: 11%;
+  bottom: 11%;
+  left: -6.6%;
+  right: -6.6%;
   z-index: -1;
   pointer-events: none;
   border-radius: 999px;
-  background: color-mix(in srgb, light-dark(#000, #fff) 12%, transparent);
-  border: 0.5px solid light-dark(rgba(0, 0, 0, 0.18), rgba(255, 255, 255, 0.18));
+  background: light-dark(rgba(0, 0, 0, 0.12), rgba(255, 255, 255, 0.28));
 }
 
 /* Desktop: heart under the photo, name and price centered below it */
