@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import { fetchStoreProducts, fetchExternalBrandSettings } from '../api.js'
 import { getAuthSession } from '../auth.js'
 import { ProductCard } from './ProductRows.jsx'
-import BrandCatalogSync from './BrandCatalogSync.jsx'
 import { findBrandById } from '../brandsCatalog.js'
 import './GlassOverlay.css'
 import './BrandProfile.css'
@@ -120,12 +119,6 @@ export default function BrandProfile({ brandId, brandName, onClose, onOpenProduc
           )}
         </div>
         {ownerError && <p role="alert">{ownerError}</p>}
-        {ownedBrandId && <BrandCatalogSync brandId={ownedBrandId} onSynced={async () => {
-          const rows = await fetchStoreProducts({ brand: brandName || name, brandId })
-          setProducts(rows)
-          setStatus(rows.length ? 'ready' : 'empty')
-          setLoadError('')
-        }} />}
         {status === 'loading' && (
           <p className="brand-profile-empty" role="status">
             Loading…
