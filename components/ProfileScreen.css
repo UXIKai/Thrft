@@ -3939,9 +3939,9 @@ html[data-bg-image='none'] body .profile-screen .profile-spaces-inline .profile-
   margin-inline: 20px;
 }
 
-/* Photos view: the header card grows 20px each side and extends down to hold the photo grid */
+/* Photos view: the header card grows 90px each side and extends down to hold the photo grid */
 html body .profile-screen:has(.pf-photos:not([hidden])) .profile-card .profile-identity {
-  margin-inline: -28px;
+  margin-inline: -98px;
   margin-bottom: 0;
   border-bottom: 0;
   border-bottom-left-radius: 0;
@@ -3949,7 +3949,7 @@ html body .profile-screen:has(.pf-photos:not([hidden])) .profile-card .profile-i
   box-shadow: none;
 }
 html body .profile-screen .profile-card .pf-photos:not([hidden]) {
-  margin: 0 -28px 14px;
+  margin: 0 -98px 14px;
   padding: 8px 16px 16px;
   box-sizing: border-box;
   background: var(--page-bg);
