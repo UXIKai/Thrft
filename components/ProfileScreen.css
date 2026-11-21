@@ -3890,3 +3890,8 @@ html body .profile-screen .profile-card .section-pager { padding-bottom: 6px; }
 html body .profile-screen .profile-card .profile-identity { margin-top: 5px; }
 
 html body .profile-screen .profile-product-photo { position: relative; }
+
+/* Effect off: the profile container is the same plate as the nav bar */
+html[data-bg-image='none'] body .profile-screen :is(.profile-card, .profile-card .profile-identity) {
+  background: var(--container-bg);
+}

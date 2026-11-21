@@ -1008,3 +1008,8 @@ html body .brand-globe.is-dock:not(.is-color-picker) .brand-globe-center-hole::a
   mask-image: radial-gradient(circle, transparent 72%, #000 78%, #000 84%, transparent 98%);
   pointer-events: none;
 }
+
+/* Effect off: the brand picker stays on the flat page colour */
+html[data-bg-image='none'] body .stage .brand-globe:is(.is-color-picker, .is-brand-picker) :is(.atmosphere-flow, .atmosphere-phantom, .atmosphere-smoke, .atmosphere-serenity) {
+  display: none;
+}
