@@ -6135,3 +6135,16 @@ html body .chat-friends-tab-group.has-lead button.chat-friends-lead {
 }
 html body .chat-friends-lead svg { width: 20px; height: 20px; }
 html body .chat-friends-tab svg, html body .chat-friends-drawer-tab svg { width: 18px; height: 18px; }
+
+/* Message requests page: title above the Requests/Spam tabs, never overlapping */
+html body .stage > .chat-friends-empty.is-requests-full .chat-friends-tabs {
+  position: static !important; display: flex !important; flex-direction: column !important; align-items: center; gap: 12px;
+  width: 100% !important; height: auto !important; transform: none !important;
+}
+html body .stage > .chat-friends-empty.is-requests-full .chat-friends-label {
+  position: static !important; transform: none !important; width: auto !important; margin: 0 !important; white-space: nowrap;
+}
+html body .stage > .chat-friends-empty.is-requests-full .chat-friends-tab-group.is-two {
+  position: relative !important; left: auto !important; transform: none !important; margin: 0 auto !important;
+  width: 220px !important; flex: 0 0 auto !important;
+}
