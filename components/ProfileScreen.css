@@ -4170,14 +4170,14 @@ html body .app-column.is-profile-wide .profile-screen .pf-top-actions {
   html body .profile-screen .profile-spaces-inline-body .stylst { position: static; }
   html body .profile-screen .profile-spaces-inline-body :is(.profile-listing-tabs.is-panel, .closet-browse-wheels, .stylst-bar) {
     position: absolute;
-    top: -39px;
+    top: -62px;
     left: 18px;
     right: 18px;
     width: auto;
     margin: 0;
     padding: 0;
-    transform: translateY(-50%);
     background: none;
+    align-items: center;
     border: 0;
     box-shadow: none;
     justify-content: space-between;
@@ -4191,4 +4191,9 @@ html body .app-column.is-profile-wide .profile-screen .pf-top-actions {
 @media (max-width: 719.98px) {
   html body .profile-screen .profile-listing-tabs.is-panel { display: flex; border-bottom: 0; }
   html body .profile-screen .profile-listing-tabs.is-panel .profile-listing-tab { width: auto; padding: 8px; margin: 0; border-bottom: 0; }
+}
+@media (max-width: 719.98px) {
+  html body .profile-screen:has(.profile-spaces-inline-body :is(.profile-listing-tabs.is-panel, .closet-browse-wheels, .stylst-bar)) .section-pager {
+    padding-bottom: 68px !important;
+  }
 }
