@@ -104,7 +104,9 @@ export default function BrandProfile({ brandId, brandName, onClose, onOpenProduc
           <span className="brand-profile-mark" aria-hidden>
             {products[0]?.brandLogoUrl ? <img src={products[0].brandLogoUrl} alt="" /> : name.slice(0, 1)}
           </span>
-          <h1 className="brand-profile-cat">{name}</h1>
+          <h1 className="brand-profile-cat" aria-label={name}>
+            {products[0]?.brandLogoUrl ? <img className="brand-profile-title-logo" src={products[0].brandLogoUrl} alt="" /> : name}
+          </h1>
           {likeId && onFavoredBrandsChange && (
             <button
               type="button"

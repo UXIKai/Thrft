@@ -274,8 +274,9 @@ function StoreRowPage({ row, onBack, onOpenProduct, favoredBrands = [], onFavore
           <svg viewBox="0 0 24 24" aria-hidden><path d="m15 5-7 7 7 7" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
         </button>
         <div className="store-row-page-title">
-          {products[0]?.brandLogoUrl && <img className="store-row-page-logo" src={products[0].brandLogoUrl} alt="" />}
-          <h2>{row.name}</h2>
+          {products[0]?.brandLogoUrl
+            ? <img className="store-row-page-logo" src={products[0].brandLogoUrl} alt={row.name} />
+            : <h2>{row.name}</h2>}
           {showCategory ? <p>{row.category}</p> : null}
         </div>
         {brandId ? (

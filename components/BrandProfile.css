@@ -121,3 +121,5 @@ html body .brand-profile .brand-profile-body { padding-top: env(safe-area-inset-
 html body .brand-profile .brand-profile-hero { min-height: 56px; justify-content: center; margin-bottom: 8px; }
 html body .brand-profile .brand-profile-back,
 html body .brand-profile .brand-profile-heart { top: 8px; }
+
+.brand-profile-title-logo { display: block; width: 56px; height: 56px; margin: 0 auto; border-radius: 50%; object-fit: cover; }
