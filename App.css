@@ -3860,7 +3860,7 @@ html body .stage > .tab-bar.tab-bar.tab-bar:not(.is-create-open, .is-create-clos
     opacity 0.2s ease !important;
 }
 html body .stage > .tab-bar.tab-bar.tab-bar.is-collapsed:not(#_):not(#_) {
-  clip-path: inset(-40px calc(50% - 52px) -40px calc(50% - 52px));
+  clip-path: inset(-40px calc(50% - 62px) -40px calc(50% - 62px));
 }
 html body .stage > .tab-bar.tab-bar.tab-bar.is-dragging:not(#_):not(#_),
 html body .stage > .tab-bar.tab-bar.tab-bar.is-pressed:not(#_):not(#_) {
@@ -3921,6 +3921,22 @@ html body .tab-bar.is-collapsed:not(.is-create-open):not(.is-create-closing) .ta
   pointer-events: none;
   border-radius: 999px;
   background: light-dark(rgba(0, 0, 0, 0.12), rgba(255, 255, 255, 0.28));
+}
+
+/* The closed nav's shuriken sits inside a real container, with the pill on top of it */
+html body .tab-bar.is-collapsed:not(.is-create-open):not(.is-create-closing) .tab-items .tab-item.is-create::after {
+  content: '';
+  position: absolute;
+  top: -4%;
+  bottom: -4%;
+  left: 50%;
+  width: 118px;
+  transform: translateX(-50%);
+  z-index: -2;
+  pointer-events: none;
+  border-radius: 28px;
+  background: var(--container-bg);
+  border: 1px solid light-dark(rgba(0, 0, 0, 0.3), rgba(255, 255, 255, 0.08));
 }
 
 /* Desktop: heart under the photo, name and price centered below it */
