@@ -4081,3 +4081,12 @@ html[data-bg-image='none'] body .pf-compose .pf-compose-caption {
     box-shadow: none;
   }
 }
+
+/* Desktop: no gap under the plate, even when scrolled to the bottom */
+@media (min-width: 720px) {
+  html body .profile-screen:has(:is(.profile-spaces-inline, .pf-photos):not([hidden])) { padding-bottom: 0; }
+  html body .profile-screen .profile-card :is(.profile-spaces-inline, .pf-photos):not([hidden]) {
+    margin-bottom: 0;
+    padding-bottom: 110px;
+  }
+}
