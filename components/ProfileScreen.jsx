@@ -618,6 +618,20 @@ export default function ProfileScreen({
       const cs = getComputedStyle(root)
       const contentW = root.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight)
       root.style.setProperty('--plate-wide-x', `${Math.max(0, Math.round((window.innerWidth - (contentW + 16)) / 2))}px`)
+      const idn = root.querySelector('.profile-identity')
+      const social = idn?.querySelector('.profile-social')
+      const pg = root.querySelectorAll('.profile-spaces-inline:not([hidden]) .section-pager-bars, .profile-spaces-inline:not([hidden]) .section-pager-drum')
+      const nm = idn?.querySelectorAll('.profile-display-name, .pf-name-link, .profile-handle, .profile-username-link')
+      if (idn && social && pg.length && nm?.length) {
+        const pr = [...pg].map((n) => n.getBoundingClientRect())
+        const pLeft = Math.min(...pr.map((r) => r.left))
+        const pRight = Math.max(...pr.map((r) => r.right))
+        const nRight = Math.max(...[...nm].map((n) => n.getBoundingClientRect().right))
+        const gap = Math.max(8, pLeft - nRight)
+        const ir = idn.getBoundingClientRect()
+        const left = Math.min(pRight - ir.left + gap, ir.width - 18 - social.offsetWidth)
+        root.style.setProperty('--pf-social-left', `${Math.round(left)}px`)
+      }
       const sec = root.querySelector('.profile-spaces-inline:not([hidden]), .pf-photos:not([hidden])')
       if (sec) {
         const rootTop = root.getBoundingClientRect().top
