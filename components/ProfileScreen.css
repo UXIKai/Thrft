@@ -4149,3 +4149,10 @@ html body .profile-screen .profile-identity .pf-x-head .pf-user-avatar-wrap { ma
     box-shadow: none;
   }
 }
+
+/* Share sits in the left corner, the menu stays in the right corner */
+html body .profile-screen .pf-top-actions,
+html body .app-column.is-profile-wide .profile-screen .pf-top-actions {
+  left: calc(var(--pf-pad-x) + 8px);
+  justify-content: space-between;
+}
