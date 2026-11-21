@@ -3967,3 +3967,10 @@ html[data-bg-image='none'] body .profile-screen .profile-card .pf-photos:not([hi
 html[data-bg-image='none'] body .profile-screen:has(.pf-photos:not([hidden])) .profile-card .profile-identity {
   background: var(--container-bg);
 }
+
+/* Effect off: compose page containers use the same 80% plate */
+html[data-bg-image='none'] body .pf-compose .pf-compose-square,
+html[data-bg-image='none'] body .pf-compose .pf-compose-caption {
+  background: var(--container-bg) !important;
+  border: 1px solid light-dark(rgba(0, 0, 0, 0.3), rgba(255, 255, 255, 0.08));
+}
