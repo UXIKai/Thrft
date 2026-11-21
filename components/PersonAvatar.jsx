@@ -6,8 +6,8 @@ const cache = new Map()
 function lookup(username) {
   if (!cache.has(username)) {
     cache.set(username, fetchAccountPage(username)
-      .then((account) => account?.avatarUrl || '')
-      .catch(() => ''))
+      .then((data) => data?.account?.avatarUrl || data?.avatarUrl || '')
+      .catch(() => { cache.delete(username); return '' }))
   }
   return cache.get(username)
 }

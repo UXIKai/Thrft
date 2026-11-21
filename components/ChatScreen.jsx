@@ -2672,7 +2672,7 @@ export default function ChatScreen({
                     return (
                       <li key={member} className="chat-member-row">
                         <span className="chat-member-avatar" aria-hidden>
-                          {initials}
+                          <PersonAvatar className="person-avatar-fill" username={usernameForName(member)} initials={initials} />
                         </span>
                         <div className="chat-member-body">
                           <label className="chat-member-name-field">
@@ -4044,7 +4044,7 @@ export default function ChatScreen({
                   <li key={name} className="chat-users-row-wrap">
                     <div className="chat-users-row">
                       <span className="chat-users-avatar" aria-hidden>
-                        {initials || '?'}
+                        <PersonAvatar className="person-avatar-fill" username={name} initials={initials || '?'} />
                       </span>
                       <button type="button" className="chat-users-name chat-users-name-btn is-bare" aria-label={`View ${name} profile`} onClick={() => onOpenAccount?.(name)}>{name}</button>
                       <div className="chat-users-actions">
