@@ -4170,7 +4170,7 @@ html body .app-column.is-profile-wide .profile-screen .pf-top-actions {
   html body .profile-screen .profile-spaces-inline-body .stylst { position: static; }
   html body .profile-screen .profile-spaces-inline-body :is(.profile-listing-tabs.is-panel, .closet-browse-wheels, .stylst-bar) {
     position: absolute;
-    top: 18px;
+    top: -39px;
     left: 18px;
     right: 18px;
     width: auto;
