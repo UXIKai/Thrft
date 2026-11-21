@@ -3987,3 +3987,8 @@ html body .profile-screen:has(.profile-spaces-inline:not([hidden])) .profile-ide
   pointer-events: none;
 }
 html body .profile-screen:has(.profile-spaces-inline:not([hidden])) .profile-identity .profile-name-row > button { pointer-events: auto; }
+
+/* Desktop: products sit nine to a row */
+@media (min-width: 720px) {
+  html body .profile-screen .profile-product-list { grid-template-columns: repeat(9, minmax(0, 1fr)); gap: 16px 8px; }
+}
