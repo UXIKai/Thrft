@@ -234,3 +234,15 @@ html body .account-page-actions :is(.account-page-follow, .account-page-message)
   outline: none !important;
   box-shadow: none !important;
 }
+
+html body .account-page-products {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px 6px;
+}
+html body .account-page-products > * {
+  width: 100%;
+  min-width: 0;
+  max-width: none;
+  flex: none;
+}
