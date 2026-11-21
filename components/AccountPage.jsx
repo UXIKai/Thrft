@@ -1,3 +1,4 @@
+import { ProductCard } from './ProductRows.jsx'
 import FollowIcon from './FollowIcon.jsx'
 import { createPortal } from 'react-dom'
 import { useEffect, useState } from 'react'
@@ -215,29 +216,15 @@ export default function AccountPage({
                 {isOwn ? 'Post a product from Create (+).' : 'No products yet.'}
               </p>
             ) : (
-              <ul className="account-page-list">
+              <div className="account-page-products">
                 {products.map((p) => (
-                  <li key={p.id}>
-                    <button
-                      type="button"
-                      className="account-page-row"
-                      onClick={() =>
-                        onOpenProduct?.({
-                          ...p,
-                          detailVariant: 'store',
-                          seller: name,
-                          sellerUsername: handle,
-                        })
-                      }
-                    >
-                      <span className="account-page-row-title">{p.title}</span>
-                      <span className="account-page-row-meta">
-                        {[p.brand, p.price].filter(Boolean).join(' · ')}
-                      </span>
-                    </button>
-                  </li>
+                  <ProductCard
+                    key={p.id}
+                    product={p}
+                    onOpen={(item) => onOpenProduct?.({ ...item, detailVariant: 'store', seller: name, sellerUsername: handle })}
+                  />
                 ))}
-              </ul>
+              </div>
             )}
           </>
         )}

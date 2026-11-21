@@ -207,3 +207,10 @@ html body .account-page-section-btn.is-active { opacity: 1; }
 }
 .account-page-follow { transition: opacity 0.16s ease, transform 0.12s ease; }
 .account-page-follow:active { transform: scale(0.94); }
+
+.account-page-products {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
