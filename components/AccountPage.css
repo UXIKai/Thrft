@@ -214,3 +214,23 @@ html body .account-page-section-btn.is-active { opacity: 1; }
   justify-content: center;
   gap: 12px;
 }
+
+html body .account-page-actions :is(.account-page-follow, .account-page-message) {
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
+  -webkit-tap-highlight-color: transparent;
+}
+html body .account-page-actions :is(.account-page-follow, .account-page-message):focus,
+html body .account-page-actions :is(.account-page-follow, .account-page-message):focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
