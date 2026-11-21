@@ -900,6 +900,7 @@ export default function App() {
           favoredBrands={userProfile?.favoredBrands || []}
           onFavoredBrandsChange={(next) => handleSaveProfile({ favoredBrands: next })}
           onClose={() => setActiveBrand(null)}
+          onOpenAccount={(username) => { if (username) setActiveAccount({ username, isOwn: false }) }}
           onOpenProduct={(product) => {
             productReturnRef.current = { brand: activeBrand }
             setActiveBrand(null)

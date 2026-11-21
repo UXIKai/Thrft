@@ -22,7 +22,7 @@ function BackIcon() {
   )
 }
 
-export default function BrandProfile({ brandId, brandName, onClose, onOpenProduct, favoredBrands = [], onFavoredBrandsChange }) {
+export default function BrandProfile({ brandId, brandName, onClose, onOpenProduct, onOpenAccount, favoredBrands = [], onFavoredBrandsChange }) {
   const [stageEl, setStageEl] = useState(null)
   const [products, setProducts] = useState([])
   const [loadError, setLoadError] = useState('')
@@ -105,7 +105,12 @@ export default function BrandProfile({ brandId, brandName, onClose, onOpenProduc
             {products[0]?.brandLogoUrl ? <img src={products[0].brandLogoUrl} alt="" /> : name.slice(0, 1)}
           </span>
           <h1 className="brand-profile-cat" aria-label={name}>
-            {products[0]?.brandLogoUrl ? <img className="brand-profile-title-logo" src={products[0].brandLogoUrl} alt="" /> : name}
+            {products[0]?.brandLogoUrl ? (
+              <button type="button" className="brand-profile-title-btn is-bare" disabled={!products[0].sellerUsername || !onOpenAccount}
+                aria-label={`View ${name} profile`} onClick={() => onOpenAccount?.(products[0].sellerUsername)}>
+                <img className="brand-profile-title-logo" src={products[0].brandLogoUrl} alt="" />
+              </button>
+            ) : name}
           </h1>
           {likeId && onFavoredBrandsChange && (
             <button

@@ -123,3 +123,8 @@ html body .brand-profile .brand-profile-back,
 html body .brand-profile .brand-profile-heart { top: 8px; }
 
 .brand-profile-title-logo { display: block; width: 56px; height: 56px; margin: 0 auto; border-radius: 50%; object-fit: cover; }
+
+html body .brand-profile .brand-profile-title-btn { display: block; margin: 0 auto; padding: 0; width: 84px; height: 84px; border-radius: 50%; cursor: pointer; }
+html body .brand-profile .brand-profile-title-btn:disabled { cursor: default; }
+html body .brand-profile .brand-profile-title-logo { width: 84px; height: 84px; }
+html body .brand-profile .brand-profile-hero { min-height: 84px; }
