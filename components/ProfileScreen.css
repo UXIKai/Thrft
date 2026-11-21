@@ -3938,3 +3938,32 @@ html[data-bg-image='none'] body .profile-screen .profile-spaces-inline .profile-
   width: calc(100% - 40px);
   margin-inline: 20px;
 }
+
+/* Photos view: the header card grows 20px each side and extends down to hold the photo grid */
+html body .profile-screen:has(.pf-photos:not([hidden])) .profile-card .profile-identity {
+  margin-inline: -28px;
+  margin-bottom: 0;
+  border-bottom: 0;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  box-shadow: none;
+}
+html body .profile-screen .profile-card .pf-photos:not([hidden]) {
+  margin: 0 -28px 14px;
+  padding: 8px 16px 16px;
+  box-sizing: border-box;
+  background: var(--page-bg);
+  border: 1px solid light-dark(rgba(0, 0, 0, 0.3), rgba(255, 255, 255, 0.08));
+  border-top: 0;
+  border-radius: 0 0 28px 28px;
+  box-shadow: 0 4px 14px light-dark(rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.25));
+}
+html body .profile-screen .pf-photos .pf-photos-grid { gap: 4px; }
+html body .profile-screen .pf-photos .pf-photo-tile { border-radius: 10px; }
+@media (min-width: 720px) {
+  html body .profile-screen .pf-photos .pf-photos-grid { grid-template-columns: repeat(9, 1fr); }
+}
+html[data-bg-image='none'] body .profile-screen .profile-card .pf-photos:not([hidden]),
+html[data-bg-image='none'] body .profile-screen:has(.pf-photos:not([hidden])) .profile-card .profile-identity {
+  background: var(--container-bg);
+}
