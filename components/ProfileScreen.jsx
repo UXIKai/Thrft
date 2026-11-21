@@ -618,7 +618,7 @@ export default function ProfileScreen({
       const cs = getComputedStyle(root)
       const contentW = root.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight)
       root.style.setProperty('--plate-wide-x', `${Math.max(0, Math.round((window.innerWidth - 48 - (contentW + 16)) / 2))}px`)
-      const sec = root.querySelector('.profile-spaces-inline')
+      const sec = root.querySelector('.profile-spaces-inline:not([hidden]), .pf-photos:not([hidden])')
       if (sec) {
         const rootTop = root.getBoundingClientRect().top
         const secTop = sec.getBoundingClientRect().top - rootTop + root.scrollTop

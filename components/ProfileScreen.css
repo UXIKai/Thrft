@@ -4043,3 +4043,25 @@ html[data-bg-image='none'] body .pf-compose .pf-compose-caption {
   }
   html[data-bg-image='none'] body .profile-screen .profile-card .section-pager::after { display: none; }
 }
+
+/* Desktop photos view: same full-page plate as the section tabs, header icons kept where they were */
+@media (min-width: 720px) {
+  html body .profile-screen:has(.pf-photos:not([hidden])) .profile-card .profile-identity,
+  html body .profile-screen .profile-card .pf-photos:not([hidden]) {
+    width: calc(100vw - 48px);
+    max-width: none;
+    box-sizing: border-box;
+    margin-inline: calc(50% - 50vw + 24px);
+  }
+  html body .profile-screen:has(.pf-photos:not([hidden])) .profile-card .profile-identity {
+    padding-inline: calc(18px + var(--plate-wide-x, 0px));
+  }
+  html body .profile-screen:has(.pf-photos:not([hidden])) .profile-card .profile-identity .profile-social {
+    right: calc(18px + var(--plate-wide-x, 0px));
+  }
+  html body .profile-screen .profile-card .pf-photos:not([hidden]) {
+    margin-bottom: 14px;
+    padding: 8px 24px 24px;
+    min-height: var(--plate-fill, 0px);
+  }
+}
