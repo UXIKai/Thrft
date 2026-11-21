@@ -85,7 +85,7 @@ const PX_PER_SEC = 18
 const BOX_W = 118
 const BOX_GAP = 10
 
-function ProductCard({ product, onOpen }) {
+export function ProductCard({ product, onOpen }) {
   const photo = product.photoUrl || product.image_url
   const label =
     [product?.brandName, product?.title, product?.price]
@@ -280,7 +280,7 @@ function StoreRowPage({ row, onBack, onOpenProduct, favoredBrands = [], onFavore
           {showCategory ? <p>{row.category}</p> : null}
         </div>
         {brandId ? (
-          <button type="button" className={`store-row-page-heart is-bare${liked ? ' is-on' : ''}`} aria-pressed={liked} aria-label={liked ? 'Remove from favorite brands' : 'Add to favorite brands'} onClick={toggleBrandLike}>
+          <button type="button" className={`store-row-page-heart is-bare${liked ? ' is-on' : ''}`} key={liked ? 'on' : 'off'} aria-pressed={liked} aria-label={liked ? 'Remove from favorite brands' : 'Add to favorite brands'} onClick={toggleBrandLike}>
             <svg viewBox="0 0 24 24" aria-hidden><path d="M12 20.5s-7.5-4.6-7.5-10A4.4 4.4 0 0 1 12 7.8a4.4 4.4 0 0 1 7.5 2.7c0 5.4-7.5 10-7.5 10Z" fill={liked ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" /></svg>
           </button>
         ) : <span className="store-row-page-spacer" aria-hidden />}

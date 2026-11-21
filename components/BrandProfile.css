@@ -93,3 +93,24 @@
   text-align: left;
   font-size: 0.85rem;
 }
+
+.brand-profile-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  padding: 0 12px 120px;
+}
+html body .brand-profile-grid .product-box { width: 100%; height: auto; aspect-ratio: 118 / 142; }
+@media (min-width: 720px) {
+  .brand-profile-grid { grid-template-columns: repeat(auto-fill, minmax(clamp(150px, 12vw, 220px), 1fr)); gap: 24px 16px; padding: 0 24px 120px; }
+}
+
+html body .brand-profile-heart { position: absolute; right: 12px; top: 16px; width: 40px; height: 40px; display: grid; place-items: center; padding: 0; border: 0; background: none; box-shadow: none; color: light-dark(rgb(0, 0, 0), #fff); }
+html body .brand-profile-heart svg, html body .store-row-page-heart svg { width: 22px; height: 22px; }
+html body .brand-profile-heart.is-on, html body .store-row-page-heart.is-on { color: #ff3b5c; animation: brand-heart-pop 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.4); }
+html body .brand-profile-heart:active, html body .store-row-page-heart:active { transform: scale(0.85); }
+@keyframes brand-heart-pop {
+  0% { transform: scale(0.6); }
+  45% { transform: scale(1.35); }
+  100% { transform: scale(1); }
+}
