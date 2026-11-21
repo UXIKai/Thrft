@@ -6156,3 +6156,10 @@ html body .stage > .chat-friends-empty.is-requests-full .chat-friends-tabs { mar
 html body .chat-main-header .chat-top-switch {
   background: color-mix(in srgb, var(--page-bg) 90%, transparent);
 }
+
+/* No friends to list: no empty plate under the tabs */
+html body .chat-screen .chat-friends-panel:not(:has(.chat-friends-list)) {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
