@@ -6119,7 +6119,7 @@ html body .chat-images-gallery.is-fullscreen .chat-images-item { border-radius: 
 /* Message requests: full-page container at 50% opacity, top included */
 html body .stage > .chat-friends-empty.is-requests-full {
   position: fixed; inset: 0; z-index: 0; width: auto; height: auto; max-width: none; margin: 0; box-sizing: border-box;
-  padding: calc(env(safe-area-inset-top, 0px) + 56px) 0 120px; border-radius: 0; border: 0;
+  padding: calc(env(safe-area-inset-top, 0px) + 12px) 0 120px; border-radius: 0; border: 0;
   background: color-mix(in srgb, var(--page-bg) 50%, transparent) !important;
   -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px);
   display: flex; flex-direction: column; align-items: center; overflow-y: auto;
@@ -6148,3 +6148,4 @@ html body .stage > .chat-friends-empty.is-requests-full .chat-friends-tab-group.
   position: relative !important; left: auto !important; transform: none !important; margin: 0 auto !important;
   width: 220px !important; flex: 0 0 auto !important;
 }
+html body .stage > .chat-friends-empty.is-requests-full .chat-friends-tabs { margin-top: 0 !important; padding-top: 0 !important; }
