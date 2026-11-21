@@ -3912,8 +3912,10 @@ html[data-bg-image='none'] body .profile-screen .closet-browse-wheels::before {
   z-index: -1;
   top: -40px;
   bottom: -10px;
-  left: -8px;
-  right: -8px;
+  left: 50%;
+  width: calc(100cqw + 16px);
+  transform: translateX(-50%);
   background: var(--container-bg);
   border-radius: 0 0 28px 28px;
 }
+html[data-bg-image='none'] body .profile-screen .closet-browse { container-type: inline-size; }
