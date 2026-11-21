@@ -4090,3 +4090,25 @@ html[data-bg-image='none'] body .pf-compose .pf-compose-caption {
     padding-bottom: 110px;
   }
 }
+
+/* Desktop: the plate is a fixed full-screen layer, so it covers the whole page at every scroll position */
+@media (min-width: 720px) {
+  html body .profile-screen:has(:is(.profile-spaces-inline, .pf-photos):not([hidden])) { isolation: isolate; }
+  html body .profile-screen:has(:is(.profile-spaces-inline, .pf-photos):not([hidden]))::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: var(--page-bg);
+  }
+  html[data-bg-image='none'] body .profile-screen:has(:is(.profile-spaces-inline, .pf-photos):not([hidden]))::before {
+    background: var(--container-bg);
+  }
+  html body .profile-screen:has(:is(.profile-spaces-inline, .pf-photos):not([hidden])) .profile-card .profile-identity,
+  html[data-bg-image='none'] body .profile-screen:has(:is(.profile-spaces-inline, .pf-photos):not([hidden])) .profile-card .profile-identity,
+  html body .profile-screen .profile-card :is(.profile-spaces-inline, .pf-photos):not([hidden]),
+  html[data-bg-image='none'] body .profile-screen .profile-card :is(.profile-spaces-inline, .pf-photos):not([hidden]) {
+    background: none;
+  }
+}
