@@ -3726,7 +3726,7 @@ html body .market-chips .market-chip.is-active {
   font-weight: 700;
 }
 @media (min-width: 720px) {
-  html body .market-product-feed .market-chips { padding: 3px; margin: 0 0 18px; gap: 0; }
+  html body .market-product-feed .market-chips { padding: 3px; margin: 0 auto 18px; gap: 0; }
   html body .market-product-feed .market-chips .market-chip { height: 40px; padding: 0 18px; }
 }
 
