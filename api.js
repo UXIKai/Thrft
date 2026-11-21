@@ -441,6 +441,12 @@ export async function saveExternalBrandShipping(brandId, flatShippingCents) {
   })
 }
 
+export async function saveExternalBrandLogo(brandId, logoUrl) {
+  return api(`/api/brands/settings/${encodeURIComponent(brandId)}/logo`, {
+    method: 'PUT', body: JSON.stringify({ logoUrl }),
+  })
+}
+
 export async function saveBrandShopify(brandId, { shop, token, disconnect } = {}) {
   const body = disconnect ? { disconnect: true } : {
     shop: String(shop || '').trim(),

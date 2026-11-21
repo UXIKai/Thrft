@@ -90,7 +90,7 @@ export async function importExternalBrand(user, body, db, collect = collectExter
 
 export async function fetchExternalBrandSettings(user, db) {
   const [brands, claims, connections] = await Promise.all([
-    db.from('external_brands').select('id,name,site_origin,flat_shipping_cents')
+    db.from('external_brands').select('id,name,site_origin,flat_shipping_cents,logo_url')
       .eq('creator_id', user.id).order('name'),
     db.from('brand_domain_claims').select('domain').eq('creator_id', user.id).eq('status', 'verified'),
     db.from('external_brand_shopify').select('brand_id,shop').eq('creator_id', user.id),
@@ -99,9 +99,20 @@ export async function fetchExternalBrandSettings(user, db) {
   const shops = new Map(checked(connections).map((connection) => [connection.brand_id, connection.shop]))
   return checked(brands).filter((brand) => verified.has(brand.site_origin)).map((brand) => ({
     id: brand.id, name: brand.name, domain: new URL(brand.site_origin).hostname,
-    flatShippingCents: brand.flat_shipping_cents,
+    flatShippingCents: brand.flat_shipping_cents, logoUrl: brand.logo_url,
     shopifyConnected: shops.has(brand.id), shopifyShop: shops.get(brand.id) || '',
   }))
+}
+
+export async function saveExternalBrandLogo(user, brandId, logoUrl, db) {
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(brandId)) fail('Invalid brand ID')
+  const url = requireArtworkUrl(logoUrl, user.id)
+  const brand = checked(await db.from('external_brands').update({ logo_url: url })
+    .eq('id', brandId).eq('creator_id', user.id).select('id').maybeSingle())
+  if (!brand) fail('Brand not found', 404)
+  checked(await db.from('brand_products').update({ brand_logo_url: url })
+    .eq('external_brand_id', brandId).eq('creator_id', user.id))
+  return { logoUrl: url }
 }
 
 export async function saveExternalBrandShipping(user, brandId, amount, db) {
@@ -239,6 +250,8 @@ export async function handleCreatorApi(req, res) {
       send(res, 200, { brands: await fetchExternalBrandSettings(user, db) })
     } else if (/^\/api\/brands\/settings\/[^/]+\/shopify$/.test(path) && req.method === 'PUT') {
       send(res, 200, await saveShopifyConnection(db, user, path.split('/').at(-2), await readBody(req)))
+    } else if (/^\/api\/brands\/settings\/[^/]+\/logo$/.test(path) && req.method === 'PUT') {
+      send(res, 200, await saveExternalBrandLogo(user, path.split('/').at(-2), (await readBody(req)).logoUrl, db))
     } else if (/^\/api\/brands\/settings\/[^/]+$/.test(path) && req.method === 'PUT') {
       const body = await readBody(req)
       send(res, 200, await saveExternalBrandShipping(user, path.split('/').at(-1), body.flatShippingCents, db))

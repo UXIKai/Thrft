@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react'
-import { fetchExternalBrandSettings, saveBrandShopify, saveExternalBrandShipping } from '../api.js'
+import { useEffect, useRef, useState } from 'react'
+import { fetchExternalBrandSettings, saveBrandShopify, saveExternalBrandShipping, saveExternalBrandLogo } from '../api.js'
+import { uploadCreatorArtwork } from '../artworkStorage.js'
 import './GlassOverlay.css'
 import './ExternalBrandShipping.css'
 import BrandCatalogSync from './BrandCatalogSync.jsx'
@@ -12,6 +13,25 @@ function ShippingBrand({ brand }) {
   const [shop, setShop] = useState(brand.shopifyShop || '')
   const [token, setToken] = useState('')
   const [connected, setConnected] = useState(Boolean(brand.shopifyConnected))
+  const [logo, setLogo] = useState(brand.logoUrl || '')
+  const logoInput = useRef(null)
+
+  async function changeLogo(event) {
+    const file = event.target.files?.[0]
+    event.target.value = ''
+    if (!file || busy) return
+    setBusy(true)
+    setError('')
+    setMessage('')
+    try {
+      const url = await uploadCreatorArtwork(file)
+      await saveExternalBrandLogo(brand.id, url)
+      setLogo(url)
+      setMessage('Logo updated.')
+    } catch (err) {
+      setError(err.message || 'Could not change the logo.')
+    } finally { setBusy(false) }
+  }
 
   async function saveShopify(disconnect = false) {
     if (busy) return
@@ -54,6 +74,9 @@ function ShippingBrand({ brand }) {
   return <section className="external-shipping-brand">
     <h2>{brand.name}</h2>
     <p>{brand.domain}</p>
+    {logo && <img className="external-shipping-logo" src={logo} alt="" />}
+    <input ref={logoInput} type="file" accept="image/png,image/jpeg" hidden onChange={changeLogo} />
+    <button type="button" disabled={busy} onClick={() => logoInput.current?.click()}>Change logo</button>
     <BrandCatalogSync brandId={brand.id} disabled={busy} />
     <form className="external-shipping-form" onSubmit={save}>
       <label>Flat shipping rate (USD)
