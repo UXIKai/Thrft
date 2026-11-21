@@ -3908,9 +3908,9 @@ html body .stage > .tab-bar.tab-bar.tab-bar.is-pressed:not(#_):not(#_) {
 html body .stage > .tab-bar { transition: opacity 0.6s ease; }
 html body .stage:has(> .logo-splash:not(.is-leaving)) > .tab-bar { opacity: 0 !important; pointer-events: none; }
 
-/* The shuriken sits in its own pill, like the selected tab */
-html body .tab-bar:not(.is-collapsed):not(.is-create-open):not(.is-create-closing) .tab-items .tab-item.is-create { position: relative; }
-html body .tab-bar:not(.is-collapsed):not(.is-create-open):not(.is-create-closing) .tab-items .tab-item.is-create::before {
+/* Only the collapsed (closed) nav gives the shuriken its own pill, sized like the tab pill */
+html body .tab-bar.is-collapsed:not(.is-create-open):not(.is-create-closing) .tab-items .tab-item.is-create { position: relative; }
+html body .tab-bar.is-collapsed:not(.is-create-open):not(.is-create-closing) .tab-items .tab-item.is-create::before {
   content: '';
   position: absolute;
   top: 11%;
