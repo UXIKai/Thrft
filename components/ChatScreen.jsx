@@ -3299,6 +3299,17 @@ export default function ChatScreen({
             <svg className="chat-ico" viewBox="0 0 24 24" aria-hidden width="20" height="20"><rect x="3.500" y="5.500" width="17" height="13" rx="2.500" fill="none" stroke="currentColor" strokeWidth="1.600" /><path d="M4 7.500l8 6 8-6" fill="none" stroke="currentColor" strokeWidth="1.600" strokeLinecap="round" strokeLinejoin="round" /></svg>
             <span>Message requests</span>
           </button>
+          {!isDesktop && (
+            <button
+              type="button"
+              className={`chat-list-quick-btn is-bare${friendsClicked && !requestsView ? ' is-on' : ''}`}
+              aria-pressed={friendsClicked && !requestsView}
+              onClick={() => { if (composer) closeComposer(); setImagesOnly(false); setRequestsView(false); setActiveChatId(null); setFriendsClicked((on) => !on) }}
+            >
+              <svg className="chat-ico" viewBox="0 0 24 24" aria-hidden width="20" height="20" fill="currentColor"><circle cx="9" cy="8" r="3.2" /><path d="M2.500 19.500c0-3.300 2.800-5.500 6.500-5.500s6.500 2.200 6.500 5.500z" /></svg>
+              <span>Friends</span>
+            </button>
+          )}
         </nav>
         <ul className="chat-list">
           {filtered.all.some((c) => c.pinned) && (
@@ -3426,7 +3437,7 @@ export default function ChatScreen({
           >
             <ToggleIcon />
           </button>
-          {!composer && !imagesOnly && (
+          {!composer && !imagesOnly && requestsView && (
             <div
               className={`chat-top-switch${peopleSearchOpen ? ' is-searching' : ''}${holdDown ? ' is-holding' : ''}`}
               role="tablist"
@@ -3484,8 +3495,6 @@ export default function ChatScreen({
                 />
               ) : (
                 <>
-              <button type="button" role="tab" data-side="chats" hidden={requestsView && !isDesktop} aria-selected={!friendsClicked && !requestsView} className={`chat-top-pill is-bare${(holdSide ? holdSide === 'chats' : !friendsClicked && !requestsView) ? ' is-active' : ''}`} onClick={() => { setRequestsView(false); setFriendsClicked(false); setActiveChatId(null) }}>Chats</button>
-              <button type="button" role="tab" data-side="friends" hidden={requestsView && !isDesktop} aria-selected={friendsClicked && !requestsView} className={`chat-top-pill is-bare${(holdSide ? holdSide === 'friends' : friendsClicked && !requestsView) ? ' is-active' : ''}`} onClick={() => { setRequestsView(false); setActiveChatId(null); setFriendsClicked(true) }}>Friends</button>
                   {requestsView && !isDesktop && [['requests', 'Requests'], ['spam', 'Spam']].map(([id, label]) => (
                     <button key={id} type="button" role="tab" aria-selected={requestsTab === id} className={`chat-top-pill is-bare${requestsTab === id ? ' is-active' : ''}`} onClick={() => setRequestsTab(id)}>{label}</button>
                   ))}
