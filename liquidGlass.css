@@ -1936,5 +1936,5 @@ html body .settings-palette-sheet .settings-palette-tab.is-active {
 
 /* Effect off: the nav bar and every container share one plate (--container-bg); change --plate-opacity in index.css to retune all */
 html[data-bg-image='none'] body .stage > .tab-bar.tab-bar.tab-bar {
-  background: var(--container-bg) !important;
+  background: var(--container-bg-top) !important;
 }

@@ -10,6 +10,8 @@
   --page-bg: color-mix(in srgb, var(--page-base) 80%, #000);
   /* Floating containers (nav bar, pills, menus) sit at 80% opacity so the page shows through slightly */
   --container-bg: color-mix(in srgb, var(--page-bg) 80%, transparent);
+  /* Layers that float over a container (nav bar, chat toggle) are 10 points more opaque than it */
+  --container-bg-top: color-mix(in srgb, var(--page-bg) 90%, transparent);
   /* Subtle black edge for surfaces on a bright page (dark ink); invisible on dark pages */
   --edge-ink: light-dark(rgba(0, 0, 0, 0.28), transparent);
 }
@@ -23,6 +25,7 @@ html[data-bg-image='none'] {
 html[data-bg-image='none'] {
   --plate-opacity: 80%;
   --container-bg: color-mix(in srgb, color-mix(in srgb, #000 35%, var(--page-bg)) var(--plate-opacity), transparent);
+  --container-bg-top: color-mix(in srgb, color-mix(in srgb, #000 35%, var(--page-bg)) calc(var(--plate-opacity) + 10%), transparent);
   --glass-tint: var(--container-bg) !important;
   --glass-clear-tint: var(--container-bg) !important;
   --glass-tint-active: color-mix(in srgb, #fff 12%, var(--container-bg)) !important;
