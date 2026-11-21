@@ -615,6 +615,9 @@ export default function ProfileScreen({
       const below = row?.matches('.profile-listing-tabs') ? 14 : 10
       root.style.setProperty('--plate-extra', row ? `${row.offsetHeight + 10 + below}px` : '0px')
       // desktop: the plate runs down to the nav bar even when the items are short
+      const cs = getComputedStyle(root)
+      const contentW = root.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight)
+      root.style.setProperty('--plate-wide-x', `${Math.max(0, Math.round((window.innerWidth - 48 - (contentW + 16)) / 2))}px`)
       const sec = root.querySelector('.profile-spaces-inline')
       if (sec) {
         const rootTop = root.getBoundingClientRect().top

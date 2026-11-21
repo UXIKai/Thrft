@@ -4015,10 +4015,10 @@ html[data-bg-image='none'] body .pf-compose .pf-compose-caption {
   }
   /* Header contents stay where they were: pad by exactly how far the plate grew */
   html body .profile-screen:has(.profile-spaces-inline:not([hidden])) .profile-card .profile-identity {
-    padding-inline: max(18px, calc(18px + 50vw - 50% - 32px));
+    padding-inline: calc(18px + var(--plate-wide-x, 0px));
   }
   html body .profile-screen:has(.profile-spaces-inline:not([hidden])) .profile-card .profile-identity .profile-social {
-    right: max(18px, calc(18px + 50vw - 50% - 32px));
+    right: calc(18px + var(--plate-wide-x, 0px));
   }
   html body .profile-screen .profile-card .profile-spaces-inline:not([hidden]) {
     padding: 0 24px 24px;
