@@ -102,7 +102,6 @@ export function ProductCard({ product, onOpen }) {
         <ProductPhoto className="product-box-photo" src={photo}
           cutout={hasProductCutout(product)}
           alt="" loading="lazy" draggable="false" />
-      {product.brandLogoUrl && <img className="product-box-brand-logo" src={product.brandLogoUrl} alt="" draggable="false" />}
     </button>
   )
 }
