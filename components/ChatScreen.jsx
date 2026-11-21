@@ -3574,7 +3574,8 @@ export default function ChatScreen({
               </StageSlot>
             )
           ) : requestsView && !activeChat ? (
-            <div className="chat-friends-empty">
+            <StageSlot>
+            <div className="chat-friends-empty is-requests-full">
               <nav className="chat-friends-tabs" aria-label="Message requests">
                 <span className="chat-friends-label">Message Requests</span>
                 <div className="chat-friends-tab-group is-two" style={{ '--tab-index': requestsTab === 'spam' ? 1 : 0 }}>
@@ -3598,6 +3599,7 @@ export default function ChatScreen({
                 </div>
               </div>
             </div>
+            </StageSlot>
           ) : activeChat && !threadOverlay ? (
             renderThread()
           ) : (

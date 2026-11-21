@@ -6115,3 +6115,13 @@ html body .chat-images-gallery.is-fullscreen .chat-images-item { border-radius: 
 @media (min-width: 720px) and (min-height: 500px) {
   html body .chat-images-gallery.is-fullscreen .chat-images-grid { grid-template-columns: repeat(10, minmax(0, 1fr)); }
 }
+
+/* Message requests: full-page container at 50% opacity, top included */
+html body .stage > .chat-friends-empty.is-requests-full {
+  position: fixed; inset: 0; z-index: 0; width: auto; height: auto; max-width: none; margin: 0; box-sizing: border-box;
+  padding: calc(env(safe-area-inset-top, 0px) + 56px) 0 120px; border-radius: 0; border: 0;
+  background: color-mix(in srgb, var(--page-bg) 50%, transparent) !important;
+  -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px);
+  display: flex; flex-direction: column; align-items: center; overflow-y: auto;
+}
+html body .stage > .chat-friends-empty.is-requests-full .chat-friends-body { width: 100%; flex: 1; }
