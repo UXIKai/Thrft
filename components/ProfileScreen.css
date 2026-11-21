@@ -3912,3 +3912,9 @@ html[data-bg-image='none'] body .profile-screen .closet-browse-wheels {
   border-radius: 0 0 28px 28px;
   padding-bottom: 12px;
 }
+
+/* Effect off: the brand and type pickers share the plate colour (no layout change) */
+html[data-bg-image='none'] body .profile-screen .closet-browse-wheels {
+  background: var(--container-bg);
+  border-radius: 20px;
+}
