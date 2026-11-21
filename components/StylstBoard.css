@@ -28,3 +28,10 @@
 
 .stylst-pick-btn.is-on { background: var(--pf-ink, #fff); color: var(--pf-bg, #000); }
 .stylst-pick-empty { font-size: 0.8rem; opacity: 0.7; }
+
+html body .stylst .stylst-bar {
+  padding: 6px 12px;
+  border-radius: 28px;
+  background: var(--container-bg);
+  border: 1px solid light-dark(rgba(0, 0, 0, 0.3), rgba(255, 255, 255, 0.08));
+}
