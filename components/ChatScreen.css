@@ -6125,3 +6125,12 @@ html body .stage > .chat-friends-empty.is-requests-full {
   display: flex; flex-direction: column; align-items: center; overflow-y: auto;
 }
 html body .stage > .chat-friends-empty.is-requests-full .chat-friends-body { width: 100%; flex: 1; }
+
+/* Desktop Friends: the person icon sits inside the tab container, far left beside Mutual */
+html body .chat-friends-tabs .chat-friends-tab-group.has-lead { grid-template-columns: 44px repeat(3, 1fr) !important; }
+html body .chat-friends-tabs .chat-friends-tab-group.has-lead .chat-friends-pill { left: 44px; width: calc((100% - 44px) / 3); }
+html body .chat-friends-tab-group.has-lead button.chat-friends-lead {
+  display: grid; place-items: center; width: 44px; height: 100%; padding: 0 !important; margin: 0;
+  border: 0 !important; background: none !important; box-shadow: none !important; color: inherit; cursor: pointer; z-index: 1;
+}
+html body .chat-friends-lead svg { width: 20px; height: 20px; }

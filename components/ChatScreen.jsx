@@ -3108,10 +3108,11 @@ export default function ChatScreen({
     </aside>
   ) : null
 
-  const friendsBtn = (
+  const friendsTabsVisible = isDesktop && friendsClicked && !newChatPanel && !imagesOnly && !activeChat && !requestsView
+  const renderFriendsBtn = (inTabs) => (
   <button
     type="button"
-    className={`chat-sidebar-control is-bare chat-page-friends${isDesktop ? ' is-desktop' : ''}`}
+    className={inTabs ? 'chat-friends-lead is-bare' : `chat-sidebar-control is-bare chat-page-friends${isDesktop ? ' is-desktop' : ''}`}
     aria-label="Friends"
     onClick={() => {
       if (isDesktop) {
@@ -3429,7 +3430,7 @@ export default function ChatScreen({
       {!isDesktop && !imagesOnly && !requestsView && !composer && onlinePanel}
 
       <div className="chat-main-page">
-      {isDesktop && friendsBtn}
+      {isDesktop && !friendsTabsVisible && renderFriendsBtn(false)}
       {friendsDrawer}
       {!isDesktop && (
         <div className="atmosphere chat-page-atmosphere" aria-hidden="true">
@@ -3616,21 +3617,24 @@ export default function ChatScreen({
                   {friends.length}
                 </button>
                 <div
-                  className="chat-friends-tab-group"
+                  className={`chat-friends-tab-group${friendsTabsVisible ? ' has-lead' : ''}`}
                   style={{ '--tab-index': ['all', 'pending', 'suggestions'].indexOf(friendsTab), touchAction: 'pan-y' }}
                   onPointerDown={(e) => {
+                    if (e.target.closest?.('.chat-friends-lead')) return
                     const el = e.currentTarget
                     el.dataset.drag = '1'
                     el.setPointerCapture?.(e.pointerId)
                     const r = el.getBoundingClientRect()
-                    const i = Math.max(0, Math.min(2, Math.floor(((e.clientX - r.left) / r.width) * 3)))
+                    const lead = el.classList.contains('has-lead') ? 44 : 0
+                    const i = Math.max(0, Math.min(2, Math.floor(((e.clientX - r.left - lead) / (r.width - lead)) * 3)))
                     setFriendsTab(['all', 'pending', 'suggestions'][i])
                   }}
                   onPointerMove={(e) => {
                     const el = e.currentTarget
                     if (el.dataset.drag !== '1') return
                     const r = el.getBoundingClientRect()
-                    const i = Math.max(0, Math.min(2, Math.floor(((e.clientX - r.left) / r.width) * 3)))
+                    const lead = el.classList.contains('has-lead') ? 44 : 0
+                    const i = Math.max(0, Math.min(2, Math.floor(((e.clientX - r.left - lead) / (r.width - lead)) * 3)))
                     const id = ['all', 'pending', 'suggestions'][i]
                     if (id !== friendsTab) setFriendsTab(id)
                   }}
@@ -3638,6 +3642,7 @@ export default function ChatScreen({
                   onPointerCancel={(e) => { e.currentTarget.dataset.drag = '0' }}
                 >
                   <span className="chat-friends-pill" aria-hidden />
+                {friendsTabsVisible && renderFriendsBtn(true)}
                 {[['all', 'Mutual'], ['pending', 'Followers'], ['suggestions', 'Suggestions']].map(([id, label]) => (
                   <button
                     key={id}
