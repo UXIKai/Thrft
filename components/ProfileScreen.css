@@ -4163,3 +4163,32 @@ html body .app-column.is-profile-wide .profile-screen .pf-top-actions {
 
 .profile-listing-tab.is-icon { flex-direction: column; gap: 4px; }
 .profile-listing-tab-label { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.04em; line-height: 1; }
+
+/* Phone: each section's buttons (Active/Sold, Brand/Type, +/refresh) sit inside the profile container, level with the section name */
+@media (max-width: 719.98px) {
+  html body .profile-screen .profile-spaces-inline-body { position: relative; }
+  html body .profile-screen .profile-spaces-inline-body .stylst { position: static; }
+  html body .profile-screen .profile-spaces-inline-body :is(.profile-listing-tabs.is-panel, .closet-browse-wheels, .stylst-bar) {
+    position: absolute;
+    top: 18px;
+    left: 18px;
+    right: 18px;
+    width: auto;
+    margin: 0;
+    padding: 0;
+    transform: translateY(-50%);
+    background: none;
+    border: 0;
+    box-shadow: none;
+    justify-content: space-between;
+    z-index: 2;
+    pointer-events: none;
+  }
+  html body .profile-screen .profile-spaces-inline-body :is(.profile-listing-tabs.is-panel, .closet-browse-wheels, .stylst-bar) :is(button, .closet-browse-wheel) { pointer-events: auto; }
+  html body .profile-screen .profile-listing-tabs.is-panel::after,
+  html body .profile-screen .profile-listing-tabs.is-panel::before { display: none; }
+}
+@media (max-width: 719.98px) {
+  html body .profile-screen .profile-listing-tabs.is-panel { display: flex; border-bottom: 0; }
+  html body .profile-screen .profile-listing-tabs.is-panel .profile-listing-tab { width: auto; padding: 8px; margin: 0; border-bottom: 0; }
+}
