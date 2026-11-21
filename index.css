@@ -18,6 +18,15 @@
 html[data-bg-image='none'] {
   --page-base: rgb(var(--bg-color-rgb, 36, 36, 36));
 }
+/* Effect off: a flat page leaves no wash for clear glass to read against, so every container is the same
+   opaque plate as the nav bar (35% black over the page colour). !important beats the inline glass tints. */
+html[data-bg-image='none'] {
+  --container-bg: color-mix(in srgb, #000 35%, var(--page-bg));
+  --glass-tint: var(--container-bg) !important;
+  --glass-clear-tint: var(--container-bg) !important;
+  --glass-tint-active: color-mix(in srgb, #fff 12%, var(--container-bg)) !important;
+  --glass-clear-tint-active: color-mix(in srgb, #fff 12%, var(--container-bg)) !important;
+}
 html[data-bg-image='none'][data-bg-color='none'] {
   --page-base: light-dark(rgb(255, 255, 255), #000);
 }
