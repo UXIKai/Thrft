@@ -3896,23 +3896,6 @@ html[data-bg-image='none'] body .profile-screen :is(.profile-card, .profile-card
   background: var(--container-bg);
 }
 
-/* Effect off: one continuous plate from the header down through the brand and type pickers */
-html[data-bg-image='none'] body .profile-screen .profile-card .profile-identity {
-  margin-bottom: 0;
-  border-bottom: 0;
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
-}
-html[data-bg-image='none'] body .profile-screen :is(.section-pager, .closet-browse-wheels) {
-  background: var(--container-bg);
-  margin-inline: -8px;
-  padding-inline: 8px;
-}
-html[data-bg-image='none'] body .profile-screen .closet-browse-wheels {
-  border-radius: 0 0 28px 28px;
-  padding-bottom: 12px;
-}
-
 /* Effect off: the brand and type pickers share the plate colour (no layout change) */
 html[data-bg-image='none'] body .profile-screen .closet-browse-wheels {
   background: var(--container-bg);
