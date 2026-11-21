@@ -6106,3 +6106,12 @@ html body .chat-new-card .chat-new-field .chat-new-input::placeholder { text-ali
 html body .stage > .chat-images-gallery.is-fullscreen,
 html body .chat-images-gallery.is-fullscreen { position: fixed; inset: 0; z-index: 0; height: auto; width: auto; padding: 0; }
 html body .chat-images-gallery.is-fullscreen .chat-images-card { background: color-mix(in srgb, var(--page-bg) 50%, transparent); }
+
+/* Images: edge-to-edge page (top included), 3 across on mobile, 10 on desktop */
+html body .chat-images-gallery.is-fullscreen { overflow: hidden; }
+html body .chat-images-gallery.is-fullscreen .chat-images-card { padding: calc(env(safe-area-inset-top, 0px) + 56px) 0 120px; overflow-y: auto; }
+html body .chat-images-gallery.is-fullscreen .chat-images-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2px; }
+html body .chat-images-gallery.is-fullscreen .chat-images-item { border-radius: 0; }
+@media (min-width: 720px) and (min-height: 500px) {
+  html body .chat-images-gallery.is-fullscreen .chat-images-grid { grid-template-columns: repeat(10, minmax(0, 1fr)); }
+}
