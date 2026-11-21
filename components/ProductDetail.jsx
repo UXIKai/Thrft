@@ -234,7 +234,8 @@ export default function ProductDetail({
 
   if (!product || !stageEl) return null
 
-  const photos = productPhotos(product)
+  const chosenVariant = isExternal ? externalVariants.find((variant) => variant.id === selectedVariantIds[selectedVariantIds.length - 1]) : null
+  const photos = chosenVariant?.image ? [chosenVariant.image] : productPhotos(product)
   const photo = photos[0] || ''
   const name = product.title || product.brandName || 'Product'
   const brand = String(product.brandName || product.brand || '').trim()
@@ -275,6 +276,7 @@ export default function ProductDetail({
               <div className={`product-store-size-grid${isExternal ? ' is-external-variants' : ''}`} role="group" aria-label={isExternal ? 'Available variants' : numericSizes ? `${sizeMetric} sizes` : 'Letter sizes'}>
                 {isExternal ? externalVariants.map((variant) => (
                   <button type="button" className="product-detail-size is-bare" key={variant.id} onClick={() => pickExternalVariant(variant)}>
+                    {variant.image && <ProductPhoto src={variant.image} cutout alt="" />}
                     {externalVariantLabel(variant)} · {formatMoney(variant.price)}
                   </button>
                 )) : sizeOptions.map((option) => (
@@ -305,6 +307,7 @@ export default function ProductDetail({
           {isExternal ? externalVariants.map((variant) => (
             <button key={variant.id} type="button" className="product-detail-size is-bare"
               aria-pressed={draftSize === variant.id} onClick={() => setDraftSize(variant.id)}>
+              {variant.image && <ProductPhoto src={variant.image} cutout alt="" />}
               {externalVariantLabel(variant)} · {formatMoney(variant.price)}
             </button>
           )) : (isPrintful ? availableSizes : product.sizes?.length ? product.sizes : LETTER_SIZES).map((size) => (
@@ -375,7 +378,7 @@ export default function ProductDetail({
                     setEditingSizeIndex(index)
                   }}
                 >
-                {photo && <ProductPhoto src={photo} cutout={isPrintful || isExternal} alt="" />}
+                {(externalVariant?.image || photo) && <ProductPhoto src={externalVariant?.image || photo} cutout={isPrintful || isExternal} alt="" />}
                 <div>
                   {brand && <p>{brand}</p>}
                   <h2>{displayTitle || name}</h2>

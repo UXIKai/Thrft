@@ -30,6 +30,14 @@ function imageUrl(value, base) {
   return publicHttpsUrl(value, base).href
 }
 
+function variantImage(product, variant, base) {
+  const images = Array.isArray(product.images) ? product.images : []
+  const src = variant.featured_image?.src ||
+    images.find((image) => image?.id === variant.image_id)?.src ||
+    images.find((image) => Array.isArray(image?.variant_ids) && image.variant_ids.includes(variant.id))?.src
+  try { return imageUrl(src, base) } catch { return '' }
+}
+
 function priceValue(value) {
   const number = Number(value)
   if (!Number.isFinite(number) || number < 0.5 || number > 99999999) fail('A product has an invalid price')
@@ -63,6 +71,7 @@ function shopifyProduct(product, base, currency) {
     })),
     price: priceValue(variant.price),
     available: variant.available !== false,
+    image: variantImage(product, variant, base),
   }))
   if (typeof product.handle !== 'string' || !/^[a-z0-9][a-z0-9_-]*$/i.test(product.handle)) {
     fail('A product has an invalid website handle')

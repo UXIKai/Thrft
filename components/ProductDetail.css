@@ -766,3 +766,6 @@ button.product-detail-brand:has(.product-detail-brand-logo) {
   justify-content: center;
   gap: 28px;
 }
+
+.product-detail-size.is-bare:has(> .product-photo, > img) { display: flex; align-items: center; gap: 10px; }
+.product-detail-size > :is(img, .product-photo, picture) { width: 40px; height: 40px; flex: none; object-fit: contain; }
