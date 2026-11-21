@@ -6134,3 +6134,4 @@ html body .chat-friends-tab-group.has-lead button.chat-friends-lead {
   border: 0 !important; background: none !important; box-shadow: none !important; color: inherit; cursor: pointer; z-index: 1;
 }
 html body .chat-friends-lead svg { width: 20px; height: 20px; }
+html body .chat-friends-tab svg, html body .chat-friends-drawer-tab svg { width: 18px; height: 18px; }

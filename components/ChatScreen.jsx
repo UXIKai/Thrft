@@ -880,6 +880,11 @@ export default function ChatScreen({
   // Someone you've added drops out of the find-people list.
   const pickerUsers = filteredUsers.filter((name) => !isFriend(name))
 
+  const FRIEND_TABS = [['all', 'Friends'], ['pending', 'Followers'], ['suggestions', null]]
+  const selectFriendsTab = (id) => {
+    setFriendsTab(id)
+    if (id === 'suggestions') window.setTimeout(() => document.querySelector('.chat-friends-find.is-in-panel')?.focus({ preventScroll: true }), 0)
+  }
   const friendsView = useMemo(() => {
     const q = friendsQuery.trim().toLowerCase()
     const match = (name) => !q || name.toLowerCase().includes(q)
@@ -892,7 +897,7 @@ export default function ChatScreen({
       pending: followers,
       suggestions: allMemberNames.filter((n) => !friendKeys.has(String(n).toLowerCase())),
     }[friendsTab] || []
-    const titles = { online: 'Online', all: 'Mutual', pending: 'Followers', suggestions: 'Friend Suggestions' }
+    const titles = { online: 'Online', all: 'Friends', pending: 'Followers', suggestions: 'Friend Suggestions' }
     const empty = {
       online: 'No friends online right now.',
       all: 'No mutual friends yet.',
@@ -3092,15 +3097,16 @@ export default function ChatScreen({
   const friendsDrawer = isDesktop && friendsDrawerOpen ? (
     <aside className="chat-friends-drawer" aria-label="Friends">
       <div className="chat-friends-drawer-tabs">
-        {[['all', 'Mutual'], ['pending', 'Followers'], ['suggestions', 'Suggestions']].map(([id, label]) => (
+        {FRIEND_TABS.map(([id, label]) => (
           <button
             key={id}
             type="button"
             className={`chat-friends-drawer-tab is-bare${friendsTab === id ? ' is-active' : ''}`}
             aria-pressed={friendsTab === id}
-            onClick={() => setFriendsTab(id)}
+            aria-label={label ? undefined : 'Search people'}
+            onClick={() => selectFriendsTab(id)}
           >
-            <span className="chat-friends-tab-label">{label}</span><span className="chat-friends-tab-count">{friendsView.counts[id]}</span>
+            {label ? <><span className="chat-friends-tab-label">{label}</span><span className="chat-friends-tab-count">{friendsView.counts[id]}</span></> : <SearchIcon />}
           </button>
         ))}
       </div>
@@ -3643,15 +3649,16 @@ export default function ChatScreen({
                 >
                   <span className="chat-friends-pill" aria-hidden />
                 {friendsTabsVisible && renderFriendsBtn(true)}
-                {[['all', 'Mutual'], ['pending', 'Followers'], ['suggestions', 'Suggestions']].map(([id, label]) => (
+                {FRIEND_TABS.map(([id, label]) => (
                   <button
                     key={id}
                     type="button"
                     className={`chat-friends-tab${friendsTab === id ? ' is-active' : ''}`}
                     aria-pressed={friendsTab === id}
-                    onClick={() => setFriendsTab(id)}
+                    aria-label={label ? undefined : 'Search people'}
+                    onClick={() => selectFriendsTab(id)}
                   >
-                    <span className="chat-friends-tab-label">{label}</span><span className="chat-friends-tab-count">{friendsView.counts[id]}</span>
+                    {label ? <><span className="chat-friends-tab-label">{label}</span><span className="chat-friends-tab-count">{friendsView.counts[id]}</span></> : <SearchIcon />}
                   </button>
                 ))}
                 </div>
