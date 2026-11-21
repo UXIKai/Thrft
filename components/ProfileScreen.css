@@ -4200,7 +4200,8 @@ html body .app-column.is-profile-wide .profile-screen .pf-top-actions {
 
 @media (min-width: 720px) {
   html body .profile-screen .profile-top-btn.is-share { display: none !important; }
-  html body .profile-screen .pf-top-actions { justify-content: flex-end; }
+  html body .profile-screen .pf-top-actions,
+  html body .app-column.is-profile-wide .profile-screen .pf-top-actions { justify-content: flex-end; }
 }
 
 /* Mobile: the whole profile is one full-page plate, like the photos view */
