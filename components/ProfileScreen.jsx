@@ -1842,7 +1842,7 @@ export default function ProfileScreen({
           label="Closet, Store, Market and Stylst"
           className="profile-spaces-inline-body"
         >
-          {spaceTab !== 'closet' && spaceTab !== 'stylst' && (
+          {spaceTab === 'market' && (
             <div
               className="profile-listing-tabs is-panel"
               role="tablist"
@@ -1877,7 +1877,7 @@ export default function ProfileScreen({
           ) : spaceTab !== 'closet' ? (
             (() => {
               const rows = spaceTab === 'store'
-                ? storeProducts.filter((p) => p.status === panelListingTab)
+                ? storeProducts.filter((p) => p.status === 'active')
                 : marketListings.filter((p) =>
                     panelListingTab === 'sold' ? p.status === 'sold' : p.status === 'available',
                   )
