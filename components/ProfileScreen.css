@@ -3933,3 +3933,8 @@ html[data-bg-image='none'] body .profile-screen .profile-card .section-pager::af
   background: var(--container-bg);
   border-radius: 0 0 28px 28px;
 }
+
+html[data-bg-image='none'] body .profile-screen .profile-spaces-inline .profile-listing-tabs.is-panel {
+  width: calc(100% - 40px);
+  margin-inline: 20px;
+}

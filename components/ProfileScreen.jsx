@@ -611,8 +611,8 @@ export default function ProfileScreen({
     if (!root) return undefined
     const measure = () => {
       const row = root.querySelector('.closet-browse-wheels, .profile-listing-tabs.is-panel, .stylst-bar')
-      // the Store/Market tab underline sits flush on the plate's bottom edge
-      const below = row?.matches('.profile-listing-tabs') ? 0 : 10
+      // the Store/Market tab underline stays inside the plate, clear of its rounded corners
+      const below = row?.matches('.profile-listing-tabs') ? 14 : 10
       root.style.setProperty('--plate-extra', row ? `${row.offsetHeight + 10 + below}px` : '0px')
     }
     measure()
