@@ -3234,6 +3234,7 @@ export default function ChatScreen({
             aria-expanded={searchOpen}
             onClick={() => {
               setMobileNavOpen(false)
+              if (isDesktop) setSidebarCollapsed(true)
               flushSync(() => { if (composer?.mode === 'create') closeComposer(); setSearchOpen(true) })
               document.getElementById('chat-search-input')?.focus({ preventScroll: true })
             }}
