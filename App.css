@@ -3958,3 +3958,5 @@ html body .tab-bar.is-collapsed:not(.is-create-open):not(.is-create-closing) .ta
 
 /* Chat toggle sits 10 points more opaque than the page plate behind it */
 html body .chat-friends-tabs .chat-friends-tab-group:not(#_) { background: var(--container-bg-top); }
+
+.brand-row-track-wrap { touch-action: pan-y; }

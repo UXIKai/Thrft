@@ -184,10 +184,57 @@ function CrawlRow({ row, rowIndex, onOpenProduct, onHoldRow, market = false, lik
   }
   // A hold must not also count as a tap on the tile underneath.
   const onClickCapture = (e) => {
-    if (!holdRef.current.fired) return
+    if (!holdRef.current.fired && !holdRef.current.dragged) return
     holdRef.current.fired = false
     e.preventDefault()
     e.stopPropagation()
+  }
+
+  // Dragging scrubs the crawl animation; letting go resumes it from where it was left.
+  const trackRef = useRef(null)
+  const dragRef = useRef(null)
+  const onDragDown = (e) => {
+    if (e.pointerType === 'mouse' && e.button !== 0) return
+    const anim = trackRef.current?.getAnimations()[0]
+    if (!anim) return
+    dragRef.current = { id: e.pointerId, x: e.clientX, active: false, anim, moved: false }
+  }
+  const onDragMove = (e) => {
+    const d = dragRef.current
+    if (!d || d.id !== e.pointerId || !e.isPrimary) return
+    if (!d.active) {
+      if (Math.abs(e.clientX - d.x) < HOLD_SLOP_PX) return
+      d.active = true
+      d.moved = true
+      d.anim.pause()
+      e.currentTarget.setPointerCapture?.(e.pointerId)
+      if (!e.currentTarget.hasPointerCapture?.(e.pointerId)) { dragRef.current = null; d.anim.play(); return }
+      d.x = e.clientX
+    }
+    const track = trackRef.current
+    const timing = d.anim.effect.getComputedTiming()
+    const cls = track.className
+    const span = Number.parseFloat(track.style.getPropertyValue('--loop')) || 0
+    if (!span || !timing.duration) return
+    const [from, to] = /store-fits/.test(cls) ? [0, span] : /right/.test(cls) ? [-span, 0] : [0, -span]
+    const x = new DOMMatrixReadOnly(getComputedStyle(track).transform).m41 + (e.clientX - d.x)
+    d.x = e.clientX
+    const f = Math.min(1, Math.max(0, (x - from) / (to - from)))
+    const iter = timing.currentIteration || 0
+    const forward = timing.direction === 'normal' || timing.direction === 'reverse'
+      ? timing.direction === 'normal'
+      : (timing.direction === 'alternate') === (iter % 2 === 0)
+    d.anim.currentTime = timing.delay + (iter + (forward ? f : 1 - f)) * timing.duration
+  }
+  const onDragEnd = (e) => {
+    const d = dragRef.current
+    if (!d || d.id !== e.pointerId) return
+    dragRef.current = null
+    if (d.active) {
+      d.anim.play()
+      holdRef.current.dragged = true
+      window.setTimeout(() => { holdRef.current.dragged = false }, 0)
+    }
   }
 
   const goesRight = rowIndex % 2 === 1
@@ -219,8 +266,10 @@ function CrawlRow({ row, rowIndex, onOpenProduct, onHoldRow, market = false, lik
       onContextMenu={(e) => e.preventDefault()}
     >
       {visible && (
-        <div ref={wrapRef} className={`brand-row-track-wrap${market ? '' : ' is-store-row'}`}>
+        <div ref={wrapRef} className={`brand-row-track-wrap${market ? '' : ' is-store-row'}`}
+          onPointerDown={onDragDown} onPointerMove={onDragMove} onPointerUp={onDragEnd} onPointerCancel={onDragEnd}>
           <div
+            ref={trackRef}
             className={`brand-row-track ${loopPx > 0 ? market && fits ? '' : market || row.empty
               ? (goesRight ? 'crawl-right' : 'crawl-left')
               : fits ? (goesRight ? 'store-fits-left' : 'store-fits-right')
