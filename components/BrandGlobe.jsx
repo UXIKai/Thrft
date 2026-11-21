@@ -1687,7 +1687,7 @@ function BrandGlobeView({
           {centerSearchAvailable && (
             <input
               ref={centerInputRef}
-              className={`brand-globe-center-search${centerSearching || dockCenterSearch ? ' is-editing' : ''}${
+              className={`brand-globe-center-search${centerSearching || dockCenterSearch ? ' is-editing' : ''}${dockCenterSearch ? ' is-plain' : ''}${
                 typedBrand ? ' is-exact-match' : ''
               }`}
               aria-label={dockCenterSearch ? (searchPlaceholder || 'Search') : 'Search brands'}
@@ -1777,7 +1777,7 @@ function BrandGlobeView({
                       {word}
                     </span>
                   ))
-                : focusLabel || (centerSearchAvailable && (
+                : focusLabel || (centerSearchAvailable && !dockCenterSearch && (
                   <svg
                     className="brand-globe-center-search-icon"
                     viewBox="0 0 24 24"

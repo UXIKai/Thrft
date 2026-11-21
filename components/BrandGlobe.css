@@ -1013,3 +1013,17 @@ html body .brand-globe.is-dock:not(.is-color-picker) .brand-globe-center-hole::a
 html[data-bg-image='none'] body .stage .brand-globe:is(.is-color-picker, .is-brand-picker) :is(.atmosphere-flow, .atmosphere-phantom, .atmosphere-smoke, .atmosphere-serenity) {
   display: none;
 }
+
+/* Category/type wheel: only the letters show in the centre circle, not a white fill */
+html body .brand-globe-center-search.is-plain {
+  background: transparent;
+  color: #fff;
+  -webkit-text-fill-color: #fff;
+  caret-color: #fff;
+  outline: none;
+  box-shadow: none;
+}
+html body .brand-globe-center-search.is-plain::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.7);
+}
