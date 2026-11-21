@@ -3974,3 +3974,16 @@ html[data-bg-image='none'] body .pf-compose .pf-compose-caption {
   background: var(--container-bg) !important;
   border: 1px solid light-dark(rgba(0, 0, 0, 0.3), rgba(255, 255, 255, 0.08));
 }
+
+/* Name and @handle drop down beside the section label (Stylst/Store/...) to save header height */
+html body .profile-screen:has(.profile-spaces-inline:not([hidden])) .profile-identity > :is(.profile-handle, .profile-username-link.is-empty) {
+  margin-bottom: -64px;
+  position: relative;
+  z-index: 3;
+}
+html body .profile-screen:has(.profile-spaces-inline:not([hidden])) .profile-identity .profile-name-row {
+  position: relative;
+  z-index: 3;
+  pointer-events: none;
+}
+html body .profile-screen:has(.profile-spaces-inline:not([hidden])) .profile-identity .profile-name-row > button { pointer-events: auto; }
