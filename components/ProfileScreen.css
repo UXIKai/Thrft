@@ -3906,20 +3906,6 @@ html[data-bg-image='none'] body .profile-screen .profile-card .section-pager {
   border-radius: 0;
   box-shadow: 0 10px 0 0 var(--container-bg);
 }
-html[data-bg-image='none'] body .profile-screen .closet-browse-wheels { position: relative; }
-html[data-bg-image='none'] body .profile-screen .closet-browse-wheels::before {
-  content: '';
-  position: absolute;
-  z-index: -1;
-  top: 0;
-  bottom: -10px;
-  left: 50%;
-  width: calc(100cqw + 16px);
-  transform: translateX(-50%);
-  background: var(--container-bg);
-  border-radius: 0 0 28px 28px;
-}
-html[data-bg-image='none'] body .profile-screen .closet-browse { container-type: inline-size; }
 
 /* Effect off: the tint override for filter bars and pills must not fill the profile panels' buttons */
 html[data-bg-image='none'] .profile-screen {
@@ -3929,18 +3915,21 @@ html[data-bg-image='none'] .profile-screen {
   --glass-clear-tint-active: transparent !important;
 }
 
-/* Effect off: the Store/Market/Stylst button rows sit on the same plate as the header */
-html[data-bg-image='none'] body .profile-screen .profile-spaces-inline-body { container-type: inline-size; }
-html[data-bg-image='none'] body .profile-screen :is(.profile-listing-tabs.is-panel, .stylst-bar) { position: relative; }
-html[data-bg-image='none'] body .profile-screen :is(.profile-listing-tabs.is-panel, .stylst-bar)::before {
+/* Effect off: the plate under the section picker is static and sized by --plate-extra (measured in ProfileScreen),
+   so switching Store / Closet / Market / Stylst slides the buttons over it and never drops it. */
+html[data-bg-image='none'] body .profile-screen .profile-card .section-pager {
+  position: relative;
+  box-shadow: none;
+}
+html[data-bg-image='none'] body .profile-screen .profile-card .section-pager::after {
   content: '';
   position: absolute;
   z-index: -1;
-  top: 0;
-  bottom: -10px;
-  left: 50%;
-  width: calc(100cqw + 16px);
-  transform: translateX(-50%);
+  pointer-events: none;
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: var(--plate-extra, 0px);
   background: var(--container-bg);
   border-radius: 0 0 28px 28px;
 }

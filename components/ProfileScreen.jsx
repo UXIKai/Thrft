@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { createPortal, flushSync } from 'react-dom'
 import AtmosphereFlow from './AtmosphereFlow.jsx'
 import {
@@ -604,6 +604,25 @@ export default function ProfileScreen({
     setClosetSelected(null)
   }
   const [spaceTab, setSpaceTab] = useState('closet') // 'store' | 'market' | 'closet' | 'stylst'
+
+  // The plate behind the section picker reaches down over the active tab's button row
+  useLayoutEffect(() => {
+    const root = document.querySelector('.profile-screen')
+    if (!root) return undefined
+    const measure = () => {
+      const row = root.querySelector('.closet-browse-wheels, .profile-listing-tabs.is-panel, .stylst-bar')
+      root.style.setProperty('--plate-extra', row ? `${row.offsetHeight + 20}px` : '0px')
+    }
+    measure()
+    const row = root.querySelector('.closet-browse-wheels, .profile-listing-tabs.is-panel, .stylst-bar')
+    const ro = typeof ResizeObserver === 'function' && row ? new ResizeObserver(measure) : null
+    if (ro) ro.observe(row)
+    const t = setTimeout(measure, 350)
+    return () => {
+      clearTimeout(t)
+      if (ro) ro.disconnect()
+    }
+  }, [spaceTab, profileView])
   const [panelListingTab, setPanelListingTab] = useState('active')
   const [storeProducts, setStoreProducts] = useState([])
   const [marketListings, setMarketListings] = useState([])
