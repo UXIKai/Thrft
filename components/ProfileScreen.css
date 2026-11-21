@@ -3941,7 +3941,7 @@ html[data-bg-image='none'] body .profile-screen .profile-spaces-inline .profile-
 
 /* Photos view: the header card grows 90px each side and extends down to hold the photo grid */
 html body .profile-screen:has(.pf-photos:not([hidden])) .profile-card .profile-identity {
-  margin-inline: -98px;
+  margin-inline: -28px;
   margin-bottom: 0;
   border-bottom: 0;
   border-bottom-left-radius: 0;
@@ -3949,7 +3949,7 @@ html body .profile-screen:has(.pf-photos:not([hidden])) .profile-card .profile-i
   box-shadow: none;
 }
 html body .profile-screen .profile-card .pf-photos:not([hidden]) {
-  margin: 0 -98px 14px;
+  margin: 0 -28px 14px;
   padding: 8px 16px 16px;
   box-sizing: border-box;
   background: var(--page-bg);
@@ -3975,18 +3975,20 @@ html[data-bg-image='none'] body .pf-compose .pf-compose-caption {
   border: 1px solid light-dark(rgba(0, 0, 0, 0.3), rgba(255, 255, 255, 0.08));
 }
 
+@media (min-width: 720px) {
 /* Name and @handle drop down beside the section label (Stylst/Store/...) to save header height */
-html body .profile-screen:has(.profile-spaces-inline:not([hidden])) .profile-identity > :is(.profile-handle, .profile-username-link.is-empty) {
-  margin-bottom: -64px;
-  position: relative;
-  z-index: 3;
+  html body .profile-screen:has(.profile-spaces-inline:not([hidden])) .profile-identity > :is(.profile-handle, .profile-username-link.is-empty) {
+    margin-bottom: -64px;
+    position: relative;
+    z-index: 3;
+  }
+  html body .profile-screen:has(.profile-spaces-inline:not([hidden])) .profile-identity .profile-name-row {
+    position: relative;
+    z-index: 3;
+    pointer-events: none;
+  }
+  html body .profile-screen:has(.profile-spaces-inline:not([hidden])) .profile-identity .profile-name-row > button { pointer-events: auto; }
 }
-html body .profile-screen:has(.profile-spaces-inline:not([hidden])) .profile-identity .profile-name-row {
-  position: relative;
-  z-index: 3;
-  pointer-events: none;
-}
-html body .profile-screen:has(.profile-spaces-inline:not([hidden])) .profile-identity .profile-name-row > button { pointer-events: auto; }
 
 /* Desktop: products sit nine to a row */
 @media (min-width: 720px) {
@@ -3997,4 +3999,10 @@ html body .profile-screen:has(.profile-spaces-inline:not([hidden])) .profile-ide
     max-width: none;
     margin-inline: calc(50% - 50vw + 24px);
   }
+}
+
+/* Desktop only: the photos card reaches 90px past the content on each side */
+@media (min-width: 720px) {
+  html body .profile-screen:has(.pf-photos:not([hidden])) .profile-card .profile-identity { margin-inline: -98px; }
+  html body .profile-screen .profile-card .pf-photos:not([hidden]) { margin-inline: -98px; }
 }
