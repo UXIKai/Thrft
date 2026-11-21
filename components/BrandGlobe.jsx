@@ -596,7 +596,9 @@ function BrandGlobeView({
   const searchPointerRef = useRef(false)
   const [dockSearchOpen, setDockSearchOpen] = useState(false)
   const [dockPlusSpin, setDockPlusSpin] = useState(false)
-  const centerSearchAvailable = showBrandLogos && typeof onSearchChange === 'function'
+  // Type/category dock: the search field lives in the centre circle and the dock's search button becomes Back.
+  const dockCenterSearch = dockButtons && !showBrandLogos && !dockSearchOpen && typeof onSearchChange === 'function'
+  const centerSearchAvailable = (showBrandLogos || dockCenterSearch) && typeof onSearchChange === 'function'
 
   function openCenterSearch() {
     const rect = stageRef.current?.getBoundingClientRect()
@@ -1685,10 +1687,10 @@ function BrandGlobeView({
           {centerSearchAvailable && (
             <input
               ref={centerInputRef}
-              className={`brand-globe-center-search${centerSearching ? ' is-editing' : ''}${
+              className={`brand-globe-center-search${centerSearching || dockCenterSearch ? ' is-editing' : ''}${
                 typedBrand ? ' is-exact-match' : ''
               }`}
-              aria-label="Search brands"
+              aria-label={dockCenterSearch ? (searchPlaceholder || 'Search') : 'Search brands'}
               type="text"
               inputMode="search"
               autoComplete="off"
@@ -1696,8 +1698,9 @@ function BrandGlobeView({
               autoCapitalize="off"
               spellCheck={false}
               value={searchValue ?? ''}
-              placeholder=""
-              tabIndex={centerSearching ? 0 : -1}
+              placeholder={dockCenterSearch ? 'Search' : ''}
+              style={dockCenterSearch && (choosing || rotating || popping) ? { opacity: 0, pointerEvents: 'none' } : undefined}
+              tabIndex={centerSearching || dockCenterSearch ? 0 : -1}
               onChange={(event) => onSearchChange(event.target.value)}
               onBlur={() => setCenterSearching(false)}
               onKeyDown={(event) => {
@@ -1723,7 +1726,7 @@ function BrandGlobeView({
             aria-label={
               focusBrand
                 ? `Tap to choose ${focusBrand.label}`
-                : centerSearchAvailable ? 'Search brands' : 'Scroll to a brand, then tap to choose'
+                : centerSearchAvailable ? (dockCenterSearch ? 'Search' : 'Search brands') : 'Scroll to a brand, then tap to choose'
             }
             onPointerDown={(event) => {
               if (showBrandLogos) return
@@ -1793,7 +1796,7 @@ function BrandGlobeView({
             </span>
           </button>
         </div>
-        {centerSearchAvailable ? (
+        {centerSearchAvailable && !dockCenterSearch ? (
           <button
             type="button"
             className="brand-globe-brand-back is-bare"
@@ -1804,11 +1807,9 @@ function BrandGlobeView({
           </button>
         ) : typeof onSearchChange === 'function' && dockButtons && !dockSearchOpen ? (
           <div className="brand-globe-dock-actions">
-            <button type="button" className="brand-globe-dock-round" aria-label="Search"
-              onClick={(event) => { event.stopPropagation(); setDockSearchOpen(true) }}>
-              <svg viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                <circle cx="10.5" cy="10.5" r="6" /><path d="m15 15 5 5" />
-              </svg>
+            <button type="button" className="brand-globe-dock-round" aria-label="Back"
+              onClick={(event) => { event.stopPropagation(); onClose?.() }}>
+              <GlobeBackIcon />
             </button>
             <button type="button" className="brand-globe-dock-round" aria-label={searchPlusLabel}
               onClick={(event) => {
