@@ -147,6 +147,22 @@ export default function AccountPage({
               {account.joined ? (
                 <p className="account-page-joined">Joined {account.joined}</p>
               ) : null}
+              <div className="account-page-connections" aria-label="Connections">
+                {[
+                  ['Following', account.followingCount, 'following'],
+                  ['Followers', account.followerCount, 'followers'],
+                ].map(([label, count, kind]) => {
+                  const available = Number.isInteger(count) && count >= 0
+                  return (
+                    <button key={label} type="button" className="is-bare" onClick={() => setFollowSheet(kind)}>
+                      <span className="account-page-count" aria-label={available ? `${count} ${label.toLowerCase()}` : `${label} count unavailable`}>
+                        {available ? count : '-'}
+                      </span>
+                      <span>{label}</span>
+                    </button>
+                  )
+                })}
+              </div>
               {!isOwn && !account.isSelf && (
                 <div className="account-page-actions">
                   {isSupabaseConfigured() && (
@@ -173,22 +189,6 @@ export default function AccountPage({
                   )}
                 </div>
               )}
-              <div className="account-page-connections" aria-label="Connections">
-                {[
-                  ['Following', account.followingCount, 'following'],
-                  ['Followers', account.followerCount, 'followers'],
-                ].map(([label, count, kind]) => {
-                  const available = Number.isInteger(count) && count >= 0
-                  return (
-                    <button key={label} type="button" className="is-bare" onClick={() => setFollowSheet(kind)}>
-                      <span className="account-page-count" aria-label={available ? `${count} ${label.toLowerCase()}` : `${label} count unavailable`}>
-                        {available ? count : '-'}
-                      </span>
-                      <span>{label}</span>
-                    </button>
-                  )
-                })}
-              </div>
             </div>
 
             {followSheet && (
