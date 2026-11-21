@@ -4114,3 +4114,8 @@ html[data-bg-image='none'] body .pf-compose .pf-compose-caption {
     background: none;
   }
 }
+
+/* Profile photo centred at the top; counts and the photos/closet toggle drop down beside the section picker */
+html body .profile-screen .profile-identity .pf-x-head { justify-content: center; }
+html body .profile-screen .profile-identity .pf-x-head .pf-user-avatar-wrap { margin-left: 0; }
+html body .profile-screen:has(.profile-spaces-inline:not([hidden])) .profile-card .profile-identity .profile-social { bottom: -46px; }
