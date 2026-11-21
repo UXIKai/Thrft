@@ -4115,13 +4115,15 @@ html[data-bg-image='none'] body .pf-compose .pf-compose-caption {
   }
 }
 
-/* Profile photo centred at the top; counts and the photos/closet toggle drop down beside the section picker */
+/* Profile photo centred at the top; on desktop the counts and toggle drop down beside the section picker */
 html body .profile-screen .profile-identity .pf-x-head { justify-content: center; }
 html body .profile-screen .profile-identity .pf-x-head .pf-user-avatar-wrap { margin-left: 0; }
-html body .profile-screen:has(.profile-spaces-inline:not([hidden])) .profile-card .profile-identity .profile-social { bottom: -46px; }
+@media (min-width: 720px) {
+  html body .profile-screen:has(.profile-spaces-inline:not([hidden])) .profile-card .profile-identity .profile-social { bottom: -46px; }
 
-/* Counts sit as far right of the section picker as the name sits left of it (--pf-social-left is measured) */
-html body .profile-screen:has(.profile-spaces-inline:not([hidden])) .profile-card .profile-identity .profile-social {
-  right: auto;
-  left: var(--pf-social-left, auto);
+  /* Counts sit as far right of the section picker as the name sits left of it (--pf-social-left is measured) */
+  html body .profile-screen:has(.profile-spaces-inline:not([hidden])) .profile-card .profile-identity .profile-social {
+    right: auto;
+    left: var(--pf-social-left, auto);
+  }
 }
