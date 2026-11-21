@@ -8,10 +8,10 @@
   /* The page colour as drawn (the stage dims its wash 20%), which is also what the status-bar tint is sampled from.
      Full-screen surfaces that reach the top edge paint this so no band shows under the status bar. */
   --page-bg: color-mix(in srgb, var(--page-base) 80%, #000);
-  /* Floating containers (nav bar, pills, menus) sit at 80% opacity so the page shows through slightly */
-  --container-bg: color-mix(in srgb, var(--page-bg) 80%, transparent);
-  /* Layers that float over a container (nav bar, chat toggle) are 10 points more opaque than it */
-  --container-bg-top: color-mix(in srgb, var(--page-bg) 90%, transparent);
+  /* Floating containers (nav bar, pills, menus) sit at 90% opacity so the page shows through slightly */
+  --container-bg: color-mix(in srgb, var(--page-bg) 90%, transparent);
+  /* Layers that float over a container (nav bar, chat toggle) are 10 points more opaque (fully opaque) than it */
+  --container-bg-top: color-mix(in srgb, var(--page-bg) 100%, transparent);
   /* Subtle black edge for surfaces on a bright page (dark ink); invisible on dark pages */
   --edge-ink: light-dark(rgba(0, 0, 0, 0.28), transparent);
 }
@@ -23,7 +23,7 @@ html[data-bg-image='none'] {
 /* Effect off: a flat page leaves no wash for clear glass to read against, so every container is the same
    opaque plate as the nav bar (35% black over the page colour). !important beats the inline glass tints. */
 html[data-bg-image='none'] {
-  --plate-opacity: 80%;
+  --plate-opacity: 90%;
   --container-bg: color-mix(in srgb, color-mix(in srgb, #000 35%, var(--page-bg)) var(--plate-opacity), transparent);
   --container-bg-top: color-mix(in srgb, color-mix(in srgb, #000 35%, var(--page-bg)) calc(var(--plate-opacity) + 10%), transparent);
   --glass-tint: var(--container-bg) !important;
