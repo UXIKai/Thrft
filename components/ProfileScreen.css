@@ -3896,8 +3896,24 @@ html[data-bg-image='none'] body .profile-screen :is(.profile-card, .profile-card
   background: var(--container-bg);
 }
 
-/* Effect off: the brand and type pickers share the plate colour (no layout change) */
-html[data-bg-image='none'] body .profile-screen .closet-browse-wheels {
+/* Effect off: header, section picker and brand/type pickers read as one plate. Nothing moves:
+   the pickers' plate is a pseudo layer that reaches up to the section picker. */
+html[data-bg-image='none'] body .profile-screen .profile-card .section-pager {
   background: var(--container-bg);
-  border-radius: 20px;
+  border: 0;
+}
+html[data-bg-image='none'] body .profile-screen:has(.closet-browse-wheels) .profile-card .section-pager {
+  border-radius: 0;
+}
+html[data-bg-image='none'] body .profile-screen .closet-browse-wheels { position: relative; }
+html[data-bg-image='none'] body .profile-screen .closet-browse-wheels::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  top: -40px;
+  bottom: -10px;
+  left: -8px;
+  right: -8px;
+  background: var(--container-bg);
+  border-radius: 0 0 28px 28px;
 }
