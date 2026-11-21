@@ -3920,3 +3920,21 @@ html body .tab-bar:not(.is-collapsed):not(.is-create-open):not(.is-create-closin
   background: color-mix(in srgb, light-dark(#000, #fff) 12%, transparent);
   border: 0.5px solid light-dark(rgba(0, 0, 0, 0.18), rgba(255, 255, 255, 0.18));
 }
+
+/* Desktop: heart under the photo, name and price centered below it */
+@media (min-width: 720px) {
+  html body .market-card .market-card-open { text-align: center; }
+  html body .market-card .market-card-name { margin-top: 38px; text-align: center; }
+  html body .market-card .market-card-price { text-align: center; }
+  html body .market-card .market-card-like {
+    top: auto;
+    right: auto;
+    left: 50%;
+    bottom: 48px;
+    transform: translateX(-50%);
+    flex-direction: row;
+    gap: 4px;
+    color: light-dark(#000, #fff) !important;
+    filter: none;
+  }
+}
