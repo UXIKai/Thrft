@@ -4127,3 +4127,25 @@ html body .profile-screen .profile-identity .pf-x-head .pf-user-avatar-wrap { ma
     left: var(--pf-social-left, auto);
   }
 }
+
+/* Mobile photos view: one plate fills the whole page, like the desktop one */
+@media (max-width: 719.98px) {
+  html body .profile-screen:has(.pf-photos:not([hidden])) { isolation: isolate; }
+  html body .profile-screen:has(.pf-photos:not([hidden]))::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: var(--container-bg);
+  }
+  html body .profile-screen:has(.pf-photos:not([hidden])) .profile-card .profile-identity,
+  html[data-bg-image='none'] body .profile-screen:has(.pf-photos:not([hidden])) .profile-card .profile-identity,
+  html body .profile-screen .profile-card .pf-photos:not([hidden]),
+  html[data-bg-image='none'] body .profile-screen .profile-card .pf-photos:not([hidden]) {
+    background: none;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+}
